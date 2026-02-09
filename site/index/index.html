@@ -9,65 +9,54 @@
     <script src="script.js" defer></script>
 </head>
 
-<body>
-    <header class="header-controls">
-        <div class="controls-group">
-            <button id="theme-toggle" class="control-btn" aria-label="Toggle Theme">
+<body class="landing-body">
+    <div class="page-wrap">
+        <header class="controls-cluster">
+            <button id="theme-toggle" class="control-btn icon-btn" aria-label="Toggle Theme">
                 <span class="theme-icon">☾</span>
             </button>
-            <button id="lang-toggle" class="control-btn" aria-label="Toggle Language">
-                <span class="lang-text">EN</span>
-            </button>
-        </div>
-    </header>
+            <div class="lang-segmented">
+                <button class="lang-btn" data-lang-val="sv" aria-label="Svenska">SV</button>
+                <button class="lang-btn" data-lang-val="en" aria-label="English">EN</button>
+            </div>
+        </header>
 
-    <main class="landing-main">
-        <section class="hero">
-            <h1 class="title">Taren</h1>
-            <p class="subtitle" data-sv="Något nytt tar form." data-en="Something new takes shape.">Något nytt tar form.
-            </p>
-        </section>
+        <main class="content-col">
+            <section class="hero">
+                <h1 class="title">Taren</h1>
+                <p class="subtitle" data-sv="Något nytt tar form." data-en="Something new takes shape."></p>
+            </section>
 
-        <nav class="nav-links">
-            <ul class="links-grid">
-                <li>
-                    <a href="/games/" class="nav-card">
-                        <span class="nav-title" data-sv="Spel" data-en="Games">Spel</span>
-                        <span class="nav-micro" data-sv="Prova något litet." data-en="Try something small.">Prova något
-                            litet.</span>
+            <nav class="navigation-nav">
+                <div class="nav-grid">
+                    <a href="/games/" class="nav-item">
+                        <div class="nav-label" data-sv="Spel" data-en="Games"></div>
+                        <div class="nav-micro" data-sv="Prova något litet." data-en="Try something small."></div>
                     </a>
-                </li>
-                <li>
-                    <a href="/experiments/" class="nav-card">
-                        <span class="nav-title" data-sv="Experiment" data-en="Experiments">Experiment</span>
-                        <span class="nav-micro" data-sv="Peta på kanterna." data-en="Touch the edges.">Peta på
-                            kanterna.</span>
+                    <a href="/experiments/" class="nav-item">
+                        <div class="nav-label" data-sv="Experiment" data-en="Experiments"></div>
+                        <div class="nav-micro" data-sv="Peta på kanterna." data-en="Touch the edges."></div>
                     </a>
-                </li>
-                <li>
-                    <a href="/sketches/" class="nav-card">
-                        <span class="nav-title" data-sv="Skisser" data-en="Sketches">Skisser</span>
-                        <span class="nav-micro" data-sv="Fragment & former." data-en="Fragments & shapes.">Fragment &
-                            former.</span>
+                    <a href="/sketches/" class="nav-item">
+                        <div class="nav-label" data-sv="Skisser" data-en="Sketches"></div>
+                        <div class="nav-micro" data-sv="Fragment & former." data-en="Fragments & shapes."></div>
                     </a>
-                </li>
-                <li>
-                    <a href="/texts/" class="nav-card">
-                        <span class="nav-title" data-sv="Texter" data-en="Texts">Texter</span>
-                        <span class="nav-micro" data-sv="Noter ur dimman." data-en="Notes from the fog.">Noter ur
-                            dimman.</span>
+                    <a href="/texts/" class="nav-item">
+                        <div class="nav-label" data-sv="Texter" data-en="Texts"></div>
+                        <div class="nav-micro" data-sv="Noter ur dimman." data-en="Notes from the fog."></div>
                     </a>
-                </li>
-                <li>
-                    <a href="/ongoing/" class="nav-card">
-                        <span class="nav-title" data-sv="Pågår" data-en="Ongoing">Pågår</span>
-                        <span class="nav-micro" data-sv="Tar fortfarande form." data-en="Still forming.">Tar fortfarande
-                            form.</span>
+                    <a href="/ongoing/" class="nav-item">
+                        <div class="nav-label" data-sv="Pågår" data-en="Ongoing"></div>
+                        <div class="nav-micro" data-sv="Tar fortfarande form." data-en="Still forming."></div>
                     </a>
-                </li>
-            </ul>
-        </nav>
-    </main>
+                    <a href="/about/" class="nav-item">
+                        <div class="nav-label" data-sv="Om" data-en="About"></div>
+                        <div class="nav-micro" data-sv="Läs om Taren." data-en="Read about Taren."></div>
+                    </a>
+                </div>
+            </nav>
+        </main>
+    </div>
 </body>
 
 </html>

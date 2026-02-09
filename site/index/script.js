@@ -15,8 +15,7 @@
         html: document.documentElement,
         themeBtn: document.getElementById('theme-toggle'),
         themeIcon: document.querySelector('.theme-icon'),
-        langBtn: document.getElementById('lang-toggle'),
-        langText: document.querySelector('.lang-text'),
+        langBtns: document.querySelectorAll('.lang-btn'),
         translatable: document.querySelectorAll('[data-sv]')
     };
 
@@ -29,14 +28,22 @@
 
     const updateLang = () => {
         elements.html.dataset.lang = state.lang;
-        elements.langText.textContent = state.lang === 'sv' ? 'EN' : 'SV';
 
+        // Update Buttons active state
+        elements.langBtns.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.langVal === state.lang);
+        });
+
+        // Update Text
         elements.translatable.forEach(el => {
             const text = el.dataset[state.lang];
             if (text) el.textContent = text;
         });
 
         localStorage.setItem(STORAGE_KEY_LANG, state.lang);
+
+        // Update page title optionally if needed
+        document.title = state.lang === 'sv' ? 'Taren' : 'Taren';
     };
 
     const toggleTheme = () => {
@@ -44,16 +51,19 @@
         updateTheme();
     };
 
-    const toggleLang = () => {
-        state.lang = state.lang === 'sv' ? 'en' : 'sv';
-        updateLang();
+    const handleLangClick = (e) => {
+        const newLang = e.currentTarget.dataset.langVal;
+        if (newLang !== state.lang) {
+            state.lang = newLang;
+            updateLang();
+        }
     };
 
     // Initialize
     const init = () => {
         // Event Listeners
         elements.themeBtn.addEventListener('click', toggleTheme);
-        elements.langBtn.addEventListener('click', toggleLang);
+        elements.langBtns.forEach(btn => btn.addEventListener('click', handleLangClick));
 
         // Apply initial state
         updateTheme();
