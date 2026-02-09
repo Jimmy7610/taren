@@ -13,48 +13,51 @@
 <body class="star-map-body">
     <div class="vignette"></div>
 
-    <!-- Compass Instrument Overlay -->
-    <div class="compass-system">
+    <!-- 1. Background Layer (Parallax enabled) -->
+    <div class="background-layer parallax" data-depth="2">
+        <div class="star-dust"></div>
+    </div>
+
+    <!-- 2. Instrument Layer (Static) -->
+    <div class="instrument-layer">
         <div class="compass-ring"></div>
         <div class="crosshair-h"></div>
         <div class="crosshair-v"></div>
     </div>
 
-    <div class="center-anchor parallax" data-depth="5">
-        <h1 data-i18n="title">Taren</h1>
-        <p data-i18n="tagline">Något nytt tar form.</p>
-    </div>
+    <!-- 3. Content Layer (Static) -->
+    <div class="content-layer">
+        <div class="center-anchor">
+            <h1 data-i18n="title">Taren</h1>
+            <p data-i18n="tagline">Något nytt tar form.</p>
+        </div>
 
-    <div class="orbit-system">
-        <!-- Top: Games -->
-        <div class="node parallax" data-depth="15">
-            <div class="node-point"></div>
-            <a href="/games/" data-i18n="games">Spel</a>
-            <div class="node-micro" data-i18n="micro_games">Prova något litet.</div>
-        </div>
-        <!-- Right: Experiments -->
-        <div class="node parallax" data-depth="10">
-            <div class="node-point"></div>
-            <a href="/experiments/" data-i18n="experiments">Experiment</a>
-            <div class="node-micro" data-i18n="micro_experiments">Peta på kanterna.</div>
-        </div>
-        <!-- Bottom Left: Sketches (Using a different order to match mockup positioning logic) -->
-        <div class="node parallax" data-depth="20">
-            <div class="node-point"></div>
-            <a href="/sketches/" data-i18n="sketches">Skisser</a>
-            <div class="node-micro" data-i18n="micro_sketches">Fragment & former.</div>
-        </div>
-        <!-- Bottom Right: Texts -->
-        <div class="node parallax" data-depth="12">
-            <div class="node-point"></div>
-            <a href="/texts/" data-i18n="texts">Texter</a>
-            <div class="node-micro" data-i18n="micro_texts">Noter ur dimman.</div>
-        </div>
-        <!-- Bottom: Ongoing -->
-        <div class="node parallax" data-depth="18">
-            <div class="node-point"></div>
-            <a href="/ongoing/" data-i18n="ongoing">Pågår</a>
-            <div class="node-micro" data-i18n="micro_ongoing">Tar fortfarande form.</div>
+        <div class="orbit-system">
+            <div class="node">
+                <div class="node-point"></div>
+                <a href="/games/" data-i18n="games">Spel</a>
+                <div class="node-micro" data-i18n="micro_games">Prova något litet.</div>
+            </div>
+            <div class="node">
+                <div class="node-point"></div>
+                <a href="/experiments/" data-i18n="experiments">Experiment</a>
+                <div class="node-micro" data-i18n="micro_experiments">Peta på kanterna.</div>
+            </div>
+            <div class="node">
+                <div class="node-point"></div>
+                <a href="/sketches/" data-i18n="sketches">Skisser</a>
+                <div class="node-micro" data-i18n="micro_sketches">Fragment & former.</div>
+            </div>
+            <div class="node">
+                <div class="node-point"></div>
+                <a href="/texts/" data-i18n="texts">Texter</a>
+                <div class="node-micro" data-i18n="micro_texts">Noter ur dimman.</div>
+            </div>
+            <div class="node">
+                <div class="node-point"></div>
+                <a href="/ongoing/" data-i18n="ongoing">Pågår</a>
+                <div class="node-micro" data-i18n="micro_ongoing">Tar fortfarande form.</div>
+            </div>
         </div>
     </div>
 </body>

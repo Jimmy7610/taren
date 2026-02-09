@@ -14,9 +14,6 @@
     margin: 0;
     max-width: none;
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
     position: relative;
     background-color: #05070a;
@@ -26,16 +23,42 @@
     background-color: #f0f2f5;
 }
 
-/* Star Dust & Grain Overlay */
-.star-map-body::before {
-    content: "";
+/* Layer Isolation */
+.background-layer,
+.instrument-layer,
+.content-layer {
     position: absolute;
-    top: -50%;
-    left: -50%;
-    right: -50%;
-    bottom: -50%;
-    opacity: 0.4;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.background-layer {
+    z-index: 0;
     pointer-events: none;
+}
+
+.instrument-layer {
+    z-index: 10;
+    pointer-events: none;
+}
+
+.content-layer {
+    z-index: 20;
+}
+
+/* Star Dust & Grain Overlay */
+.star-dust {
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    right: -10%;
+    bottom: -10%;
+    opacity: 0.4;
     background-image:
         radial-gradient(1px 1px at 25px 35px, white, transparent),
         radial-gradient(1px 1px at 50px 100px, white, transparent),
@@ -45,7 +68,6 @@
         radial-gradient(2px 2px at 400px 350px, white, transparent);
     background-size: 550px 550px;
     animation: slow-shimmer 60s linear infinite;
-    z-index: 0;
 }
 
 .star-map-body::after {
@@ -80,36 +102,26 @@
     bottom: 0;
     background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.4) 100%);
     pointer-events: none;
-    z-index: 2;
+    z-index: 5;
 }
 
 /* Compass Instrument Overlay */
-.compass-system {
-    position: absolute;
-    width: 0;
-    height: 0;
-    top: 50%;
-    left: 50%;
-    z-index: 3;
-    pointer-events: none;
-}
-
 .compass-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
     width: calc(var(--orbit-radius) * 1.8);
     height: calc(var(--orbit-radius) * 1.8);
     border: 1px solid var(--compass-color);
     border-radius: 50%;
+    position: absolute;
+    top: 45%;
+    left: 50%;
     transform: translate(-50%, -50%);
 }
 
 .crosshair-h,
 .crosshair-v {
-    position: absolute;
     background: var(--compass-color);
-    top: 50%;
+    position: absolute;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -125,10 +137,11 @@
 }
 
 .center-anchor {
-    position: relative;
     text-align: center;
-    z-index: 10;
-    transform: translateY(-5%);
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .center-anchor h1 {
@@ -151,19 +164,18 @@
 
 /* Nodes */
 .orbit-system {
-    position: absolute;
     width: 0;
     height: 0;
+    position: absolute;
     top: 45%;
     left: 50%;
-    z-index: 5;
 }
 
 .node {
     position: absolute;
     width: 160px;
     text-align: center;
-    transition: transform 0.4s ease;
+    transition: transform 0.3s ease;
 }
 
 .node-point {
@@ -194,7 +206,7 @@
     line-height: 1.3;
 }
 
-/* Specific Node Positioning (Matches Mockup) */
+/* Precise Node Positioning (Static, Matches Mockup) */
 /* Games (Top) */
 .node:nth-child(1) {
     transform: translate(-50%, calc(-1 * var(--orbit-radius) - 60px));
@@ -202,7 +214,7 @@
 
 /* Experiments (Top Right) */
 .node:nth-child(2) {
-    transform: translate(calc(var(--orbit-radius) * 0.7), calc(-0.7 * var(--orbit-radius) - 20px));
+    transform: translate(calc(var(--orbit-radius) * 0.75), calc(-0.75 * var(--orbit-radius) - 20px));
     text-align: left;
 }
 
@@ -212,7 +224,7 @@
 
 /* Sketches (Bottom Left) */
 .node:nth-child(3) {
-    transform: translate(calc(-1 * var(--orbit-radius) * 0.7 - 160px), calc(0.7 * var(--orbit-radius) - 20px));
+    transform: translate(calc(-1 * var(--orbit-radius) * 0.75 - 160px), calc(0.75 * var(--orbit-radius) - 20px));
     text-align: right;
 }
 
@@ -222,7 +234,7 @@
 
 /* Texts (Bottom Right) */
 .node:nth-child(4) {
-    transform: translate(calc(var(--orbit-radius) * 0.7), calc(0.7 * var(--orbit-radius) - 20px));
+    transform: translate(calc(var(--orbit-radius) * 0.75), calc(0.75 * var(--orbit-radius) - 20px));
     text-align: left;
 }
 
@@ -235,34 +247,34 @@
     transform: translate(-50%, calc(var(--orbit-radius) + 40px));
 }
 
-/* Interaction */
+/* Interaction: Suble scale only, no layout shifts */
 .node:hover {
-    transform: scale(1.05) translate(var(--hover-x, 0), var(--hover-y, 0));
+    transform: translate(var(--tx, -50%), var(--ty)) scale(1.05);
 }
 
 .node:nth-child(1):hover {
-    --hover-x: -50%;
-    --hover-y: calc(-1 * var(--orbit-radius) - 65px);
+    --tx: -50%;
+    --ty: calc(-1 * var(--orbit-radius) - 60px);
 }
 
 .node:nth-child(2):hover {
-    --hover-x: calc(var(--orbit-radius) * 0.7 + 5px);
-    --hover-y: calc(-0.7 * var(--orbit-radius) - 25px);
+    --tx: calc(var(--orbit-radius) * 0.75);
+    --ty: calc(-0.75 * var(--orbit-radius) - 20px);
 }
 
 .node:nth-child(3):hover {
-    --hover-x: calc(-1 * var(--orbit-radius) * 0.7 - 165px);
-    --hover-y: calc(0.7 * var(--orbit-radius) - 15px);
+    --tx: calc(-1 * var(--orbit-radius) * 0.75 - 160px);
+    --ty: calc(0.75 * var(--orbit-radius) - 20px);
 }
 
 .node:nth-child(4):hover {
-    --hover-x: calc(var(--orbit-radius) * 0.7 + 5px);
-    --hover-y: calc(0.7 * var(--orbit-radius) - 15px);
+    --tx: calc(var(--orbit-radius) * 0.75);
+    --ty: calc(0.75 * var(--orbit-radius) - 20px);
 }
 
 .node:nth-child(5):hover {
-    --hover-x: -50%;
-    --hover-y: calc(var(--orbit-radius) + 45px);
+    --tx: -50%;
+    --ty: calc(var(--orbit-radius) + 40px);
 }
 
 @media (max-width: 768px) {
