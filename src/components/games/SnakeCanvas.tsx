@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Play, Pause, RefreshCcw, Gamepad2, Info, Trophy, ChevronRight } from 'lucide-react';
+import { Play, Pause, RefreshCcw, Trophy } from 'lucide-react';
 
 interface Point {
     x: number;
@@ -23,6 +23,8 @@ const SPEED_MAP = {
     HARD: 75,
 };
 
+const GRID_SIZE = 25;
+
 export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     onScoreChange,
     onGameOver,
@@ -33,7 +35,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const CELL_SIZE = 24;
+    const [cellSize, setCellSize] = useState(20);
 
     // Mutable game state
     const stateRef = useRef({
@@ -43,8 +45,6 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         food: { x: 0, y: 0 } as Point,
         score: 0,
         lastUpdate: 0,
-        gridCols: 20,
-        gridRows: 20,
         currentSpeed: SPEED_MAP[difficulty],
     });
 
@@ -53,13 +53,13 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         stateRef.current.currentSpeed = SPEED_MAP[difficulty];
     }, [difficulty]);
 
-    const spawnFood = useCallback((snake: Point[], cols: number, rows: number): Point => {
+    const spawnFood = useCallback((snake: Point[]): Point => {
         let newFood: Point;
         let attempts = 0;
         while (attempts < 100) {
             newFood = {
-                x: Math.floor(Math.random() * cols),
-                y: Math.floor(Math.random() * rows),
+                x: Math.floor(Math.random() * GRID_SIZE),
+                y: Math.floor(Math.random() * GRID_SIZE),
             };
             const onSnake = snake.some(p => p.x === newFood.x && p.y === newFood.y);
             if (!onSnake) return newFood;
@@ -69,9 +69,8 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     }, []);
 
     const resetGame = useCallback(() => {
-        const { gridCols, gridRows } = stateRef.current;
-        const centerX = Math.floor(gridCols / 2);
-        const centerY = Math.floor(gridRows / 2);
+        const centerX = Math.floor(GRID_SIZE / 2);
+        const centerY = Math.floor(GRID_SIZE / 2);
 
         const initialSnake = [
             { x: centerX, y: centerY },
@@ -84,7 +83,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             snake: initialSnake,
             direction: { x: 0, y: -1 },
             nextDirection: { x: 0, y: -1 },
-            food: spawnFood(initialSnake, gridCols, gridRows),
+            food: spawnFood(initialSnake),
             score: 0,
             lastUpdate: performance.now(),
             currentSpeed: SPEED_MAP[difficulty],
@@ -96,6 +95,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     // Handle Keys
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
+            if (gameState === 'IDLE') return;
             const { direction } = stateRef.current;
 
             switch (e.key) {
@@ -123,7 +123,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     e.preventDefault();
                     if (gameState === 'PLAYING') onStateChange('PAUSED');
                     else if (gameState === 'PAUSED') onStateChange('PLAYING');
-                    else if (gameState === 'IDLE' || gameState === 'GAMEOVER') resetGame();
+                    else if (gameState === 'GAMEOVER') resetGame();
                     break;
             }
         };
@@ -132,14 +132,16 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [gameState, onStateChange, resetGame]);
 
-    // Resize handling
+    // Authoritative cellSize calculation
     useEffect(() => {
         if (!containerRef.current) return;
         const handleResize = (entries: ResizeObserverEntry[]) => {
             const entry = entries[0];
             if (!entry) return;
-            stateRef.current.gridCols = Math.floor(entry.contentRect.width / CELL_SIZE);
-            stateRef.current.gridRows = Math.floor(entry.contentRect.height / CELL_SIZE);
+            // padding to ensure borders are clear and no under-fold
+            const { width, height } = entry.contentRect;
+            const size = Math.floor(Math.min(width, height) / GRID_SIZE);
+            setCellSize(Math.max(12, size)); // defensive min size
         };
         const observer = new ResizeObserver(handleResize);
         observer.observe(containerRef.current);
@@ -171,8 +173,8 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
                 // Collision
                 if (
-                    newHead.x < 0 || newHead.x >= state.gridCols ||
-                    newHead.y < 0 || newHead.y >= state.gridRows ||
+                    newHead.x < 0 || newHead.x >= GRID_SIZE ||
+                    newHead.y < 0 || newHead.y >= GRID_SIZE ||
                     state.snake.some(p => p.x === newHead.x && p.y === newHead.y)
                 ) {
                     onGameOver(state.score);
@@ -185,7 +187,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 if (newHead.x === state.food.x && newHead.y === state.food.y) {
                     state.score += 10;
                     onScoreChange(state.score);
-                    state.food = spawnFood(state.snake, state.gridCols, state.gridRows);
+                    state.food = spawnFood(state.snake);
 
                     // Speed Ramp (Hard mode)
                     if (difficulty === 'HARD' && state.currentSpeed > 40) {
@@ -202,8 +204,8 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         const draw = () => {
             const state = stateRef.current;
             const dpr = window.devicePixelRatio || 1;
-            const targetWidth = state.gridCols * CELL_SIZE;
-            const targetHeight = state.gridRows * CELL_SIZE;
+            const targetWidth = GRID_SIZE * cellSize;
+            const targetHeight = GRID_SIZE * cellSize;
 
             if (canvas.width !== targetWidth * dpr || canvas.height !== targetHeight * dpr) {
                 canvas.width = targetWidth * dpr;
@@ -213,76 +215,67 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
             ctx.clearRect(0, 0, targetWidth, targetHeight);
 
-            // 1. Grid (Subtle depth)
+            // 1. Grid
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
             ctx.lineWidth = 1;
-            for (let i = 0; i <= state.gridCols; i++) {
-                ctx.beginPath();
-                ctx.moveTo(i * CELL_SIZE, 0); ctx.lineTo(i * CELL_SIZE, targetHeight);
-                ctx.stroke();
+            for (let i = 0; i <= GRID_SIZE; i++) {
+                ctx.beginPath(); ctx.moveTo(i * cellSize, 0); ctx.lineTo(i * cellSize, targetHeight); ctx.stroke();
             }
-            for (let j = 0; j <= state.gridRows; j++) {
-                ctx.beginPath();
-                ctx.moveTo(0, j * CELL_SIZE); ctx.lineTo(targetWidth, j * CELL_SIZE);
-                ctx.stroke();
+            for (let j = 0; j <= GRID_SIZE; j++) {
+                ctx.beginPath(); ctx.moveTo(0, j * cellSize); ctx.lineTo(targetWidth, j * cellSize); ctx.stroke();
             }
 
-            // 2. Playfield Frame (Scanner Look)
-            ctx.strokeStyle = 'rgba(0, 242, 255, 0.2)';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(1, 1, targetWidth - 2, targetHeight - 2);
-
-            // Corner Brackets
-            const bLen = 20;
-            ctx.strokeStyle = 'rgba(0, 242, 255, 0.6)';
+            // 2. Playfield Frame (Neon Border)
+            ctx.save();
+            ctx.strokeStyle = '#00f2ff';
             ctx.lineWidth = 3;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#00f2ff';
+            ctx.strokeRect(0, 0, targetWidth, targetHeight);
+
+            // Corner Accents
+            const bracketSize = cellSize;
+            ctx.lineWidth = 5;
             // Top Left
-            ctx.beginPath(); ctx.moveTo(0, bLen); ctx.lineTo(0, 0); ctx.lineTo(bLen, 0); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, bracketSize); ctx.lineTo(0, 0); ctx.lineTo(bracketSize, 0); ctx.stroke();
             // Top Right
-            ctx.beginPath(); ctx.moveTo(targetWidth - bLen, 0); ctx.lineTo(targetWidth, 0); ctx.lineTo(targetWidth, bLen); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(targetWidth - bracketSize, 0); ctx.lineTo(targetWidth, 0); ctx.lineTo(targetWidth, bracketSize); ctx.stroke();
             // Bottom Right
-            ctx.beginPath(); ctx.moveTo(targetWidth, targetHeight - bLen); ctx.lineTo(targetWidth, targetHeight); ctx.lineTo(targetWidth - bLen, targetHeight); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(targetWidth, targetHeight - bracketSize); ctx.lineTo(targetWidth, targetHeight); ctx.lineTo(targetWidth - bracketSize, targetHeight); ctx.stroke();
             // Bottom Left
-            ctx.beginPath(); ctx.moveTo(bLen, targetHeight); ctx.lineTo(0, targetHeight); ctx.lineTo(0, targetHeight - bLen); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(bracketSize, targetHeight); ctx.lineTo(0, targetHeight); ctx.lineTo(0, targetHeight - bracketSize); ctx.stroke();
+            ctx.restore();
 
-            // Inner Glow Border
-            const gradient = ctx.createLinearGradient(0, 0, 0, 10);
-            ctx.fillStyle = 'rgba(0, 242, 255, 0.03)';
-            ctx.fillRect(0, 0, targetWidth, 4); // Top
-            ctx.fillRect(0, targetHeight - 4, targetWidth, 4); // Bottom
-            ctx.fillRect(0, 0, 4, targetHeight); // Left
-            ctx.fillRect(targetWidth - 4, 0, 4, targetHeight); // Right
-
-            // 3. Food (Enhanced Halo)
+            // 3. Food
             const pulse = (Math.sin(Date.now() / 150) + 1) / 2;
-            ctx.shadowBlur = 20 + pulse * 15;
+            ctx.shadowBlur = 15 + pulse * 10;
             ctx.shadowColor = '#FF5F1F';
             ctx.fillStyle = '#FF5F1F';
             ctx.beginPath();
             ctx.arc(
-                state.food.x * CELL_SIZE + CELL_SIZE / 2,
-                state.food.y * CELL_SIZE + CELL_SIZE / 2,
-                (CELL_SIZE / 3.5) * (0.9 + pulse * 0.15),
+                state.food.x * cellSize + cellSize / 2,
+                state.food.y * cellSize + cellSize / 2,
+                (cellSize / 3.5) * (0.9 + pulse * 0.15),
                 0, Math.PI * 2
             );
             ctx.fill();
 
-            // 4. Snake (Premium Segments)
+            // 4. Snake
             state.snake.forEach((p, i) => {
                 const isHead = i === 0;
-                ctx.shadowBlur = isHead ? 25 : 15;
+                ctx.shadowBlur = isHead ? 20 : 10;
                 ctx.shadowColor = isHead ? '#00f2ff' : 'rgba(0, 242, 255, 0.5)';
                 ctx.fillStyle = isHead ? '#ffffff' : '#00f2ff';
 
-                const padding = isHead ? 0 : CELL_SIZE * 0.08;
-                const r = isHead ? CELL_SIZE * 0.25 : CELL_SIZE * 0.15;
+                const padding = cellSize * 0.1;
+                const r = isHead ? cellSize * 0.25 : cellSize * 0.15;
 
                 ctx.beginPath();
                 ctx.roundRect(
-                    p.x * CELL_SIZE + padding,
-                    p.y * CELL_SIZE + padding,
-                    CELL_SIZE - padding * 2,
-                    CELL_SIZE - padding * 2,
+                    p.x * cellSize + padding,
+                    p.y * cellSize + padding,
+                    cellSize - padding * 2,
+                    cellSize - padding * 2,
                     r
                 );
                 ctx.fill();
@@ -299,49 +292,43 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
         animationFrameId = requestAnimationFrame(loop);
         return () => cancelAnimationFrame(animationFrameId);
-    }, [gameState, difficulty, onScoreChange, onGameOver, spawnFood]);
-
-    // Visibility
-    useEffect(() => {
-        const handleVis = () => document.hidden && gameState === 'PLAYING' && onStateChange('PAUSED');
-        document.addEventListener('visibilitychange', handleVis);
-        return () => document.removeEventListener('visibilitychange', handleVis);
-    }, [gameState, onStateChange]);
+    }, [gameState, difficulty, cellSize, onScoreChange, onGameOver, spawnFood]);
 
     return (
-        <div ref={containerRef} className="relative h-full w-full flex items-center justify-center bg-[#080808] rounded-3xl border border-white/[0.03] overflow-hidden group">
-            {/* Bound Vignette */}
-            <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]" />
+        <div ref={containerRef} className="relative h-full w-full flex items-center justify-center bg-[#050505] overflow-hidden p-8">
+            {/* Board Vignette */}
+            <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_150px_rgba(0,0,0,0.9)]" />
 
             <canvas
                 ref={canvasRef}
-                className="cursor-none relative z-0 max-w-full max-h-full object-contain"
+                className="cursor-none relative z-0 transition-all duration-300"
                 style={{
-                    width: `${stateRef.current.gridCols * CELL_SIZE}px`,
-                    height: `${stateRef.current.gridRows * CELL_SIZE}px`
+                    width: `${GRID_SIZE * cellSize}px`,
+                    height: `${GRID_SIZE * cellSize}px`,
+                    boxShadow: '0 0 100px rgba(0, 242, 255, 0.05)'
                 }}
             />
 
             {/* OVERLAYS */}
             {gameState === 'IDLE' && (
-                <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/80 backdrop-blur-2xl p-12 pt-[18vh] text-center">
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/85 backdrop-blur-2xl p-12 pt-[15vh] text-center">
                     <div className="mb-12 relative">
-                        <div className="absolute -inset-8 bg-accent/20 blur-3xl rounded-full animate-pulse" />
-                        <h2 className="text-6xl font-bold tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,95,31,0.5)]">
+                        <div className="absolute -inset-12 bg-accent/20 blur-[80px] rounded-full animate-pulse" />
+                        <h2 className="text-7xl font-bold tracking-tighter text-white drop-shadow-[0_0_40px_rgba(255,95,31,0.6)]">
                             NEON SNAKE
                         </h2>
                     </div>
 
                     <div className="flex flex-col gap-8 w-full max-w-sm">
                         <div className="flex flex-col gap-3">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">Select Difficulty</span>
+                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em]">Initialize Configuration</span>
                             <div className="grid grid-cols-3 gap-3 p-1.5 bg-white/5 border border-white/5 rounded-2xl">
                                 {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map(d => (
                                     <button
                                         key={d}
                                         onClick={() => onDifficultyChange(d)}
                                         className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${difficulty === d
-                                                ? 'bg-white text-black shadow-lg shadow-white/10'
+                                                ? 'bg-white text-black shadow-xl shadow-white/5'
                                                 : 'text-white/20 hover:text-white hover:bg-white/5'
                                             }`}
                                     >
@@ -353,30 +340,30 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
                         <button
                             onClick={resetGame}
-                            className="group flex items-center justify-center gap-3 w-full py-5 bg-accent text-white font-bold rounded-2xl hover:scale-[1.02] transition-all hover:shadow-[0_0_40px_-5px_#FF5F1F]"
+                            className="group flex items-center justify-center gap-4 w-full py-6 bg-accent text-white font-bold rounded-2xl hover:scale-[1.03] transition-all hover:shadow-[0_0_50px_-5px_#FF5F1F]"
                         >
-                            <Play className="h-5 w-5 fill-current" /> START GAME
+                            <Play className="h-6 w-6 fill-current" /> BOOT EXPERIMENT
                         </button>
                     </div>
 
-                    <p className="mt-12 text-white/20 text-[10px] uppercase font-mono tracking-[0.3em] flex items-center gap-4">
-                        <span className="px-2 py-1 rounded bg-white/5 border border-white/5">WASD / ARROWS</span>
-                        <span>TO MOVE</span>
+                    <p className="mt-16 text-white/20 text-[10px] uppercase font-mono tracking-[0.4em] flex items-center gap-6">
+                        <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">WASD / ARROWS</span>
+                        <span>LINK TO NEURAL INTERFACE</span>
                     </p>
                 </div>
             )}
 
             {gameState === 'PAUSED' && (
-                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md transition-all">
-                    <div className="p-8 rounded-3xl bg-black/60 border border-white/10 flex flex-col items-center mt-[-5vh]">
-                        <Pause className="h-12 w-12 text-white/20 mb-4" />
-                        <h2 className="text-3xl font-bold tracking-tighter text-white mb-2">PAUSED</h2>
-                        <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mb-8 text-center">
-                            Your progress is safe. <br /> Press Space to Resume
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md transition-all">
+                    <div className="p-12 rounded-[40px] bg-black/80 border border-white/10 flex flex-col items-center mt-[-8vh]">
+                        <Pause className="h-16 w-16 text-accent mb-6 animate-pulse" />
+                        <h2 className="text-4xl font-bold tracking-tighter text-white mb-2">SYSTEM PAUSED</h2>
+                        <p className="text-white/40 text-[10px] font-mono uppercase tracking-[0.3em] mb-12 text-center">
+                            Experiment held in stasis. <br /> Press Space to Resume
                         </p>
                         <button
                             onClick={() => onStateChange('PLAYING')}
-                            className="px-8 py-3 bg-white text-black text-xs font-bold rounded-full hover:scale-105 transition-transform"
+                            className="px-12 py-4 bg-white text-black text-sm font-bold rounded-2xl hover:scale-105 transition-transform"
                         >
                             RESUME
                         </button>
@@ -385,18 +372,18 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             )}
 
             {gameState === 'GAMEOVER' && (
-                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl animate-in fade-in duration-700">
-                    <div className="flex flex-col items-center max-w-sm w-full p-12 text-center mt-[-5vh]">
-                        <div className="mb-12">
-                            <h2 className="text-6xl font-bold tracking-tighter text-white mb-4">GAME OVER</h2>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl">
+                    <div className="flex flex-col items-center max-w-sm w-full p-12 text-center mt-[-8vh]">
+                        <div className="mb-16">
+                            <h2 className="text-7xl font-bold tracking-tighter text-white mb-4">LOG TERMINATED</h2>
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
                                 <Trophy className="h-3 w-3 text-accent" /> Mode: {difficulty}
                             </div>
                         </div>
 
                         <div className="flex flex-col items-center mb-16">
-                            <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em] mb-2">Final Score</span>
-                            <span className="text-7xl font-mono font-bold text-accent drop-shadow-[0_0_20px_rgba(255,95,31,0.3)]">
+                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em] mb-4">Final Data Yield</span>
+                            <span className="text-8xl font-mono font-bold text-accent drop-shadow-[0_0_30px_rgba(255,95,31,0.4)]">
                                 {stateRef.current.score}
                             </span>
                         </div>
@@ -404,11 +391,11 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         <div className="flex flex-col gap-4 w-full">
                             <button
                                 onClick={resetGame}
-                                className="flex items-center justify-center gap-3 w-full py-5 bg-white text-black font-bold rounded-2xl hover:scale-[1.03] transition-transform shadow-[0_20px_50px_-15px_rgba(255,255,255,0.2)]"
+                                className="flex items-center justify-center gap-4 w-full py-6 bg-white text-black font-bold rounded-2xl hover:scale-[1.04] transition-transform shadow-[0_20px_60px_-15px_rgba(255,255,255,0.2)]"
                             >
-                                <RefreshCcw className="h-5 w-5" /> TRY AGAIN
+                                <RefreshCcw className="h-6 w-6" /> NEW LOG
                             </button>
-                            <p className="text-white/20 text-[10px] font-mono uppercase tracking-[0.2em]">
+                            <p className="text-white/20 text-[10px] font-mono uppercase tracking-[0.3em] mt-4">
                                 Press Space to restart
                             </p>
                         </div>

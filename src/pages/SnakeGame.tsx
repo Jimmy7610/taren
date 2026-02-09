@@ -139,18 +139,18 @@ export const SnakeGame: React.FC = () => {
             {/* Main Content Areas */}
             <main className="flex-1 flex overflow-hidden relative">
                 {/* LEFT: Highscores */}
-                <aside className="hidden lg:flex w-72 flex-col border-r border-white/5 bg-black/20 p-6">
+                <aside className="hidden lg:flex w-72 flex-col border-r border-white/5 bg-black/20 p-6 overflow-hidden">
                     <h3 className="text-xs font-bold text-white/30 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
-                        <Trophy className="h-3 w-3" /> Top Hall
+                        <Trophy className="h-3 w-3" /> Top 5 Logs
                     </h3>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {highscores[difficulty].length === 0 ? (
-                            <p className="text-[10px] font-mono text-white/10 italic uppercase">No entries yet...</p>
+                            <p className="text-[10px] font-mono text-white/10 italic uppercase">No logs captured...</p>
                         ) : (
-                            highscores[difficulty].map((entry, i) => (
+                            highscores[difficulty].slice(0, 5).map((entry, i) => (
                                 <div
                                     key={entry.timestamp}
-                                    className={`flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/[0.02] transition-all ${lastNewScore === entry.timestamp ? 'border-accent/40 bg-accent/5 animate-pulse' : ''
+                                    className={`flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/[0.02] transition-all ${lastNewScore === entry.timestamp ? 'border-accent/40 bg-accent/5 animate-pulse' : ''
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -167,8 +167,8 @@ export const SnakeGame: React.FC = () => {
                 </aside>
 
                 {/* CENTER: Game area */}
-                <div className="flex-1 relative flex items-center justify-center p-4">
-                    <div className="w-full h-full max-w-4xl flex items-center justify-center relative">
+                <div className="flex-1 relative flex items-center justify-center p-0 lg:p-4 overflow-hidden">
+                    <div className="w-full h-full flex items-center justify-center relative backdrop-blur-3xl">
                         <SnakeCanvas
                             onScoreChange={handleScoreChange}
                             onGameOver={handleGameOver}
