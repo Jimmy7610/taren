@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Taren</title>
+    <meta name="description" content="Taren — Something new is taking shape." />
+    <meta name="color-scheme" content="light dark" />
+    <style>
+        :root {
+            --bg: #0b0c10;
+            --fg: #e9ecf1;
+            --muted: rgba(233, 236, 241, .65);
+            --card: rgba(233, 236, 241, .06);
+            --stroke: rgba(233, 236, 241, .14);
+            --shadow: 0 18px 60px rgba(0, 0, 0, .45);
+            --radius: 18px;
+            --pad: 18px;
+            --max: 920px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f7f7fb;
+            --fg: #141620;
+            --muted: rgba(20, 22, 32, .62);
+            --card: rgba(20, 22, 32, .04);
+            --stroke: rgba(20, 22, 32, .12);
+            --shadow: 0 18px 60px rgba(20, 22, 32, .12);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            background: radial-gradient(1200px 700px at 20% 10%, rgba(120, 120, 255, .12), transparent 60%),
+                radial-gradient(1100px 800px at 80% 20%, rgba(90, 255, 200, .10), transparent 55%),
+                radial-gradient(900px 600px at 50% 90%, rgba(255, 120, 200, .08), transparent 55%),
+                var(--bg);
+            color: var(--fg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .wrap {
+            width: min(var(--max), 100%);
+            border: 1px solid var(--stroke);
+            border-radius: calc(var(--radius) + 6px);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--stroke);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            letter-spacing: .2px;
+        }
+
+        .sig {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            border: 1px solid var(--stroke);
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .22), transparent 55%),
+                rgba(255, 255, 255, .06);
+        }
+
+        .brand strong {
+            font-weight: 650
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            appearance: none;
+            border: 1px solid var(--stroke);
+            background: rgba(255, 255, 255, .04);
+            color: var(--fg);
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, .07)
+        }
+
+        main {
+            padding: 28px 18px 22px;
+        }
+
+        .hero {
+            padding: 18px;
+            border: 1px solid var(--stroke);
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, .03);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(34px, 5vw, 54px);
+            font-weight: 720;
+            letter-spacing: -0.6px;
+        }
+
+        p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: clamp(15px, 2vw, 18px);
+            line-height: 1.55;
+            max-width: 62ch;
+        }
+
+        .grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .tile {
+            position: relative;
+            padding: 14px 12px;
+            min-height: 72px;
+            border-radius: 16px;
+            border: 1px solid var(--stroke);
+            background: rgba(255, 255, 255, .03);
+            text-align: left;
+            transition: transform .15s ease, background .15s ease;
+        }
+
+        .tile:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .tile small {
+            display: block;
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer {
+            padding: 14px 18px 18px;
+            color: var(--muted);
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            border-top: 1px solid var(--stroke);
+        }
+
+        @media (max-width: 720px) {
+            .grid {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <!-- React via CDN (no build step) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <script>
+        // Persist theme preference
+        const storage = {
+            get(k, fallback) { try { return localStorage.getItem(k) ?? fallback } catch { return fallback } },
+            set(k, v) { try { localStorage.setItem(k, v) } catch { } }
+        };
+    </script>
+
+    <script>
+        const e = React.createElement;
+
+        function App() {
+            const [theme, setTheme] = React.useState(storage.get("taren_theme", "dark"));
+
+            React.useEffect(() => {
+                document.documentElement.setAttribute("data-theme", theme);
+                storage.set("taren_theme", theme);
+            }, [theme]);
+
+            const copy = {
+                title: "Taren",
+                subtitle: "Something new is taking shape.",
+                body: "A calm gathering place. Small worlds can exist side by side. You don’t have to understand everything—just stay for a moment, and explore when it feels right.",
+                tiles: [
+                    ["Games", "Small games, long pauses"],
+                    ["Experiments", "Things that try and learn"],
+                    ["Sketches", "Fragments, forms, ideas"],
+                    ["Texts", "Words that can breathe"],
+                    ["In progress", "What isn’t finished yet"]
+                ],
+                hintLeft: "Minimal start • Single page for now",
+                hintRight: "Theme toggle required (standard)"
+            };
+
+            return e("div", { className: "wrap" },
+                e("header", null,
+                    e("div", { className: "brand" },
+                        e("div", { className: "sig", "aria-hidden": true }),
+                        e("div", null,
+                            e("strong", null, copy.title),
+                            e("div", { style: { fontSize: 12, color: "var(--muted)" } }, copy.subtitle)
+                        )
+                    ),
+                    e("div", { className: "controls" },
+                        e("button", {
+                            onClick: () => setTheme(t => t === "dark" ? "light" : "dark"),
+                            "aria-label": "Toggle theme"
+                        }, theme === "dark" ? "Light" : "Dark")
+                    )
+                ),
+                e("main", null,
+                    e("div", { className: "hero" },
+                        e("h1", null, copy.title),
+                        e("p", null, copy.body),
+                        e("div", { className: "grid" },
+                            copy.tiles.map(([t, s]) =>
+                                e("button", {
+                                    key: t,
+                                    className: "tile",
+                                    type: "button",
+                                    onClick: () => { },
+                                    title: "Not active yet"
+                                },
+                                    t,
+                                    e("small", null, s)
+                                )
+                            )
+                        )
+                    )
+                ),
+                e("div", { className: "footer" },
+                    e("div", null, copy.hintLeft),
+                    e("div", null, copy.hintRight)
+                )
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+    </script>
+</body>
+
+</html>
