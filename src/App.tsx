@@ -14,14 +14,12 @@ function App() {
                 <AppShell>
                     <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/:category/:slug" element={<ProjectDetail />} />
                         <Route path="/games" element={<PlaceholderPage title={strings.routes.games} />} />
-                        <Route path="/experiments" element={<PlaceholderPage title={strings.routes.experiments} />} />
                         <Route path="/music" element={<PlaceholderPage title={strings.routes.music} />} />
-                        <Route path="/video" element={<PlaceholderPage title={strings.routes.video} />} />
-                        <Route path="/sketches" element={<PlaceholderPage title={strings.routes.sketches} />} />
-                        <Route path="/texts" element={<PlaceholderPage title={strings.routes.texts} />} />
-                        <Route path="/now" element={<PlaceholderPage title={strings.routes.now} />} />
+                        <Route path="/videos" element={<PlaceholderPage title={strings.routes.videos} />} />
+                        <Route path="/portfolio" element={<PlaceholderPage title={strings.routes.portfolio} />} />
+                        <Route path="/code" element={<PlaceholderPage title={strings.routes.code} />} />
+                        <Route path="/:category/:slug" element={<ProjectDetail />} />
                     </Routes>
                 </AppShell>
             </Router>

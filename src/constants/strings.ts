@@ -7,12 +7,10 @@ export const strings = {
     },
     routes: {
         games: "Games",
-        experiments: "Experiments",
         music: "Music",
-        video: "Video",
-        sketches: "Sketches",
-        texts: "Texts",
-        now: "Now",
+        videos: "Videos",
+        portfolio: "Portfolio",
+        code: "Code",
     },
     placeholders: {
         comingSoon: "Coming soon...",

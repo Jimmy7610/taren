@@ -1,18 +1,19 @@
 import React from 'react';
 import { strings } from '../constants/strings';
 
-export const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => {
+interface PlaceholderPageProps {
+    title: string;
+}
+
+export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({ title }) => {
     return (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-foreground">
+        <div className="flex min-h-[60vh] flex-col items-center justify-center text-center px-4">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-foreground mb-6">
                 {title}
             </h1>
-            <p className="mt-4 text-lg text-foreground/60 max-w-md">
-                {strings.placeholders.description}
-            </p>
-            <div className="mt-8 px-4 py-2 border border-accent/20 bg-accent/5 rounded-[--card-radius] text-accent text-sm font-medium">
+            <p className="max-w-md text-lg text-foreground/60">
                 {strings.placeholders.comingSoon}
-            </div>
+            </p>
         </div>
     );
 };
