@@ -1,4 +1,4 @@
-(function() {
+(function () {
     const translations = {
         sv: {
             title: "Taren",
@@ -13,7 +13,11 @@
             construction: "Under konstruktion.",
             back: "Tillbaka",
             theme: "Tema",
-            lang: "SV"
+            lang: "SV",
+            about: "Om",
+            about_p1: "Taren är en digital samlingsplats för projekt, utforskningar och tankar.",
+            about_p2: "Här navigerar vi genom spel, experiment och skisser som tar form över tid.",
+            home: "Hem"
         },
         en: {
             title: "Taren",
@@ -28,7 +32,11 @@
             construction: "Under construction.",
             back: "Back",
             theme: "Theme",
-            lang: "EN"
+            lang: "EN",
+            about: "About",
+            about_p1: "Taren is a digital gathering place for projects, explorations, and thoughts.",
+            about_p2: "Here we navigate through games, experiments, and sketches that take shape over time.",
+            home: "Home"
         }
     };
 
@@ -43,14 +51,14 @@
     function applyLang(lang) {
         document.documentElement.setAttribute('lang', lang);
         localStorage.setItem('lang', lang);
-        
+
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (translations[lang][key]) {
                 el.textContent = translations[lang][key];
             }
         });
-        
+
         // Update toggle text
         const langBtn = document.getElementById('lang-toggle');
         if (langBtn) langBtn.textContent = translations[lang].lang;
