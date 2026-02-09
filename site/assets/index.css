@@ -1,11 +1,13 @@
 :root {
-    --orbit-radius: 250px;
-    --node-size: 8px;
+    --orbit-radius: 220px;
+    --node-size: 6px;
+    --halo-size: 300px;
 }
 
 @media (max-width: 768px) {
     :root {
-        --orbit-radius: 160px;
+        --orbit-radius: 140px;
+        --halo-size: 200px;
     }
 }
 
@@ -18,11 +20,14 @@
     align-items: center;
     overflow: hidden;
     position: relative;
-    background: radial-gradient(circle at center, var(--bg) 0%, #000 150%);
+    /* Vignette + Lighter Center */
+    background: radial-gradient(circle at center, var(--bg) 0%, rgba(0, 0, 0, 0.4) 70%, #000 100%);
+    background-color: #000;
 }
 
 [data-theme="light"] .star-map-body {
-    background: radial-gradient(circle at center, var(--bg) 0%, #eee 150%);
+    background: radial-gradient(circle at center, var(--bg) 0%, rgba(255, 255, 255, 0.4) 70%, #eee 100%);
+    background-color: #fff;
 }
 
 /* Texture/Grain Overlay */
@@ -33,27 +38,51 @@
     left: 0;
     right: 0;
     bottom: 0;
-    opacity: 0.03;
+    opacity: 0.02;
     pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    z-index: 1;
 }
 
 .center-anchor {
     position: relative;
     text-align: center;
     z-index: 10;
+    /* Optical centering: slightly higher than mathematical center */
+    transform: translateY(-5%);
+}
+
+/* Central Halo */
+.center-anchor::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--halo-size);
+    height: var(--halo-size);
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
+    opacity: 0.05;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(20px);
 }
 
 .center-anchor h1 {
-    font-size: 2.5rem;
-    letter-spacing: 0.2rem;
-    margin-bottom: 0.5rem;
+    font-size: 2.8rem;
+    letter-spacing: -0.02rem;
+    margin: 0;
+    font-weight: normal;
+    color: var(--accent);
 }
 
 .center-anchor p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--muted);
     font-style: italic;
+    margin: 0.1rem 0 0 0;
+    letter-spacing: 0.05rem;
+    opacity: 0.7;
 }
 
 /* Orbital Container */
@@ -61,8 +90,10 @@
     position: absolute;
     width: 0;
     height: 0;
-    top: 50%;
+    top: 45%;
+    /* Match optical centering of title-ish */
     left: 50%;
+    z-index: 5;
 }
 
 .node {
@@ -70,7 +101,7 @@
     width: max-content;
     transform-origin: center;
     text-align: center;
-    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .node-point {
@@ -78,20 +109,21 @@
     height: var(--node-size);
     background: var(--accent);
     border-radius: 50%;
-    margin: 0 auto 0.5rem auto;
-    box-shadow: 0 0 10px var(--accent);
-    opacity: 0.6;
-    transition: opacity 0.3s, transform 0.3s;
+    margin: 0 auto 0.4rem auto;
+    box-shadow: 0 0 8px var(--accent);
+    opacity: 0.4;
+    transition: opacity 0.4s, transform 0.4s;
 }
 
 .node a {
     display: block;
     color: var(--text);
     text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.05rem;
-    opacity: 0.8;
-    transition: opacity 0.3s;
+    font-size: 0.8rem;
+    letter-spacing: 0.03rem;
+    opacity: 0.6;
+    transition: opacity 0.4s;
+    font-weight: 300;
 }
 
 .node-micro {
@@ -99,20 +131,20 @@
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    width: 150px;
-    font-size: 0.75rem;
+    width: 140px;
+    font-size: 0.7rem;
     color: var(--muted);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s, transform 0.3s;
-    margin-top: 0.5rem;
+    transition: opacity 0.4s, transform 0.4s;
+    margin-top: 0.6rem;
 }
 
 /* Hover States */
 .node:hover .node-point,
 .node:focus-within .node-point {
-    opacity: 1;
-    transform: scale(1.5);
+    opacity: 0.9;
+    transform: scale(1.4);
 }
 
 .node:hover a,
@@ -122,19 +154,18 @@
 
 .node:hover .node-micro,
 .node:focus-within .node-micro {
-    opacity: 1;
-    transform: translateX(-50%) translateY(5px);
+    opacity: 0.8;
+    transform: translateX(-50%) translateY(3px);
 }
 
-/* Positioning the nodes */
-/* Using a slow ambient drift */
+/* Positioning the nodes with varied orbits */
 @keyframes ambient-drift {
     0% {
         transform: rotate(var(--angle)) translateY(var(--dist)) rotate(calc(-1 * var(--angle)));
     }
 
     50% {
-        transform: rotate(var(--angle)) translateY(calc(var(--dist) + 10px)) rotate(calc(-1 * var(--angle)));
+        transform: rotate(var(--angle)) translateY(calc(var(--dist) + 5px)) rotate(calc(-1 * var(--angle)));
     }
 
     100% {
@@ -143,33 +174,38 @@
 }
 
 .node {
-    --dist: calc(-1 * var(--orbit-radius));
-    animation: ambient-drift 15s infinite ease-in-out;
+    animation: ambient-drift 20s infinite ease-in-out;
 }
 
+/* varied distances: Closer for interactive, further for exploratory */
 .node:nth-child(1) {
     --angle: 0deg;
+    --dist: calc(-0.9 * var(--orbit-radius));
     animation-delay: 0s;
 }
 
 .node:nth-child(2) {
     --angle: 72deg;
-    animation-delay: -3s;
+    --dist: calc(-0.95 * var(--orbit-radius));
+    animation-delay: -4s;
 }
 
 .node:nth-child(3) {
     --angle: 144deg;
-    animation-delay: -6s;
+    --dist: calc(-1.1 * var(--orbit-radius));
+    animation-delay: -8s;
 }
 
 .node:nth-child(4) {
     --angle: 216deg;
-    animation-delay: -9s;
+    --dist: calc(-1.05 * var(--orbit-radius));
+    animation-delay: -12s;
 }
 
 .node:nth-child(5) {
     --angle: 288deg;
-    animation-delay: -12s;
+    --dist: calc(-1.2 * var(--orbit-radius));
+    animation-delay: -16s;
 }
 
 @media (prefers-reduced-motion: reduce) {
