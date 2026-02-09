@@ -1,24 +1,73 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" data-theme="dark" data-lang="sv">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">Index - Taren</title>
-    <link rel="stylesheet" href="/assets/ui.css">
-    <script defer src="/assets/ui.js"></script>
-    <style>
-        a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Taren</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
-    <h1 data-i18n="index">Index</h1>
-    <p data-i18n="construction">Under konstruktion.</p>
-    <p><a href="/" data-i18n="back">Tillbaka</a></p>
+    <header class="header-controls">
+        <div class="controls-group">
+            <button id="theme-toggle" class="control-btn" aria-label="Toggle Theme">
+                <span class="theme-icon">☾</span>
+            </button>
+            <button id="lang-toggle" class="control-btn" aria-label="Toggle Language">
+                <span class="lang-text">EN</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="landing-main">
+        <section class="hero">
+            <h1 class="title">Taren</h1>
+            <p class="subtitle" data-sv="Något nytt tar form." data-en="Something new takes shape.">Något nytt tar form.
+            </p>
+        </section>
+
+        <nav class="nav-links">
+            <ul class="links-grid">
+                <li>
+                    <a href="/games/" class="nav-card">
+                        <span class="nav-title" data-sv="Spel" data-en="Games">Spel</span>
+                        <span class="nav-micro" data-sv="Prova något litet." data-en="Try something small.">Prova något
+                            litet.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/experiments/" class="nav-card">
+                        <span class="nav-title" data-sv="Experiment" data-en="Experiments">Experiment</span>
+                        <span class="nav-micro" data-sv="Peta på kanterna." data-en="Touch the edges.">Peta på
+                            kanterna.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/sketches/" class="nav-card">
+                        <span class="nav-title" data-sv="Skisser" data-en="Sketches">Skisser</span>
+                        <span class="nav-micro" data-sv="Fragment & former." data-en="Fragments & shapes.">Fragment &
+                            former.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/texts/" class="nav-card">
+                        <span class="nav-title" data-sv="Texter" data-en="Texts">Texter</span>
+                        <span class="nav-micro" data-sv="Noter ur dimman." data-en="Notes from the fog.">Noter ur
+                            dimman.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/ongoing/" class="nav-card">
+                        <span class="nav-title" data-sv="Pågår" data-en="Ongoing">Pågår</span>
+                        <span class="nav-micro" data-sv="Tar fortfarande form." data-en="Still forming.">Tar fortfarande
+                            form.</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </main>
 </body>
 
 </html>
