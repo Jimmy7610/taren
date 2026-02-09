@@ -1,1 +1,1 @@
-export const BUILD_COUNTER = 7;
+export const BUILD_COUNTER = 8;

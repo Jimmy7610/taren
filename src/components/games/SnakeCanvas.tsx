@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Play, Pause, RefreshCcw, Gamepad2, AlertCircle } from 'lucide-react';
+import { Play, Pause, RefreshCcw, Gamepad2, Info, Trophy, ChevronRight } from 'lucide-react';
 
 interface Point {
     x: number;
@@ -12,6 +12,7 @@ interface SnakeCanvasProps {
     onScoreChange: (score: number) => void;
     onGameOver: (score: number) => void;
     difficulty: Difficulty;
+    onDifficultyChange: (difficulty: Difficulty) => void;
     gameState: 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER';
     onStateChange: (state: 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER') => void;
 }
@@ -26,6 +27,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     onScoreChange,
     onGameOver,
     difficulty,
+    onDifficultyChange,
     gameState,
     onStateChange
 }) => {
@@ -225,7 +227,33 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 ctx.stroke();
             }
 
-            // 2. Food (Enhanced Halo)
+            // 2. Playfield Frame (Scanner Look)
+            ctx.strokeStyle = 'rgba(0, 242, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(1, 1, targetWidth - 2, targetHeight - 2);
+
+            // Corner Brackets
+            const bLen = 20;
+            ctx.strokeStyle = 'rgba(0, 242, 255, 0.6)';
+            ctx.lineWidth = 3;
+            // Top Left
+            ctx.beginPath(); ctx.moveTo(0, bLen); ctx.lineTo(0, 0); ctx.lineTo(bLen, 0); ctx.stroke();
+            // Top Right
+            ctx.beginPath(); ctx.moveTo(targetWidth - bLen, 0); ctx.lineTo(targetWidth, 0); ctx.lineTo(targetWidth, bLen); ctx.stroke();
+            // Bottom Right
+            ctx.beginPath(); ctx.moveTo(targetWidth, targetHeight - bLen); ctx.lineTo(targetWidth, targetHeight); ctx.lineTo(targetWidth - bLen, targetHeight); ctx.stroke();
+            // Bottom Left
+            ctx.beginPath(); ctx.moveTo(bLen, targetHeight); ctx.lineTo(0, targetHeight); ctx.lineTo(0, targetHeight - bLen); ctx.stroke();
+
+            // Inner Glow Border
+            const gradient = ctx.createLinearGradient(0, 0, 0, 10);
+            ctx.fillStyle = 'rgba(0, 242, 255, 0.03)';
+            ctx.fillRect(0, 0, targetWidth, 4); // Top
+            ctx.fillRect(0, targetHeight - 4, targetWidth, 4); // Bottom
+            ctx.fillRect(0, 0, 4, targetHeight); // Left
+            ctx.fillRect(targetWidth - 4, 0, 4, targetHeight); // Right
+
+            // 3. Food (Enhanced Halo)
             const pulse = (Math.sin(Date.now() / 150) + 1) / 2;
             ctx.shadowBlur = 20 + pulse * 15;
             ctx.shadowColor = '#FF5F1F';
@@ -239,7 +267,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             );
             ctx.fill();
 
-            // 3. Snake (Premium Segments)
+            // 4. Snake (Premium Segments)
             state.snake.forEach((p, i) => {
                 const isHead = i === 0;
                 ctx.shadowBlur = isHead ? 25 : 15;
@@ -281,10 +309,13 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     }, [gameState, onStateChange]);
 
     return (
-        <div ref={containerRef} className="relative h-full w-full flex items-center justify-center bg-black/40 rounded-3xl border border-white/[0.03] backdrop-blur-sm overflow-hidden group">
+        <div ref={containerRef} className="relative h-full w-full flex items-center justify-center bg-[#080808] rounded-3xl border border-white/[0.03] overflow-hidden group">
+            {/* Bound Vignette */}
+            <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]" />
+
             <canvas
                 ref={canvasRef}
-                className="cursor-none"
+                className="cursor-none relative z-0"
                 style={{
                     width: `${stateRef.current.gridCols * CELL_SIZE}px`,
                     height: `${stateRef.current.gridRows * CELL_SIZE}px`
@@ -301,24 +332,36 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         </h2>
                     </div>
 
-                    <div className="flex flex-col gap-6 w-full max-w-xs">
+                    <div className="flex flex-col gap-8 w-full max-w-sm">
+                        <div className="flex flex-col gap-3">
+                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">Select Difficulty</span>
+                            <div className="grid grid-cols-3 gap-3 p-1.5 bg-white/5 border border-white/5 rounded-2xl">
+                                {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map(d => (
+                                    <button
+                                        key={d}
+                                        onClick={() => onDifficultyChange(d)}
+                                        className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${difficulty === d
+                                                ? 'bg-white text-black shadow-lg shadow-white/10'
+                                                : 'text-white/20 hover:text-white hover:bg-white/5'
+                                            }`}
+                                    >
+                                        {d}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
                         <button
                             onClick={resetGame}
-                            className="group flex items-center justify-center gap-3 w-full py-4 bg-accent text-white font-bold rounded-2xl hover:scale-[1.02] transition-all hover:shadow-[0_0_40px_-5px_#FF5F1F]"
+                            className="group flex items-center justify-center gap-3 w-full py-5 bg-accent text-white font-bold rounded-2xl hover:scale-[1.02] transition-all hover:shadow-[0_0_40px_-5px_#FF5F1F]"
                         >
-                            <Play className="h-5 w-5 fill-current" /> START EXPERIMENT
+                            <Play className="h-5 w-5 fill-current" /> START GAME
                         </button>
-
-                        <div className="grid grid-cols-3 gap-2 p-1 bg-white/5 border border-white/5 rounded-xl">
-                            {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map(d => (
-                                <div key={d} className={`text-[8px] font-bold uppercase tracking-widest py-1.5 rounded-lg text-center ${difficulty === d ? 'bg-white/10 text-white' : 'text-white/20'}`}>
-                                    {d}
-                                </div>
-                            ))}
-                        </div>
                     </div>
-                    <p className="mt-8 text-white/20 text-[10px] uppercase font-mono tracking-[0.3em]">
-                        WASD / ARROWS TO NAVIGATE
+
+                    <p className="mt-12 text-white/20 text-[10px] uppercase font-mono tracking-[0.3em] flex items-center gap-4">
+                        <span className="px-2 py-1 rounded bg-white/5 border border-white/5">WASD / ARROWS</span>
+                        <span>TO MOVE</span>
                     </p>
                 </div>
             )}
@@ -327,11 +370,13 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md transition-all">
                     <div className="p-8 rounded-3xl bg-black/60 border border-white/10 flex flex-col items-center">
                         <Pause className="h-12 w-12 text-white/20 mb-4" />
-                        <h2 className="text-3xl font-bold tracking-tighter text-white mb-2">SYSTEM HALTED</h2>
-                        <p className="text-white/40 text-xs font-mono uppercase tracking-widest mb-6">Press Space to Resume</p>
+                        <h2 className="text-3xl font-bold tracking-tighter text-white mb-2">PAUSED</h2>
+                        <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mb-8 text-center">
+                            Your progress is safe. <br /> Press Space to Resume
+                        </p>
                         <button
                             onClick={() => onStateChange('PLAYING')}
-                            className="px-6 py-2 bg-white text-black text-xs font-bold rounded-full hover:scale-105 transition-transform"
+                            className="px-8 py-3 bg-white text-black text-xs font-bold rounded-full hover:scale-105 transition-transform"
                         >
                             RESUME
                         </button>
@@ -340,23 +385,33 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             )}
 
             {gameState === 'GAMEOVER' && (
-                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/90 backdrop-blur-3xl animate-in fade-in duration-700">
-                    <div className="flex flex-col items-center max-w-sm w-full p-12">
-                        <AlertCircle className="h-16 w-16 text-red-500 mb-6 drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]" />
-                        <h2 className="text-5xl font-bold tracking-tighter text-white mb-2">CRITICAL ERROR</h2>
-                        <p className="text-white/40 text-[10px] font-mono uppercase tracking-[0.3em] mb-12">Collection Terminated</p>
-
-                        <div className="text-center mb-12">
-                            <span className="block text-[10px] font-bold text-white/20 uppercase mb-1">Final Score</span>
-                            <span className="text-6xl font-mono font-bold text-accent">{stateRef.current.score}</span>
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl animate-in fade-in duration-700">
+                    <div className="flex flex-col items-center max-w-sm w-full p-12 text-center">
+                        <div className="mb-12">
+                            <h2 className="text-6xl font-bold tracking-tighter text-white mb-4">GAME OVER</h2>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
+                                <Trophy className="h-3 w-3 text-accent" /> Mode: {difficulty}
+                            </div>
                         </div>
 
-                        <button
-                            onClick={resetGame}
-                            className="flex items-center gap-3 px-10 py-4 bg-white text-black font-bold rounded-2xl hover:scale-105 transition-transform shadow-[0_20px_50px_-15px_rgba(255,255,255,0.2)]"
-                        >
-                            <RefreshCcw className="h-5 w-5" /> REBOOT
-                        </button>
+                        <div className="flex flex-col items-center mb-16">
+                            <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em] mb-2">Final Score</span>
+                            <span className="text-7xl font-mono font-bold text-accent drop-shadow-[0_0_20px_rgba(255,95,31,0.3)]">
+                                {stateRef.current.score}
+                            </span>
+                        </div>
+
+                        <div className="flex flex-col gap-4 w-full">
+                            <button
+                                onClick={resetGame}
+                                className="flex items-center justify-center gap-3 w-full py-5 bg-white text-black font-bold rounded-2xl hover:scale-[1.03] transition-transform shadow-[0_20px_50px_-15px_rgba(255,255,255,0.2)]"
+                            >
+                                <RefreshCcw className="h-5 w-5" /> TRY AGAIN
+                            </button>
+                            <p className="text-white/20 text-[10px] font-mono uppercase tracking-[0.2em]">
+                                Press Space to restart
+                            </p>
+                        </div>
                     </div>
                 </div>
             )}

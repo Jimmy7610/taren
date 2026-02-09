@@ -118,8 +118,8 @@ export const SnakeGame: React.FC = () => {
                                 onClick={() => gameState === 'IDLE' && setDifficulty(d)}
                                 disabled={gameState !== 'IDLE'}
                                 className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${difficulty === d
-                                        ? 'bg-white text-black'
-                                        : 'text-white/40 hover:text-white disabled:opacity-20'
+                                    ? 'bg-white text-black'
+                                    : 'text-white/40 hover:text-white disabled:opacity-20'
                                     }`}
                             >
                                 {d}
@@ -173,6 +173,7 @@ export const SnakeGame: React.FC = () => {
                             onScoreChange={handleScoreChange}
                             onGameOver={handleGameOver}
                             difficulty={difficulty}
+                            onDifficultyChange={setDifficulty}
                             gameState={gameState}
                             onStateChange={setGameState}
                         />
