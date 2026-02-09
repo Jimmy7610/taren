@@ -1,93 +1,216 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Trophy, Target, Pause, Play, RefreshCcw, Home } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Trophy, Target, Pause, Play, RefreshCcw, Home, Settings2, Info, Volume2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
 
+type Difficulty = 'EASY' | 'NORMAL' | 'HARD';
+
+interface Highscore {
+    score: number;
+    timestamp: number;
+}
+
+type HighscoresStore = Record<Difficulty, Highscore[]>;
+
+const DIFFICULTY_CONFIG = {
+    EASY: { label: 'Easy', speed: 140, color: 'text-emerald-500' },
+    NORMAL: { label: 'Normal', speed: 100, color: 'text-blue-500' },
+    HARD: { label: 'Hard', speed: 70, color: 'text-red-500', rampUp: true },
+};
+
 export const SnakeGame: React.FC = () => {
+    const [gameState, setGameState] = useState<'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER'>('IDLE');
+    const [difficulty, setDifficulty] = useState<Difficulty>(() => {
+        return (localStorage.getItem('snake_difficulty') as Difficulty) || 'NORMAL';
+    });
     const [score, setScore] = useState(0);
-    const [bestScore, setBestScore] = useState(0);
+    const [highscores, setHighscores] = useState<HighscoresStore>(() => {
+        const saved = localStorage.getItem('snake_highscores_v1');
+        return saved ? JSON.parse(saved) : { EASY: [], NORMAL: [], HARD: [] };
+    });
+    const [lastNewScore, setLastNewScore] = useState<number | null>(null);
 
-    // Load highscore
+    // Save difficulty preference
     useEffect(() => {
-        const saved = localStorage.getItem('snake_best_score');
-        if (saved) setBestScore(parseInt(saved, 10));
+        localStorage.setItem('snake_difficulty', difficulty);
+    }, [difficulty]);
 
-        // Lock scroll
+    // Save highscores
+    useEffect(() => {
+        localStorage.setItem('snake_highscores_v1', JSON.stringify(highscores));
+    }, [highscores]);
+
+    // Lock scroll
+    useEffect(() => {
         document.body.classList.add('no-scroll');
         return () => {
             document.body.classList.remove('no-scroll');
         };
     }, []);
 
+    const bestScore = useMemo(() => {
+        const list = highscores[difficulty];
+        return list.length > 0 ? list[0].score : 0;
+    }, [highscores, difficulty]);
+
     const handleScoreChange = useCallback((newScore: number) => {
         setScore(newScore);
-        if (newScore > bestScore) {
-            setBestScore(newScore);
-            localStorage.setItem('snake_best_score', newScore.toString());
-        }
-    }, [bestScore]);
-
-    const handleGameOver = useCallback((finalScore: number) => {
-        // Final score handling if needed
     }, []);
 
+    const handleGameOver = useCallback((finalScore: number) => {
+        setGameState('GAMEOVER');
+
+        setHighscores(prev => {
+            const currentList = [...prev[difficulty]];
+            const newScoreEntry = { score: finalScore, timestamp: Date.now() };
+
+            // Add and sort
+            currentList.push(newScoreEntry);
+            currentList.sort((a, b) => b.score - a.score || b.timestamp - a.timestamp);
+
+            // Keep top 10
+            const updatedList = currentList.slice(0, 10);
+
+            // Check if finalScore made it to the list
+            if (updatedList.some(entry => entry.timestamp === newScoreEntry.timestamp)) {
+                setLastNewScore(newScoreEntry.timestamp);
+                setTimeout(() => setLastNewScore(null), 3000);
+            }
+
+            return {
+                ...prev,
+                [difficulty]: updatedList
+            };
+        });
+    }, [difficulty]);
+
     return (
-        <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505]">
-            {/* Game HUD */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-black/20 backdrop-blur-md z-10">
-                <div className="flex items-center gap-6">
+        <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-foreground">
+            {/* Header / HUD */}
+            <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-30">
+                <div className="flex items-center gap-8">
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest flex items-center gap-1.5">
-                            <Target className="h-3 w-3" /> Score
-                        </span>
-                        <span className="text-xl font-mono font-bold text-accent tabular-nums">
-                            {score.toString().padStart(4, '0')}
+                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Difficulty</span>
+                        <span className={`text-xs font-bold uppercase tracking-widest ${DIFFICULTY_CONFIG[difficulty].color}`}>
+                            {DIFFICULTY_CONFIG[difficulty].label}
                         </span>
                     </div>
                     <div className="h-8 w-px bg-white/5" />
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest flex items-center gap-1.5">
-                            <Trophy className="h-3 w-3" /> Best
+                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Score</span>
+                        <span className="text-xl font-mono font-bold tabular-nums text-white">
+                            {score.toString().padStart(4, '0')}
                         </span>
-                        <span className="text-xl font-mono font-bold text-white/80 tabular-nums">
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Best</span>
+                        <span className="text-xl font-mono font-bold tabular-nums text-white/40">
                             {bestScore.toString().padStart(4, '0')}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 p-1 rounded-full bg-white/5 border border-white/5">
+                        {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map((d) => (
+                            <button
+                                key={d}
+                                onClick={() => gameState === 'IDLE' && setDifficulty(d)}
+                                disabled={gameState !== 'IDLE'}
+                                className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${difficulty === d
+                                        ? 'bg-white text-black'
+                                        : 'text-white/40 hover:text-white disabled:opacity-20'
+                                    }`}
+                            >
+                                {d}
+                            </button>
+                        ))}
+                    </div>
                     <Link
                         to="/games"
-                        className="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 text-xs font-bold text-white/60 hover:bg-white/5 hover:text-white transition-all"
+                        className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all"
+                        aria-label="Back to Hub"
                     >
-                        <Home className="h-3.5 w-3.5" /> Back to Hub
+                        <Home className="h-4 w-4" />
                     </Link>
                 </div>
-            </div>
+            </header>
 
-            {/* Game Area */}
-            <div className="relative flex-1 p-4 md:p-8 flex items-center justify-center">
-                <div className="w-full h-full max-w-4xl max-h-full">
-                    <SnakeCanvas
-                        onScoreChange={handleScoreChange}
-                        onGameOver={handleGameOver}
-                    />
+            {/* Main Content Areas */}
+            <main className="flex-1 flex overflow-hidden relative">
+                {/* LEFT: Highscores */}
+                <aside className="hidden lg:flex w-72 flex-col border-r border-white/5 bg-black/20 p-6">
+                    <h3 className="text-xs font-bold text-white/30 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                        <Trophy className="h-3 w-3" /> Top Hall
+                    </h3>
+                    <div className="space-y-4">
+                        {highscores[difficulty].length === 0 ? (
+                            <p className="text-[10px] font-mono text-white/10 italic uppercase">No entries yet...</p>
+                        ) : (
+                            highscores[difficulty].map((entry, i) => (
+                                <div
+                                    key={entry.timestamp}
+                                    className={`flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/[0.02] transition-all ${lastNewScore === entry.timestamp ? 'border-accent/40 bg-accent/5 animate-pulse' : ''
+                                        }`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-[10px] font-mono text-white/20">{(i + 1).toString().padStart(2, '0')}</span>
+                                        <span className="text-sm font-mono font-bold text-white/80">{entry.score.toString().padStart(4, '0')}</span>
+                                    </div>
+                                    <span className="text-[8px] font-mono text-white/10 italic">
+                                        {new Date(entry.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                    </span>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </aside>
+
+                {/* CENTER: Game area */}
+                <div className="flex-1 relative flex items-center justify-center p-4">
+                    <div className="w-full h-full max-w-4xl flex items-center justify-center relative">
+                        <SnakeCanvas
+                            onScoreChange={handleScoreChange}
+                            onGameOver={handleGameOver}
+                            difficulty={difficulty}
+                            gameState={gameState}
+                            onStateChange={setGameState}
+                        />
+                    </div>
                 </div>
 
-                {/* Background Decoration */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,rgba(0,242,255,0.03)_0%,transparent_70%)]" />
-                </div>
-            </div>
+                {/* RIGHT: Info / Controls */}
+                <aside className="hidden xl:flex w-72 flex-col border-l border-white/5 bg-black/20 p-6">
+                    <div className="mb-8">
+                        <h3 className="text-xs font-bold text-white/30 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                            <Settings2 className="h-3.5 w-3.5" /> Controls
+                        </h3>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-[10px] text-white/40 font-mono italic">
+                                <span>Move</span>
+                                <span className="font-bold text-white/60">WASD / ARROWS</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[10px] text-white/40 font-mono italic">
+                                <span>Pause</span>
+                                <span className="font-bold text-white/60">SPACE</span>
+                            </div>
+                        </div>
+                    </div>
 
-            {/* Controls Info (Desktop Only) */}
-            <div className="hidden md:flex items-center justify-center gap-8 py-4 border-t border-white/5 text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] bg-black/20">
-                <span className="flex items-center gap-2">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white/5 text-white/40 border border-white/10 font-mono">WASD</kbd> or <kbd className="px-1.5 py-0.5 rounded bg-white/5 text-white/40 border border-white/10 font-mono">Arrows</kbd> to Move
-                </span>
-                <span className="flex items-center gap-2">
-                    <kbd className="px-1.5 py-0.5 rounded bg-white/5 text-white/40 border border-white/10 font-mono">Space</kbd> to Pause/Reset
-                </span>
+                    <div className="mt-auto">
+                        <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/[0.02] opacity-40">
+                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Sound</span>
+                            <Volume2 className="h-4 w-4 text-white/30" />
+                        </div>
+                    </div>
+                </aside>
+            </main>
+
+            {/* Mobile Footer (Highscores compact) */}
+            <div className="lg:hidden h-12 border-t border-white/5 bg-black/40 flex items-center justify-center gap-4 text-[10px] font-mono italic text-white/20">
+                <span>Best: {bestScore}</span>
+                <div className="h-3 w-px bg-white/5" />
+                <span>Difficulty: {difficulty}</span>
             </div>
         </div>
     );
