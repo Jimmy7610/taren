@@ -6,55 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="title">Taren</title>
     <link rel="stylesheet" href="/assets/ui.css">
+    <link rel="stylesheet" href="/assets/index.css">
     <script defer src="/assets/ui.js"></script>
-    <style>
-        h1 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: normal;
-        }
-
-        p {
-            margin: 0.2rem 0 2.5rem 0;
-            font-style: italic;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        nav li {
-            margin-bottom: 0.8rem;
-        }
-
-        nav a {
-            color: var(--accent);
-            text-decoration: none;
-            border-bottom: 1px solid transparent;
-        }
-
-        nav a:hover {
-            border-bottom: 1px solid var(--border);
-        }
-    </style>
 </head>
 
-<body>
-    <header>
+<body class="star-map-body">
+    <div class="center-anchor parallax" data-depth="5">
         <h1 data-i18n="title">Taren</h1>
         <p data-i18n="tagline">Något nytt tar form.</p>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="/games/" data-i18n="games">Spel</a></li>
-            <li><a href="/experiments/" data-i18n="experiments">Experiment</a></li>
-            <li><a href="/sketches/" data-i18n="sketches">Skisser</a></li>
-            <li><a href="/texts/" data-i18n="texts">Texter</a></li>
-            <li><a href="/ongoing/" data-i18n="ongoing">Pågår</a></li>
-            <li><a href="/about/" data-i18n="about">Om</a></li>
-        </ul>
-    </nav>
+    </div>
+
+    <div class="orbit-system">
+        <div class="node parallax" data-depth="15">
+            <div class="node-point"></div>
+            <a href="/games/" data-i18n="games">Spel</a>
+            <div class="node-micro" data-i18n="micro_games">Prova något litet.</div>
+        </div>
+        <div class="node parallax" data-depth="10">
+            <div class="node-point"></div>
+            <a href="/experiments/" data-i18n="experiments">Experiment</a>
+            <div class="node-micro" data-i18n="micro_experiments">Peta på kanterna.</div>
+        </div>
+        <div class="node parallax" data-depth="20">
+            <div class="node-point"></div>
+            <a href="/sketches/" data-i18n="sketches">Skisser</a>
+            <div class="node-micro" data-i18n="micro_sketches">Fragment & former.</div>
+        </div>
+        <div class="node parallax" data-depth="12">
+            <div class="node-point"></div>
+            <a href="/texts/" data-i18n="texts">Texter</a>
+            <div class="node-micro" data-i18n="micro_texts">Noter ur dimman.</div>
+        </div>
+        <div class="node parallax" data-depth="18">
+            <div class="node-point"></div>
+            <a href="/ongoing/" data-i18n="ongoing">Pågår</a>
+            <div class="node-micro" data-i18n="micro_ongoing">Tar fortfarande form.</div>
+        </div>
+    </div>
 </body>
 
 </html>
