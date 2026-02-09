@@ -1,50 +1,63 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" data-theme="dark" data-lang="sv">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title data-i18n="title">Taren</title>
-    <link rel="stylesheet" href="/assets/ui.css">
-    <!-- Link to the refined landing page style -->
-    <link rel="stylesheet" href="/assets/index.css">
-    <script defer src="/assets/ui.js"></script>
+    <title>Taren</title>
+    <!-- Use the refined local index assets -->
+    <link rel="stylesheet" href="/index/style.css">
+    <script src="/index/script.js" defer></script>
 </head>
 
-<body class="minimal-landing">
-    <!-- UI Controls (Injected by ui.js) -->
-
-    <main class="landing-container">
-        <section class="hero-block">
-            <h1 class="landing-title" data-i18n="title">Taren</h1>
-            <p class="landing-subtitle" data-i18n="home.subtitle">Något nytt tar form.</p>
-        </section>
-
-        <nav class="navigation-block" aria-label="Main Navigation">
-            <div class="nav-grid">
-                <a href="/games/" class="nav-item">
-                    <span class="nav-label" data-i18n="home.games.label">Spel</span>
-                    <span class="nav-micro" data-i18n="home.games.micro">Prova något litet.</span>
-                </a>
-                <a href="/experiments/" class="nav-item">
-                    <span class="nav-label" data-i18n="home.experiments.label">Experiment</span>
-                    <span class="nav-micro" data-i18n="home.experiments.micro">Peta på kanterna.</span>
-                </a>
-                <a href="/sketches/" class="nav-item">
-                    <span class="nav-label" data-i18n="home.sketches.label">Skisser</span>
-                    <span class="nav-micro" data-i18n="home.sketches.micro">Fragment & former.</span>
-                </a>
-                <a href="/texts/" class="nav-item">
-                    <span class="nav-label" data-i18n="home.texts.label">Texter</span>
-                    <span class="nav-micro" data-i18n="home.texts.micro">Noter ur dimman.</span>
-                </a>
-                <a href="/ongoing/" class="nav-item">
-                    <span class="nav-label" data-i18n="home.ongoing.label">Pågår</span>
-                    <span class="nav-micro" data-i18n="home.ongoing.micro">Tar fortfarande form.</span>
-                </a>
+<body class="landing-body">
+    <div class="page-wrap">
+        <header class="controls-cluster">
+            <button id="theme-toggle" class="control-btn icon-btn" aria-label="Toggle Theme">
+                <span class="theme-icon">☾</span>
+            </button>
+            <div class="lang-segmented">
+                <button class="lang-btn" data-lang-val="sv" aria-label="Svenska">SV</button>
+                <button class="lang-btn" data-lang-val="en" aria-label="English">EN</button>
             </div>
-        </nav>
-    </main>
+        </header>
+
+        <main class="content-col">
+            <section class="hero">
+                <h1 class="title">Taren</h1>
+                <p class="subtitle" data-sv="Något nytt tar form." data-en="Something new takes shape."></p>
+            </section>
+
+            <nav class="navigation-nav">
+                <div class="nav-grid">
+                    <a href="/games/" class="nav-item">
+                        <div class="nav-label" data-sv="Spel" data-en="Games"></div>
+                        <div class="nav-micro" data-sv="Prova något litet." data-en="Try something small."></div>
+                    </a>
+                    <a href="/experiments/" class="nav-item">
+                        <div class="nav-label" data-sv="Experiment" data-en="Experiments"></div>
+                        <div class="nav-micro" data-sv="Peta på kanterna." data-en="Touch the edges."></div>
+                    </a>
+                    <a href="/sketches/" class="nav-item">
+                        <div class="nav-label" data-sv="Skisser" data-en="Sketches"></div>
+                        <div class="nav-micro" data-sv="Fragment & former." data-en="Fragments & shapes."></div>
+                    </a>
+                    <a href="/texts/" class="nav-item">
+                        <div class="nav-label" data-sv="Texter" data-en="Texts"></div>
+                        <div class="nav-micro" data-sv="Noter ur dimman." data-en="Notes from the fog."></div>
+                    </a>
+                    <a href="/ongoing/" class="nav-item">
+                        <div class="nav-label" data-sv="Pågår" data-en="Ongoing"></div>
+                        <div class="nav-micro" data-sv="Tar fortfarande form." data-en="Still forming."></div>
+                    </a>
+                    <a href="/about/" class="nav-item">
+                        <div class="nav-label" data-sv="Om" data-en="About"></div>
+                        <div class="nav-micro" data-sv="Läs om Taren." data-en="Read about Taren."></div>
+                    </a>
+                </div>
+            </nav>
+        </main>
+    </div>
 </body>
 
 </html>
