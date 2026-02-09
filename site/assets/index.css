@@ -1,63 +1,66 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #05070a;
+}
+
 :root {
-    /* Fluid scale for orbit radius: 140px on mobile-list to 220px on desktop */
-    --orbit-radius: clamp(140px, 20vw, 220px);
+    --orbit-radius: clamp(120px, 18vw, 180px);
+    /* Reduced for mockup fidelity */
     --node-size: 6px;
-    --compass-color: rgba(var(--accent-rgb), 0.15);
+    --compass-color: rgba(var(--accent-rgb), 0.12);
 }
 
 .star-map-body {
-    margin: 0;
-    max-width: none;
-    min-height: 100vh;
-    overflow-x: hidden;
+    width: 100%;
+    height: 100svh;
+    /* Modern viewport unit for mobile safe-area coverage */
     position: relative;
-    background-color: #05070a;
+    user-select: none;
 }
 
 [data-theme="light"] .star-map-body {
     background-color: #f0f2f5;
 }
 
-/* Layer Isolation */
-.background-layer,
+/* Fixed Layer Architecture */
+.bg-layer,
 .instrument-layer,
 .content-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
 }
 
-.background-layer {
+.bg-layer {
     z-index: 0;
-    pointer-events: none;
 }
 
 .instrument-layer {
     z-index: 10;
-    pointer-events: none;
+    opacity: 0.8;
 }
 
 .content-layer {
     z-index: 20;
-    min-height: 100vh;
-    padding: 6rem 1rem;
-    box-sizing: border-box;
+    pointer-events: all;
 }
 
-/* Star Dust & Grain Overlay */
+/* 1. Background Layer */
 .star-dust {
     position: absolute;
     top: -20%;
     left: -20%;
     right: -20%;
     bottom: -20%;
-    opacity: 0.4;
+    opacity: 0.35;
     background-image:
         radial-gradient(1px 1px at 25px 35px, white, transparent),
         radial-gradient(1px 1px at 50px 100px, white, transparent),
@@ -65,24 +68,11 @@
         radial-gradient(1px 1px at 200px 50px, white, transparent),
         radial-gradient(1.5px 1.5px at 300px 250px, white, transparent),
         radial-gradient(2px 2px at 400px 350px, white, transparent);
-    background-size: 550px 550px;
-    animation: slow-shimmer 60s linear infinite;
+    background-size: 500px 500px;
+    animation: slow-rotate 120s linear infinite;
 }
 
-.star-map-body::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0.04;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    z-index: 1;
-}
-
-@keyframes slow-shimmer {
+@keyframes slow-rotate {
     from {
         transform: rotate(0deg);
     }
@@ -92,28 +82,33 @@
     }
 }
 
-/* Vignette */
-.vignette {
+.star-map-body::after {
+    content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
+    inset: 0;
+    opacity: 0.04;
     pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     z-index: 5;
 }
 
-/* Compass Instrument */
+.vignette {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, 0.5) 100%);
+    pointer-events: none;
+    z-index: 6;
+}
+
+/* 2. Instrument Layer */
 .compass-ring {
-    width: calc(var(--orbit-radius) * 1.8);
-    height: calc(var(--orbit-radius) * 1.8);
+    width: calc(var(--orbit-radius) * 1.85);
+    height: calc(var(--orbit-radius) * 1.85);
     border: 1px solid var(--compass-color);
     border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    top: -5%;
+    /* Optical adjustment */
 }
 
 .crosshair-h,
@@ -122,65 +117,74 @@
     background: var(--compass-color);
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) translateY(-5%);
+    /* Optical adjustment */
 }
 
 .crosshair-h {
-    width: calc(var(--orbit-radius) * 2.8);
+    width: calc(var(--orbit-radius) * 3);
     height: 1px;
+    opacity: 0.5;
 }
 
 .crosshair-v {
     height: calc(var(--orbit-radius) * 2.8);
     width: 1px;
+    opacity: 0.5;
 }
 
-/* Content Layout System */
-.content-layer {
+/* 3. Content Layer (The Stage) */
+.stage {
+    position: relative;
+    width: min(920px, 92vw);
+    height: min(560px, 75vh);
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .center-anchor {
     text-align: center;
     position: relative;
-    margin-bottom: 2rem;
-    max-width: 90vw;
+    top: -5%;
+    margin-bottom: 2.5rem;
 }
 
 .center-anchor h1 {
     font-family: serif;
-    font-size: clamp(3rem, 10vw, 4.5rem);
+    font-size: clamp(3.2rem, 11vw, 4.8rem);
     letter-spacing: -0.05rem;
     margin: 0;
     font-weight: normal;
     color: var(--accent);
+    filter: drop-shadow(0 0 20px rgba(var(--accent-rgb), 0.15));
 }
 
 .center-anchor p {
-    font-size: clamp(0.85rem, 2vw, 1rem);
+    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
     color: var(--muted);
-    font-style: normal;
-    margin: 0.5rem 0 0 0;
+    margin: 0.6rem 0 0 0;
     letter-spacing: 0.08rem;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
-/* Orbit System */
+/* Orbit Nodes */
 .orbit-system {
     position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2.5rem;
+    gap: 3rem;
 }
 
 .node {
     position: relative;
     width: 100%;
-    max-width: 280px;
+    max-width: 320px;
     text-align: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
 .node-point {
@@ -188,92 +192,47 @@
     height: var(--node-size);
     background: var(--accent);
     border-radius: 50%;
-    margin: 0 auto 0.6rem auto;
+    margin: 0 auto 0.8rem auto;
     box-shadow: 0 0 12px var(--accent);
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .node a {
     display: block;
     color: var(--text);
     text-decoration: none;
-    font-size: clamp(0.9rem, 2.5vw, 1rem);
-    letter-spacing: 0.05rem;
-    opacity: 0.9;
-    font-weight: 400;
-    padding: 0.5rem 0;
-    /* Increase tap target */
-    min-height: 44px;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    letter-spacing: 0.06rem;
+    padding: 0.4rem 0;
+    min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .node-micro {
-    font-size: clamp(0.7rem, 2vw, 0.75rem);
+    font-size: clamp(0.72rem, 2.5vw, 0.8rem);
     color: var(--muted);
-    opacity: 0.6;
-    margin-top: 0.1rem;
-    line-height: 1.3;
+    opacity: 0.7;
+    margin-top: 0.2rem;
+    line-height: 1.4;
 }
 
-/* Precise Node Positioning (Static, Matches Mockup) */
-/* Games (Top) */
-.node:nth-child(1) {
-    /* transform: translate(-50%, calc(-1 * var(--orbit-radius) - 60px)); */
-}
-
-/* Experiments (Top Right) */
-.node:nth-child(2) {
-    /* transform: translate(calc(var(--orbit-radius) * 0.75), calc(-0.75 * var(--orbit-radius) - 20px)); */
-    /* text-align: left; */
-}
-
-.node:nth-child(2) .node-point {
-    /* margin-left: 0; */
-}
-
-/* Sketches (Bottom Left) */
-.node:nth-child(3) {
-    /* transform: translate(calc(-1 * var(--orbit-radius) * 0.75 - 160px), calc(0.75 * var(--orbit-radius) - 20px)); */
-    /* text-align: right; */
-}
-
-.node:nth-child(3) .node-point {
-    /* margin-right: 0; */
-}
-
-/* Texts (Bottom Right) */
-.node:nth-child(4) {
-    /* transform: translate(calc(var(--orbit-radius) * 0.75), calc(0.75 * var(--orbit-radius) - 20px)); */
-    /* text-align: left; */
-}
-
-.node:nth-child(4) .node-point {
-    /* margin-left: 0; */
-}
-
-/* Ongoing (Bottom) */
-.node:nth-child(5) {
-    /* transform: translate(-50%, calc(var(--orbit-radius) + 40px)); */
-}
-
-/* Interaction: Suble scale only, no layout shifts */
 .node:hover {
-    transform: scale(1.05);
+    transform: translateY(-3px) scale(1.04);
 }
 
-/* Breakpoint: Star Map Layout (iPads & Desktop) */
+/* Breakpoint: True Star Map (iPads & Desktop) */
 @media (min-width: 768px) {
-    .content-layer {
-        padding: 0;
+    .stage {
+        height: min(640px, 80vh);
     }
 
     .center-anchor {
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) translateY(-5%);
         margin-bottom: 0;
     }
 
@@ -283,11 +242,70 @@
         left: 50%;
         width: 0;
         height: 0;
+        transform: translateY(-5%);
     }
 
     .node {
-
-        .node:nth-child(3) {
-            transform: translate(calc(-1 * var(--orbit-radius) * 0.7 - 120px), calc(0.7 * var(--orbit-radius) - 20px));
-        }
+        position: absolute;
+        width: 180px;
     }
+
+    /* Radial positioning matching mockup context: reduced radius for intimacy */
+    .node:nth-child(1) {
+        transform: translate(-50%, calc(-1 * var(--orbit-radius) - 85px));
+    }
+
+    .node:nth-child(2) {
+        transform: translate(calc(var(--orbit-radius) * 0.78), calc(-0.72 * var(--orbit-radius) - 30px));
+        text-align: left;
+    }
+
+    .node:nth-child(2) .node-point {
+        margin-left: 0;
+    }
+
+    .node:nth-child(3) {
+        transform: translate(calc(var(--orbit-radius) * 0.78), calc(0.72 * var(--orbit-radius) - 20px));
+        text-align: left;
+    }
+
+    .node:nth-child(3) .node-point {
+        margin-left: 0;
+    }
+
+    .node:nth-child(4) {
+        transform: translate(calc(-1 * var(--orbit-radius) * 0.78 - 180px), calc(0.72 * var(--orbit-radius) - 20px));
+        text-align: right;
+    }
+
+    .node:nth-child(4) .node-point {
+        margin-right: 0;
+    }
+
+    .node:nth-child(5) {
+        transform: translate(calc(-1 * var(--orbit-radius) * 0.78 - 180px), calc(-0.72 * var(--orbit-radius) - 30px));
+        text-align: right;
+    }
+
+    .node:nth-child(5) .node-point {
+        margin-right: 0;
+    }
+
+    .node:hover {
+        transform: translate(var(--tx, 0), var(--ty, 0)) scale(1.05);
+    }
+}
+
+/* Landscape Phones */
+@media (max-height: 500px) and (max-width: 900px) {
+    .orbit-system {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem 3rem;
+    }
+
+    .node {
+        max-width: 160px;
+    }
+}
