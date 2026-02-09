@@ -315,7 +315,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
             <canvas
                 ref={canvasRef}
-                className="cursor-none relative z-0"
+                className="cursor-none relative z-0 max-w-full max-h-full object-contain"
                 style={{
                     width: `${stateRef.current.gridCols * CELL_SIZE}px`,
                     height: `${stateRef.current.gridRows * CELL_SIZE}px`
@@ -324,7 +324,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
             {/* OVERLAYS */}
             {gameState === 'IDLE' && (
-                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/80 backdrop-blur-2xl p-12 text-center">
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/80 backdrop-blur-2xl p-12 pt-[18vh] text-center">
                     <div className="mb-12 relative">
                         <div className="absolute -inset-8 bg-accent/20 blur-3xl rounded-full animate-pulse" />
                         <h2 className="text-6xl font-bold tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,95,31,0.5)]">
@@ -368,7 +368,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
             {gameState === 'PAUSED' && (
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md transition-all">
-                    <div className="p-8 rounded-3xl bg-black/60 border border-white/10 flex flex-col items-center">
+                    <div className="p-8 rounded-3xl bg-black/60 border border-white/10 flex flex-col items-center mt-[-5vh]">
                         <Pause className="h-12 w-12 text-white/20 mb-4" />
                         <h2 className="text-3xl font-bold tracking-tighter text-white mb-2">PAUSED</h2>
                         <p className="text-white/40 text-[10px] font-mono uppercase tracking-widest mb-8 text-center">
@@ -386,7 +386,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
             {gameState === 'GAMEOVER' && (
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl animate-in fade-in duration-700">
-                    <div className="flex flex-col items-center max-w-sm w-full p-12 text-center">
+                    <div className="flex flex-col items-center max-w-sm w-full p-12 text-center mt-[-5vh]">
                         <div className="mb-12">
                             <h2 className="text-6xl font-bold tracking-tighter text-white mb-4">GAME OVER</h2>
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
