@@ -20,6 +20,25 @@ body {
   min-height: 100vh;
 }
 
+body.no-scroll {
+  overflow: hidden !important;
+  height: 100vh;
+  width: 100vw;
+  overscroll-behavior: none;
+}
+
+/* Base scrollbar hiding defensively */
+body.no-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body.no-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 /* Custom noise/grain overlay */
 .grain-overlay {
   position: fixed;

@@ -1,10 +1,18 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useProjects } from '../hooks/useProjects';
 import { PortalCard } from '../components/PortalCard';
 import { strings } from '../constants/strings';
 
 export const Home: React.FC = () => {
     const { projects, allTags, activeTag, setActiveTag } = useProjects();
+
+    // Toggle scroll lock on mount/unmount
+    useEffect(() => {
+        document.body.classList.add('no-scroll');
+        return () => {
+            document.body.classList.remove('no-scroll');
+        };
+    }, []);
 
     // Pseudo-random coordinates for the "Archipelago" layout on desktop
     const archipelagoCoords = useMemo(() => {
@@ -17,8 +25,8 @@ export const Home: React.FC = () => {
     }, [projects]);
 
     return (
-        <div className="relative min-h-[70vh]">
-            <section className="mb-12 text-center lg:text-left">
+        <div className="relative h-[calc(100vh-80px)] overflow-hidden flex flex-col">
+            <section className="shrink-0 mb-8 text-center lg:text-left">
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-foreground">
                     {strings.common.siteName} <span className="text-accent">Playground</span>
                 </h1>
@@ -47,31 +55,34 @@ export const Home: React.FC = () => {
                 </div>
             </section>
 
-            {/* Desktop Archipelago Layout (Hidden on mobile/tablet portrait) */}
-            <div className="hidden lg:block relative h-[800px] w-full mt-24">
-                {projects.map((project, i) => (
-                    <div
-                        key={project.slug}
-                        className="absolute transition-transform hover:z-50 animate-float"
-                        style={{
-                            top: archipelagoCoords[i].top,
-                            left: archipelagoCoords[i].left,
-                            animationDelay: archipelagoCoords[i].delay,
-                            width: '320px',
-                            transform: `scale(${archipelagoCoords[i].scale})`
-                        }}
-                    >
-                        <PortalCard project={project} />
-                    </div>
-                ))}
-                {/* Subtle decorative connecting lines or indicators could go here */}
-            </div>
+            <div className="flex-1 relative min-h-0">
+                {/* Desktop Archipelago Layout (Hidden on mobile/tablet portrait) */}
+                <div className="hidden lg:block absolute inset-0">
+                    {projects.map((project, i) => (
+                        <div
+                            key={project.slug}
+                            className="absolute transition-transform hover:z-50 animate-float"
+                            style={{
+                                top: archipelagoCoords[i].top,
+                                left: archipelagoCoords[i].left,
+                                animationDelay: archipelagoCoords[i].delay,
+                                width: '300px',
+                                transform: `scale(${archipelagoCoords[i].scale})`
+                            }}
+                        >
+                            <PortalCard project={project} />
+                        </div>
+                    ))}
+                </div>
 
-            {/* Mobile/Tablet Grid Fallback */}
-            <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
-                {projects.map((project) => (
-                    <PortalCard key={project.slug} project={project} />
-                ))}
+                {/* Mobile/Tablet Grid Fallback */}
+                <div className="lg:hidden h-full overflow-y-auto pb-8 scrollbar-hide">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-20">
+                        {projects.map((project) => (
+                            <PortalCard key={project.slug} project={project} />
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );
