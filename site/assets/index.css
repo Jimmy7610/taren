@@ -1,3 +1,4 @@
+/* Landing Page: Star Map Instrument */
 html,
 body {
     height: 100%;
@@ -5,307 +6,340 @@ body {
     padding: 0;
     overflow: hidden;
     background-color: #05070a;
+    font-family: system-ui, -apple-system, sans-serif;
 }
 
 :root {
-    --orbit-radius: clamp(120px, 18vw, 180px);
-    /* Reduced for mockup fidelity */
-    --node-size: 6px;
-    --compass-color: rgba(var(--accent-rgb), 0.12);
+    --accent-rgb: 255, 255, 255;
+    --text-rgb: 255, 255, 255;
+    --muted-rgb: 160, 160, 160;
+
+    /* Instrument Scale */
+    --ring-size: clamp(320px, 45vw, 640px);
 }
 
-.star-map-body {
-    width: 100%;
-    height: 100svh;
-    /* Modern viewport unit for mobile safe-area coverage */
-    position: relative;
-    user-select: none;
+[data-theme="light"] {
+    --accent-rgb: 20, 20, 20;
+    --text-rgb: 30, 30, 30;
+    --muted-rgb: 100, 100, 100;
 }
 
 [data-theme="light"] .star-map-body {
     background-color: #f0f2f5;
 }
 
-/* Fixed Layer Architecture */
+.star-map-body {
+    width: 100%;
+    height: 100svh;
+    position: relative;
+    color: rgb(var(--text-rgb));
+}
+
+/* 1. Layers (Static & Fixed) */
 .bg-layer,
 .instrument-layer,
-.content-layer {
+.content-layer,
+.ui-layer {
     position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
-    display: grid;
-    place-items: center;
-    pointer-events: none;
-}
-
-.bg-layer {
-    z-index: 0;
 }
 
 .instrument-layer {
-    z-index: 10;
-    opacity: 0.8;
+    pointer-events: none;
+    z-index: 5;
 }
 
 .content-layer {
-    z-index: 20;
-    pointer-events: all;
+    z-index: 10;
+    display: grid;
+    place-items: center;
 }
 
-/* 1. Background Layer */
+.ui-layer {
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* 2. Background: Star Dust (CSS Only) */
+.bg-layer {
+    z-index: 0;
+    background: radial-gradient(circle at center, #0a0d14 0%, #05070a 100%);
+    overflow: hidden;
+}
+
+[data-theme="light"] .bg-layer {
+    background: radial-gradient(circle at center, #ffffff 0%, #f0f2f5 100%);
+}
+
 .star-dust {
     position: absolute;
-    top: -20%;
-    left: -20%;
-    right: -20%;
-    bottom: -20%;
-    opacity: 0.35;
+    inset: -10%;
     background-image:
-        radial-gradient(1px 1px at 25px 35px, white, transparent),
-        radial-gradient(1px 1px at 50px 100px, white, transparent),
-        radial-gradient(1.5px 1.5px at 125px 150px, white, transparent),
-        radial-gradient(1px 1px at 200px 50px, white, transparent),
-        radial-gradient(1.5px 1.5px at 300px 250px, white, transparent),
-        radial-gradient(2px 2px at 400px 350px, white, transparent);
-    background-size: 500px 500px;
-    animation: slow-rotate 120s linear infinite;
+        radial-gradient(1.5px 1.5px at 10% 20%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1px 1px at 30% 40%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(2px 2px at 50% 10%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1.5px 1.5px at 70% 30%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 90% 50%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1.5px 1.5px at 15% 70%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 35% 85%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(2px 2px at 55% 65%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1.5px 1.5px at 75% 90%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1px 1px at 95% 25%, rgba(255, 255, 255, 0.5), transparent);
+    background-size: 400px 400px;
+    opacity: 0.3;
 }
 
-@keyframes slow-rotate {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+[data-theme="light"] .star-dust {
+    background-image:
+        radial-gradient(1.5px 1.5px at 10% 20%, rgba(0, 0, 0, 0.3), transparent),
+        radial-gradient(1px 1px at 30% 40%, rgba(0, 0, 0, 0.2), transparent);
+    opacity: 0.15;
 }
 
-.star-map-body::after {
-    content: "";
-    position: fixed;
+.grain-overlay {
+    position: absolute;
     inset: 0;
-    opacity: 0.04;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    z-index: 5;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .vignette {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, 0.5) 100%);
+    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.6) 100%);
     pointer-events: none;
-    z-index: 6;
+    z-index: 80;
 }
 
-/* 2. Instrument Layer */
-.compass-ring {
-    width: calc(var(--orbit-radius) * 1.85);
-    height: calc(var(--orbit-radius) * 1.85);
-    border: 1px solid var(--compass-color);
-    border-radius: 50%;
-    position: relative;
-    top: -5%;
-    /* Optical adjustment */
-}
-
-.crosshair-h,
-.crosshair-v {
+/* 3. Instrument Overlay */
+.instrument {
     position: absolute;
-    background: var(--compass-color);
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) translateY(-5%);
-    /* Optical adjustment */
-}
-
-.crosshair-h {
-    width: calc(var(--orbit-radius) * 3);
-    height: 1px;
-    opacity: 0.5;
-}
-
-.crosshair-v {
-    height: calc(var(--orbit-radius) * 2.8);
-    width: 1px;
-    opacity: 0.5;
-}
-
-/* 3. Content Layer (The Stage) */
-.stage {
-    position: relative;
-    width: min(920px, 92vw);
-    height: min(560px, 75vh);
+    transform: translate(-50%, -50%);
+    width: var(--ring-size);
+    height: var(--ring-size);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.center-anchor {
-    text-align: center;
-    position: relative;
-    top: -5%;
-    margin-bottom: 2.5rem;
-}
-
-.center-anchor h1 {
-    font-family: serif;
-    font-size: clamp(3.2rem, 11vw, 4.8rem);
-    letter-spacing: -0.05rem;
-    margin: 0;
-    font-weight: normal;
-    color: var(--accent);
-    filter: drop-shadow(0 0 20px rgba(var(--accent-rgb), 0.15));
-}
-
-.center-anchor p {
-    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
-    color: var(--muted);
-    margin: 0.6rem 0 0 0;
-    letter-spacing: 0.08rem;
-    opacity: 0.85;
-}
-
-/* Orbit Nodes */
-.orbit-system {
-    position: relative;
+.ring {
     width: 100%;
+    height: 100%;
+    border: 1px solid rgba(var(--accent-rgb), 0.15);
+    border-radius: 50%;
+}
+
+.crosshair {
+    position: absolute;
+    background: rgba(var(--accent-rgb), 0.1);
+}
+
+.crosshair--h {
+    width: 150%;
+    height: 1px;
+}
+
+.crosshair--v {
+    height: 150%;
+    width: 1px;
+}
+
+/* 4. Content Stage */
+.stage {
+    position: relative;
+    width: min(1000px, 92vw);
+    height: min(620px, 72vh);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 3rem;
+}
+
+.hero {
+    text-align: center;
+    z-index: 50;
+    pointer-events: none;
+    transform: translateY(-5%);
+    /* Optical nudge */
+}
+
+.title {
+    font-family: serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: normal;
+    letter-spacing: -0.05em;
+    margin: 0;
+    color: rgb(var(--accent-rgb));
+}
+
+.subtitle {
+    font-size: clamp(14px, 1.5vw, 18px);
+    color: rgba(var(--muted-rgb), 0.8);
+    letter-spacing: 0.1em;
+    margin: 0.5em 0 0 0;
+    text-transform: lowercase;
+}
+
+/* 5. Nodes Layer */
+.nodes {
+    position: absolute;
+    inset: 0;
 }
 
 .node {
-    position: relative;
-    width: 100%;
-    max-width: 320px;
-    text-align: center;
-    transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-}
-
-.node-point {
-    width: var(--node-size);
-    height: var(--node-size);
-    background: var(--accent);
-    border-radius: 50%;
-    margin: 0 auto 0.8rem auto;
-    box-shadow: 0 0 12px var(--accent);
-    opacity: 0.9;
-}
-
-.node a {
-    display: block;
-    color: var(--text);
-    text-decoration: none;
-    font-size: clamp(0.95rem, 3vw, 1.1rem);
-    letter-spacing: 0.06rem;
-    padding: 0.4rem 0;
-    min-height: 48px;
+    position: absolute;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    text-decoration: none;
+    color: inherit;
+    width: 180px;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
 }
 
-.node-micro {
-    font-size: clamp(0.72rem, 2.5vw, 0.8rem);
-    color: var(--muted);
-    opacity: 0.7;
-    margin-top: 0.2rem;
-    line-height: 1.4;
+.dot {
+    width: 6px;
+    height: 6px;
+    background: rgb(var(--accent-rgb));
+    border-radius: 50%;
+    margin-bottom: 8px;
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
 }
 
-.node:hover {
-    transform: translateY(-3px) scale(1.04);
+.label {
+    font-size: clamp(14px, 1.2vw, 16px);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
 }
 
-/* Breakpoint: True Star Map (iPads & Desktop) */
-@media (min-width: 768px) {
+.micro {
+    font-size: clamp(11px, 1vw, 13px);
+    color: rgba(var(--muted-rgb), 0.7);
+    font-weight: 400;
+}
+
+.node:hover .label {
+    color: rgb(var(--accent-rgb));
+}
+
+.node:hover .micro {
+    opacity: 1;
+    color: rgba(var(--muted-rgb), 0.9);
+}
+
+/* Desktop/Tablet Polar Positions (Mockup Matching) */
+.node--games {
+    top: 20%;
+    left: 50%;
+}
+
+.node--experiments {
+    top: 34%;
+    left: 74%;
+    text-align: left;
+    align-items: flex-start;
+}
+
+.node--experiments .dot {
+    margin-left: 0;
+}
+
+.node--sketches {
+    top: 72%;
+    left: 68%;
+    text-align: left;
+    align-items: flex-start;
+}
+
+.node--sketches .dot {
+    margin-left: 0;
+}
+
+.node--texts {
+    top: 72%;
+    left: 32%;
+    text-align: right;
+    align-items: flex-end;
+}
+
+.node--texts .dot {
+    margin-right: 0;
+}
+
+.node--ongoing {
+    top: 40%;
+    left: 26%;
+    text-align: right;
+    align-items: flex-end;
+}
+
+.node--ongoing .dot {
+    margin-right: 0;
+}
+
+/* 6. Mobile Layout (< 600px) */
+@media (max-width: 600px) {
+    body {
+        overflow-y: auto;
+    }
+
+    .content-layer {
+        display: block;
+        padding-top: 15vh;
+        min-height: 100svh;
+        z-index: 50;
+    }
+
     .stage {
-        height: min(640px, 80vh);
+        width: 100%;
+        height: auto;
+        display: block;
+        padding: 2rem;
+        box-sizing: border-box;
     }
 
-    .center-anchor {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) translateY(-5%);
-        margin-bottom: 0;
+    .hero {
+        transform: none;
+        margin-bottom: 4rem;
+        text-align: left;
     }
 
-    .orbit-system {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        transform: translateY(-5%);
+    .nodes {
+        position: static;
+        display: grid;
+        gap: 2.5rem;
     }
 
     .node {
-        position: absolute;
-        width: 180px;
-    }
-
-    /* Radial positioning matching mockup context: reduced radius for intimacy */
-    .node:nth-child(1) {
-        transform: translate(-50%, calc(-1 * var(--orbit-radius) - 85px));
-    }
-
-    .node:nth-child(2) {
-        transform: translate(calc(var(--orbit-radius) * 0.78), calc(-0.72 * var(--orbit-radius) - 30px));
+        position: static;
+        transform: none;
+        width: 100%;
         text-align: left;
+        align-items: flex-start;
     }
 
-    .node:nth-child(2) .node-point {
+    .dot {
         margin-left: 0;
     }
 
-    .node:nth-child(3) {
-        transform: translate(calc(var(--orbit-radius) * 0.78), calc(0.72 * var(--orbit-radius) - 20px));
-        text-align: left;
+    .instrument-layer {
+        opacity: 0.4;
     }
 
-    .node:nth-child(3) .node-point {
-        margin-left: 0;
-    }
-
-    .node:nth-child(4) {
-        transform: translate(calc(-1 * var(--orbit-radius) * 0.78 - 180px), calc(0.72 * var(--orbit-radius) - 20px));
-        text-align: right;
-    }
-
-    .node:nth-child(4) .node-point {
-        margin-right: 0;
-    }
-
-    .node:nth-child(5) {
-        transform: translate(calc(-1 * var(--orbit-radius) * 0.78 - 180px), calc(-0.72 * var(--orbit-radius) - 30px));
-        text-align: right;
-    }
-
-    .node:nth-child(5) .node-point {
-        margin-right: 0;
-    }
-
-    .node:hover {
-        transform: translate(var(--tx, 0), var(--ty, 0)) scale(1.05);
+    .ring {
+        width: 140%;
+        height: 140%;
+        transform: translate(-30%, -30%);
     }
 }
 
-/* Landscape Phones */
-@media (max-height: 500px) and (max-width: 900px) {
-    .orbit-system {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem 3rem;
-    }
-
-    .node {
-        max-width: 160px;
+@media (prefers-reduced-motion: reduce) {
+    .star-dust {
+        animation: none;
     }
 }

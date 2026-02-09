@@ -3,65 +3,71 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title data-i18n="title">Taren</title>
     <link rel="stylesheet" href="/assets/ui.css">
+    <!-- Link to the refined landing page style -->
     <link rel="stylesheet" href="/assets/index.css">
     <script defer src="/assets/ui.js"></script>
 </head>
 
 <body class="star-map-body">
-    <div class="vignette"></div>
-
     <!-- 1. Background Layer (Parallax enabled) -->
-    <div class="bg-layer parallax" data-depth="4">
+    <div class="bg-layer parallax" data-depth="4" aria-hidden="true">
         <div class="star-dust"></div>
+        <div class="grain-overlay"></div>
     </div>
 
     <!-- 2. Instrument Layer (Static) -->
-    <div class="instrument-layer">
-        <div class="compass-ring"></div>
-        <div class="crosshair-h"></div>
-        <div class="crosshair-v"></div>
-    </div>
-
-    <!-- 3. Content Layer (Static Stage) -->
-    <div class="content-layer">
-        <div class="stage">
-            <div class="center-anchor">
-                <h1 data-i18n="title">Taren</h1>
-                <p data-i18n="tagline">Något nytt tar form.</p>
-            </div>
-
-            <div class="orbit-system">
-                <div class="node">
-                    <div class="node-point"></div>
-                    <a href="/games/" data-i18n="games">Spel</a>
-                    <div class="node-micro" data-i18n="micro_games">Prova något litet.</div>
-                </div>
-                <div class="node">
-                    <div class="node-point"></div>
-                    <a href="/experiments/" data-i18n="experiments">Experiment</a>
-                    <div class="node-micro" data-i18n="micro_experiments">Peta på kanterna.</div>
-                </div>
-                <div class="node">
-                    <div class="node-point"></div>
-                    <a href="/sketches/" data-i18n="sketches">Skisser</a>
-                    <div class="node-micro" data-i18n="micro_sketches">Fragment & former.</div>
-                </div>
-                <div class="node">
-                    <div class="node-point"></div>
-                    <a href="/texts/" data-i18n="texts">Texter</a>
-                    <div class="node-micro" data-i18n="micro_texts">Noter ur dimman.</div>
-                </div>
-                <div class="node">
-                    <div class="node-point"></div>
-                    <a href="/ongoing/" data-i18n="ongoing">Pågår</a>
-                    <div class="node-micro" data-i18n="micro_ongoing">Tar fortfarande form.</div>
-                </div>
-            </div>
+    <div class="instrument-layer" aria-hidden="true">
+        <div class="instrument">
+            <div class="ring"></div>
+            <div class="crosshair crosshair--h"></div>
+            <div class="crosshair crosshair--v"></div>
         </div>
     </div>
+
+    <!-- The UI toggles are injected by ui.js into the DOM automatically -->
+
+    <!-- 3. Content Layer (Static Stage) -->
+    <main class="content-layer">
+        <section class="stage">
+            <header class="hero">
+                <h1 class="title">Taren</h1>
+                <p class="subtitle" data-i18n="home.subtitle">Något nytt tar form.</p>
+            </header>
+
+            <nav class="nodes" aria-label="Sections">
+                <a class="node node--games" href="/games/">
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="label" data-i18n="home.games.label">Spel</span>
+                    <span class="micro" data-i18n="home.games.micro">Prova något litet.</span>
+                </a>
+                <a class="node node--experiments" href="/experiments/">
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="label" data-i18n="home.experiments.label">Experiment</span>
+                    <span class="micro" data-i18n="home.experiments.micro">Peta på kanterna.</span>
+                </a>
+                <a class="node node--sketches" href="/sketches/">
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="label" data-i18n="home.sketches.label">Skisser</span>
+                    <span class="micro" data-i18n="home.sketches.micro">Fragment & former.</span>
+                </a>
+                <a class="node node--texts" href="/texts/">
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="label" data-i18n="home.texts.label">Texter</span>
+                    <span class="micro" data-i18n="home.texts.micro">Noter ur dimman.</span>
+                </a>
+                <a class="node node--ongoing" href="/ongoing/">
+                    <span class="dot" aria-hidden="true"></span>
+                    <span class="label" data-i18n="home.ongoing.label">Pågår</span>
+                    <span class="micro" data-i18n="home.ongoing.micro">Tar fortfarande form.</span>
+                </a>
+            </nav>
+        </section>
+    </main>
+
+    <div class="vignette" aria-hidden="true"></div>
 </body>
 
 </html>
