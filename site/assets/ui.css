@@ -44,6 +44,77 @@ a {
     color: var(--muted);
 }
 
+/* UI Controls */
+.ui-corner-controls {
+    position: fixed;
+    top: 2rem;
+    z-index: 100;
+}
+
+#ui-controls-left {
+    left: 2rem;
+}
+
+#ui-controls-right {
+    right: 2rem;
+}
+
+.lang-pill-group,
+.theme-icon-group {
+    display: flex;
+    align-items: center;
+    background: rgba(var(--bg-rgb), 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.lang-pill,
+.theme-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 2px;
+    letter-spacing: 0.05rem;
+}
+
+.lang-pill:hover,
+.theme-btn:hover {
+    color: var(--text);
+}
+
+.lang-pill.active,
+.theme-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    opacity: 1;
+}
+
+.theme-icon-group {
+    border: none;
+    background: none;
+    backdrop-filter: none;
+}
+
+.theme-btn {
+    font-size: 1.1rem;
+    padding: 0.4rem;
+    opacity: 0.4;
+}
+
+.theme-btn.active {
+    background: none;
+    color: var(--accent);
+    opacity: 1;
+    text-shadow: 0 0 10px var(--accent);
+}
+
 /* UI Controls Styling */
 #ui-controls {
     position: fixed;

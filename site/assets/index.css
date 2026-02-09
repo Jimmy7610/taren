@@ -1,13 +1,12 @@
 :root {
-    --orbit-radius: 220px;
+    --orbit-radius: 200px;
     --node-size: 6px;
-    --halo-size: 300px;
+    --compass-color: rgba(var(--accent-rgb), 0.15);
 }
 
 @media (max-width: 768px) {
     :root {
         --orbit-radius: 140px;
-        --halo-size: 200px;
     }
 }
 
@@ -20,88 +19,151 @@
     align-items: center;
     overflow: hidden;
     position: relative;
-    /* Vignette + Lighter Center */
-    background: radial-gradient(circle at center, var(--bg) 0%, rgba(0, 0, 0, 0.4) 70%, #000 100%);
-    background-color: #000;
+    background-color: #05070a;
 }
 
 [data-theme="light"] .star-map-body {
-    background: radial-gradient(circle at center, var(--bg) 0%, rgba(255, 255, 255, 0.4) 70%, #eee 100%);
-    background-color: #fff;
+    background-color: #f0f2f5;
 }
 
-/* Texture/Grain Overlay */
+/* Star Dust & Grain Overlay */
 .star-map-body::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    opacity: 0.4;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1px 1px at 25px 35px, white, transparent),
+        radial-gradient(1px 1px at 50px 100px, white, transparent),
+        radial-gradient(1.5px 1.5px at 125px 150px, white, transparent),
+        radial-gradient(1px 1px at 200px 50px, white, transparent),
+        radial-gradient(1.5px 1.5px at 300px 250px, white, transparent),
+        radial-gradient(2px 2px at 400px 350px, white, transparent);
+    background-size: 550px 550px;
+    animation: slow-shimmer 60s linear infinite;
+    z-index: 0;
+}
+
+.star-map-body::after {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    opacity: 0.02;
+    opacity: 0.04;
     pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     z-index: 1;
+}
+
+@keyframes slow-shimmer {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Vignette */
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.4) 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Compass Instrument Overlay */
+.compass-system {
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.compass-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--orbit-radius) * 1.8);
+    height: calc(var(--orbit-radius) * 1.8);
+    border: 1px solid var(--compass-color);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.crosshair-h,
+.crosshair-v {
+    position: absolute;
+    background: var(--compass-color);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.crosshair-h {
+    width: calc(var(--orbit-radius) * 2.8);
+    height: 1px;
+}
+
+.crosshair-v {
+    height: calc(var(--orbit-radius) * 2.8);
+    width: 1px;
 }
 
 .center-anchor {
     position: relative;
     text-align: center;
     z-index: 10;
-    /* Optical centering: slightly higher than mathematical center */
     transform: translateY(-5%);
 }
 
-/* Central Halo */
-.center-anchor::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: var(--halo-size);
-    height: var(--halo-size);
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
-    opacity: 0.05;
-    pointer-events: none;
-    border-radius: 50%;
-    filter: blur(20px);
-}
-
 .center-anchor h1 {
-    font-size: 2.8rem;
-    letter-spacing: -0.02rem;
+    font-family: serif;
+    font-size: 4rem;
+    letter-spacing: -0.05rem;
     margin: 0;
     font-weight: normal;
     color: var(--accent);
 }
 
 .center-anchor p {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: var(--muted);
-    font-style: italic;
-    margin: 0.1rem 0 0 0;
-    letter-spacing: 0.05rem;
-    opacity: 0.7;
+    font-style: normal;
+    margin: 0.5rem 0 0 0;
+    letter-spacing: 0.08rem;
+    opacity: 0.8;
 }
 
-/* Orbital Container */
+/* Nodes */
 .orbit-system {
     position: absolute;
     width: 0;
     height: 0;
     top: 45%;
-    /* Match optical centering of title-ish */
     left: 50%;
     z-index: 5;
 }
 
 .node {
     position: absolute;
-    width: max-content;
-    transform-origin: center;
+    width: 160px;
     text-align: center;
-    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.4s ease;
 }
 
 .node-point {
@@ -109,107 +171,106 @@
     height: var(--node-size);
     background: var(--accent);
     border-radius: 50%;
-    margin: 0 auto 0.4rem auto;
-    box-shadow: 0 0 8px var(--accent);
-    opacity: 0.4;
-    transition: opacity 0.4s, transform 0.4s;
+    margin: 0 auto 0.6rem auto;
+    box-shadow: 0 0 12px var(--accent);
+    opacity: 0.8;
 }
 
 .node a {
     display: block;
     color: var(--text);
     text-decoration: none;
-    font-size: 0.8rem;
-    letter-spacing: 0.03rem;
-    opacity: 0.6;
-    transition: opacity 0.4s;
-    font-weight: 300;
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    opacity: 0.9;
+    font-weight: 400;
 }
 
 .node-micro {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 140px;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     color: var(--muted);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s, transform 0.4s;
-    margin-top: 0.6rem;
+    opacity: 0.6;
+    margin-top: 0.3rem;
+    line-height: 1.3;
 }
 
-/* Hover States */
-.node:hover .node-point,
-.node:focus-within .node-point {
-    opacity: 0.9;
-    transform: scale(1.4);
-}
-
-.node:hover a,
-.node:focus-within a {
-    opacity: 1;
-}
-
-.node:hover .node-micro,
-.node:focus-within .node-micro {
-    opacity: 0.8;
-    transform: translateX(-50%) translateY(3px);
-}
-
-/* Positioning the nodes with varied orbits */
-@keyframes ambient-drift {
-    0% {
-        transform: rotate(var(--angle)) translateY(var(--dist)) rotate(calc(-1 * var(--angle)));
-    }
-
-    50% {
-        transform: rotate(var(--angle)) translateY(calc(var(--dist) + 5px)) rotate(calc(-1 * var(--angle)));
-    }
-
-    100% {
-        transform: rotate(var(--angle)) translateY(var(--dist)) rotate(calc(-1 * var(--angle)));
-    }
-}
-
-.node {
-    animation: ambient-drift 20s infinite ease-in-out;
-}
-
-/* varied distances: Closer for interactive, further for exploratory */
+/* Specific Node Positioning (Matches Mockup) */
+/* Games (Top) */
 .node:nth-child(1) {
-    --angle: 0deg;
-    --dist: calc(-0.9 * var(--orbit-radius));
-    animation-delay: 0s;
+    transform: translate(-50%, calc(-1 * var(--orbit-radius) - 60px));
 }
 
+/* Experiments (Top Right) */
 .node:nth-child(2) {
-    --angle: 72deg;
-    --dist: calc(-0.95 * var(--orbit-radius));
-    animation-delay: -4s;
+    transform: translate(calc(var(--orbit-radius) * 0.7), calc(-0.7 * var(--orbit-radius) - 20px));
+    text-align: left;
 }
 
+.node:nth-child(2) .node-point {
+    margin-left: 0;
+}
+
+/* Sketches (Bottom Left) */
 .node:nth-child(3) {
-    --angle: 144deg;
-    --dist: calc(-1.1 * var(--orbit-radius));
-    animation-delay: -8s;
+    transform: translate(calc(-1 * var(--orbit-radius) * 0.7 - 160px), calc(0.7 * var(--orbit-radius) - 20px));
+    text-align: right;
 }
 
+.node:nth-child(3) .node-point {
+    margin-right: 0;
+}
+
+/* Texts (Bottom Right) */
 .node:nth-child(4) {
-    --angle: 216deg;
-    --dist: calc(-1.05 * var(--orbit-radius));
-    animation-delay: -12s;
+    transform: translate(calc(var(--orbit-radius) * 0.7), calc(0.7 * var(--orbit-radius) - 20px));
+    text-align: left;
 }
 
+.node:nth-child(4) .node-point {
+    margin-left: 0;
+}
+
+/* Ongoing (Bottom) */
 .node:nth-child(5) {
-    --angle: 288deg;
-    --dist: calc(-1.2 * var(--orbit-radius));
-    animation-delay: -16s;
+    transform: translate(-50%, calc(var(--orbit-radius) + 40px));
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* Interaction */
+.node:hover {
+    transform: scale(1.05) translate(var(--hover-x, 0), var(--hover-y, 0));
+}
+
+.node:nth-child(1):hover {
+    --hover-x: -50%;
+    --hover-y: calc(-1 * var(--orbit-radius) - 65px);
+}
+
+.node:nth-child(2):hover {
+    --hover-x: calc(var(--orbit-radius) * 0.7 + 5px);
+    --hover-y: calc(-0.7 * var(--orbit-radius) - 25px);
+}
+
+.node:nth-child(3):hover {
+    --hover-x: calc(-1 * var(--orbit-radius) * 0.7 - 165px);
+    --hover-y: calc(0.7 * var(--orbit-radius) - 15px);
+}
+
+.node:nth-child(4):hover {
+    --hover-x: calc(var(--orbit-radius) * 0.7 + 5px);
+    --hover-y: calc(0.7 * var(--orbit-radius) - 15px);
+}
+
+.node:nth-child(5):hover {
+    --hover-x: -50%;
+    --hover-y: calc(var(--orbit-radius) + 45px);
+}
+
+@media (max-width: 768px) {
     .node {
-        animation: none !important;
+        width: 120px;
+    }
+
+    .node:nth-child(3) {
+        transform: translate(calc(-1 * var(--orbit-radius) * 0.7 - 120px), calc(0.7 * var(--orbit-radius) - 20px));
     }
 }

@@ -56,6 +56,11 @@
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
+
+        // Update toggle active states
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-theme-val') === theme);
+        });
     }
 
     function applyLang(lang) {
@@ -69,18 +74,19 @@
             }
         });
 
-        // Update toggle text
-        const langBtn = document.getElementById('lang-toggle');
-        if (langBtn) langBtn.textContent = translations[lang].lang;
+        // Update pill active states
+        document.querySelectorAll('.lang-pill').forEach(pill => {
+            pill.classList.toggle('active', pill.getAttribute('data-lang-val') === lang);
+        });
     }
 
-    function toggleTheme() {
-        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    function toggleTheme(theme) {
+        currentTheme = theme;
         applyTheme(currentTheme);
     }
 
-    function toggleLang() {
-        currentLang = currentLang === 'sv' ? 'en' : 'sv';
+    function toggleLang(lang) {
+        currentLang = lang;
         applyLang(currentLang);
     }
 
@@ -101,18 +107,37 @@
     }
 
     function initUI() {
-        if (!document.getElementById('ui-controls')) {
-            const controls = document.createElement('div');
-            controls.id = 'ui-controls';
-            controls.innerHTML = `
-                <button id="theme-toggle" class="ui-btn" aria-label="Toggle Theme">◐</button>
-                <span class="ui-separator">/</span>
-                <button id="lang-toggle" class="ui-btn" aria-label="Toggle Language"></button>
+        if (!document.getElementById('ui-controls-left')) {
+            // Left Side: Language Pills
+            const leftControls = document.createElement('div');
+            leftControls.id = 'ui-controls-left';
+            leftControls.className = 'ui-corner-controls';
+            leftControls.innerHTML = `
+                <div class="lang-pill-group">
+                    <button class="lang-pill" data-lang-val="sv" aria-label="Svenska">SV</button>
+                    <button class="lang-pill" data-lang-val="en" aria-label="English">EN</button>
+                </div>
             `;
-            document.body.appendChild(controls);
+            document.body.appendChild(leftControls);
 
-            document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-            document.getElementById('lang-toggle').addEventListener('click', toggleLang);
+            // Right Side: Theme Icons
+            const rightControls = document.createElement('div');
+            rightControls.id = 'ui-controls-right';
+            rightControls.className = 'ui-corner-controls';
+            rightControls.innerHTML = `
+                <div class="theme-icon-group">
+                    <button class="theme-btn" data-theme-val="dark" aria-label="Dark Mode">☾</button>
+                    <button class="theme-btn" data-theme-val="light" aria-label="Light Mode">☼</button>
+                </div>
+            `;
+            document.body.appendChild(rightControls);
+
+            document.querySelectorAll('.lang-pill').forEach(btn => {
+                btn.addEventListener('click', () => toggleLang(btn.getAttribute('data-lang-val')));
+            });
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.addEventListener('click', () => toggleTheme(btn.getAttribute('data-theme-val')));
+            });
         }
 
         if (document.querySelector('.parallax')) {
