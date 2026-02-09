@@ -129,25 +129,18 @@
             });
         }
 
-        if (document.querySelector('.parallax')) {
-            window.addEventListener('mousemove', handleParallax);
-        }
-
+        // Apply initial states
         applyTheme(currentTheme);
         applyLang(currentLang);
     }
 
+    // Initialize parallax if elements exist
     if (document.querySelector('.parallax')) {
         window.addEventListener('mousemove', handleParallax);
     }
 
-    applyTheme(currentTheme);
-    applyLang(currentLang);
-}
-
     if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initUI);
-} else {
-    initUI();
-}
-}) ();
+    } else {
+        initUI();
+    }
+})();

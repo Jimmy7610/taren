@@ -11,63 +11,40 @@
     <script defer src="/assets/ui.js"></script>
 </head>
 
-<body class="star-map-body">
-    <!-- 1. Background Layer (Parallax enabled) -->
-    <div class="bg-layer parallax" data-depth="4" aria-hidden="true">
-        <div class="star-dust"></div>
-        <div class="grain-overlay"></div>
-    </div>
+<body class="minimal-landing">
+    <!-- UI Controls (Injected by ui.js) -->
 
-    <!-- 2. Instrument Layer (Static) -->
-    <div class="instrument-layer" aria-hidden="true">
-        <div class="instrument">
-            <div class="ring"></div>
-            <div class="crosshair crosshair--h"></div>
-            <div class="crosshair crosshair--v"></div>
-        </div>
-    </div>
-
-    <!-- The UI toggles are injected by ui.js into the DOM automatically -->
-
-    <!-- 3. Content Layer (Static Stage) -->
-    <main class="content-layer">
-        <section class="stage">
-            <header class="hero">
-                <h1 class="title">Taren</h1>
-                <p class="subtitle" data-i18n="home.subtitle">Något nytt tar form.</p>
-            </header>
-
-            <nav class="nodes" aria-label="Sections">
-                <a class="node node--games" href="/games/">
-                    <span class="dot" aria-hidden="true"></span>
-                    <span class="label" data-i18n="home.games.label">Spel</span>
-                    <span class="micro" data-i18n="home.games.micro">Prova något litet.</span>
-                </a>
-                <a class="node node--experiments" href="/experiments/">
-                    <span class="dot" aria-hidden="true"></span>
-                    <span class="label" data-i18n="home.experiments.label">Experiment</span>
-                    <span class="micro" data-i18n="home.experiments.micro">Peta på kanterna.</span>
-                </a>
-                <a class="node node--sketches" href="/sketches/">
-                    <span class="dot" aria-hidden="true"></span>
-                    <span class="label" data-i18n="home.sketches.label">Skisser</span>
-                    <span class="micro" data-i18n="home.sketches.micro">Fragment & former.</span>
-                </a>
-                <a class="node node--texts" href="/texts/">
-                    <span class="dot" aria-hidden="true"></span>
-                    <span class="label" data-i18n="home.texts.label">Texter</span>
-                    <span class="micro" data-i18n="home.texts.micro">Noter ur dimman.</span>
-                </a>
-                <a class="node node--ongoing" href="/ongoing/">
-                    <span class="dot" aria-hidden="true"></span>
-                    <span class="label" data-i18n="home.ongoing.label">Pågår</span>
-                    <span class="micro" data-i18n="home.ongoing.micro">Tar fortfarande form.</span>
-                </a>
-            </nav>
+    <main class="landing-container">
+        <section class="hero-block">
+            <h1 class="landing-title" data-i18n="title">Taren</h1>
+            <p class="landing-subtitle" data-i18n="home.subtitle">Något nytt tar form.</p>
         </section>
-    </main>
 
-    <div class="vignette" aria-hidden="true"></div>
+        <nav class="navigation-block" aria-label="Main Navigation">
+            <div class="nav-grid">
+                <a href="/games/" class="nav-item">
+                    <span class="nav-label" data-i18n="home.games.label">Spel</span>
+                    <span class="nav-micro" data-i18n="home.games.micro">Prova något litet.</span>
+                </a>
+                <a href="/experiments/" class="nav-item">
+                    <span class="nav-label" data-i18n="home.experiments.label">Experiment</span>
+                    <span class="nav-micro" data-i18n="home.experiments.micro">Peta på kanterna.</span>
+                </a>
+                <a href="/sketches/" class="nav-item">
+                    <span class="nav-label" data-i18n="home.sketches.label">Skisser</span>
+                    <span class="nav-micro" data-i18n="home.sketches.micro">Fragment & former.</span>
+                </a>
+                <a href="/texts/" class="nav-item">
+                    <span class="nav-label" data-i18n="home.texts.label">Texter</span>
+                    <span class="nav-micro" data-i18n="home.texts.micro">Noter ur dimman.</span>
+                </a>
+                <a href="/ongoing/" class="nav-item">
+                    <span class="nav-label" data-i18n="home.ongoing.label">Pågår</span>
+                    <span class="nav-micro" data-i18n="home.ongoing.micro">Tar fortfarande form.</span>
+                </a>
+            </div>
+        </nav>
+    </main>
 </body>
 
 </html>
