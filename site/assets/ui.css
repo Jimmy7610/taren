@@ -47,16 +47,17 @@ a {
 /* UI Controls */
 .ui-corner-controls {
     position: fixed;
-    top: 2rem;
+    top: env(safe-area-inset-top, 2rem);
+    padding-top: 0.5rem;
     z-index: 100;
 }
 
 #ui-controls-left {
-    left: 2rem;
+    left: env(safe-area-inset-left, 2rem);
 }
 
 #ui-controls-right {
-    right: 2rem;
+    right: env(safe-area-inset-right, 2rem);
 }
 
 .lang-pill-group,

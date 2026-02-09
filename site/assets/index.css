@@ -1,20 +1,15 @@
 :root {
-    --orbit-radius: 200px;
+    /* Fluid scale for orbit radius: 140px on mobile-list to 220px on desktop */
+    --orbit-radius: clamp(140px, 20vw, 220px);
     --node-size: 6px;
     --compass-color: rgba(var(--accent-rgb), 0.15);
-}
-
-@media (max-width: 768px) {
-    :root {
-        --orbit-radius: 140px;
-    }
 }
 
 .star-map-body {
     margin: 0;
     max-width: none;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
     position: relative;
     background-color: #05070a;
 }
@@ -35,6 +30,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 .background-layer {
@@ -49,15 +45,18 @@
 
 .content-layer {
     z-index: 20;
+    min-height: 100vh;
+    padding: 6rem 1rem;
+    box-sizing: border-box;
 }
 
 /* Star Dust & Grain Overlay */
 .star-dust {
     position: absolute;
-    top: -10%;
-    left: -10%;
-    right: -10%;
-    bottom: -10%;
+    top: -20%;
+    left: -20%;
+    right: -20%;
+    bottom: -20%;
     opacity: 0.4;
     background-image:
         radial-gradient(1px 1px at 25px 35px, white, transparent),
@@ -100,28 +99,28 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.4) 100%);
+    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
     pointer-events: none;
     z-index: 5;
 }
 
-/* Compass Instrument Overlay */
+/* Compass Instrument */
 .compass-ring {
     width: calc(var(--orbit-radius) * 1.8);
     height: calc(var(--orbit-radius) * 1.8);
     border: 1px solid var(--compass-color);
     border-radius: 50%;
     position: absolute;
-    top: 45%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
 .crosshair-h,
 .crosshair-v {
-    background: var(--compass-color);
     position: absolute;
-    top: 45%;
+    background: var(--compass-color);
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -136,17 +135,21 @@
     width: 1px;
 }
 
+/* Content Layout System */
+.content-layer {
+    flex-direction: column;
+}
+
 .center-anchor {
     text-align: center;
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    margin-bottom: 2rem;
+    max-width: 90vw;
 }
 
 .center-anchor h1 {
     font-family: serif;
-    font-size: 4rem;
+    font-size: clamp(3rem, 10vw, 4.5rem);
     letter-spacing: -0.05rem;
     margin: 0;
     font-weight: normal;
@@ -154,7 +157,7 @@
 }
 
 .center-anchor p {
-    font-size: 0.95rem;
+    font-size: clamp(0.85rem, 2vw, 1rem);
     color: var(--muted);
     font-style: normal;
     margin: 0.5rem 0 0 0;
@@ -162,18 +165,20 @@
     opacity: 0.8;
 }
 
-/* Nodes */
+/* Orbit System */
 .orbit-system {
-    width: 0;
-    height: 0;
-    position: absolute;
-    top: 45%;
-    left: 50%;
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
 }
 
 .node {
-    position: absolute;
-    width: 160px;
+    position: relative;
+    width: 100%;
+    max-width: 280px;
     text-align: center;
     transition: transform 0.3s ease;
 }
@@ -192,97 +197,97 @@
     display: block;
     color: var(--text);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
     letter-spacing: 0.05rem;
     opacity: 0.9;
     font-weight: 400;
+    padding: 0.5rem 0;
+    /* Increase tap target */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .node-micro {
-    font-size: 0.72rem;
+    font-size: clamp(0.7rem, 2vw, 0.75rem);
     color: var(--muted);
     opacity: 0.6;
-    margin-top: 0.3rem;
+    margin-top: 0.1rem;
     line-height: 1.3;
 }
 
 /* Precise Node Positioning (Static, Matches Mockup) */
 /* Games (Top) */
 .node:nth-child(1) {
-    transform: translate(-50%, calc(-1 * var(--orbit-radius) - 60px));
+    /* transform: translate(-50%, calc(-1 * var(--orbit-radius) - 60px)); */
 }
 
 /* Experiments (Top Right) */
 .node:nth-child(2) {
-    transform: translate(calc(var(--orbit-radius) * 0.75), calc(-0.75 * var(--orbit-radius) - 20px));
-    text-align: left;
+    /* transform: translate(calc(var(--orbit-radius) * 0.75), calc(-0.75 * var(--orbit-radius) - 20px)); */
+    /* text-align: left; */
 }
 
 .node:nth-child(2) .node-point {
-    margin-left: 0;
+    /* margin-left: 0; */
 }
 
 /* Sketches (Bottom Left) */
 .node:nth-child(3) {
-    transform: translate(calc(-1 * var(--orbit-radius) * 0.75 - 160px), calc(0.75 * var(--orbit-radius) - 20px));
-    text-align: right;
+    /* transform: translate(calc(-1 * var(--orbit-radius) * 0.75 - 160px), calc(0.75 * var(--orbit-radius) - 20px)); */
+    /* text-align: right; */
 }
 
 .node:nth-child(3) .node-point {
-    margin-right: 0;
+    /* margin-right: 0; */
 }
 
 /* Texts (Bottom Right) */
 .node:nth-child(4) {
-    transform: translate(calc(var(--orbit-radius) * 0.75), calc(0.75 * var(--orbit-radius) - 20px));
-    text-align: left;
+    /* transform: translate(calc(var(--orbit-radius) * 0.75), calc(0.75 * var(--orbit-radius) - 20px)); */
+    /* text-align: left; */
 }
 
 .node:nth-child(4) .node-point {
-    margin-left: 0;
+    /* margin-left: 0; */
 }
 
 /* Ongoing (Bottom) */
 .node:nth-child(5) {
-    transform: translate(-50%, calc(var(--orbit-radius) + 40px));
+    /* transform: translate(-50%, calc(var(--orbit-radius) + 40px)); */
 }
 
 /* Interaction: Suble scale only, no layout shifts */
 .node:hover {
-    transform: translate(var(--tx, -50%), var(--ty)) scale(1.05);
+    transform: scale(1.05);
 }
 
-.node:nth-child(1):hover {
-    --tx: -50%;
-    --ty: calc(-1 * var(--orbit-radius) - 60px);
-}
+/* Breakpoint: Star Map Layout (iPads & Desktop) */
+@media (min-width: 768px) {
+    .content-layer {
+        padding: 0;
+    }
 
-.node:nth-child(2):hover {
-    --tx: calc(var(--orbit-radius) * 0.75);
-    --ty: calc(-0.75 * var(--orbit-radius) - 20px);
-}
+    .center-anchor {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin-bottom: 0;
+    }
 
-.node:nth-child(3):hover {
-    --tx: calc(-1 * var(--orbit-radius) * 0.75 - 160px);
-    --ty: calc(0.75 * var(--orbit-radius) - 20px);
-}
+    .orbit-system {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+    }
 
-.node:nth-child(4):hover {
-    --tx: calc(var(--orbit-radius) * 0.75);
-    --ty: calc(0.75 * var(--orbit-radius) - 20px);
-}
-
-.node:nth-child(5):hover {
-    --tx: -50%;
-    --ty: calc(var(--orbit-radius) + 40px);
-}
-
-@media (max-width: 768px) {
     .node {
-        width: 120px;
-    }
 
-    .node:nth-child(3) {
-        transform: translate(calc(-1 * var(--orbit-radius) * 0.7 - 120px), calc(0.7 * var(--orbit-radius) - 20px));
+        .node:nth-child(3) {
+            transform: translate(calc(-1 * var(--orbit-radius) * 0.7 - 120px), calc(0.7 * var(--orbit-radius) - 20px));
+        }
     }
-}
