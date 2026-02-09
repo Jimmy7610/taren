@@ -11,43 +11,59 @@ interface SnakeCanvasProps {
 }
 
 export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameOver }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [gameState, setGameState] = useState<'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER'>('IDLE');
 
     // Game constants
-    const GRID_SIZE = 20;
+    const CELL_SIZE = 24; // Authoritative cell size in pixels
     const GAME_SPEED = 100; // ms per move
 
     // Mutable game state for the loop
     const stateRef = useRef({
-        snake: [{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }] as Point[],
+        snake: [] as Point[],
         direction: { x: 0, y: -1 } as Point,
         nextDirection: { x: 0, y: -1 } as Point,
-        food: { x: 5, y: 5 } as Point,
+        food: { x: 0, y: 0 } as Point,
         score: 0,
         lastUpdate: 0,
         isPaused: true,
+        gridCols: 20,
+        gridRows: 20,
     });
 
-    const spawnFood = useCallback((snake: Point[]): Point => {
+    const spawnFood = useCallback((snake: Point[], cols: number, rows: number): Point => {
         let newFood: Point;
-        while (true) {
+        let attempts = 0;
+        while (attempts < 100) {
             newFood = {
-                x: Math.floor(Math.random() * GRID_SIZE),
-                y: Math.floor(Math.random() * GRID_SIZE),
+                x: Math.floor(Math.random() * cols),
+                y: Math.floor(Math.random() * rows),
             };
             const onSnake = snake.some(p => p.x === newFood.x && p.y === newFood.y);
-            if (!onSnake) break;
+            if (!onSnake) return newFood;
+            attempts++;
         }
-        return newFood;
+        return { x: 0, y: 0 };
     }, []);
 
     const resetGame = useCallback(() => {
+        const { gridCols, gridRows } = stateRef.current;
+        const centerX = Math.floor(gridCols / 2);
+        const centerY = Math.floor(gridRows / 2);
+
+        const initialSnake = [
+            { x: centerX, y: centerY },
+            { x: centerX, y: centerY + 1 },
+            { x: centerX, y: centerY + 2 }
+        ];
+
         stateRef.current = {
-            snake: [{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }],
+            ...stateRef.current,
+            snake: initialSnake,
             direction: { x: 0, y: -1 },
             nextDirection: { x: 0, y: -1 },
-            food: spawnFood([{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }]),
+            food: spawnFood(initialSnake, gridCols, gridRows),
             score: 0,
             lastUpdate: performance.now(),
             isPaused: false,
@@ -56,9 +72,38 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
         setGameState('PLAYING');
     }, [onScoreChange, spawnFood]);
 
+    // Handle Resize & Grid Autority
+    useEffect(() => {
+        if (!containerRef.current) return;
+
+        const handleResize = (entries: ResizeObserverEntry[]) => {
+            const entry = entries[0];
+            if (!entry) return;
+
+            const width = entry.contentRect.width;
+            const height = entry.contentRect.height;
+
+            // Define grid based on container size
+            const cols = Math.floor(width / CELL_SIZE);
+            const rows = Math.floor(height / CELL_SIZE);
+
+            stateRef.current.gridCols = cols;
+            stateRef.current.gridRows = rows;
+
+            // If game is idle, we can re-center or reset just in case
+            if (gameState === 'IDLE') {
+                // optional reset logic
+            }
+        };
+
+        const observer = new ResizeObserver(handleResize);
+        observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, [gameState]);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            const { direction, nextDirection } = stateRef.current;
+            const { direction, isPaused } = stateRef.current;
 
             switch (e.key) {
                 case 'ArrowUp':
@@ -82,8 +127,9 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
                     if (direction.x === 0) stateRef.current.nextDirection = { x: 1, y: 0 };
                     break;
                 case ' ':
+                    e.preventDefault();
                     if (gameState === 'PLAYING') {
-                        stateRef.current.isPaused = !stateRef.current.isPaused;
+                        stateRef.current.isPaused = !isPaused;
                         setGameState(stateRef.current.isPaused ? 'PAUSED' : 'PLAYING');
                     } else if (gameState === 'IDLE' || gameState === 'GAMEOVER') {
                         resetGame();
@@ -118,10 +164,10 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
                     y: head.y + state.direction.y,
                 };
 
-                // Collision Check
+                // Authoritative Grid Collision Check
                 if (
-                    newHead.x < 0 || newHead.x >= GRID_SIZE ||
-                    newHead.y < 0 || newHead.y >= GRID_SIZE ||
+                    newHead.x < 0 || newHead.x >= state.gridCols ||
+                    newHead.y < 0 || newHead.y >= state.gridRows ||
                     state.snake.some(p => p.x === newHead.x && p.y === newHead.y)
                 ) {
                     state.isPaused = true;
@@ -136,7 +182,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
                 if (newHead.x === state.food.x && newHead.y === state.food.y) {
                     state.score += 10;
                     onScoreChange(state.score);
-                    state.food = spawnFood(state.snake);
+                    state.food = spawnFood(state.snake, state.gridCols, state.gridRows);
                 } else {
                     state.snake.pop();
                 }
@@ -146,26 +192,32 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
         const draw = () => {
             const state = stateRef.current;
             const dpr = window.devicePixelRatio || 1;
-            const size = Math.min(canvas.clientWidth, canvas.clientHeight);
-            canvas.width = size * dpr;
-            canvas.height = size * dpr;
-            ctx.scale(dpr, dpr);
 
-            const cellSize = size / GRID_SIZE;
+            const targetWidth = state.gridCols * CELL_SIZE;
+            const targetHeight = state.gridRows * CELL_SIZE;
 
-            ctx.clearRect(0, 0, size, size);
+            // Update canvas dimensions only if changed
+            if (canvas.width !== targetWidth * dpr || canvas.height !== targetHeight * dpr) {
+                canvas.width = targetWidth * dpr;
+                canvas.height = targetHeight * dpr;
+                ctx.scale(dpr, dpr);
+            }
 
-            // Draw Background Grid
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.clearRect(0, 0, targetWidth, targetHeight);
+
+            // Draw Background Grid (Autoritative)
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
             ctx.lineWidth = 1;
-            for (let i = 0; i <= GRID_SIZE; i++) {
+            for (let i = 0; i <= state.gridCols; i++) {
                 ctx.beginPath();
-                ctx.moveTo(i * cellSize, 0);
-                ctx.lineTo(i * cellSize, size);
+                ctx.moveTo(i * CELL_SIZE, 0);
+                ctx.lineTo(i * CELL_SIZE, targetHeight);
                 ctx.stroke();
+            }
+            for (let j = 0; j <= state.gridRows; j++) {
                 ctx.beginPath();
-                ctx.moveTo(0, i * cellSize);
-                ctx.lineTo(size, i * cellSize);
+                ctx.moveTo(0, j * CELL_SIZE);
+                ctx.lineTo(targetWidth, j * CELL_SIZE);
                 ctx.stroke();
             }
 
@@ -176,30 +228,29 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
             ctx.fillStyle = '#FF5F1F';
             ctx.beginPath();
             ctx.arc(
-                state.food.x * cellSize + cellSize / 2,
-                state.food.y * cellSize + cellSize / 2,
-                (cellSize / 3) * (0.8 + pulse * 0.2),
+                state.food.x * CELL_SIZE + CELL_SIZE / 2,
+                state.food.y * CELL_SIZE + CELL_SIZE / 2,
+                (CELL_SIZE / 3) * (0.8 + pulse * 0.2),
                 0,
                 Math.PI * 2
             );
             ctx.fill();
 
-            // Draw Snake
+            // Draw Snake (Autoritative)
             ctx.shadowBlur = 15;
             ctx.shadowColor = '#00f2ff';
             ctx.fillStyle = '#00f2ff';
             state.snake.forEach((p, i) => {
                 const isHead = i === 0;
-                const r = cellSize * 0.1;
-                const padding = i === 0 ? 0 : cellSize * 0.05;
+                const padding = i === 0 ? 0 : CELL_SIZE * 0.05;
 
                 ctx.beginPath();
                 ctx.roundRect(
-                    p.x * cellSize + padding,
-                    p.y * cellSize + padding,
-                    cellSize - padding * 2,
-                    cellSize - padding * 2,
-                    isHead ? cellSize * 0.2 : cellSize * 0.1
+                    p.x * CELL_SIZE + padding,
+                    p.y * CELL_SIZE + padding,
+                    CELL_SIZE - padding * 2,
+                    CELL_SIZE - padding * 2,
+                    isHead ? CELL_SIZE * 0.2 : CELL_SIZE * 0.1
                 );
                 ctx.fill();
             });
@@ -231,15 +282,18 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
     }, [gameState]);
 
     return (
-        <div className="relative h-full w-full flex flex-col items-center justify-center bg-black/40 rounded-3xl border border-foreground/5 backdrop-blur-sm overflow-hidden">
+        <div ref={containerRef} className="relative h-full w-full flex items-center justify-center bg-black/40 rounded-3xl border border-foreground/5 backdrop-blur-sm overflow-hidden">
             <canvas
                 ref={canvasRef}
-                className="max-h-full max-w-full aspect-square cursor-none"
-                style={{ width: 'min(80vh - 100px, 100%)' }}
+                className="cursor-none"
+                style={{
+                    width: `${stateRef.current.gridCols * CELL_SIZE}px`,
+                    height: `${stateRef.current.gridRows * CELL_SIZE}px`
+                }}
             />
 
             {gameState === 'IDLE' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md z-20">
                     <h2 className="text-5xl font-bold tracking-tighter text-white mb-8 animate-pulse">NEON SNAKE</h2>
                     <button
                         onClick={resetGame}
@@ -252,14 +306,14 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({ onScoreChange, onGameO
             )}
 
             {gameState === 'PAUSED' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm z-20">
                     <h2 className="text-4xl font-bold tracking-tighter text-white mb-4">PAUSED</h2>
                     <p className="text-white/60 mb-8 font-mono">Press Space to Resume</p>
                 </div>
             )}
 
             {gameState === 'GAMEOVER' && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl animate-in fade-in duration-500">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-xl z-20 animate-in fade-in duration-500">
                     <h2 className="text-5xl font-bold tracking-tighter text-red-500 mb-2">GAME OVER</h2>
                     <p className="text-2xl font-mono text-white/80 mb-8">Score: {stateRef.current.score}</p>
                     <button
