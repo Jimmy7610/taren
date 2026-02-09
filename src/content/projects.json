@@ -1,0 +1,74 @@
+[
+    {
+        "title": "Neon Snake",
+        "slug": "neon-snake",
+        "category": "games",
+        "description": "A classic snake game with a vibrant neon aesthetic and smooth physics.",
+        "status": "finished",
+        "tags": [
+            "Game",
+            "Canvas",
+            "Classic"
+        ],
+        "date": "2025-12-15",
+        "thumbnail": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=400",
+        "featured": true
+    },
+    {
+        "title": "Shadow Archipelago",
+        "slug": "shadow-archipelago",
+        "category": "experiments",
+        "description": "The technical exploration behind this very site's unique home navigation.",
+        "status": "ongoing",
+        "tags": [
+            "React",
+            "Layout",
+            "UX"
+        ],
+        "date": "2026-02-09",
+        "thumbnail": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=400",
+        "featured": true
+    },
+    {
+        "title": "Minimalist Sequencer",
+        "slug": "minimal-sequencer",
+        "category": "music",
+        "description": "A web-based audio tool for creating simple rhythmic patterns.",
+        "status": "sketch",
+        "tags": [
+            "Music",
+            "Audio API"
+        ],
+        "date": "2026-01-20",
+        "thumbnail": "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&q=80&w=400",
+        "featured": false
+    },
+    {
+        "title": "Particle Playground",
+        "slug": "particle-playground",
+        "category": "experiments",
+        "description": "Interactive GPU-accelerated particles that respond to mouse movements.",
+        "status": "finished",
+        "tags": [
+            "Experiment",
+            "WebGL"
+        ],
+        "date": "2026-01-05",
+        "thumbnail": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=400",
+        "featured": true
+    },
+    {
+        "title": "Digital Journal",
+        "slug": "digital-journal",
+        "category": "texts",
+        "description": "A study on typographic layout and readability in personal blogs.",
+        "status": "finished",
+        "tags": [
+            "Text",
+            "Design"
+        ],
+        "date": "2025-11-28",
+        "thumbnail": "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=400",
+        "featured": false
+    }
+]
