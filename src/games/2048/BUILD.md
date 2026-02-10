@@ -1,8 +1,11 @@
-# 2048 — Build #1
+# 2048 — Build #2
 
-Scaffold + reserved PNG hero slot (`src/games/2048/assets/images/hero.png`).
+Two-step start flow + initial spawn + 4×4 grid rendering.
 
-- Added initial folder structure
-- Added `HeroArt` component for Jimmy's PNG (no artwork created)
-- Added minimal `App`, `main.jsx`, and `index.html`
-- Added base CSS scaffold
+- Start overlay: “Press any key / tap to start”
+- Spawns exactly 2 tiles on start (90% 2, 10% 4)
+- Renders full 4×4 board with tiles
+- No movement / merge logic yet (next build)
+MD
+
+# global: Build #33

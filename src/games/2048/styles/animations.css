@@ -1,1 +1,18 @@
-/* Reserved for motion (respect prefers-reduced-motion) (Build #1) */
+/* TAREN 2048 - animations (Build #2) */
+@media (prefers-reduced-motion: no-preference) {
+    .t2048-tile {
+        animation: t2048-pop 120ms ease-out;
+    }
+
+    @keyframes t2048-pop {
+        from {
+            transform: scale(0.98);
+            opacity: 0.85;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+}
