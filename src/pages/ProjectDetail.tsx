@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Calendar, Tag, Activity } from 'lucide-react';
 import { useProjects } from '../hooks/useProjects';
 
 export const ProjectDetail: React.FC = () => {
-    const { category, slug } = useParams<{ category: string; slug: string }>();
+    const { slug } = useParams<{ slug: string }>();
     const { projects } = useProjects();
 
     const project = useMemo(() => {

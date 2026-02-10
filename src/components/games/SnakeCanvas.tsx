@@ -175,7 +175,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         if (ambientOscRef.current) {
             try {
                 ambientOscRef.current.stop();
-            } catch (e) { }
+            } catch { }
             ambientOscRef.current = null;
         }
     }, []);
