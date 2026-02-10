@@ -46,6 +46,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     const [parallax, setParallax] = useState({ x: 0, y: 0 });
     const stingerPlayedRef = useRef(false);
     const bootStingerRef = useRef<HTMLAudioElement | null>(null);
+    const audioUnlockedRef = useRef(false);
 
     // Audio Engine Refs
     const audioCtxRef = useRef<AudioContext | null>(null);
@@ -121,6 +122,16 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             console.error('AudioContext not supported');
         }
     }, [isSoundOn]);
+
+    const unlockAudioFromGesture = useCallback(() => {
+        if (audioUnlockedRef.current) return;
+        initAudio();
+        const ctx = audioCtxRef.current;
+        if (ctx && ctx.state === 'suspended') {
+            ctx.resume().catch(() => { });
+        }
+        audioUnlockedRef.current = true;
+    }, [initAudio]);
 
     const playSfx = useCallback((freq: number, type: OscillatorType, duration: number, volume = 0.1) => {
         if (!audioCtxRef.current || !isSoundOn || !masterGainRef.current) return;
@@ -280,6 +291,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             if (gameState === 'READY') {
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', ' ', 'Enter'].includes(e.key)) {
                     e.preventDefault();
+                    unlockAudioFromGesture();
                     if (!stingerPlayedRef.current) playStartStinger();
                     onStateChange('PLAYING');
                     setHasMoving(true);
@@ -344,6 +356,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     // Handle Swipe
     const handleTouchStart = (e: React.TouchEvent) => {
         if (gameState === 'READY') {
+            unlockAudioFromGesture();
             if (!stingerPlayedRef.current) playStartStinger();
             onStateChange('PLAYING');
             setHasMoving(true);
