@@ -1,4 +1,4 @@
-/* TAREN 2048 - tiles (Build #2) */
+/* TAREN 2048 - tiles (Build #6) */
 
 .t2048-board {
     width: 100%;
@@ -8,6 +8,7 @@
     box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     gap: 10px;
     border: 1px solid rgba(255, 255, 255, 0.10);
     background: rgba(255, 255, 255, 0.04);
@@ -16,12 +17,15 @@
 }
 
 .t2048-cell {
+    aspect-ratio: 1 / 1;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.06);
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .t2048-tile {
@@ -37,4 +41,5 @@
     background: rgba(255, 255, 255, 0.10);
     border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+    box-sizing: border-box;
 }

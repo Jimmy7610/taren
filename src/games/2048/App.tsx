@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import ReactDOM from "react-dom";
 
 import "./styles/base.css";
 import "./styles/tiles.css";
@@ -14,7 +13,12 @@ import { attachSwipe } from "./input/touch";
 import { has2048, isGameOver } from "./logic/status";
 import { loadBestScore, saveBestScore } from "./logic/storage";
 
-export default function App() {
+type Props = {
+    onScoreChange?: (score: number) => void;
+    onBestScoreChange?: (best: number) => void;
+};
+
+export default function App({ onScoreChange, onBestScoreChange }: Props) {
     const [hasStarted, setHasStarted] = useState(false);
     const [grid, setGrid] = useState<Grid4>(() => createEmptyGrid4());
     const [score, setScore] = useState(0);
@@ -44,6 +48,15 @@ export default function App() {
             document.body.classList.remove("taren-game-locked-scroll");
         };
     }, []);
+
+    // Sync score/best to parent shell
+    useEffect(() => {
+        onScoreChange?.(score);
+    }, [score, onScoreChange]);
+
+    useEffect(() => {
+        onBestScoreChange?.(bestScore);
+    }, [bestScore, onBestScoreChange]);
 
     const start = useCallback(() => {
         if (startedRef.current) return;
@@ -85,7 +98,6 @@ export default function App() {
         setGrid(prev => {
             const result = moveGrid(prev, dir);
             if (result.changed) {
-                // Clear previous animations
                 setLastMergePositions(result.mergedPositions);
 
                 // Movement feedback: directional nudge
@@ -103,13 +115,11 @@ export default function App() {
                 const spawnRes = spawnOneTile(result.grid);
                 setLastSpawnPos(spawnRes.pos);
 
-                // Detect Win (exactly once per session)
                 if (!hasWon && has2048(spawnRes.grid)) {
                     setHasWon(true);
                     setShowWinOverlay(true);
                 }
 
-                // Detect Game Over
                 if (isGameOver(spawnRes.grid)) {
                     setIsGameEnded(true);
                 }
@@ -183,30 +193,8 @@ export default function App() {
         };
     }, [start, handleMove, isGameEnded, showWinOverlay]);
 
-    // Portal: inject score blocks into the page header
-    const headerPortal = document.getElementById("t2048-header-scores");
-
     return (
         <div className="t2048-root" ref={rootRef}>
-            {/* Score/Best portal into page header */}
-            {headerPortal && ReactDOM.createPortal(
-                <>
-                    <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.2em] mb-0.5">Score</span>
-                        <span className="text-xl font-mono font-bold tabular-nums text-[#EDEDED]">
-                            {score.toString().padStart(4, '0')}
-                        </span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.2em] mb-0.5">Best</span>
-                        <span className="text-xl font-mono font-bold tabular-nums text-[#8A8A8A]">
-                            {bestScore.toString().padStart(4, '0')}
-                        </span>
-                    </div>
-                </>,
-                headerPortal
-            )}
-
             {!hasStarted ? (
                 <StartScreen title="2048" subtitle="Press any key / tap to start" />
             ) : null}

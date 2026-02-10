@@ -1,16 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, RefreshCcw } from 'lucide-react';
+import { ArrowLeft, Settings2 } from 'lucide-react';
 import { strings } from '../constants/strings';
 import hero2048 from '../games/2048/assets/images/hero.png';
 import Game2048 from '../games/2048/App';
 
 /**
- * Page shell for 2048, mirrors SnakeGame.tsx layout:
- * full-viewport, dark bg, top header with score blocks, back link.
- * Game state (score/best/restart) is lifted here and passed down.
+ * Page shell for 2048 — mirrors SnakeGame.tsx layout exactly:
+ * full-viewport, cinematic bg, header bar with score blocks,
+ * 3-column main with left scoreboard + center game + right controls panel,
+ * mobile footer.
  */
 export const Game2048Page: React.FC = () => {
+    const [score, setScore] = useState(0);
+    const [bestScore, setBestScore] = useState(0);
+
     useEffect(() => {
         document.title = '2048 | TAREN – Minimalist Puzzle Experiment';
 
@@ -48,7 +52,7 @@ export const Game2048Page: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
             </div>
 
-            {/* Header / HUD – matches Snake pattern */}
+            {/* Header / HUD – mirrors Snake exactly */}
             <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-50">
                 <div className="flex items-center gap-8">
                     <div className="flex flex-col">
@@ -56,8 +60,18 @@ export const Game2048Page: React.FC = () => {
                         <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Puzzle</span>
                     </div>
                     <div className="h-8 w-px bg-white/5" />
-                    {/* Score and Best are rendered by Game2048 via portal callback */}
-                    <div id="t2048-header-scores" className="flex items-center gap-8" />
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.2em] mb-0.5">Score</span>
+                        <span className="text-xl font-mono font-bold tabular-nums text-[#EDEDED]">
+                            {score.toString().padStart(4, '0')}
+                        </span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.2em] mb-0.5">Best</span>
+                        <span className="text-xl font-mono font-bold tabular-nums text-[#8A8A8A]">
+                            {bestScore.toString().padStart(4, '0')}
+                        </span>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-6">
@@ -72,10 +86,78 @@ export const Game2048Page: React.FC = () => {
                 </div>
             </header>
 
-            {/* Main Content */}
-            <main className="flex-1 relative flex items-start justify-center overflow-hidden z-10">
-                <Game2048 />
+            {/* Main Content Areas – 3-column like Snake */}
+            <main className="flex-1 flex overflow-hidden relative">
+                {/* LEFT: Scoreboard (mirrors Snake's highscore sidebar) */}
+                <aside className="hidden lg:flex w-72 flex-col border-r border-white/5 bg-black/20 p-6 overflow-hidden">
+                    <h3 className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                        📊 Scoreboard
+                    </h3>
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between py-3 border-b border-white/5">
+                            <span className="text-[10px] font-mono text-[#8A8A8A] uppercase">Current</span>
+                            <span className="text-lg font-mono font-bold tabular-nums text-[#EDEDED]">
+                                {score.toString().padStart(4, '0')}
+                            </span>
+                        </div>
+                        <div className="flex items-center justify-between py-3 border-b border-white/5">
+                            <span className="text-[10px] font-mono text-[#8A8A8A] uppercase">All-time Best</span>
+                            <span className="text-lg font-mono font-bold tabular-nums text-amber-400">
+                                {bestScore.toString().padStart(4, '0')}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="mt-auto pt-6">
+                        <p className="text-[10px] font-mono text-[#666666] italic uppercase">Merge tiles to reach 2048...</p>
+                    </div>
+                </aside>
+
+                {/* CENTER: Game area */}
+                <div className="flex-1 relative flex items-center justify-center p-0 lg:p-4 overflow-hidden">
+                    <div className="w-full h-full flex items-center justify-center relative">
+                        <Game2048 onScoreChange={setScore} onBestScoreChange={setBestScore} />
+                    </div>
+                </div>
+
+                {/* RIGHT: Controls / Info – mirrors Snake exactly */}
+                <aside className="hidden xl:flex w-72 flex-col border-l border-white/5 bg-black/20 p-6">
+                    <div className="mb-8">
+                        <h3 className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                            <Settings2 className="h-3.5 w-3.5" /> Controls
+                        </h3>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between text-[10px] text-[#8A8A8A] font-mono italic">
+                                <span>Move</span>
+                                <span className="font-bold text-[#B8B8B8]">WASD / ARROWS</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[10px] text-[#8A8A8A] font-mono italic">
+                                <span>Start</span>
+                                <span className="font-bold text-[#B8B8B8]">ANY KEY / TAP</span>
+                            </div>
+                            <div className="flex items-center justify-between text-[10px] text-[#8A8A8A] font-mono italic">
+                                <span>Mobile</span>
+                                <span className="font-bold text-[#EDEDED]">SWIPE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mb-8">
+                        <h3 className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.3em] mb-4">Rules</h3>
+                        <div className="space-y-2 text-[10px] text-[#8A8A8A] font-mono italic leading-relaxed">
+                            <p>Slide tiles in any direction.</p>
+                            <p>Equal tiles merge on contact.</p>
+                            <p>Reach <span className="text-amber-400 font-bold">2048</span> to win.</p>
+                        </div>
+                    </div>
+                </aside>
             </main>
+
+            {/* Mobile Footer – mirrors Snake */}
+            <div className="lg:hidden h-12 border-t border-white/5 bg-black/40 flex items-center justify-center gap-4 text-[10px] font-mono italic text-[#666666]">
+                <span>Score: {score}</span>
+                <div className="h-3 w-px bg-white/5" />
+                <span>Best: {bestScore}</span>
+            </div>
         </div>
     );
 };
