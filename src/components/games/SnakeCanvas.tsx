@@ -280,7 +280,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 // Any movement key or space/enter starts the movement
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', ' ', 'Enter'].includes(e.key)) {
                     initAudio();
-                    if (gameState === 'IDLE') playStartStinger();
+                    if (!stingerPlayedRef.current) playStartStinger();
                     setHasMoving(true);
                     startAmbient();
                     stateRef.current.lastUpdate = performance.now();
