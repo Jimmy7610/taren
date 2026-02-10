@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Gamepad2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { strings } from '../constants/strings';
 import snakeHero from '../games/snake/assets/snake-pixar-neon.png';
 import './GamesIndex.css';
