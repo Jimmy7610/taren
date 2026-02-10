@@ -46,14 +46,6 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
     const pulseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const audioRef = useRef(new AudioEngine(loadMute()));
 
-    // Lock page scroll while 2048 is mounted
-    useEffect(() => {
-        document.body.classList.add("taren-game-locked-scroll");
-        return () => {
-            document.body.classList.remove("taren-game-locked-scroll");
-        };
-    }, []);
-
     // Sync score/best/mute to parent shell
     useEffect(() => { onScoreChange?.(score); }, [score, onScoreChange]);
     useEffect(() => { onBestScoreChange?.(bestScore); }, [bestScore, onBestScoreChange]);

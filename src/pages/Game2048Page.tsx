@@ -43,15 +43,10 @@ export const Game2048Page: React.FC = () => {
         updateMeta('description', 'A minimalist 2048 puzzle game with premium glass aesthetics within the TAREN archipelago.');
         updateMeta('og:title', '2048 | TAREN', true);
         updateMeta('og:description', 'A premium 2048 puzzle experiment.', true);
-
-        document.body.classList.add('no-scroll');
-        return () => {
-            document.body.classList.remove('no-scroll');
-        };
     }, []);
 
     return (
-        <div className="relative flex min-h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-white" style={{ overscrollBehavior: 'none' }}>
+        <div className="relative flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-white" style={{ overscrollBehavior: 'none' }}>
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
