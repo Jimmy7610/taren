@@ -1,4 +1,11 @@
-/* TAREN 2048 - tiles (Build #6) */
+/* TAREN 2048 - tiles (Build #7) */
+
+.t2048-boardShell {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
 
 .t2048-board {
     width: 100%;
@@ -14,6 +21,8 @@
     background: rgba(255, 255, 255, 0.04);
     backdrop-filter: blur(10px);
     touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .t2048-cell {

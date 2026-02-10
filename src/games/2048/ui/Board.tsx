@@ -9,6 +9,7 @@ type Props = {
     noMove?: boolean;
     moveDir?: Direction | null;
     movePulse?: number;
+    boardRef?: React.RefObject<HTMLDivElement>;
 };
 
 export default function Board({
@@ -18,6 +19,7 @@ export default function Board({
     noMove,
     moveDir,
     movePulse = 0,
+    boardRef,
 }: Props) {
     const isMerged = (r: number, c: number) =>
         lastMergePositions.some(pos => pos.r === r && pos.c === c);
@@ -26,7 +28,7 @@ export default function Board({
         lastSpawnPos?.r === r && lastSpawnPos?.c === c;
 
     return (
-        <div className="t2048-boardShell">
+        <div className="t2048-boardShell" ref={boardRef}>
             <div
                 className={`t2048-board ${noMove ? "t2048-board--noMove" : ""}`}
                 data-dir={moveDir ?? ""}

@@ -43,6 +43,7 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
     // Refs
     const startedRef = useRef(false);
     const rootRef = useRef<HTMLDivElement>(null);
+    const boardRef = useRef<HTMLDivElement>(null);
     const pulseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const audioRef = useRef(new AudioEngine(loadMute()));
 
@@ -74,7 +75,7 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
         if (startedRef.current) return;
         startedRef.current = true;
 
-        // Unlock audio on first user gesture
+        // Unlock audio on first user gesture (critical for iOS)
         await audioRef.current.unlock();
 
         const res = spawnInitialTwoTiles(createEmptyGrid4());
@@ -154,6 +155,7 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
         });
     }, [score, bestScore, hasWon, isGameEnded, showWinOverlay, triggerNoMoveFeedback]);
 
+    // Keyboard input
     useEffect(() => {
         const GAME_KEYS = new Set([
             "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
@@ -183,24 +185,33 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
             }
         };
 
-        const onPointerDown = () => {
+        window.addEventListener("keydown", onKeyDown);
+        return () => { window.removeEventListener("keydown", onKeyDown); };
+    }, [start, handleMove, isGameEnded, showWinOverlay]);
+
+    // Tap-to-start: pointer + touch (iOS needs touchstart for reliable gesture detection)
+    useEffect(() => {
+        const onTapStart = () => {
             if (!startedRef.current) start();
         };
 
-        window.addEventListener("keydown", onKeyDown);
-        window.addEventListener("pointerdown", onPointerDown);
-
-        let cleanupSwipe: (() => void) | undefined;
-        if (rootRef.current) {
-            cleanupSwipe = attachSwipe(rootRef.current, handleMove);
-        }
+        window.addEventListener("pointerdown", onTapStart, { passive: true });
+        window.addEventListener("touchstart", onTapStart, { passive: true });
 
         return () => {
-            window.removeEventListener("keydown", onKeyDown);
-            window.removeEventListener("pointerdown", onPointerDown);
-            if (cleanupSwipe) cleanupSwipe();
+            window.removeEventListener("pointerdown", onTapStart);
+            window.removeEventListener("touchstart", onTapStart);
         };
-    }, [start, handleMove, isGameEnded, showWinOverlay]);
+    }, [start]);
+
+    // Swipe on the board surface (robust dual pointer+touch handler)
+    useEffect(() => {
+        const el = boardRef.current;
+        if (!el) return;
+
+        const cleanup = attachSwipe(el, handleMove, { deadzonePx: 20 });
+        return cleanup;
+    }, [handleMove]);
 
     return (
         <div className="t2048-root" ref={rootRef}>
@@ -235,6 +246,7 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
                 noMove={noMovePulse}
                 moveDir={lastMoveDir}
                 movePulse={movePulse}
+                boardRef={boardRef}
             />
         </div>
     );
