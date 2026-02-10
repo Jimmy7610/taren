@@ -603,7 +603,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         <div className="flex flex-col items-center gap-1">
                             <h3 className="text-xl font-bold text-[#EDEDED] tracking-tight">Press any key or tap to start</h3>
                             {isTouchDevice && (
-                                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/40">Swipe to move</p>
+                                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#8A8A8A]">Swipe to move</p>
                             )}
                         </div>
                     </div>
@@ -638,7 +638,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
                     <div className="flex flex-col gap-8 w-full max-w-sm relative z-10" onClick={e => e.stopPropagation()}>
                         <div className="flex flex-col gap-3">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em]">Initialize Configuration</span>
+                            <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.4em]">Initialize Configuration</span>
                             <div className="grid grid-cols-3 gap-3 p-1.5 bg-white/5 border border-white/5 rounded-2xl">
                                 {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map(d => (
                                     <button
@@ -646,7 +646,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                                         onClick={() => onDifficultyChange(d)}
                                         className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${difficulty === d
                                             ? 'bg-white text-black shadow-xl shadow-white/5'
-                                            : 'text-white/20 hover:text-white hover:bg-white/5'
+                                            : 'text-[#666666] hover:text-[#EDEDED] hover:bg-white/5'
                                             }`}
                                     >
                                         {d}
@@ -669,7 +669,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     <div className="mt-16 text-white/20 text-[10px] uppercase font-mono tracking-[0.4em] flex flex-col items-center gap-4">
                         {!isTouchDevice ? (
                             <div className="flex items-center gap-6">
-                                <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-white/40">SPACE / ENTER</span>
+                                <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[#8A8A8A]">SPACE / ENTER</span>
                                 <span>TO START</span>
                             </div>
                         ) : (
@@ -688,7 +688,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     <div className="p-12 rounded-[40px] bg-black/80 border border-white/10 flex flex-col items-center mt-[-8vh]">
                         <Pause className="h-16 w-16 text-accent mb-6 animate-pulse" />
                         <h2 className="text-4xl font-bold tracking-tighter text-[#EDEDED] mb-2">SYSTEM PAUSED</h2>
-                        <p className="text-white/40 text-[10px] font-mono uppercase tracking-[0.3em] mb-12 text-center">
+                        <p className="text-[#8A8A8A] text-[10px] font-mono uppercase tracking-[0.3em] mb-12 text-center">
                             Experiment held in stasis. <br /> {isTouchDevice ? 'Tap Resume to continue' : 'Press Space to Resume'}
                         </p>
                         <button
@@ -706,13 +706,13 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     <div className="flex flex-col items-center max-w-sm w-full p-12 text-center mt-[-8vh]">
                         <div className="mb-16">
                             <h2 className="text-6xl font-bold tracking-tighter text-[#EDEDED] mb-4 leading-tight">The Darkness Consumes You</h2>
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-[#8A8A8A]">
                                 <Trophy className="h-3 w-3 text-accent" /> Mode: {difficulty}
                             </div>
                         </div>
 
                         <div className="flex flex-col items-center mb-16">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em] mb-4">Final Data Yield</span>
+                            <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.4em] mb-4">Final Data Yield</span>
                             <span className="text-8xl font-mono font-bold text-accent drop-shadow-[0_0_30px_rgba(255,95,31,0.4)]">
                                 {stateRef.current.score}
                             </span>
