@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import { Project } from '../hooks/useProjects';
@@ -15,6 +15,7 @@ export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '',
             className={`group relative flex flex-col overflow-hidden rounded-[--card-radius] border border-foreground/10 bg-background/50 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_0_20px_rgba(255,95,31,0.1)] focus-within:ring-2 focus-within:ring-accent ${className}`}
             style={style}
         >
+            <h1 className="sr-only">{project.title}</h1>
             <div className="aspect-video overflow-hidden">
                 <img
                     src={project.thumbnail}

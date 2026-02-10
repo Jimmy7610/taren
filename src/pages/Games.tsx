@@ -15,6 +15,7 @@ export const Games: React.FC = () => {
 
     return (
         <div className="relative isolate min-h-[calc(100vh-64px)] overflow-hidden">
+            <title>Games | TAREN</title>
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
                 <img

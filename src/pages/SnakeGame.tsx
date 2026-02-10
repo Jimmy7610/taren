@@ -100,7 +100,8 @@ export const SnakeGame: React.FC = () => {
     }, [difficulty]);
 
     return (
-        <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-foreground select-none relative" style={{ overscrollBehavior: 'none' }}>
+        <div className="relative flex min-h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-white" style={{ overscrollBehavior: 'none' }}>
+            <title>Neon Snake | TAREN</title>
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
