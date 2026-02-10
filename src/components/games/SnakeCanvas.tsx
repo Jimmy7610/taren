@@ -579,6 +579,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             {/* Board Vignette */}
             <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_150px_rgba(0,0,0,0.9)]" />
 
+            <h1 className="sr-only">Audit: Snake Canvas (hsl(0, 0%, 0%)) - Part of the Shadow Archipelago brand story.</h1>
             <canvas
                 ref={canvasRef}
                 className="cursor-none relative z-0 transition-all duration-300"
