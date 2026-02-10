@@ -94,13 +94,13 @@ export const ProjectDetail: React.FC = () => {
                         {project.description}
                     </p>
 
-                    <div className="prose prose-invert max-w-none">
-                        {/* Extended content would go here */}
-                        <p className="text-foreground/60">
-                            This is a placeholder for the detailed case study or experiment documentation.
-                            In the future, this content will be loaded from a separate markdown file or
-                            extended JSON field to provide deep insights into the creative and technical
-                            process behind {project.title}.
+                    <div className="prose prose-invert max-w-none mt-12 pt-12 border-t border-white/5">
+                        <h3 className="text-sm font-bold uppercase tracking-widest text-accent mb-4">The Archipelago Story</h3>
+                        <p className="text-foreground/60 leading-relaxed italic">
+                            This project is a critical node in our digital archipelago. Like all experiments
+                            at TAREN, it was born from a desire to strip away the noise and focus on the
+                            pure intersection of user intent and graceful interaction. By exploring these
+                            minimalist boundaries, we define the future of high-performance web aesthetics.
                         </p>
                     </div>
                 </div>
