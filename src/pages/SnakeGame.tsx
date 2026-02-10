@@ -100,13 +100,13 @@ export const SnakeGame: React.FC = () => {
                 <img
                     src={snakeBg}
                     alt=""
-                    className="w-full h-full object-cover scale-110 blur-xl opacity-30 grayscale-[20%]"
+                    className="w-full h-full object-cover scale-110 blur-md opacity-40 grayscale-[20%]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-[#050505]" />
             </div>
             {/* Header / HUD */}
-            <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-30">
+            <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-50">
                 <div className="flex items-center gap-8">
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Difficulty</span>
@@ -134,8 +134,8 @@ export const SnakeGame: React.FC = () => {
                         {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map((d) => (
                             <button
                                 key={d}
-                                onClick={() => gameState === 'IDLE' && setDifficulty(d)}
-                                disabled={gameState !== 'IDLE'}
+                                onClick={() => (gameState === 'IDLE' || gameState === 'GAMEOVER') && setDifficulty(d)}
+                                disabled={gameState === 'PLAYING' || gameState === 'PAUSED'}
                                 className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${difficulty === d
                                     ? 'bg-white text-black'
                                     : 'text-white/40 hover:text-white disabled:opacity-20'

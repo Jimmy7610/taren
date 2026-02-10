@@ -479,7 +479,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                                 onClick={resetGame}
                                 className="flex items-center justify-center gap-4 w-full py-6 bg-white text-black font-bold rounded-2xl hover:scale-[1.04] transition-transform shadow-[0_20px_60px_-15px_rgba(255,255,255,0.2)]"
                             >
-                                <RefreshCcw className="h-6 w-6" /> NEW LOG
+                                <RefreshCcw className="h-6 w-6" /> PLAY AGAIN
                             </button>
                             {!isTouchDevice && (
                                 <p className="text-white/20 text-[10px] font-mono uppercase tracking-[0.3em] mt-4">
