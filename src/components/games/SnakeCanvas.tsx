@@ -351,7 +351,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [gameState, hasMoving, onStateChange, resetGame, initAudio, playStartStinger, startAmbient, stopAmbient]);
+    }, [gameState, hasMoving, onStateChange, resetGame, initAudio, playStartStinger, startAmbient, stopAmbient, unlockAudioFromGesture]);
 
     // Handle Swipe
     const handleTouchStart = (e: React.TouchEvent) => {

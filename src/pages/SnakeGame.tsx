@@ -1,4 +1,3 @@
-```
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Trophy, Settings2, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
 import { useParams } from 'react-router-dom';
@@ -120,7 +119,7 @@ export const SnakeGame: React.FC = () => {
                 <div className="flex items-center gap-8">
                     <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Difficulty</span>
-                        <span className={`text - xs font - bold uppercase tracking - widest ${ DIFFICULTY_CONFIG[difficulty].color } `}>
+                        <span className={`text - xs font - bold uppercase tracking - widest ${DIFFICULTY_CONFIG[difficulty].color} `}>
                             {DIFFICULTY_CONFIG[difficulty].label}
                         </span>
                     </div>
@@ -146,11 +145,10 @@ export const SnakeGame: React.FC = () => {
                                 key={d}
                                 onClick={() => (gameState === 'IDLE' || gameState === 'GAMEOVER') && setDifficulty(d)}
                                 disabled={gameState === 'PLAYING' || gameState === 'PAUSED'}
-                                className={`px - 3 py - 1 rounded - full text - [10px] font - bold uppercase tracking - widest transition - all ${
-    difficulty === d
-    ? 'bg-white text-black'
-    : 'text-white/40 hover:text-white disabled:opacity-20'
-} `}
+                                className={`px - 3 py - 1 rounded - full text - [10px] font - bold uppercase tracking - widest transition - all ${difficulty === d
+                                        ? 'bg-white text-black'
+                                        : 'text-white/40 hover:text-white disabled:opacity-20'
+                                    } `}
                             >
                                 {d}
                             </button>
@@ -181,9 +179,8 @@ export const SnakeGame: React.FC = () => {
                             highscores[difficulty].slice(0, 5).map((entry, i) => (
                                 <div
                                     key={entry.timestamp}
-                                    className={`flex items - center justify - between p - 3 rounded - xl border border - white / 5 bg - white / [0.02] transition - all ${
-    lastNewScore === entry.timestamp ? 'border-accent/40 bg-accent/5 animate-pulse' : ''
-} `}
+                                    className={`flex items - center justify - between p - 3 rounded - xl border border - white / 5 bg - white / [0.02] transition - all ${lastNewScore === entry.timestamp ? 'border-accent/40 bg-accent/5 animate-pulse' : ''
+                                        } `}
                                 >
                                     <div className="flex items-center gap-3">
                                         <span className="text-[10px] font-mono text-white/20">{(i + 1).toString().padStart(2, '0')}</span>
