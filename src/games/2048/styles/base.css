@@ -48,7 +48,7 @@
 
 /* ─── Start Overlay ─── */
 .t2048-startOverlay {
-    /* Use absolute within root, not fixed across viewport */
+    /* Absolute within root, not fixed across viewport */
     position: absolute;
     inset: 0;
     display: flex;
@@ -57,8 +57,10 @@
     z-index: 20;
     background: rgba(0, 0, 0, 0.38);
     backdrop-filter: blur(6px);
-    /* Let taps pass through to trigger start() on window listeners */
-    pointer-events: none;
+    /* Overlay IS the tap target — handles start() directly via onClick/onTouchEnd */
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .t2048-startCard {
@@ -69,8 +71,6 @@
     background: rgba(255, 255, 255, 0.06);
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
     text-align: center;
-    /* Card itself doesn't need pointer events since window listener handles tap-to-start */
-    pointer-events: none;
 }
 
 .t2048-startTitle {

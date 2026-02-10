@@ -189,21 +189,6 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
         return () => { window.removeEventListener("keydown", onKeyDown); };
     }, [start, handleMove, isGameEnded, showWinOverlay]);
 
-    // Tap-to-start: pointer + touch (iOS needs touchstart for reliable gesture detection)
-    useEffect(() => {
-        const onTapStart = () => {
-            if (!startedRef.current) start();
-        };
-
-        window.addEventListener("pointerdown", onTapStart, { passive: true });
-        window.addEventListener("touchstart", onTapStart, { passive: true });
-
-        return () => {
-            window.removeEventListener("pointerdown", onTapStart);
-            window.removeEventListener("touchstart", onTapStart);
-        };
-    }, [start]);
-
     // Swipe on the board surface (robust dual pointer+touch handler)
     useEffect(() => {
         const el = boardRef.current;
@@ -216,7 +201,7 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
     return (
         <div className="t2048-root" ref={rootRef}>
             {!hasStarted ? (
-                <StartScreen title="2048" subtitle="Press any key / tap to start" />
+                <StartScreen title="2048" subtitle="Tap to start" onStart={start} />
             ) : null}
 
             {showWinOverlay ? (
