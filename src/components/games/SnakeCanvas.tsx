@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Play, Pause, RefreshCcw, Trophy, ChevronRight } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Play, Pause, Trophy, RefreshCcw } from 'lucide-react';
 import snakeBg from '../../games/snake/assets/snake-pixar-neon.png';
 
 interface Point {

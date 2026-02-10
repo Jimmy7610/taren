@@ -1,4 +1,10 @@
-export async function onRequest(context: any) {
+interface PagesContext {
+  request: Request;
+  env: { ASSETS: { fetch: typeof fetch } };
+  next: () => Promise<Response>;
+}
+
+export async function onRequest(context: PagesContext) {
   const url = new URL(context.request.url);
 
   // Allow direct access to real files (assets) and API/function routes

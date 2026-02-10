@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Trophy, Target, Pause, Play, RefreshCcw, Home, Settings2, Info, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
+import { Trophy, Settings2, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
 import snakeBg from '../games/snake/assets/snake-pixar-neon.png';
