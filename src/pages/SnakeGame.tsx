@@ -126,7 +126,7 @@ export const SnakeGame: React.FC = () => {
             <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-50">
                 <div className="flex items-center gap-8">
                     <div className="flex flex-col">
-                        <h1 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Neon Snake</h1>
+                        <h1 className="text-[10px] font-bold text-[#EDEDED] uppercase tracking-[0.2em] mb-0.5">Neon Snake</h1>
                         <span className={`text-xs font-bold uppercase tracking-widest ${DIFFICULTY_CONFIG[difficulty].color}`}>
                             {DIFFICULTY_CONFIG[difficulty].label}
                         </span>
@@ -139,7 +139,7 @@ export const SnakeGame: React.FC = () => {
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Best</span>
+                        <h2 className="text-[10px] font-bold text-[#EDEDED] uppercase tracking-[0.2em]">Top 5 Logs</h2>
                         <span className="text-xl font-mono font-bold tabular-nums text-white/40">
                             {bestScore.toString().padStart(4, '0')}
                         </span>
@@ -155,7 +155,7 @@ export const SnakeGame: React.FC = () => {
                                 disabled={gameState === 'PLAYING' || gameState === 'PAUSED'}
                                 className={`text-[10px] font-bold uppercase tracking-widest transition-all relative py-1 ${difficulty === d
                                     ? 'text-accent drop-shadow-[0_0_8px_rgba(255,165,0,0.4)]'
-                                    : 'text-white/20 hover:text-white/40'
+                                    : 'text-[#8A8A8A] hover:text-[#B8B8B8]'
                                     } ${difficulty === d ? 'after:content-[""] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-accent' : ''} `}
                             >
                                 {d}
@@ -165,7 +165,7 @@ export const SnakeGame: React.FC = () => {
                     <div className="h-4 w-px bg-white/5" />
                     <Link
                         to="/games"
-                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white/60 transition-colors group"
+                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#8A8A8A] hover:text-[#B8B8B8] transition-colors group"
                         aria-label="Back to Games"
                     >
                         <span>{strings.routes.games}</span>
@@ -192,12 +192,12 @@ export const SnakeGame: React.FC = () => {
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <span className="text-[10px] font-mono text-white/10">{(i + 1).toString().padStart(2, '0')}</span>
-                                        <span className={`text - sm font - mono font - bold ${lastNewScore === entry.timestamp ? 'text-accent' : 'text-white/70'} `}>
+                                        <span className="text-[10px] font-mono text-[#666666]">{(i + 1).toString().padStart(2, '0')}</span>
+                                        <span className={`text - sm font - mono font - bold ${lastNewScore === entry.timestamp ? 'text-accent' : 'text-[#EDEDED]'} `}>
                                             {entry.score.toString().padStart(4, '0')}
                                         </span>
                                     </div>
-                                    <span className="text-[8px] font-mono text-white/10 italic">
+                                    <span className="text-[8px] font-mono text-[#8A8A8A] italic">
                                         {new Date(entry.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                                     </span>
                                 </div>

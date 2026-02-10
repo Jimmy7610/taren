@@ -638,6 +638,8 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
                     <div className="flex flex-col gap-8 w-full max-w-sm relative z-10" onClick={e => e.stopPropagation()}>
                         <div className="flex flex-col gap-3">
+                            <span className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">Pause</span>
+                            <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-[#EDEDED]">P</span>
                             <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em]">Initialize Configuration</span>
                             <div className="grid grid-cols-3 gap-3 p-1.5 bg-white/5 border border-white/5 rounded-2xl">
                                 {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map(d => (
@@ -664,6 +666,14 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         >
                             <Play className="h-6 w-6 fill-current" /> BOOT EXPERIMENT
                         </button>
+                        <span className="text-[10px] font-bold text-[#B8B8B8] uppercase tracking-widest">Move</span>
+                        <div className="flex gap-1.5">
+                            {(['ARROWS', 'SWIPE'] as const).map(k => (
+                                <span key={k} className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono text-[#EDEDED]">
+                                    {k}
+                                </span>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="mt-16 text-white/20 text-[10px] uppercase font-mono tracking-[0.4em] flex flex-col items-center gap-4">
@@ -712,6 +722,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         </div>
 
                         <div className="flex flex-col items-center mb-16">
+                            <h3 className="text-[10px] font-bold text-[#EDEDED] uppercase tracking-[0.2em] mb-4">Controls</h3>
                             <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em] mb-4">Final Data Yield</span>
                             <span className="text-8xl font-mono font-bold text-accent drop-shadow-[0_0_30px_rgba(255,95,31,0.4)]">
                                 {stateRef.current.score}
