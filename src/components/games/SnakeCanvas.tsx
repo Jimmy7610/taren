@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Play, Pause, Trophy, RefreshCcw } from 'lucide-react';
+import { Play, Pause, RefreshCcw } from 'lucide-react';
 import snakeBg from '../../games/snake/assets/snake-pixar-neon.png';
 
 interface Point {
     x: number;
-    y: number;
 }
 
 type Difficulty = 'EASY' | 'NORMAL' | 'HARD';
@@ -110,14 +109,14 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     const initAudio = useCallback(() => {
         if (audioCtxRef.current) return;
         try {
-            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const context = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
             const masterGain = context.createGain();
             masterGain.connect(context.destination);
             masterGain.gain.value = isSoundOn ? 1 : 0;
 
             audioCtxRef.current = context;
             masterGainRef.current = masterGain;
-        } catch (e) {
+        } catch {
             console.error('AudioContext not supported');
         }
     }, [isSoundOn]);
