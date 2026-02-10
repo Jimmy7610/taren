@@ -1,25 +1,36 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TAREN</title>
-    <script>
-      (function() {
-        const theme = localStorage.getItem('theme') || 
-                     (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-        if (metaThemeColor) {
-          metaThemeColor.setAttribute('content', theme === 'dark' ? '#0A0A0A' : '#FDFDFD');
-        }
-      })();
-    </script>
-    <meta name="theme-color" content="#0A0A0A" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TAREN | Digital Playground</title>
+  <meta name="description"
+    content="TAREN is a premium digital playground for minimalist web experiments, high-performance games, and interactive code sketches." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="TAREN | Digital Playground" />
+  <meta property="og:description" content="Minimalist web experiments and premium game experiences." />
+  <meta property="og:type" content="website" />
+
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', theme === 'dark' ? '#0A0A0A' : '#FDFDFD');
+      }
+    })();
+  </script>
+  <meta name="theme-color" content="#0A0A0A" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>

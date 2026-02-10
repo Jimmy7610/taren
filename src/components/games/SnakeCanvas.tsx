@@ -606,7 +606,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     >
                         <img
                             src={snakeBg}
-                            alt=""
+                            alt="Neon Snake cinematic hero window"
                             className="w-full h-full object-cover transition-transform duration-300 ease-out"
                             style={{
                                 transform: `scale(1.1) translate(${parallax.x}px, ${parallax.y}px)`
@@ -618,9 +618,9 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
                     <div className="mb-12 relative animate-in fade-in zoom-in duration-700">
                         <div className="absolute -inset-12 bg-accent/20 blur-[80px] rounded-full animate-pulse" />
-                        <h2 className="text-7xl font-bold tracking-tighter text-white drop-shadow-[0_0_40px_rgba(255,95,31,0.6)]">
+                        <h1 className="text-7xl font-bold tracking-tighter text-white drop-shadow-[0_0_40px_rgba(255,95,31,0.6)]">
                             NEON SNAKE
-                        </h2>
+                        </h1>
                     </div>
 
                     <div className="flex flex-col gap-8 w-full max-w-sm relative z-10" onClick={e => e.stopPropagation()}>
