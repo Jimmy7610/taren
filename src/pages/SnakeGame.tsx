@@ -93,7 +93,17 @@ export const SnakeGame: React.FC = () => {
     }, [difficulty]);
 
     return (
-        <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-foreground select-none" style={{ overscrollBehavior: 'none' }}>
+        <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-foreground select-none relative" style={{ overscrollBehavior: 'none' }}>
+            {/* Cinematic Background */}
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                    src="/src/assets/images/snake-pixar-neon.png"
+                    alt=""
+                    className="w-full h-full object-cover scale-110 blur-xl opacity-30 grayscale-[20%]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-[#050505]" />
+            </div>
             {/* Header / HUD */}
             <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-30">
                 <div className="flex items-center gap-8">

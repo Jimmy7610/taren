@@ -104,7 +104,6 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     // Handle Keys
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (gameState === 'IDLE') return;
             const { direction } = stateRef.current;
 
             switch (e.key) {
@@ -128,11 +127,15 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 case 'D':
                     if (direction.x === 0) stateRef.current.nextDirection = { x: 1, y: 0 };
                     break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (gameState === 'IDLE' || gameState === 'GAMEOVER') resetGame();
+                    break;
                 case ' ':
                     e.preventDefault();
                     if (gameState === 'PLAYING') onStateChange('PAUSED');
                     else if (gameState === 'PAUSED') onStateChange('PLAYING');
-                    else if (gameState === 'GAMEOVER') resetGame();
+                    else if (gameState === 'IDLE' || gameState === 'GAMEOVER') resetGame();
                     break;
             }
         };
@@ -361,21 +364,24 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             {/* OVERLAYS */}
             {gameState === 'IDLE' && (
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/85 backdrop-blur-2xl p-12 pt-[15vh] text-center">
-                    <div className="mb-12 relative">
+                    <div className="mb-12 relative animate-in fade-in zoom-in duration-700">
                         <div className="absolute -inset-12 bg-accent/20 blur-[80px] rounded-full animate-pulse" />
                         <h2 className="text-7xl font-bold tracking-tighter text-white drop-shadow-[0_0_40px_rgba(255,95,31,0.6)]">
                             NEON SNAKE
                         </h2>
                     </div>
 
-                    <div className="flex flex-col gap-8 w-full max-w-sm">
+                    <div className="flex flex-col gap-8 w-full max-w-sm relative z-10" onClick={e => e.stopPropagation()}>
                         <div className="flex flex-col gap-3">
                             <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em]">Initialize Configuration</span>
                             <div className="grid grid-cols-3 gap-3 p-1.5 bg-white/5 border border-white/5 rounded-2xl">
                                 {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map(d => (
                                     <button
                                         key={d}
-                                        onClick={() => onDifficultyChange(d)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onDifficultyChange(d);
+                                        }}
                                         className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${difficulty === d
                                             ? 'bg-white text-black shadow-xl shadow-white/5'
                                             : 'text-white/20 hover:text-white hover:bg-white/5'
@@ -388,7 +394,10 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         </div>
 
                         <button
-                            onClick={resetGame}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                resetGame();
+                            }}
                             className="group flex items-center justify-center gap-4 w-full py-6 bg-accent text-white font-bold rounded-2xl hover:scale-[1.03] transition-all hover:shadow-[0_0_50px_-5px_#FF5F1F]"
                         >
                             <Play className="h-6 w-6 fill-current" /> BOOT EXPERIMENT
@@ -396,14 +405,15 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     </div>
 
                     <div className="mt-16 text-white/20 text-[10px] uppercase font-mono tracking-[0.4em] flex flex-col items-center gap-4">
-                        <div className="flex items-center gap-6">
-                            <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">WASD / ARROWS</span>
-                            <span>LINK TO NEURAL INTERFACE</span>
-                        </div>
-                        {isTouchDevice && (
+                        {!isTouchDevice ? (
+                            <div className="flex items-center gap-6">
+                                <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-white/40">SPACE / ENTER</span>
+                                <span>TO START</span>
+                            </div>
+                        ) : (
                             <div className="flex items-center gap-2 animate-bounce text-accent">
                                 <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                                <span>Swipe to move</span>
+                                <span>Tap or Swipe to start</span>
                                 <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                             </div>
                         )}
@@ -433,7 +443,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl">
                     <div className="flex flex-col items-center max-w-sm w-full p-12 text-center mt-[-8vh]">
                         <div className="mb-16">
-                            <h2 className="text-7xl font-bold tracking-tighter text-white mb-4 leading-none">The Darkness Consumes You</h2>
+                            <h2 className="text-6xl font-bold tracking-tighter text-white mb-4 leading-tight">The Darkness Consumes You</h2>
                             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
                                 <Trophy className="h-3 w-3 text-accent" /> Mode: {difficulty}
                             </div>
