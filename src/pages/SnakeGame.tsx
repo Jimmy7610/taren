@@ -133,14 +133,14 @@ export const SnakeGame: React.FC = () => {
                     </div>
                     <div className="h-8 w-px bg-white/5" />
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Score</span>
-                        <span className="text-xl font-mono font-bold tabular-nums text-white">
+                        <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.2em] mb-0.5">Score</span>
+                        <span className="text-xl font-mono font-bold tabular-nums text-[#EDEDED]">
                             {score.toString().padStart(4, '0')}
                         </span>
                     </div>
                     <div className="flex flex-col">
                         <h2 className="text-[10px] font-bold text-[#EDEDED] uppercase tracking-[0.2em]">Top 5 Logs</h2>
-                        <span className="text-xl font-mono font-bold tabular-nums text-white/40">
+                        <span className="text-xl font-mono font-bold tabular-nums text-[#8A8A8A]">
                             {bestScore.toString().padStart(4, '0')}
                         </span>
                     </div>
@@ -178,12 +178,12 @@ export const SnakeGame: React.FC = () => {
             <main className="flex-1 flex overflow-hidden relative">
                 {/* LEFT: Highscores */}
                 <aside className="hidden lg:flex w-72 flex-col border-r border-white/5 bg-black/20 p-6 overflow-hidden">
-                    <h3 className="text-xs font-bold text-white/30 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                    <h3 className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                         <Trophy className="h-3 w-3" /> Top 5 Logs
                     </h3>
                     <div className="space-y-3">
                         {highscores[difficulty].length === 0 ? (
-                            <p className="text-[10px] font-mono text-white/10 italic uppercase">No logs captured...</p>
+                            <p className="text-[10px] font-mono text-[#666666] italic uppercase">No logs captured...</p>
                         ) : (
                             highscores[difficulty].slice(0, 5).map((entry, i) => (
                                 <div
@@ -224,17 +224,17 @@ export const SnakeGame: React.FC = () => {
                 {/* RIGHT: Info / Controls */}
                 <aside className="hidden xl:flex w-72 flex-col border-l border-white/5 bg-black/20 p-6">
                     <div className="mb-8">
-                        <h3 className="text-xs font-bold text-white/30 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                        <h3 className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
                             <Settings2 className="h-3.5 w-3.5" /> Controls
                         </h3>
                         <div className="space-y-2">
-                            <div className="flex items-center justify-between text-[10px] text-white/40 font-mono italic">
+                            <div className="flex items-center justify-between text-[10px] text-[#8A8A8A] font-mono italic">
                                 <span>Move</span>
-                                <span className="font-bold text-white/60">WASD / ARROWS</span>
+                                <span className="font-bold text-[#B8B8B8]">WASD / ARROWS</span>
                             </div>
-                            <div className="flex items-center justify-between text-[10px] text-white/40 font-mono italic">
+                            <div className="flex items-center justify-between text-[10px] text-[#8A8A8A] font-mono italic">
                                 <span>Pause</span>
-                                <span className="font-bold text-white/60">SPACE</span>
+                                <span className="font-bold text-[#B8B8B8]">SPACE</span>
                             </div>
                         </div>
                     </div>
@@ -244,13 +244,13 @@ export const SnakeGame: React.FC = () => {
                             onClick={() => setIsSoundOn(!isSoundOn)}
                             className="flex items-center justify-between w-full p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all group"
                         >
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest group-hover:text-white/60 transition-colors">
+                            <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-widest group-hover:text-[#B8B8B8] transition-colors">
                                 Audio {isSoundOn ? 'Active' : 'Muted'}
                             </span>
                             {isSoundOn ? (
-                                <Volume2 className="h-4 w-4 text-white/40 group-hover:text-accent transition-colors" />
+                                <Volume2 className="h-4 w-4 text-[#8A8A8A] group-hover:text-accent transition-colors" />
                             ) : (
-                                <VolumeX className="h-4 w-4 text-white/20 group-hover:text-red-500/60 transition-colors" />
+                                <VolumeX className="h-4 w-4 text-[#666666] group-hover:text-red-500/60 transition-colors" />
                             )}
                         </button>
                     </div>
@@ -258,7 +258,7 @@ export const SnakeGame: React.FC = () => {
             </main>
 
             {/* Mobile Footer (Highscores compact) */}
-            <div className="lg:hidden h-12 border-t border-white/5 bg-black/40 flex items-center justify-center gap-4 text-[10px] font-mono italic text-white/20">
+            <div className="lg:hidden h-12 border-t border-white/5 bg-black/40 flex items-center justify-center gap-4 text-[10px] font-mono italic text-[#666666]">
                 <span>Best: {bestScore}</span>
                 <div className="h-3 w-px bg-white/5" />
                 <span>Difficulty: {difficulty}</span>
