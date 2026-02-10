@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import { Project } from '../hooks/useProjects';
