@@ -6,11 +6,23 @@ import { strings } from '../constants/strings';
 export const Home: React.FC = () => {
     // SEO & Transitions
     useEffect(() => {
-        document.title = "TAREN | Digital Playground - Minimalist Web Experiments";
-        const meta = document.querySelector('meta[name="description"]') || document.createElement('meta');
-        meta.setAttribute('name', 'description');
-        meta.setAttribute('content', 'TAREN is a premium digital playground for minimalist web experiments, high-performance games, and interactive code sketches built with visual excellence.');
-        if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
+        document.title = "TAREN | Digital Playground";
+
+        const updateMeta = (name: string, content: string, isProperty = false) => {
+            const attr = isProperty ? 'property' : 'name';
+            let el = document.querySelector(`meta[${attr}="${name}"]`);
+            if (!el) {
+                el = document.createElement('meta');
+                el.setAttribute(attr, name);
+                document.head.appendChild(el);
+            }
+            el.setAttribute('content', content);
+        };
+
+        updateMeta('description', 'TAREN is a premium digital playground for minimalist web experiments, high-performance games, and interactive code sketches.');
+        updateMeta('og:title', 'TAREN | Digital Playground', true);
+        updateMeta('og:description', 'Minimalist web experiments and premium game experiences.', true);
+        updateMeta('og:type', 'website', true);
 
         document.body.classList.add('no-scroll');
         return () => {
@@ -28,10 +40,6 @@ export const Home: React.FC = () => {
 
     return (
         <div className="flex h-[calc(100vh-120px)] flex-col items-center justify-center px-4 overflow-hidden">
-            <title>TAREN | Digital Playground</title>
-            <meta property="og:title" content="TAREN | Digital Playground" />
-            <meta property="og:description" content="A premium digital playground for minimalist web experiments." />
-            <meta property="og:type" content="website" />
             <header className="mb-16 text-center animate-in fade-in zoom-in duration-1000">
                 <h1 className="text-6xl font-bold tracking-[0.2em] sm:text-8xl text-foreground mb-4">
                     {strings.common.siteName}

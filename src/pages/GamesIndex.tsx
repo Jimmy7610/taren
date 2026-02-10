@@ -8,6 +8,21 @@ import './GamesIndex.css';
 export const GamesIndex: React.FC = () => {
     useEffect(() => {
         document.title = "GAMES | TAREN";
+
+        const updateMeta = (name: string, content: string, isProperty = false) => {
+            const attr = isProperty ? 'property' : 'name';
+            let el = document.querySelector(`meta[${attr}="${name}"]`);
+            if (!el) {
+                el = document.createElement('meta');
+                el.setAttribute(attr, name);
+                document.head.appendChild(el);
+            }
+            el.setAttribute('content', content);
+        };
+
+        updateMeta('description', 'Explore the TAREN Games Gallery - a collection of minimalist web experiments and high-performance games.');
+        updateMeta('og:title', 'Games | TAREN', true);
+        updateMeta('og:description', 'Deliberate experiments in movement, rhythm, and restraint.', true);
     }, []);
 
     return (

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { strings } from '../constants/strings';
 import { Trophy, Settings2, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
 import snakeBg from '../games/snake/assets/snake-pixar-neon.png';
@@ -153,14 +155,14 @@ export const SnakeGame: React.FC = () => {
                             </button>
                         ))}
                     </div>
-                    <a
-                        href="/games/"
+                    <Link
+                        to="/games"
                         className="flex items-center gap-2 text-sm text-foreground/40 hover:text-accent transition-colors"
                         aria-label="Back to Games"
                     >
                         <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                        <span>Back</span>
-                    </a>
+                        <span>{strings.routes.games}</span>
+                    </Link>
                 </div>
             </header>
 

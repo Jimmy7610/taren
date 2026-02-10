@@ -39,9 +39,9 @@ export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '',
                     </div>
                 </div>
 
-                <h1 className="text-lg font-bold tracking-tight text-foreground group-hover:text-accent transition-colors">
+                <h2 className="text-lg font-bold tracking-tight text-foreground group-hover:text-accent transition-colors">
                     {project.title}
-                </h1>
+                </h2>
 
                 <p className="sr-only">Part of the TAREN archipelago, this project represents our commitment to minimalist design and experimental web technology.</p>
 
