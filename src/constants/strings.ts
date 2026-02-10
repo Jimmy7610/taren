@@ -12,6 +12,20 @@ export const strings = {
         portfolio: "Portfolio",
         code: "Code",
     },
+    games: {
+        index: {
+            title: "GAMES",
+            snake: {
+                title: "NEON SNAKE",
+                description: "A controlled experiment in movement, rhythm, and restraint.",
+                cta: "Enter Experiment"
+            },
+            dormant: {
+                label: "Coming later",
+                description: "A dormant experiment yet to be unveiled…"
+            }
+        }
+    },
     placeholders: {
         comingSoon: "Coming soon...",
         description: "This portal is currently under development. Explore other islands in the archipelago.",

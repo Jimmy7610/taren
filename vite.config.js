@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-import { resolve, dirname } from 'path';
+import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 var __dirname = dirname(fileURLToPath(import.meta.url));
 // https://vite.dev/config/
@@ -11,11 +11,6 @@ export default defineConfig({
         tailwindcss(),
     ],
     build: {
-        rollupOptions: {
-            input: {
-                main: resolve(__dirname, 'index.html'),
-                games: resolve(__dirname, 'src/games/index.html'),
-            },
-        },
+        outDir: 'dist',
     },
 });

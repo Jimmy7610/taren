@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AppShell } from './components/layout/AppShell';
 import { Home } from './pages/Home';
+import { GamesIndex } from './pages/GamesIndex';
 import { SnakeGame } from './pages/SnakeGame';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { PlaceholderPage } from './pages/PlaceholderPage';
@@ -15,6 +16,7 @@ function App() {
                 <AppShell>
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/games" element={<GamesIndex />} />
                         <Route path="/games/snake" element={<SnakeGame />} />
                         <Route path="/music" element={<PlaceholderPage title={strings.routes.music} />} />
                         <Route path="/videos" element={<PlaceholderPage title={strings.routes.videos} />} />

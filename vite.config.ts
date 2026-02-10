@@ -14,11 +14,6 @@ export default defineConfig({
     tailwindcss(),
   ],
   build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        games: resolve(__dirname, 'src/games/index.html'),
-      },
-    },
+    outDir: 'dist',
   },
 })
