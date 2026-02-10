@@ -67,25 +67,112 @@
 .t2048-hud {
     width: min(520px, 92vw);
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     margin: 2px 0 10px;
-    padding: 18px 24px;
+    padding: 14px 20px;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.10);
     background: rgba(255, 255, 255, 0.04);
 }
 
-.t2048-hud__label {
-    opacity: 0.78;
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+.t2048-hud__stats {
+    display: flex;
+    gap: 12px;
 }
 
-.t2048-hud__value {
+.t2048-stats-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.t2048-stats-label {
+    opacity: 0.6;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.t2048-stats-value {
     font-weight: 800;
-    font-size: 24px;
+    font-size: 20px;
     font-family: monospace;
+}
+
+.t2048-hud-restart {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.t2048-hud-restart:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: rotate(-15deg);
+}
+
+.t2048-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(7px);
+}
+
+.t2048-overlayCard {
+    width: min(460px, 88vw);
+    border-radius: 20px;
+    padding: 24px 20px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.38);
+    text-align: center;
+}
+
+.t2048-overlayTitle {
+    font-weight: 850;
+    font-size: 24px;
+    letter-spacing: 0.3px;
+    margin-bottom: 8px;
+}
+
+.t2048-overlayBody {
+    opacity: 0.82;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.t2048-overlayActions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.t2048-btn {
+    border-radius: 12px;
+    padding: 10px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.12);
+    font-weight: 750;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.t2048-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.t2048-btn--ghost {
+    background: rgba(255, 255, 255, 0.04);
 }

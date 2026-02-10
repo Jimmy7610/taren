@@ -1,13 +1,12 @@
-# 2048 — Build #3
+# 2048 — Build #4
 
-Core movement + merge + post-move spawn.
+Win + Game Over + Best score + Restart flow.
 
-- Slide + merge logic implemented (classic 2048 rules)
-- One merge per tile per move (e.g. [2,2,2,2] -> [4,4, , ])
-- Keyboard input: Arrow keys + WASD
-- Touch swipe input: pointer-based swipe detection
-- After a valid move (board changed): spawn exactly 1 tile (90% 2, 10% 4)
-- Score increments by merged tile value created
+- Win detection: reaching 2048 triggers a subtle overlay (can Continue)
+- Continue keeps the current board and score (no reset)
+- Game Over detection: no empty cells + no adjacent merges -> overlay
+- Best score persisted (localStorage, scoped key)
+- Restart button added; restart returns to Idle (Two-step start), no auto-start loop
 MD
 
-# global: Build #34
+# global: Build #35

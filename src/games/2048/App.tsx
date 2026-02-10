@@ -8,14 +8,21 @@ import HeroArt from "./ui/HeroArt";
 import Board from "./ui/Board";
 import StartScreen from "./ui/StartScreen";
 import HUD from "./ui/HUD";
+import Overlay from "./ui/Overlay";
 import { createEmptyGrid4, spawnInitialTwoTiles, spawnOneTile, type Grid4 } from "./logic/spawn";
 import { moveGrid, type Direction } from "./logic/move";
 import { attachSwipe } from "./input/touch";
+import { has2048, isGameOver } from "./logic/status";
+import { loadBestScore, saveBestScore } from "./logic/storage";
 
 export default function App() {
     const [hasStarted, setHasStarted] = useState(false);
     const [grid, setGrid] = useState<Grid4>(() => createEmptyGrid4());
     const [score, setScore] = useState(0);
+    const [bestScore, setBestScore] = useState(() => loadBestScore());
+    const [hasWon, setHasWon] = useState(false);
+    const [showWinOverlay, setShowWinOverlay] = useState(false);
+    const [isGameEnded, setIsGameEnded] = useState(false);
 
     // Guard against double-trigger
     const startedRef = useRef(false);
@@ -27,20 +34,54 @@ export default function App() {
 
         setGrid(prev => spawnInitialTwoTiles(prev));
         setHasStarted(true);
+        setScore(0);
+        setHasWon(false);
+        setShowWinOverlay(false);
+        setIsGameEnded(false);
+    }, []);
+
+    const restart = useCallback(() => {
+        startedRef.current = false;
+        setHasStarted(false);
+        setGrid(createEmptyGrid4());
+        setScore(0);
+        setHasWon(false);
+        setShowWinOverlay(false);
+        setIsGameEnded(false);
     }, []);
 
     const handleMove = useCallback((dir: Direction) => {
-        if (!startedRef.current) return;
+        if (!startedRef.current || isGameEnded) return;
 
         setGrid(prev => {
             const result = moveGrid(prev, dir);
             if (result.changed) {
-                setScore(s => s + result.gained);
-                return spawnOneTile(result.grid);
+                const newScore = score + result.gained;
+                setScore(newScore);
+
+                if (newScore > bestScore) {
+                    setBestScore(newScore);
+                    saveBestScore(newScore);
+                }
+
+                const nextGrid = spawnOneTile(result.grid);
+
+                // Detect Win (exactly once per session)
+                if (!hasWon && has2048(nextGrid)) {
+                    setHasWon(true);
+                    setShowWinOverlay(true);
+                }
+
+                // Detect Game Over
+                if (isGameOver(nextGrid)) {
+                    setIsGameEnded(true);
+                }
+
+                return nextGrid;
             }
             return prev;
         });
-    }, []);
+    }, [score, bestScore, hasWon, isGameEnded]);
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -48,6 +89,7 @@ export default function App() {
                 start();
                 return;
             }
+            if (isGameEnded || showWinOverlay) return;
 
             switch (e.key) {
                 case "ArrowUp":
@@ -90,15 +132,35 @@ export default function App() {
             window.removeEventListener("pointerdown", onPointerDown);
             if (cleanupSwipe) cleanupSwipe();
         };
-    }, [start, handleMove]);
+    }, [start, handleMove, isGameEnded, showWinOverlay]);
 
     return (
         <div className="t2048-root" ref={rootRef}>
             <HeroArt />
-            <HUD score={score} />
+            <HUD score={score} bestScore={bestScore} onRestart={restart} />
 
             {!hasStarted ? (
                 <StartScreen title="2048" subtitle="Press any key / tap to start" />
+            ) : null}
+
+            {showWinOverlay ? (
+                <Overlay
+                    title="Experiment Success"
+                    body="Target value 2048 reached."
+                    primaryLabel="Continue"
+                    onPrimary={() => setShowWinOverlay(false)}
+                    secondaryLabel="Restart"
+                    onSecondary={restart}
+                />
+            ) : null}
+
+            {isGameEnded ? (
+                <Overlay
+                    title="Game Over"
+                    body={`Grid lock detected. Final score: ${score}`}
+                    primaryLabel="Try Again"
+                    onPrimary={restart}
+                />
             ) : null}
 
             <Board grid={grid} />
