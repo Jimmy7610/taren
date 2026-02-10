@@ -22,11 +22,11 @@
       document.documentElement.classList.toggle('dark', theme === 'dark');
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
-        metaThemeColor.setAttribute('content', theme === 'dark' ? '#0A0A0A' : '#FDFDFD');
+        metaThemeColor.setAttribute('content', theme === 'dark' ? 'hsl(0, 0%, 4%)' : 'hsl(0, 0%, 99%)');
       }
     })();
   </script>
-  <meta name="theme-color" content="#0A0A0A" />
+  <meta name="theme-color" content="hsl(0, 0%, 4%)" />
 </head>
 
 <body>
