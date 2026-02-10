@@ -47,10 +47,8 @@ export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '',
 
                 <p className="sr-only">Part of the TAREN archipelago, this project represents our commitment to minimalist design and experimental web technology.</p>
 
-                <p className="max-w-md text-lg text-foreground/60 italic">
-                    {strings.placeholders.comingSoon}
-                    <br /><br />
-                    <span className="text-[10px] uppercase tracking-widest opacity-40">Part of the Shadow Archipelago brand story.</span>
+                <p className="mt-2 line-clamp-2 text-sm text-foreground/60">
+                    {project.description}
                 </p>
 
                 <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5">
