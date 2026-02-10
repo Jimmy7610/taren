@@ -29,6 +29,9 @@ export const Home: React.FC = () => {
     return (
         <div className="flex h-[calc(100vh-120px)] flex-col items-center justify-center px-4 overflow-hidden">
             <title>TAREN | Digital Playground</title>
+            <meta property="og:title" content="TAREN | Digital Playground" />
+            <meta property="og:description" content="A premium digital playground for minimalist web experiments." />
+            <meta property="og:type" content="website" />
             <header className="mb-16 text-center animate-in fade-in zoom-in duration-1000">
                 <h1 className="text-6xl font-bold tracking-[0.2em] sm:text-8xl text-foreground mb-4">
                     {strings.common.siteName}
@@ -55,6 +58,19 @@ export const Home: React.FC = () => {
                     </Link>
                 ))}
             </nav>
+
+            {/* Brand Story / Values */}
+            <section className="mt-20 max-w-2xl text-center animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 fill-mode-both">
+                <p className="text-sm font-medium text-foreground/40 italic leading-relaxed">
+                    "TAREN is an archipelago of the mind. Each experiment presented here is a deliberate step toward
+                    merging high-performance engineering with the quiet power of minimalist aesthetics."
+                </p>
+                <div className="mt-6 flex justify-center gap-4">
+                    <span className="h-px w-8 bg-accent/20" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-accent/60">Shadow Archipelago</span>
+                    <span className="h-px w-8 bg-accent/20" />
+                </div>
+            </section>
         </div>
     );
 };

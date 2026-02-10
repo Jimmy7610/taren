@@ -102,6 +102,8 @@ export const SnakeGame: React.FC = () => {
     return (
         <div className="relative flex min-h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-white" style={{ overscrollBehavior: 'none' }}>
             <title>Neon Snake | TAREN</title>
+            <meta property="og:title" content="Neon Snake | TAREN" />
+            <meta property="og:description" content="A premium neon snake game reimagined." />
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
