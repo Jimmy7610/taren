@@ -146,29 +146,30 @@ export const SnakeGame: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 p-1 rounded-full bg-white/5 border border-white/5">
+                <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
                         {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map((d) => (
                             <button
                                 key={d}
                                 onClick={() => (gameState === 'IDLE' || gameState === 'GAMEOVER') && setDifficulty(d)}
                                 disabled={gameState === 'PLAYING' || gameState === 'PAUSED'}
-                                className={`px - 3 py - 1 rounded - full text - [10px] font - bold uppercase tracking - widest transition - all ${difficulty === d
-                                    ? 'bg-white text-black'
-                                    : 'text-white/40 hover:text-white disabled:opacity-20'
-                                    } `}
+                                className={`text-[10px] font-bold uppercase tracking-widest transition-all relative py-1 ${difficulty === d
+                                    ? 'text-accent drop-shadow-[0_0_8px_rgba(255,165,0,0.4)]'
+                                    : 'text-white/20 hover:text-white/40'
+                                    } ${difficulty === d ? 'after:content-[""] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:rounded-full after:bg-accent' : ''} `}
                             >
                                 {d}
                             </button>
                         ))}
                     </div>
+                    <div className="h-4 w-px bg-white/5" />
                     <Link
                         to="/games"
-                        className="flex items-center gap-2 text-sm text-foreground/40 hover:text-accent transition-colors"
+                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white/60 transition-colors group"
                         aria-label="Back to Games"
                     >
-                        <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         <span>{strings.routes.games}</span>
+                        <ArrowLeft className="h-3 w-3 rotate-180 transition-transform group-hover:translate-x-0.5" />
                     </Link>
                 </div>
             </header>
@@ -187,12 +188,14 @@ export const SnakeGame: React.FC = () => {
                             highscores[difficulty].slice(0, 5).map((entry, i) => (
                                 <div
                                     key={entry.timestamp}
-                                    className={`flex items - center justify - between p - 3 rounded - xl border border - white / 5 bg - white / [0.02] transition - all ${lastNewScore === entry.timestamp ? 'border-accent/40 bg-accent/5 animate-pulse' : ''
-                                        } `}
+                                    className={`flex items-center justify-between py-3 border-b border-white/5 last:border-0 transition-all ${lastNewScore === entry.timestamp ? 'text-accent animate-pulse' : ''
+                                        }`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <span className="text-[10px] font-mono text-white/20">{(i + 1).toString().padStart(2, '0')}</span>
-                                        <span className="text-sm font-mono font-bold text-white/80">{entry.score.toString().padStart(4, '0')}</span>
+                                        <span className="text-[10px] font-mono text-white/10">{(i + 1).toString().padStart(2, '0')}</span>
+                                        <span className={`text - sm font - mono font - bold ${lastNewScore === entry.timestamp ? 'text-accent' : 'text-white/70'} `}>
+                                            {entry.score.toString().padStart(4, '0')}
+                                        </span>
                                     </div>
                                     <span className="text-[8px] font-mono text-white/10 italic">
                                         {new Date(entry.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
