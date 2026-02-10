@@ -39,7 +39,7 @@ export const Home: React.FC = () => {
     ];
 
     return (
-        <div className="flex h-[calc(100vh-120px)] flex-col items-center justify-center px-4 overflow-hidden">
+        <div className="flex min-h-[calc(100vh-120px)] flex-col items-center justify-center px-4 py-8 lg:py-0 lg:overflow-hidden">
             <header className="mb-16 text-center animate-in fade-in zoom-in duration-1000">
                 <h1 className="text-6xl font-bold tracking-[0.2em] sm:text-8xl text-foreground mb-4">
                     {strings.common.siteName}
