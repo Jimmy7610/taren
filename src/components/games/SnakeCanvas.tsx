@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Play, Pause, Trophy, RefreshCcw } from 'lucide-react';
 import snakeBg from '../../games/snake/assets/snake-pixar-neon.png';
+import bootStingerUrl from '../../games/snake/assets/boot-stinger.mp3';
 
 interface Point {
     x: number;
@@ -175,7 +176,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     const playStartStinger = useCallback(() => {
         if (stingerPlayedRef.current || !isSoundOn) return;
         if (!bootStingerRef.current) {
-            bootStingerRef.current = new Audio(new URL('../../games/snake/assets/boot-stinger.mp3', import.meta.url).href);
+            bootStingerRef.current = new Audio(bootStingerUrl);
             bootStingerRef.current.volume = 0.35;
         }
         stingerPlayedRef.current = true;

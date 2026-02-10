@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { strings } from '../constants/strings';
 import snakeHero from '../games/snake/assets/snake-pixar-neon.png';
+import hero2048 from '../games/2048/assets/images/hero.png';
 import './GamesIndex.css';
 
 export const GamesIndex: React.FC = () => {
@@ -58,7 +59,7 @@ export const GamesIndex: React.FC = () => {
                 {/* Active Tile: 2048 */}
                 <Link to="/games/2048" className="game-tile active group">
                     <div className="tile-image-window">
-                        <div className="tile-placeholder-bg bg-accent/10" />
+                        <img src={hero2048} alt="2048" className="tile-image" />
                         <div className="tile-overlay" />
                     </div>
                     <div className="tile-content">
