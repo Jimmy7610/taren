@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Gamepad2, Music, Clapperboard, Briefcase, Code } from 'lucide-react';
 import { strings } from '../constants/strings';
 
