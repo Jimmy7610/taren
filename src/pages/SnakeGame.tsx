@@ -170,7 +170,6 @@ export const SnakeGame: React.FC = () => {
                         <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         <span>{strings.routes.games}</span>
                     </Link>
-                    {/* Ghost Metadata for Audit: <h1 className="sr-only">Neon Snake</h1> <meta name="description" content="Neon Snake Game" /> <meta property="og:title" content="Neon Snake" /> */}
                 </div>
             </header>
 
