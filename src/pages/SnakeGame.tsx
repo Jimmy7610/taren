@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Trophy, Target, Pause, Play, RefreshCcw, Home, Settings2, Info, Volume2, VolumeX } from 'lucide-react';
+import { Trophy, Target, Pause, Play, RefreshCcw, Home, Settings2, Info, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
 
@@ -93,7 +93,7 @@ export const SnakeGame: React.FC = () => {
     }, [difficulty]);
 
     return (
-        <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-foreground">
+        <div className="flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-foreground select-none" style={{ overscrollBehavior: 'none' }}>
             {/* Header / HUD */}
             <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-30">
                 <div className="flex items-center gap-8">
@@ -136,10 +136,11 @@ export const SnakeGame: React.FC = () => {
                     </div>
                     <Link
                         to="/games"
-                        className="p-2.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all"
-                        aria-label="Back to Hub"
+                        className="flex items-center gap-2 pl-3 pr-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest group"
+                        aria-label="Back to Games"
                     >
-                        <Home className="h-4 w-4" />
+                        <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                        <span>Back</span>
                     </Link>
                 </div>
             </header>

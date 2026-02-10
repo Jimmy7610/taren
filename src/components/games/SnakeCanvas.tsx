@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Play, Pause, RefreshCcw, Trophy } from 'lucide-react';
+import { Play, Pause, RefreshCcw, Trophy, ChevronRight } from 'lucide-react';
 
 interface Point {
     x: number;
@@ -36,6 +36,10 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [cellSize, setCellSize] = useState(20);
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+    // Touch swipe state
+    const touchStartRef = useRef<Point | null>(null);
 
     // Mutable game state
     const stateRef = useRef({
@@ -47,6 +51,11 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         lastUpdate: 0,
         currentSpeed: SPEED_MAP[difficulty],
     });
+
+    // Detect touch device
+    useEffect(() => {
+        setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    }, []);
 
     // Update speed when difficulty changes (before game start)
     useEffect(() => {
@@ -131,6 +140,40 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [gameState, onStateChange, resetGame]);
+
+    // Handle Swipe
+    const handleTouchStart = (e: React.TouchEvent) => {
+        if (gameState !== 'PLAYING') return;
+        const touch = e.touches[0];
+        touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (!touchStartRef.current || gameState !== 'PLAYING') return;
+
+        const touch = e.changedTouches[0];
+        const deltaX = touch.clientX - touchStartRef.current.x;
+        const deltaY = touch.clientY - touchStartRef.current.y;
+        const absX = Math.abs(deltaX);
+        const absY = Math.abs(deltaY);
+
+        const THRESHOLD = 30; // Min swipe distance
+        const { direction } = stateRef.current;
+
+        if (Math.max(absX, absY) > THRESHOLD) {
+            if (absX > absY) {
+                // Horizontal swipe
+                if (deltaX > 0 && direction.x === 0) stateRef.current.nextDirection = { x: 1, y: 0 };
+                else if (deltaX < 0 && direction.x === 0) stateRef.current.nextDirection = { x: -1, y: 0 };
+            } else {
+                // Vertical swipe
+                if (deltaY > 0 && direction.y === 0) stateRef.current.nextDirection = { x: 0, y: 1 };
+                else if (deltaY < 0 && direction.y === 0) stateRef.current.nextDirection = { x: 0, y: -1 };
+            }
+        }
+
+        touchStartRef.current = null;
+    };
 
     // Authoritative cellSize calculation
     useEffect(() => {
@@ -295,7 +338,13 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     }, [gameState, difficulty, cellSize, onScoreChange, onGameOver, spawnFood]);
 
     return (
-        <div ref={containerRef} className="relative h-full w-full flex items-center justify-center bg-[#050505] overflow-hidden p-8">
+        <div
+            ref={containerRef}
+            className="relative h-full w-full flex items-center justify-center bg-[#050505] overflow-hidden p-8"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            style={{ touchAction: 'none' }}
+        >
             {/* Board Vignette */}
             <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_150px_rgba(0,0,0,0.9)]" />
 
@@ -346,10 +395,19 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         </button>
                     </div>
 
-                    <p className="mt-16 text-white/20 text-[10px] uppercase font-mono tracking-[0.4em] flex items-center gap-6">
-                        <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">WASD / ARROWS</span>
-                        <span>LINK TO NEURAL INTERFACE</span>
-                    </p>
+                    <div className="mt-16 text-white/20 text-[10px] uppercase font-mono tracking-[0.4em] flex flex-col items-center gap-4">
+                        <div className="flex items-center gap-6">
+                            <span className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">WASD / ARROWS</span>
+                            <span>LINK TO NEURAL INTERFACE</span>
+                        </div>
+                        {isTouchDevice && (
+                            <div className="flex items-center gap-2 animate-bounce text-accent">
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                <span>Swipe to move</span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                            </div>
+                        )}
+                    </div>
                 </div>
             )}
 
@@ -359,7 +417,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         <Pause className="h-16 w-16 text-accent mb-6 animate-pulse" />
                         <h2 className="text-4xl font-bold tracking-tighter text-white mb-2">SYSTEM PAUSED</h2>
                         <p className="text-white/40 text-[10px] font-mono uppercase tracking-[0.3em] mb-12 text-center">
-                            Experiment held in stasis. <br /> Press Space to Resume
+                            Experiment held in stasis. <br /> {isTouchDevice ? 'Tap Resume to continue' : 'Press Space to Resume'}
                         </p>
                         <button
                             onClick={() => onStateChange('PLAYING')}
@@ -395,9 +453,11 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                             >
                                 <RefreshCcw className="h-6 w-6" /> NEW LOG
                             </button>
-                            <p className="text-white/20 text-[10px] font-mono uppercase tracking-[0.3em] mt-4">
-                                Press Space to restart
-                            </p>
+                            {!isTouchDevice && (
+                                <p className="text-white/20 text-[10px] font-mono uppercase tracking-[0.3em] mt-4">
+                                    Press Space to restart
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
