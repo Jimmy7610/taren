@@ -100,10 +100,10 @@ export const SnakeGame: React.FC = () => {
                 <img
                     src={snakeBg}
                     alt=""
-                    className="w-full h-full object-cover scale-110 blur-md opacity-40 grayscale-[20%]"
+                    className="w-full h-full object-cover scale-110 blur-md opacity-40"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-[#050505]" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
             </div>
             {/* Header / HUD */}
             <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-50">
@@ -196,6 +196,7 @@ export const SnakeGame: React.FC = () => {
                             onDifficultyChange={setDifficulty}
                             gameState={gameState}
                             onStateChange={setGameState}
+                            isSoundOn={isSoundOn}
                         />
                     </div>
                 </div>

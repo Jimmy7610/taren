@@ -15,6 +15,7 @@ interface SnakeCanvasProps {
     onDifficultyChange: (difficulty: Difficulty) => void;
     gameState: 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER';
     onStateChange: (state: 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER') => void;
+    isSoundOn: boolean;
 }
 
 const SPEED_MAP = {
@@ -31,12 +32,98 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     difficulty,
     onDifficultyChange,
     gameState,
-    onStateChange
+    onStateChange,
+    isSoundOn
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [cellSize, setCellSize] = useState(20);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+    // Audio Engine Refs
+    const audioCtxRef = useRef<AudioContext | null>(null);
+    const masterGainRef = useRef<GainNode | null>(null);
+    const ambientOscRef = useRef<OscillatorNode | null>(null);
+
+    const initAudio = useCallback(() => {
+        if (audioCtxRef.current) return;
+        try {
+            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const masterGain = context.createGain();
+            masterGain.connect(context.destination);
+            masterGain.gain.value = isSoundOn ? 1 : 0;
+
+            audioCtxRef.current = context;
+            masterGainRef.current = masterGain;
+        } catch (e) {
+            console.error('AudioContext not supported');
+        }
+    }, [isSoundOn]);
+
+    const playSfx = useCallback((freq: number, type: OscillatorType, duration: number, volume = 0.1) => {
+        if (!audioCtxRef.current || !isSoundOn || !masterGainRef.current) return;
+        const ctx = audioCtxRef.current;
+        if (ctx.state === 'suspended') ctx.resume();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+        gain.gain.setValueAtTime(volume, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(masterGainRef.current);
+
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+    }, [isSoundOn]);
+
+    const startAmbient = useCallback(() => {
+        if (!audioCtxRef.current || !isSoundOn || !masterGainRef.current || ambientOscRef.current) return;
+        const ctx = audioCtxRef.current;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(40, ctx.currentTime); // Low pulse
+
+        gain.gain.value = 0.05;
+
+        osc.connect(gain);
+        gain.connect(masterGainRef.current);
+
+        osc.start();
+        ambientOscRef.current = osc;
+    }, [isSoundOn]);
+
+    const stopAmbient = useCallback(() => {
+        if (ambientOscRef.current) {
+            try {
+                ambientOscRef.current.stop();
+            } catch (e) { }
+            ambientOscRef.current = null;
+        }
+    }, []);
+
+    // Sync Mute
+    useEffect(() => {
+        if (masterGainRef.current) {
+            masterGainRef.current.gain.setTargetAtTime(isSoundOn ? 1 : 0, 0, 0.1);
+        }
+    }, [isSoundOn]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            stopAmbient();
+            if (audioCtxRef.current) {
+                audioCtxRef.current.close();
+            }
+        };
+    }, [stopAmbient]);
 
     // Touch swipe state
     const touchStartRef = useRef<Point | null>(null);
@@ -110,6 +197,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             if (gameState === 'IDLE' || gameState === 'GAMEOVER') {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
+                    initAudio();
                     resetGame();
                 }
                 return;
@@ -118,7 +206,9 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             if (gameState === 'PLAYING' && !hasMoving) {
                 // Any movement key or space/enter starts the movement
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', ' ', 'Enter'].includes(e.key)) {
+                    initAudio();
                     setHasMoving(true);
+                    startAmbient();
                     stateRef.current.lastUpdate = performance.now();
                 }
             }
@@ -148,8 +238,14 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     break;
                 case ' ':
                     e.preventDefault();
-                    if (gameState === 'PLAYING') onStateChange('PAUSED');
-                    else if (gameState === 'PAUSED') onStateChange('PLAYING');
+                    if (gameState === 'PLAYING') {
+                        onStateChange('PAUSED');
+                        stopAmbient();
+                    }
+                    else if (gameState === 'PAUSED') {
+                        onStateChange('PLAYING');
+                        startAmbient();
+                    }
                     break;
             }
         };
@@ -161,8 +257,10 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     // Handle Swipe
     const handleTouchStart = (e: React.TouchEvent) => {
         if (gameState !== 'PLAYING') return;
+        initAudio();
         if (!hasMoving) {
             setHasMoving(true);
+            startAmbient();
             stateRef.current.lastUpdate = performance.now();
         }
         const touch = e.touches[0];
@@ -241,6 +339,8 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     newHead.y < 0 || newHead.y >= GRID_SIZE ||
                     state.snake.some(p => p.x === newHead.x && p.y === newHead.y)
                 ) {
+                    stopAmbient();
+                    playSfx(100, 'sawtooth', 0.5, 0.2); // Death
                     onGameOver(state.score);
                     return;
                 }
@@ -252,6 +352,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                     state.score += 10;
                     onScoreChange(state.score);
                     state.food = spawnFood(state.snake);
+                    playSfx(440 + state.score, 'square', 0.1); // Eat
 
                     // Speed Ramp (Hard mode)
                     if (difficulty === 'HARD' && state.currentSpeed > 40) {
