@@ -1,14 +1,3 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { ExternalLink, ArrowRight } from 'lucide-react';
-import { Project } from '../hooks/useProjects';
-
-interface PortalCardProps {
-    project: Project;
-    className?: string;
-    style?: React.CSSProperties;
-}
-
 export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '', style }) => {
     return (
         <article
@@ -42,7 +31,7 @@ export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '',
                 <h1 className="text-lg font-bold tracking-tight text-foreground group-hover:text-accent transition-colors">
                     {project.title}
                 </h1>
-
+                
                 <p className="sr-only">Part of the TAREN archipelago, this project represents our commitment to minimalist design and experimental web technology.</p>
 
                 <p className="mt-2 line-clamp-2 text-sm text-foreground/60">
