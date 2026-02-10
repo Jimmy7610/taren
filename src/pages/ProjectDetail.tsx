@@ -54,6 +54,9 @@ export const ProjectDetail: React.FC = () => {
 
     return (
         <div className="max-w-4xl mx-auto py-8 lg:py-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <title>{project.title} | TAREN</title>
+            <meta name="description" content={project.description} />
+            <meta property="og:title" content={`${project.title} | TAREN`} />
             <Link
                 to="/"
                 className="inline-flex items-center gap-2 text-sm text-foreground/40 hover:text-accent transition-colors mb-8 focus:outline-none focus:ring-2 focus:ring-accent rounded-md px-2"
