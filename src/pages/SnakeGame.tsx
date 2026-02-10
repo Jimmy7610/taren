@@ -154,14 +154,14 @@ export const SnakeGame: React.FC = () => {
                             </button>
                         ))}
                     </div>
-                    <Link
-                        to="/games"
-                        className="flex items-center gap-2 pl-3 pr-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest group"
+                    <a
+                        href="/games/"
+                        className="flex items-center gap-2 text-sm text-foreground/40 hover:text-accent transition-colors"
                         aria-label="Back to Games"
                     >
                         <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                         <span>Back</span>
-                    </Link>
+                    </a>
                 </div>
             </header>
 
