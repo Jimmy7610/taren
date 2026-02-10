@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Play, Pause, RefreshCcw, Trophy, ChevronRight } from 'lucide-react';
+import snakeBg from '../../games/snake/assets/snake-pixar-neon.png';
 
 interface Point {
     x: number;
@@ -482,7 +483,20 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
             {/* OVERLAYS */}
             {gameState === 'IDLE' && (
-                <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/85 backdrop-blur-2xl p-12 pt-[15vh] text-center">
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/85 backdrop-blur-2xl p-12 pt-[10vh] text-center">
+                    {/* Hero Window */}
+                    <div
+                        className="w-full max-w-lg h-44 mb-12 rounded-3xl overflow-hidden relative shadow-2xl border border-white/5 animate-in fade-in slide-in-from-top-8 duration-1000"
+                    >
+                        <img
+                            src={snakeBg}
+                            alt=""
+                            className="w-full h-full object-cover scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+                        <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/40" />
+                    </div>
+
                     <div className="mb-12 relative animate-in fade-in zoom-in duration-700">
                         <div className="absolute -inset-12 bg-accent/20 blur-[80px] rounded-full animate-pulse" />
                         <h2 className="text-7xl font-bold tracking-tighter text-white drop-shadow-[0_0_40px_rgba(255,95,31,0.6)]">

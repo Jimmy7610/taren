@@ -100,9 +100,9 @@ export const SnakeGame: React.FC = () => {
                 <img
                     src={snakeBg}
                     alt=""
-                    className="w-full h-full object-cover scale-110 blur-md opacity-40"
+                    className="w-full h-full object-cover scale-110 blur-md opacity-15"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
             </div>
             {/* Header / HUD */}
