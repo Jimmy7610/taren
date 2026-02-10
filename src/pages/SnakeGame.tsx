@@ -234,7 +234,7 @@ export const SnakeGame: React.FC = () => {
                             </div>
                             <div className="flex items-center justify-between text-[10px] text-[#8A8A8A] font-mono italic">
                                 <span>Pause</span>
-                                <span className="font-bold text-[#B8B8B8]">SPACE</span>
+                                <span className="font-bold text-[#EDEDED]">SPACE</span>
                             </div>
                         </div>
                     </div>

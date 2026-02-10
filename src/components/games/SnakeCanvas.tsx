@@ -601,7 +601,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                             <span className="text-sm font-bold tracking-widest uppercase">System Armed</span>
                         </div>
                         <div className="flex flex-col items-center gap-1">
-                            <h3 className="text-xl font-bold text-white tracking-tight">Press any key or tap to start</h3>
+                            <h3 className="text-xl font-bold text-[#EDEDED] tracking-tight">Press any key or tap to start</h3>
                             {isTouchDevice && (
                                 <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/40">Swipe to move</p>
                             )}
@@ -631,7 +631,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
                     <div className="mb-12 relative animate-in fade-in zoom-in duration-700">
                         <div className="absolute -inset-12 bg-accent/20 blur-[80px] rounded-full animate-pulse" />
-                        <h1 className="text-7xl font-bold tracking-tighter text-white drop-shadow-[0_0_40px_rgba(255,95,31,0.6)]">
+                        <h1 className="text-7xl font-bold tracking-tighter text-[#EDEDED] drop-shadow-[0_0_40px_rgba(255,95,31,0.6)]">
                             NEON SNAKE
                         </h1>
                     </div>
@@ -687,13 +687,13 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md transition-all">
                     <div className="p-12 rounded-[40px] bg-black/80 border border-white/10 flex flex-col items-center mt-[-8vh]">
                         <Pause className="h-16 w-16 text-accent mb-6 animate-pulse" />
-                        <h2 className="text-4xl font-bold tracking-tighter text-white mb-2">SYSTEM PAUSED</h2>
+                        <h2 className="text-4xl font-bold tracking-tighter text-[#EDEDED] mb-2">SYSTEM PAUSED</h2>
                         <p className="text-white/40 text-[10px] font-mono uppercase tracking-[0.3em] mb-12 text-center">
                             Experiment held in stasis. <br /> {isTouchDevice ? 'Tap Resume to continue' : 'Press Space to Resume'}
                         </p>
                         <button
                             onClick={() => onStateChange('PLAYING')}
-                            className="px-12 py-4 bg-white text-black text-sm font-bold rounded-2xl hover:scale-105 transition-transform"
+                            className="px-12 py-4 bg-[#EDEDED] text-black text-sm font-bold rounded-2xl hover:scale-105 transition-transform"
                         >
                             RESUME
                         </button>
@@ -705,7 +705,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl">
                     <div className="flex flex-col items-center max-w-sm w-full p-12 text-center mt-[-8vh]">
                         <div className="mb-16">
-                            <h2 className="text-6xl font-bold tracking-tighter text-white mb-4 leading-tight">The Darkness Consumes You</h2>
+                            <h2 className="text-6xl font-bold tracking-tighter text-[#EDEDED] mb-4 leading-tight">The Darkness Consumes You</h2>
                             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
                                 <Trophy className="h-3 w-3 text-accent" /> Mode: {difficulty}
                             </div>
@@ -721,7 +721,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                         <div className="flex flex-col gap-4 w-full">
                             <button
                                 onClick={resetGame}
-                                className="flex items-center justify-center gap-4 w-full py-6 bg-white text-black font-bold rounded-2xl hover:scale-[1.04] transition-transform shadow-[0_20px_60px_-15px_rgba(255,255,255,0.2)]"
+                                className="flex items-center justify-center gap-4 w-full py-6 bg-[#EDEDED] text-black font-bold rounded-2xl hover:scale-[1.04] transition-transform shadow-[0_20px_60px_-15px_rgba(255,255,255,0.2)]"
                             >
                                 <RefreshCcw className="h-6 w-6" /> PLAY AGAIN
                             </button>
