@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Play, Pause, RefreshCcw } from 'lucide-react';
+import { Play, Pause, Trophy, RefreshCcw } from 'lucide-react';
 import snakeBg from '../../games/snake/assets/snake-pixar-neon.png';
 
 interface Point {
     x: number;
+    y: number;
 }
 
 type Difficulty = 'EASY' | 'NORMAL' | 'HARD';
