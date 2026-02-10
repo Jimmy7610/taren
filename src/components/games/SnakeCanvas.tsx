@@ -644,11 +644,10 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                                 {(['EASY', 'NORMAL', 'HARD'] as Difficulty[]).map(d => (
                                     <button
                                         key={d}
-                                        onClick={() => (gameState === 'IDLE' || gameState === 'GAMEOVER') && onDifficultyChange(d)}
-                                        disabled={gameState === 'PLAYING' || gameState === 'PAUSED'}
+                                        onClick={() => onDifficultyChange(d)}
                                         className={`flex items-center justify-center min-w-[44px] min-h-[44px] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${difficulty === d
                                             ? 'bg-white text-black'
-                                            : 'text-white/40 hover:text-white disabled:opacity-20'
+                                            : 'text-white/40 hover:text-white'
                                             }`}
                                         aria-label={`Set difficulty to ${d}`}
                                     >
