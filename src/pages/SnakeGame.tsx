@@ -68,8 +68,6 @@ export const SnakeGame: React.FC = () => {
         updateMeta('og:title', 'Neon Snake | TAREN', true);
         updateMeta('og:description', 'A premium neon snake game reimagined.', true);
 
-        if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
-
         document.body.classList.add('no-scroll');
         return () => {
             document.body.classList.remove('no-scroll');
