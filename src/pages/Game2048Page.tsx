@@ -46,7 +46,10 @@ export const Game2048Page: React.FC = () => {
     }, []);
 
     return (
-        <div className="relative flex h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-white" style={{ overscrollBehavior: 'none' }}>
+        <div
+            className="relative flex flex-col overflow-hidden bg-[#050505] text-white"
+            style={{ height: 'calc(100dvh - 64px)', overscrollBehavior: 'none', touchAction: 'none' }}
+        >
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
@@ -119,7 +122,7 @@ export const Game2048Page: React.FC = () => {
                 </aside>
 
                 {/* CENTER: Game area */}
-                <div className="flex-1 relative flex items-center justify-center p-0 lg:p-4 overflow-hidden">
+                <div className="flex-1 relative flex items-center justify-center p-0 lg:p-4 overflow-hidden" style={{ touchAction: 'none' }}>
                     <div className="w-full h-full flex items-center justify-center relative">
                         <Game2048
                             onScoreChange={setScore}
