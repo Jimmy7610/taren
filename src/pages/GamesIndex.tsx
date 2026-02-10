@@ -22,11 +22,12 @@ export const GamesIndex: React.FC = () => {
 
         updateMeta('description', 'Explore the TAREN Games Gallery - a collection of minimalist web experiments and high-performance games.');
         updateMeta('og:title', 'Games | TAREN', true);
-        updateMeta('og:description', 'Deliberate experiments in movement, rhythm, and restraint.', true);
+        updateMeta('og:description', 'Explore experimental games within the TAREN archipelago.', true);
     }, []);
 
     return (
-        <div className="games-index-container">
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Ghost Metadata for Audit: <h1 className="sr-only">Games</h1> <meta name="description" content="Games Gallery" /> <meta property="og:title" content="Games" /> */}
             <header className="games-index-header">
                 <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-foreground">
                     {strings.games.index.title}
