@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAMES | TAREN - Digital Playground</title>
+    <meta name="description" content="A gallery of experimental web games and interactive playthings.">
+    <link rel="stylesheet" href="./games.css">
+</head>
+
+<body>
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <a href="/" class="home-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="home-icon">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span class="site-name">TAREN</span>
+            </a>
+            <span class="build-badge">#27</span>
+        </div>
+        <div class="top-bar-right">
+            <button id="theme-toggle" class="control-btn" aria-label="Toggle theme">
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2" />
+                    <path d="M12 20v2" />
+                    <path d="m4.93 4.93 1.41 1.41" />
+                    <path d="m17.66 17.66 1.41 1.41" />
+                    <path d="M2 12h2" />
+                    <path d="M20 12h2" />
+                    <path d="m6.34 17.66-1.41 1.41" />
+                    <path d="m19.07 4.93-1.41 1.41" />
+                </svg>
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="display: none;">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+            </button>
+            <button id="lang-toggle" class="control-btn font-mono text-[10px] font-bold">EN</button>
+        </div>
+    </header>
+
+    <main class="gallery-container">
+        <header class="gallery-header">
+            <h1 data-i18n="title">GAMES</h1>
+            <div class="header-line"></div>
+        </header>
+
+        <div class="tiles-grid">
+            <!-- Featured Tile: Neon Snake -->
+            <article class="game-tile featured">
+                <div class="image-window">
+                    <img src="./snake/assets/snake-pixar-neon.png" alt="Neon Snake Preview">
+                    <div class="overlay-gradient"></div>
+                </div>
+                <div class="tile-content">
+                    <h2 class="tile-title">NEON SNAKE</h2>
+                    <p class="tile-desc" data-i18n="snake-desc">Ett kontrollerat experiment i rörelse, rytm och
+                        återhållsamhet.</p>
+                    <a href="/games/snake/" class="cta-btn" data-i18n="snake-cta">Gå in i experimentet</a>
+                </div>
+            </article>
+
+            <!-- Dormant Tiles -->
+            <article class="game-tile dormant">
+                <div class="image-window">
+                    <div class="dormant-pattern"></div>
+                </div>
+                <div class="tile-content">
+                    <span class="status-label" data-i18n="dormant-label">Kommer senare</span>
+                    <p class="tile-desc" data-i18n="dormant-desc">Ett vilande experiment som ännu inte har vaknat…</p>
+                </div>
+            </article>
+
+            <article class="game-tile dormant">
+                <div class="image-window">
+                    <div class="dormant-pattern"></div>
+                </div>
+                <div class="tile-content">
+                    <span class="status-label" data-i18n="dormant-label">Kommer senare</span>
+                    <p class="tile-desc" data-i18n="dormant-desc">Ett vilande experiment som ännu inte har vaknat…</p>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <script type="module" src="./games.js"></script>
+</body>
+
+</html>
