@@ -49,7 +49,8 @@ export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '',
                     {project.description}
                 </p>
 
-                <div className="mt-auto pt-4 flex items-center justify-between">
+                <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5">
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-accent/40">Archipelago Project</span>
                     <Link
                         to={`/${project.category}/${project.slug}`}
                         className="inline-flex items-center gap-1 text-xs font-semibold text-foreground hover:text-accent transition-colors focus:outline-none"
