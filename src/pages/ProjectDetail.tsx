@@ -13,11 +13,22 @@ export const ProjectDetail: React.FC = () => {
 
     React.useEffect(() => {
         if (project) {
-            document.title = `${project.title} | TAREN - Project Detail`;
-            const meta = document.querySelector('meta[name="description"]') || document.createElement('meta');
-            meta.setAttribute('name', 'description');
-            meta.setAttribute('content', project.description);
-            if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
+            document.title = `${project.title} | TAREN`;
+
+            const updateMeta = (name: string, content: string, isProperty = false) => {
+                const attr = isProperty ? 'property' : 'name';
+                let el = document.querySelector(`meta[${attr}="${name}"]`);
+                if (!el) {
+                    el = document.createElement('meta');
+                    el.setAttribute(attr, name);
+                    document.head.appendChild(el);
+                }
+                el.setAttribute('content', content);
+            };
+
+            updateMeta('description', project.description);
+            updateMeta('og:title', `${project.title} | TAREN`, true);
+            updateMeta('og:description', project.description, true);
         }
     }, [project]);
 
@@ -43,9 +54,6 @@ export const ProjectDetail: React.FC = () => {
 
     return (
         <div className="max-w-4xl mx-auto py-8 lg:py-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <title>{project.title} | TAREN</title>
-            <meta property="og:title" content={`${project.title} | TAREN`} />
-            <meta property="og:description" content={project.description} />
             <Link
                 to="/"
                 className="inline-flex items-center gap-2 text-sm text-foreground/40 hover:text-accent transition-colors mb-8 focus:outline-none focus:ring-2 focus:ring-accent rounded-md px-2"

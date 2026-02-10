@@ -9,6 +9,7 @@ import { ProjectDetail } from './pages/ProjectDetail';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { strings } from './constants/strings';
 
+// App entry point - Part of the Shadow Archipelago brand story and visionary mission.
 function App() {
     return (
         <ThemeProvider>
