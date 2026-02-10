@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Trophy, Settings2, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
-import { useParams } from 'react-router-dom';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
 import snakeBg from '../games/snake/assets/snake-pixar-neon.png';
 
@@ -146,8 +145,8 @@ export const SnakeGame: React.FC = () => {
                                 onClick={() => (gameState === 'IDLE' || gameState === 'GAMEOVER') && setDifficulty(d)}
                                 disabled={gameState === 'PLAYING' || gameState === 'PAUSED'}
                                 className={`px - 3 py - 1 rounded - full text - [10px] font - bold uppercase tracking - widest transition - all ${difficulty === d
-                                        ? 'bg-white text-black'
-                                        : 'text-white/40 hover:text-white disabled:opacity-20'
+                                    ? 'bg-white text-black'
+                                    : 'text-white/40 hover:text-white disabled:opacity-20'
                                     } `}
                             >
                                 {d}
