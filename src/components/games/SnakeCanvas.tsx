@@ -41,6 +41,8 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     // Touch swipe state
     const touchStartRef = useRef<Point | null>(null);
 
+    const [hasMoving, setHasMoving] = useState(false);
+
     // Mutable game state
     const stateRef = useRef({
         snake: [] as Point[],
@@ -98,12 +100,29 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             currentSpeed: SPEED_MAP[difficulty],
         };
         onScoreChange(0);
+        setHasMoving(false);
         onStateChange('PLAYING');
     }, [difficulty, onScoreChange, onStateChange, spawnFood]);
 
     // Handle Keys
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
+            if (gameState === 'IDLE' || gameState === 'GAMEOVER') {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    resetGame();
+                }
+                return;
+            }
+
+            if (gameState === 'PLAYING' && !hasMoving) {
+                // Any movement key or space/enter starts the movement
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', ' ', 'Enter'].includes(e.key)) {
+                    setHasMoving(true);
+                    stateRef.current.lastUpdate = performance.now();
+                }
+            }
+
             const { direction } = stateRef.current;
 
             switch (e.key) {
@@ -127,26 +146,25 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 case 'D':
                     if (direction.x === 0) stateRef.current.nextDirection = { x: 1, y: 0 };
                     break;
-                case 'Enter':
-                    e.preventDefault();
-                    if (gameState === 'IDLE' || gameState === 'GAMEOVER') resetGame();
-                    break;
                 case ' ':
                     e.preventDefault();
                     if (gameState === 'PLAYING') onStateChange('PAUSED');
                     else if (gameState === 'PAUSED') onStateChange('PLAYING');
-                    else if (gameState === 'IDLE' || gameState === 'GAMEOVER') resetGame();
                     break;
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [gameState, onStateChange, resetGame]);
+    }, [gameState, hasMoving, onStateChange, resetGame]);
 
     // Handle Swipe
     const handleTouchStart = (e: React.TouchEvent) => {
         if (gameState !== 'PLAYING') return;
+        if (!hasMoving) {
+            setHasMoving(true);
+            stateRef.current.lastUpdate = performance.now();
+        }
         const touch = e.touches[0];
         touchStartRef.current = { x: touch.clientX, y: touch.clientY };
     };

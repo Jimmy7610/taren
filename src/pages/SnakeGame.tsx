@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Trophy, Target, Pause, Play, RefreshCcw, Home, Settings2, Info, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
+import snakeBg from '../games/snake/assets/snake-pixar-neon.png';
 
 type Difficulty = 'EASY' | 'NORMAL' | 'HARD';
 
@@ -97,7 +98,7 @@ export const SnakeGame: React.FC = () => {
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
-                    src="/src/assets/images/snake-pixar-neon.png"
+                    src={snakeBg}
                     alt=""
                     className="w-full h-full object-cover scale-110 blur-xl opacity-30 grayscale-[20%]"
                 />

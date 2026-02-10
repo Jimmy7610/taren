@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Gamepad2, ArrowRight } from 'lucide-react';
 import { strings } from '../constants/strings';
+import snakeBg from '../games/snake/assets/snake-pixar-neon.png';
 
 export const Games: React.FC = () => {
     return (
@@ -9,7 +10,7 @@ export const Games: React.FC = () => {
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
                 <img
-                    src="/src/assets/images/snake-pixar-neon.png"
+                    src={snakeBg}
                     alt=""
                     className="w-full h-full object-cover scale-105 blur-lg opacity-20 grayscale-[20%]"
                 />
