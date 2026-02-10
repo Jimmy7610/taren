@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdfdfd;
-  --foreground: #121212;
-  --accent: #ff5f1f;
+  --background: hsl(0, 0%, 99%);
+  --foreground: hsl(0, 0%, 7%);
+  --accent: hsl(17, 100%, 56%);
+  --accent-rgb: 255, 95, 31;
   --card-radius: 8px;
 }
 
 .dark {
-  --background: #0f0f0f;
-  --foreground: #ffffff;
+  --background: hsl(0, 0%, 6%);
+  --foreground: hsl(0, 0%, 100%);
 }
 
 body {
