@@ -5,13 +5,21 @@ import { strings } from '../constants/strings';
 import snakeBg from '../games/snake/assets/snake-pixar-neon.png';
 
 export const Games: React.FC = () => {
+    React.useEffect(() => {
+        document.title = "Games | TAREN - Experimental Playgrounds";
+        const meta = document.querySelector('meta[name="description"]') || document.createElement('meta');
+        meta.setAttribute('name', 'description');
+        meta.setAttribute('content', 'Explore a collection of experimental games and interactive playthings, including the flagship Neon Snake experiment.');
+        if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
+    }, []);
+
     return (
         <div className="relative isolate min-h-[calc(100vh-64px)] overflow-hidden">
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
                 <img
                     src={snakeBg}
-                    alt=""
+                    alt="Atmospheric neon background with snake motifs"
                     className="w-full h-full object-cover scale-105 blur-lg opacity-20 grayscale-[20%]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-[#050505]" />

@@ -49,8 +49,14 @@ export const SnakeGame: React.FC = () => {
         localStorage.setItem('snake_highscores_v1', JSON.stringify(highscores));
     }, [highscores]);
 
-    // Lock scroll
+    // SEO & Transitions
     useEffect(() => {
+        document.title = "Neon Snake | TAREN - Minimalist Classic Game";
+        const meta = document.querySelector('meta[name="description"]') || document.createElement('meta');
+        meta.setAttribute('name', 'description');
+        meta.setAttribute('content', 'A classic snake game reimagined with a premium neon aesthetic, synthesized 8-bit audio, and a Two-Step Start flow for professional precision.');
+        if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
+
         document.body.classList.add('no-scroll');
         return () => {
             document.body.classList.remove('no-scroll');
@@ -99,7 +105,7 @@ export const SnakeGame: React.FC = () => {
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
                     src={snakeBg}
-                    alt=""
+                    alt="Cinematic background showing a neon snake in a futuristic setting"
                     className="w-full h-full object-cover scale-110 blur-md opacity-15"
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80" />

@@ -11,6 +11,16 @@ export const ProjectDetail: React.FC = () => {
         return projects.find(p => p.slug === slug);
     }, [projects, slug]);
 
+    React.useEffect(() => {
+        if (project) {
+            document.title = `${project.title} | TAREN - Project Detail`;
+            const meta = document.querySelector('meta[name="description"]') || document.createElement('meta');
+            meta.setAttribute('name', 'description');
+            meta.setAttribute('content', project.description);
+            if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
+        }
+    }, [project]);
+
     if (!project) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">

@@ -4,8 +4,14 @@ import { Gamepad2, Music, Clapperboard, Briefcase, Code } from 'lucide-react';
 import { strings } from '../constants/strings';
 
 export const Home: React.FC = () => {
-    // Toggle scroll lock on mount/unmount
+    // SEO & Transitions
     useEffect(() => {
+        document.title = "TAREN | Digital Playground - Minimalist Web Experiments";
+        const meta = document.querySelector('meta[name="description"]') || document.createElement('meta');
+        meta.setAttribute('name', 'description');
+        meta.setAttribute('content', 'TAREN is a premium digital playground for minimalist web experiments, high-performance games, and interactive code sketches built with visual excellence.');
+        if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
+
         document.body.classList.add('no-scroll');
         return () => {
             document.body.classList.remove('no-scroll');
@@ -17,7 +23,7 @@ export const Home: React.FC = () => {
         { name: strings.routes.music, icon: Music, path: '/music', color: 'text-blue-500' },
         { name: strings.routes.videos, icon: Clapperboard, path: '/videos', color: 'text-red-500' },
         { name: strings.routes.portfolio, icon: Briefcase, path: '/portfolio', color: 'text-emerald-500' },
-        { name: strings.routes.code, icon: Code, path: '/code', color: 'text-purple-500' },
+        { name: strings.routes.code, icon: Code, path: '/code', color: 'text-indigo-500' },
     ];
 
     return (
