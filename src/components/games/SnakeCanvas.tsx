@@ -14,8 +14,8 @@ interface SnakeCanvasProps {
     onGameOver: (score: number) => void;
     difficulty: Difficulty;
     onDifficultyChange: (difficulty: Difficulty) => void;
-    gameState: 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER';
-    onStateChange: (state: 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER') => void;
+    gameState: 'IDLE' | 'READY' | 'PLAYING' | 'PAUSED' | 'GAMEOVER';
+    onStateChange: (state: 'IDLE' | 'READY' | 'PLAYING' | 'PAUSED' | 'GAMEOVER') => void;
     isSoundOn: boolean;
 }
 
@@ -260,7 +260,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         };
         onScoreChange(0);
         setHasMoving(false);
-        onStateChange('PLAYING');
+        onStateChange('READY');
     }, [difficulty, onScoreChange, onStateChange, spawnFood]);
 
     // Handle Keys
@@ -270,14 +270,25 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     initAudio();
-                    if (gameState === 'IDLE') playStartStinger();
                     resetGame();
                 }
                 return;
             }
 
+            if (gameState === 'READY') {
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', ' ', 'Enter'].includes(e.key)) {
+                    e.preventDefault();
+                    if (!stingerPlayedRef.current) playStartStinger();
+                    onStateChange('PLAYING');
+                    setHasMoving(true);
+                    startAmbient();
+                    stateRef.current.lastUpdate = performance.now();
+                }
+                return;
+            }
+
             if (gameState === 'PLAYING' && !hasMoving) {
-                // Any movement key or space/enter starts the movement
+                // Should not happen with new READY state logic but keeping as safety
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', ' ', 'Enter'].includes(e.key)) {
                     initAudio();
                     if (!stingerPlayedRef.current) playStartStinger();
@@ -330,6 +341,14 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
     // Handle Swipe
     const handleTouchStart = (e: React.TouchEvent) => {
+        if (gameState === 'READY') {
+            if (!stingerPlayedRef.current) playStartStinger();
+            onStateChange('PLAYING');
+            setHasMoving(true);
+            startAmbient();
+            stateRef.current.lastUpdate = performance.now();
+            return;
+        }
         if (gameState !== 'PLAYING') return;
         initAudio();
         if (!hasMoving) {
@@ -556,6 +575,26 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             />
 
             {/* OVERLAYS */}
+            {gameState === 'READY' && (
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none">
+                    <div className="p-8 rounded-3xl bg-black/60 backdrop-blur-xl border border-white/10 flex flex-col items-center gap-4 animate-in fade-in zoom-in duration-500 pointer-events-auto">
+                        <div className="flex items-center gap-4 text-white">
+                            <span className="flex h-3 w-3 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
+                            </span>
+                            <span className="text-sm font-bold tracking-widest uppercase">System Armed</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-1">
+                            <h3 className="text-xl font-bold text-white tracking-tight">Press any key or tap to start</h3>
+                            {isTouchDevice && (
+                                <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/40">Swipe to move</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {gameState === 'IDLE' && (
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/85 backdrop-blur-2xl p-12 pt-[10vh] text-center">
                     {/* Hero Window */}

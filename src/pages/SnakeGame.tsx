@@ -20,7 +20,7 @@ const DIFFICULTY_CONFIG = {
 };
 
 export const SnakeGame: React.FC = () => {
-    const [gameState, setGameState] = useState<'IDLE' | 'PLAYING' | 'PAUSED' | 'GAMEOVER'>('IDLE');
+    const [gameState, setGameState] = useState<'IDLE' | 'READY' | 'PLAYING' | 'PAUSED' | 'GAMEOVER'>('IDLE');
     const [difficulty, setDifficulty] = useState<Difficulty>(() => {
         return (localStorage.getItem('snake_difficulty') as Difficulty) || 'NORMAL';
     });
