@@ -1,19 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Settings2 } from 'lucide-react';
+import { ArrowLeft, Settings2, Volume2, VolumeX } from 'lucide-react';
 import { strings } from '../constants/strings';
 import hero2048 from '../games/2048/assets/images/hero.png';
 import Game2048 from '../games/2048/App';
+import { loadMute, saveMute, AudioEngine } from '../games/2048/audio/audio';
 
 /**
- * Page shell for 2048 — mirrors SnakeGame.tsx layout exactly:
+ * Page shell for 2048 — mirrors SnakeGame.tsx layout:
  * full-viewport, cinematic bg, header bar with score blocks,
- * 3-column main with left scoreboard + center game + right controls panel,
+ * 3-column main with left scoreboard + center game + right controls + audio toggle,
  * mobile footer.
  */
 export const Game2048Page: React.FC = () => {
     const [score, setScore] = useState(0);
     const [bestScore, setBestScore] = useState(0);
+    const [isMuted, setIsMuted] = useState(() => loadMute());
+    const audioRef = useRef<AudioEngine | null>(null);
+
+    const toggleMute = useCallback(() => {
+        setIsMuted(prev => {
+            const next = !prev;
+            saveMute(next);
+            return next;
+        });
+    }, []);
 
     useEffect(() => {
         document.title = '2048 | TAREN – Minimalist Puzzle Experiment';
@@ -88,7 +99,7 @@ export const Game2048Page: React.FC = () => {
 
             {/* Main Content Areas – 3-column like Snake */}
             <main className="flex-1 flex overflow-hidden relative">
-                {/* LEFT: Scoreboard (mirrors Snake's highscore sidebar) */}
+                {/* LEFT: Scoreboard */}
                 <aside className="hidden lg:flex w-72 flex-col border-r border-white/5 bg-black/20 p-6 overflow-hidden">
                     <h3 className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                         📊 Scoreboard
@@ -115,11 +126,15 @@ export const Game2048Page: React.FC = () => {
                 {/* CENTER: Game area */}
                 <div className="flex-1 relative flex items-center justify-center p-0 lg:p-4 overflow-hidden">
                     <div className="w-full h-full flex items-center justify-center relative">
-                        <Game2048 onScoreChange={setScore} onBestScoreChange={setBestScore} />
+                        <Game2048
+                            onScoreChange={setScore}
+                            onBestScoreChange={setBestScore}
+                            onMuteChange={setIsMuted}
+                        />
                     </div>
                 </div>
 
-                {/* RIGHT: Controls / Info – mirrors Snake exactly */}
+                {/* RIGHT: Controls / Info / Audio – mirrors Snake exactly */}
                 <aside className="hidden xl:flex w-72 flex-col border-l border-white/5 bg-black/20 p-6">
                     <div className="mb-8">
                         <h3 className="text-xs font-bold text-[#8A8A8A] uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
@@ -149,6 +164,23 @@ export const Game2048Page: React.FC = () => {
                             <p>Reach <span className="text-amber-400 font-bold">2048</span> to win.</p>
                         </div>
                     </div>
+
+                    {/* Audio Toggle – mirrors Snake's pattern exactly */}
+                    <div className="mt-auto pt-6 border-t border-white/5">
+                        <button
+                            onClick={toggleMute}
+                            className="flex items-center justify-between w-full p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all group"
+                        >
+                            <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-widest group-hover:text-[#B8B8B8] transition-colors">
+                                Audio {isMuted ? 'Muted' : 'Active'}
+                            </span>
+                            {isMuted ? (
+                                <VolumeX className="h-4 w-4 text-[#666666] group-hover:text-red-500/60 transition-colors" />
+                            ) : (
+                                <Volume2 className="h-4 w-4 text-[#8A8A8A] group-hover:text-accent transition-colors" />
+                            )}
+                        </button>
+                    </div>
                 </aside>
             </main>
 
@@ -157,6 +189,10 @@ export const Game2048Page: React.FC = () => {
                 <span>Score: {score}</span>
                 <div className="h-3 w-px bg-white/5" />
                 <span>Best: {bestScore}</span>
+                <div className="h-3 w-px bg-white/5" />
+                <button onClick={toggleMute} className="flex items-center gap-1 text-[#8A8A8A] hover:text-[#B8B8B8] transition-colors">
+                    {isMuted ? <VolumeX className="h-3 w-3" /> : <Volume2 className="h-3 w-3" />}
+                </button>
             </div>
         </div>
     );
