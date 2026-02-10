@@ -27,6 +27,7 @@ export const GamesIndex: React.FC = () => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <title>Games | TAREN</title>
             <meta name="description" content="Explore the TAREN Games Gallery - a collection of minimalist web experiments and high-performance games." />
             <meta property="og:title" content="Games | TAREN" />
             <meta property="og:description" content="Explore experimental games within the TAREN archipelago." />
