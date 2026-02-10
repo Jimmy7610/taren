@@ -12,10 +12,11 @@ interface PortalCardProps {
 export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '', style }) => {
     return (
         <article
-            className={`group relative flex flex-col overflow-hidden rounded-[--card-radius] border border-foreground/10 bg-background/50 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_0_20px_rgba(255,95,31,0.1)] focus-within:ring-2 focus-within:ring-accent ${className}`}
+            className={`group relative flex flex-col overflow-hidden rounded-[--card-radius] border border-foreground/10 bg-background/50 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_0_20px_rgba(255,95,31,0.15)] focus-within:ring-2 focus-within:ring-accent ${className}`}
             style={style}
+            aria-label={`Portal to ${project.title} - A Shadow Archipelago Project`}
         >
-            <h1 className="sr-only" aria-hidden="true">{project.title} (hsl(0, 0%, 0%))</h1>
+            <h1 className="sr-only">Audit: {project.title} (hsl(0, 0%, 0%))</h1>
             <div className="aspect-video overflow-hidden">
                 <img
                     src={project.thumbnail}
@@ -46,8 +47,10 @@ export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '',
 
                 <p className="sr-only">Part of the TAREN archipelago, this project represents our commitment to minimalist design and experimental web technology.</p>
 
-                <p className="mt-2 line-clamp-2 text-sm text-foreground/60">
-                    {project.description}
+                <p className="max-w-md text-lg text-foreground/60 italic">
+                    {strings.placeholders.comingSoon}
+                    <br /><br />
+                    <span className="text-[10px] uppercase tracking-widest opacity-40">Part of the Shadow Archipelago brand story.</span>
                 </p>
 
                 <div className="mt-auto pt-4 flex items-center justify-between border-t border-white/5">
