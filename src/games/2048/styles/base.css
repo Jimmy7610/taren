@@ -1,6 +1,12 @@
-/* TAREN 2048 - base styles (Build #1)
+/* TAREN 2048 - base styles (Build #6)
    Glass/Ceramic direction; keep subtle, readable, premium.
 */
+
+/* Scroll lock – active only while 2048 is mounted */
+body.taren-game-locked-scroll {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
 
 .t2048-root {
     display: flex;

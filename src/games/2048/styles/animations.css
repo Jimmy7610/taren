@@ -1,4 +1,4 @@
-/* TAREN 2048 - animations (Build #5) */
+/* TAREN 2048 - animations (Build #6) */
 @media (prefers-reduced-motion: no-preference) {
     .t2048-tile[data-anim="spawn"] {
         animation: t2048-spawn 120ms ease-out forwards;
@@ -34,6 +34,7 @@
         }
     }
 
+    /* No-move shake */
     .t2048-board.t2048-board--noMove {
         animation: t2048-noMove 120ms ease-in-out;
     }
@@ -48,6 +49,79 @@
         }
 
         55% {
+            transform: translateX(3px);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    /* Directional nudge feedback */
+    .t2048-board[data-dir="up"] {
+        animation: t2048-nudge-up 100ms ease-out;
+    }
+
+    .t2048-board[data-dir="down"] {
+        animation: t2048-nudge-down 100ms ease-out;
+    }
+
+    .t2048-board[data-dir="left"] {
+        animation: t2048-nudge-left 100ms ease-out;
+    }
+
+    .t2048-board[data-dir="right"] {
+        animation: t2048-nudge-right 100ms ease-out;
+    }
+
+    @keyframes t2048-nudge-up {
+        0% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(-3px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes t2048-nudge-down {
+        0% {
+            transform: translateY(0);
+        }
+
+        40% {
+            transform: translateY(3px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes t2048-nudge-left {
+        0% {
+            transform: translateX(0);
+        }
+
+        40% {
+            transform: translateX(-3px);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes t2048-nudge-right {
+        0% {
+            transform: translateX(0);
+        }
+
+        40% {
             transform: translateX(3px);
         }
 

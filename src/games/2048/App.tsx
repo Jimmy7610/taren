@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import ReactDOM from "react-dom";
 
 import "./styles/base.css";
 import "./styles/tiles.css";
 import "./styles/animations.css";
 
-import HeroArt from "./ui/HeroArt";
 import Board from "./ui/Board";
 import StartScreen from "./ui/StartScreen";
-import HUD from "./ui/HUD";
 import Overlay from "./ui/Overlay";
 import { createEmptyGrid4, spawnInitialTwoTiles, spawnOneTile, type Grid4 } from "./logic/spawn";
 import { moveGrid, type Direction } from "./logic/move";
@@ -29,10 +28,22 @@ export default function App() {
     const [lastMergePositions, setLastMergePositions] = useState<Array<{ r: number; c: number }>>([]);
     const [noMovePulse, setNoMovePulse] = useState(false);
 
+    // Movement feedback: directional nudge on the board
+    const [lastMoveDir, setLastMoveDir] = useState<Direction | null>(null);
+    const [movePulse, setMovePulse] = useState(0);
+
     // Guard against double-trigger
     const startedRef = useRef(false);
     const rootRef = useRef<HTMLDivElement>(null);
     const pulseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Lock page scroll while 2048 is mounted
+    useEffect(() => {
+        document.body.classList.add("taren-game-locked-scroll");
+        return () => {
+            document.body.classList.remove("taren-game-locked-scroll");
+        };
+    }, []);
 
     const start = useCallback(() => {
         if (startedRef.current) return;
@@ -55,6 +66,8 @@ export default function App() {
         setScore(0);
         setLastSpawnPos(null);
         setLastMergePositions([]);
+        setLastMoveDir(null);
+        setMovePulse(0);
         setHasWon(false);
         setShowWinOverlay(false);
         setIsGameEnded(false);
@@ -74,6 +87,10 @@ export default function App() {
             if (result.changed) {
                 // Clear previous animations
                 setLastMergePositions(result.mergedPositions);
+
+                // Movement feedback: directional nudge
+                setLastMoveDir(dir);
+                setMovePulse(p => p + 1);
 
                 const newScore = score + result.gained;
                 setScore(newScore);
@@ -106,7 +123,17 @@ export default function App() {
     }, [score, bestScore, hasWon, isGameEnded, showWinOverlay, triggerNoMoveFeedback]);
 
     useEffect(() => {
+        const GAME_KEYS = new Set([
+            "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
+            "w", "W", "a", "A", "s", "S", "d", "D", " "
+        ]);
+
         const onKeyDown = (e: KeyboardEvent) => {
+            // Prevent scroll for game keys
+            if (GAME_KEYS.has(e.key)) {
+                e.preventDefault();
+            }
+
             if (!startedRef.current) {
                 start();
                 return;
@@ -156,10 +183,29 @@ export default function App() {
         };
     }, [start, handleMove, isGameEnded, showWinOverlay]);
 
+    // Portal: inject score blocks into the page header
+    const headerPortal = document.getElementById("t2048-header-scores");
+
     return (
         <div className="t2048-root" ref={rootRef}>
-            <HeroArt />
-            <HUD score={score} bestScore={bestScore} onRestart={restart} />
+            {/* Score/Best portal into page header */}
+            {headerPortal && ReactDOM.createPortal(
+                <>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.2em] mb-0.5">Score</span>
+                        <span className="text-xl font-mono font-bold tabular-nums text-[#EDEDED]">
+                            {score.toString().padStart(4, '0')}
+                        </span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-[#8A8A8A] uppercase tracking-[0.2em] mb-0.5">Best</span>
+                        <span className="text-xl font-mono font-bold tabular-nums text-[#8A8A8A]">
+                            {bestScore.toString().padStart(4, '0')}
+                        </span>
+                    </div>
+                </>,
+                headerPortal
+            )}
 
             {!hasStarted ? (
                 <StartScreen title="2048" subtitle="Press any key / tap to start" />
@@ -190,6 +236,8 @@ export default function App() {
                 lastSpawnPos={lastSpawnPos}
                 lastMergePositions={lastMergePositions}
                 noMove={noMovePulse}
+                moveDir={lastMoveDir}
+                movePulse={movePulse}
             />
         </div>
     );
