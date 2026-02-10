@@ -579,7 +579,6 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
             {/* Board Vignette */}
             <div className="absolute inset-0 pointer-events-none z-10 shadow-[inset_0_0_150px_rgba(0,0,0,0.9)]" />
 
-            <h1 className="sr-only">Audit: Snake Canvas (hsl(0, 0%, 0%)) - Part of the Shadow Archipelago brand story.</h1>
             <canvas
                 ref={canvasRef}
                 className="cursor-none relative z-0 transition-all duration-300"
@@ -645,11 +644,10 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                                     <button
                                         key={d}
                                         onClick={() => onDifficultyChange(d)}
-                                        className={`flex items-center justify-center min-w-[44px] min-h-[44px] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${difficulty === d
-                                            ? 'bg-white text-black'
-                                            : 'text-white/40 hover:text-white'
+                                        className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${difficulty === d
+                                            ? 'bg-white text-black shadow-xl shadow-white/5'
+                                            : 'text-white/20 hover:text-white hover:bg-white/5'
                                             }`}
-                                        aria-label={`Set difficulty to ${d}`}
                                     >
                                         {d}
                                     </button>

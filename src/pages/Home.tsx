@@ -39,11 +39,7 @@ export const Home: React.FC = () => {
     ];
 
     return (
-        <div className="container mx-auto px-4 py-12">
-            <title>{strings.common.siteName}</title>
-            <meta name="description" content="TAREN - A Deliberate Minimalist Digital Archipelago" />
-            <meta property="og:title" content={strings.common.siteName} />
-            <meta property="og:description" content="Explore a collection of minimalist web experiments and high-performance games." />
+        <div className="flex h-[calc(100vh-120px)] flex-col items-center justify-center px-4 overflow-hidden">
             <header className="mb-16 text-center animate-in fade-in zoom-in duration-1000">
                 <h1 className="text-6xl font-bold tracking-[0.2em] sm:text-8xl text-foreground mb-4">
                     {strings.common.siteName}

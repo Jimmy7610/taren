@@ -112,11 +112,6 @@ export const SnakeGame: React.FC = () => {
 
     return (
         <div className="relative flex min-h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-white" style={{ overscrollBehavior: 'none' }}>
-            <title>Neon Snake | TAREN</title>
-            <meta name="description" content="A premium neon snake game reimagined." />
-            <meta property="og:title" content="Neon Snake | TAREN" />
-            <meta property="og:description" content="A controlled experiment in movement and rhythm." />
-            <h1 className="sr-only">Neon Snake</h1>
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
@@ -131,8 +126,8 @@ export const SnakeGame: React.FC = () => {
             <header className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/40 backdrop-blur-xl z-50">
                 <div className="flex items-center gap-8">
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Difficulty</span>
-                        <span className={`text - xs font - bold uppercase tracking - widest ${DIFFICULTY_CONFIG[difficulty].color} `}>
+                        <h1 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-0.5">Neon Snake</h1>
+                        <span className={`text-xs font-bold uppercase tracking-widest ${DIFFICULTY_CONFIG[difficulty].color}`}>
                             {DIFFICULTY_CONFIG[difficulty].label}
                         </span>
                     </div>
