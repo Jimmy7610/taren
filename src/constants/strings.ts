@@ -20,6 +20,11 @@ export const strings = {
                 description: "A controlled experiment in movement, rhythm, and restraint.",
                 cta: "Enter Experiment"
             },
+            twoZeroFourEight: {
+                title: "2048",
+                description: "A minimalist digital synthesis of logic and alignment.",
+                cta: "Enter Experiment"
+            },
             dormant: {
                 label: "Coming later",
                 description: "A dormant experiment yet to be unveiled…"

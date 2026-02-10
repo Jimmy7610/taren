@@ -55,6 +55,26 @@ export const GamesIndex: React.FC = () => {
                     </div>
                 </Link>
 
+                {/* Active Tile: 2048 */}
+                <Link to="/games/2048" className="game-tile active group">
+                    <div className="tile-image-window">
+                        <div className="tile-placeholder-bg bg-accent/10" />
+                        <div className="tile-overlay" />
+                    </div>
+                    <div className="tile-content">
+                        <div className="tile-header">
+                            <h2 className="tile-title">{strings.games.index.twoZeroFourEight.title}</h2>
+                            <div className="tile-badge">BETA</div>
+                        </div>
+                        <p className="tile-description">
+                            {strings.games.index.twoZeroFourEight.description}
+                        </p>
+                        <div className="tile-cta">
+                            {strings.games.index.twoZeroFourEight.cta} <ArrowRight className="h-4 w-4" />
+                        </div>
+                    </div>
+                </Link>
+
                 {/* Dormant Tiles */}
                 <div className="game-tile dormant">
                     <div className="tile-image-window">

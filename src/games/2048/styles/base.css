@@ -1,0 +1,32 @@
+/* TAREN 2048 - base styles (Build #1)
+   Glass/Ceramic direction; keep subtle, readable, premium.
+*/
+
+.t2048-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 18px 14px 28px;
+    box-sizing: border-box;
+}
+
+.t2048-hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0 14px;
+}
+
+.t2048-hero__img {
+    width: min(320px, 70vw);
+    height: auto;
+    opacity: 0.95;
+    user-select: none;
+    pointer-events: none;
+}
+
+.t2048-boardShell {
+    width: min(520px, 92vw);
+}

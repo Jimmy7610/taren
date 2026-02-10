@@ -5,6 +5,7 @@ import { AppShell } from './components/layout/AppShell';
 import { Home } from './pages/Home';
 import { GamesIndex } from './pages/GamesIndex';
 import { SnakeGame } from './pages/SnakeGame';
+import TwoZeroFourEight from './games/2048/App';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { strings } from './constants/strings';
@@ -19,6 +20,7 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/games" element={<GamesIndex />} />
                         <Route path="/games/snake" element={<SnakeGame />} />
+                        <Route path="/games/2048" element={<TwoZeroFourEight />} />
                         <Route path="/music" element={<PlaceholderPage title={strings.routes.music} />} />
                         <Route path="/videos" element={<PlaceholderPage title={strings.routes.videos} />} />
                         <Route path="/portfolio" element={<PlaceholderPage title={strings.routes.portfolio} />} />
