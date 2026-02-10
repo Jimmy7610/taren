@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { strings } from '../constants/strings';
 import { Trophy, Settings2, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
@@ -53,9 +53,21 @@ export const SnakeGame: React.FC = () => {
     // SEO & Transitions
     useEffect(() => {
         document.title = "Neon Snake | TAREN - Minimalist Classic Game";
-        const meta = document.querySelector('meta[name="description"]') || document.createElement('meta');
-        meta.setAttribute('name', 'description');
-        meta.setAttribute('content', 'A classic snake game reimagined with a premium neon aesthetic, synthesized 8-bit audio, and a Two-Step Start flow for professional precision.');
+        const updateMeta = (name: string, content: string, isProperty = false) => {
+            const attr = isProperty ? 'property' : 'name';
+            let el = document.querySelector(`meta[${attr}="${name}"]`);
+            if (!el) {
+                el = document.createElement('meta');
+                el.setAttribute(attr, name);
+                document.head.appendChild(el);
+            }
+            el.setAttribute('content', content);
+        };
+
+        updateMeta('description', 'A classic snake game reimagined with a premium neon aesthetic, synthesized 8-bit audio, and a Two-Step Start flow for professional precision.');
+        updateMeta('og:title', 'Neon Snake | TAREN', true);
+        updateMeta('og:description', 'A premium neon snake game reimagined.', true);
+
         if (!document.querySelector('meta[name="description"]')) document.head.appendChild(meta);
 
         document.body.classList.add('no-scroll');
@@ -102,9 +114,6 @@ export const SnakeGame: React.FC = () => {
 
     return (
         <div className="relative flex min-h-[calc(100vh-64px)] flex-col overflow-hidden bg-[#050505] text-white" style={{ overscrollBehavior: 'none' }}>
-            <title>Neon Snake | TAREN</title>
-            <meta property="og:title" content="Neon Snake | TAREN" />
-            <meta property="og:description" content="A premium neon snake game reimagined." />
             {/* Cinematic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
