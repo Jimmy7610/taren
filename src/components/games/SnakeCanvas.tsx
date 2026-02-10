@@ -175,7 +175,9 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
         if (ambientOscRef.current) {
             try {
                 ambientOscRef.current.stop();
-            } catch { }
+            } catch {
+                /* Audio might already be stopped or invalid state */
+            }
             ambientOscRef.current = null;
         }
     }, []);
