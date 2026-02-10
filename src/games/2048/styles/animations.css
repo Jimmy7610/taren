@@ -1,18 +1,58 @@
-/* TAREN 2048 - animations (Build #2) */
+/* TAREN 2048 - animations (Build #5) */
 @media (prefers-reduced-motion: no-preference) {
-    .t2048-tile {
-        animation: t2048-pop 120ms ease-out;
+    .t2048-tile[data-anim="spawn"] {
+        animation: t2048-spawn 120ms ease-out forwards;
     }
 
-    @keyframes t2048-pop {
+    .t2048-tile[data-anim="merge"] {
+        animation: t2048-merge 140ms ease-out forwards;
+    }
+
+    @keyframes t2048-spawn {
         from {
-            transform: scale(0.98);
-            opacity: 0.85;
+            transform: scale(0.985);
+            opacity: 0.84;
         }
 
         to {
             transform: scale(1);
             opacity: 1;
+        }
+    }
+
+    @keyframes t2048-merge {
+        0% {
+            transform: scale(0.98);
+        }
+
+        55% {
+            transform: scale(1.06);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .t2048-board.t2048-board--noMove {
+        animation: t2048-noMove 120ms ease-in-out;
+    }
+
+    @keyframes t2048-noMove {
+        0% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-3px);
+        }
+
+        55% {
+            transform: translateX(3px);
+        }
+
+        100% {
+            transform: translateX(0);
         }
     }
 }

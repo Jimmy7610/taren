@@ -20,22 +20,28 @@ export function listEmptyCells(grid: Grid4): Array<{ r: number; c: number }> {
     return out;
 }
 
-export function spawnOneTile(grid: Grid4, rng: () => number = Math.random): Grid4 {
+export type SpawnResult = {
+    grid: Grid4;
+    pos: { r: number; c: number } | null;
+};
+
+export function spawnOneTile(grid: Grid4, rng: () => number = Math.random): SpawnResult {
     const empties = listEmptyCells(grid);
-    if (empties.length === 0) return grid;
+    if (empties.length === 0) return { grid, pos: null };
 
     const idx = Math.floor(rng() * empties.length);
     const { r, c } = empties[idx];
 
     const next = grid.map(row => row.slice());
     next[r][c] = randomTileValue(rng);
-    return next;
+    return { grid: next, pos: { r, c } };
 }
 
-export function spawnInitialTwoTiles(grid: Grid4, rng: () => number = Math.random): Grid4 {
-    // Spawn exactly two tiles into empty grid (or any grid with >=2 empties)
-    let next = grid;
-    next = spawnOneTile(next, rng);
-    next = spawnOneTile(next, rng);
-    return next;
+export function spawnInitialTwoTiles(grid: Grid4, rng: () => number = Math.random): SpawnResult {
+    // For initial spawn, we don't strictly need to track both in a simple way, 
+    // but let's just return the grid and null for pos to keep it simple for now,
+    // or return the last one spawned.
+    let res = spawnOneTile(grid, rng);
+    res = spawnOneTile(res.grid, rng);
+    return res;
 }

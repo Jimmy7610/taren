@@ -24,15 +24,23 @@ export default function App() {
     const [showWinOverlay, setShowWinOverlay] = useState(false);
     const [isGameEnded, setIsGameEnded] = useState(false);
 
+    // Animation metadata
+    const [lastSpawnPos, setLastSpawnPos] = useState<{ r: number; c: number } | null>(null);
+    const [lastMergePositions, setLastMergePositions] = useState<Array<{ r: number; c: number }>>([]);
+    const [noMovePulse, setNoMovePulse] = useState(false);
+
     // Guard against double-trigger
     const startedRef = useRef(false);
     const rootRef = useRef<HTMLDivElement>(null);
+    const pulseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const start = useCallback(() => {
         if (startedRef.current) return;
         startedRef.current = true;
 
-        setGrid(prev => spawnInitialTwoTiles(prev));
+        const res = spawnInitialTwoTiles(createEmptyGrid4());
+        setGrid(res.grid);
+        setLastSpawnPos(res.pos);
         setHasStarted(true);
         setScore(0);
         setHasWon(false);
@@ -45,17 +53,28 @@ export default function App() {
         setHasStarted(false);
         setGrid(createEmptyGrid4());
         setScore(0);
+        setLastSpawnPos(null);
+        setLastMergePositions([]);
         setHasWon(false);
         setShowWinOverlay(false);
         setIsGameEnded(false);
     }, []);
 
+    const triggerNoMoveFeedback = useCallback(() => {
+        setNoMovePulse(true);
+        if (pulseTimeoutRef.current) clearTimeout(pulseTimeoutRef.current);
+        pulseTimeoutRef.current = setTimeout(() => setNoMovePulse(false), 150);
+    }, []);
+
     const handleMove = useCallback((dir: Direction) => {
-        if (!startedRef.current || isGameEnded) return;
+        if (!startedRef.current || isGameEnded || showWinOverlay) return;
 
         setGrid(prev => {
             const result = moveGrid(prev, dir);
             if (result.changed) {
+                // Clear previous animations
+                setLastMergePositions(result.mergedPositions);
+
                 const newScore = score + result.gained;
                 setScore(newScore);
 
@@ -64,24 +83,27 @@ export default function App() {
                     saveBestScore(newScore);
                 }
 
-                const nextGrid = spawnOneTile(result.grid);
+                const spawnRes = spawnOneTile(result.grid);
+                setLastSpawnPos(spawnRes.pos);
 
                 // Detect Win (exactly once per session)
-                if (!hasWon && has2048(nextGrid)) {
+                if (!hasWon && has2048(spawnRes.grid)) {
                     setHasWon(true);
                     setShowWinOverlay(true);
                 }
 
                 // Detect Game Over
-                if (isGameOver(nextGrid)) {
+                if (isGameOver(spawnRes.grid)) {
                     setIsGameEnded(true);
                 }
 
-                return nextGrid;
+                return spawnRes.grid;
+            } else {
+                triggerNoMoveFeedback();
+                return prev;
             }
-            return prev;
         });
-    }, [score, bestScore, hasWon, isGameEnded]);
+    }, [score, bestScore, hasWon, isGameEnded, showWinOverlay, triggerNoMoveFeedback]);
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
@@ -163,7 +185,12 @@ export default function App() {
                 />
             ) : null}
 
-            <Board grid={grid} />
+            <Board
+                grid={grid}
+                lastSpawnPos={lastSpawnPos}
+                lastMergePositions={lastMergePositions}
+                noMove={noMovePulse}
+            />
         </div>
     );
 }
