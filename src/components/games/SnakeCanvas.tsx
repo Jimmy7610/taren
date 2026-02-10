@@ -41,10 +41,71 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
     const [cellSize, setCellSize] = useState(20);
     const [isTouchDevice, setIsTouchDevice] = useState(false);
 
+    // Quiet Polish State
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [parallax, setParallax] = useState({ x: 0, y: 0 });
+    const stingerPlayedRef = useRef(false);
+    const bootStingerRef = useRef<HTMLAudioElement | null>(null);
+
     // Audio Engine Refs
     const audioCtxRef = useRef<AudioContext | null>(null);
     const masterGainRef = useRef<GainNode | null>(null);
     const ambientOscRef = useRef<OscillatorNode | null>(null);
+
+    // Intro Animation trigger
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoaded(true), 100);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Parallax logic
+    useEffect(() => {
+        if (gameState === 'PLAYING') {
+            setParallax({ x: 0, y: 0 });
+            return;
+        }
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const nx = (e.clientX / window.innerWidth) * 2 - 1;
+            const ny = (e.clientY / window.innerHeight) * 2 - 1;
+            setParallax({
+                x: Math.max(-6, Math.min(6, nx * 6)),
+                y: Math.max(-6, Math.min(6, ny * 6))
+            });
+        };
+
+        let t0: Point | null = null;
+        const handleTouchStart = (e: TouchEvent) => {
+            const t = e.touches[0];
+            t0 = { x: t.clientX, y: t.clientY };
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            if (!t0) return;
+            const t = e.touches[0];
+            setParallax({
+                x: Math.max(-6, Math.min(6, (t.clientX - t0.x) * 0.04)),
+                y: Math.max(-6, Math.min(6, (t.clientY - t0.y) * 0.04))
+            });
+        };
+
+        const handleTouchEnd = () => {
+            t0 = null;
+            setParallax({ x: 0, y: 0 });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchmove', handleTouchMove, { passive: true });
+        window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchmove', handleTouchMove);
+            window.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [gameState]);
 
     const initAudio = useCallback(() => {
         if (audioCtxRef.current) return;
@@ -98,6 +159,16 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
         osc.start();
         ambientOscRef.current = osc;
+    }, [isSoundOn]);
+
+    const playStartStinger = useCallback(() => {
+        if (stingerPlayedRef.current || !isSoundOn) return;
+        if (!bootStingerRef.current) {
+            bootStingerRef.current = new Audio(new URL('../../games/snake/assets/boot-stinger.mp3', import.meta.url).href);
+            bootStingerRef.current.volume = 0.35;
+        }
+        stingerPlayedRef.current = true;
+        bootStingerRef.current.play().catch(() => { });
     }, [isSoundOn]);
 
     const stopAmbient = useCallback(() => {
@@ -199,6 +270,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     initAudio();
+                    if (gameState === 'IDLE') playStartStinger();
                     resetGame();
                 }
                 return;
@@ -208,6 +280,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 // Any movement key or space/enter starts the movement
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 'a', 'A', 's', 'S', 'd', 'D', ' ', 'Enter'].includes(e.key)) {
                     initAudio();
+                    if (gameState === 'IDLE') playStartStinger();
                     setHasMoving(true);
                     startAmbient();
                     stateRef.current.lastUpdate = performance.now();
@@ -253,13 +326,14 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [gameState, hasMoving, onStateChange, resetGame]);
+    }, [gameState, hasMoving, onStateChange, resetGame, initAudio, playStartStinger, startAmbient, stopAmbient]);
 
     // Handle Swipe
     const handleTouchStart = (e: React.TouchEvent) => {
         if (gameState !== 'PLAYING') return;
         initAudio();
         if (!hasMoving) {
+            playStartStinger();
             setHasMoving(true);
             startAmbient();
             stateRef.current.lastUpdate = performance.now();
@@ -458,7 +532,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
 
         animationFrameId = requestAnimationFrame(loop);
         return () => cancelAnimationFrame(animationFrameId);
-    }, [gameState, difficulty, cellSize, onScoreChange, onGameOver, spawnFood]);
+    }, [gameState, difficulty, cellSize, onScoreChange, onGameOver, spawnFood, playSfx, stopAmbient]);
 
     return (
         <div
@@ -486,12 +560,16 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-start bg-black/85 backdrop-blur-2xl p-12 pt-[10vh] text-center">
                     {/* Hero Window */}
                     <div
-                        className="w-full max-w-lg h-44 mb-12 rounded-3xl overflow-hidden relative shadow-2xl border border-white/5 animate-in fade-in slide-in-from-top-8 duration-1000"
+                        className={`w-full max-w-lg h-44 mb-12 rounded-3xl overflow-hidden relative shadow-2xl border border-white/5 transition-all duration-700 ${isLoaded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[1.02] translate-y-4'
+                            }`}
                     >
                         <img
                             src={snakeBg}
                             alt=""
-                            className="w-full h-full object-cover scale-105"
+                            className="w-full h-full object-cover transition-transform duration-300 ease-out"
+                            style={{
+                                transform: `scale(1.1) translate(${parallax.x}px, ${parallax.y}px)`
+                            }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
                         <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/40" />
