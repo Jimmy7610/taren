@@ -328,8 +328,8 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                                         key={d}
                                         onClick={() => onDifficultyChange(d)}
                                         className={`py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${difficulty === d
-                                                ? 'bg-white text-black shadow-xl shadow-white/5'
-                                                : 'text-white/20 hover:text-white hover:bg-white/5'
+                                            ? 'bg-white text-black shadow-xl shadow-white/5'
+                                            : 'text-white/20 hover:text-white hover:bg-white/5'
                                             }`}
                                     >
                                         {d}
@@ -375,7 +375,7 @@ export const SnakeCanvas: React.FC<SnakeCanvasProps> = ({
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-3xl">
                     <div className="flex flex-col items-center max-w-sm w-full p-12 text-center mt-[-8vh]">
                         <div className="mb-16">
-                            <h2 className="text-7xl font-bold tracking-tighter text-white mb-4">LOG TERMINATED</h2>
+                            <h2 className="text-7xl font-bold tracking-tighter text-white mb-4 leading-none">The Darkness Consumes You</h2>
                             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5 text-[10px] uppercase font-bold tracking-widest text-white/40">
                                 <Trophy className="h-3 w-3 text-accent" /> Mode: {difficulty}
                             </div>

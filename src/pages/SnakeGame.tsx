@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Trophy, Target, Pause, Play, RefreshCcw, Home, Settings2, Info, Volume2 } from 'lucide-react';
+import { Trophy, Target, Pause, Play, RefreshCcw, Home, Settings2, Info, Volume2, VolumeX } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SnakeCanvas } from '../components/games/SnakeCanvas';
 
@@ -29,6 +29,14 @@ export const SnakeGame: React.FC = () => {
         return saved ? JSON.parse(saved) : { EASY: [], NORMAL: [], HARD: [] };
     });
     const [lastNewScore, setLastNewScore] = useState<number | null>(null);
+    const [isSoundOn, setIsSoundOn] = useState<boolean>(() => {
+        return localStorage.getItem('snake_sound') !== 'off';
+    });
+
+    // Save sound preference
+    useEffect(() => {
+        localStorage.setItem('snake_sound', isSoundOn ? 'on' : 'off');
+    }, [isSoundOn]);
 
     // Save difficulty preference
     useEffect(() => {
@@ -198,11 +206,20 @@ export const SnakeGame: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="mt-auto">
-                        <div className="flex items-center justify-between p-3 rounded-xl border border-white/5 bg-white/[0.02] opacity-40">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Sound</span>
-                            <Volume2 className="h-4 w-4 text-white/30" />
-                        </div>
+                    <div className="mt-8 pt-6 border-t border-white/5">
+                        <button
+                            onClick={() => setIsSoundOn(!isSoundOn)}
+                            className="flex items-center justify-between w-full p-3 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all group"
+                        >
+                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest group-hover:text-white/60 transition-colors">
+                                Audio {isSoundOn ? 'Active' : 'Muted'}
+                            </span>
+                            {isSoundOn ? (
+                                <Volume2 className="h-4 w-4 text-white/40 group-hover:text-accent transition-colors" />
+                            ) : (
+                                <VolumeX className="h-4 w-4 text-white/20 group-hover:text-red-500/60 transition-colors" />
+                            )}
+                        </button>
                     </div>
                 </aside>
             </main>
