@@ -1,11 +1,13 @@
-# 2048 — Build #2
+# 2048 — Build #3
 
-Two-step start flow + initial spawn + 4×4 grid rendering.
+Core movement + merge + post-move spawn.
 
-- Start overlay: “Press any key / tap to start”
-- Spawns exactly 2 tiles on start (90% 2, 10% 4)
-- Renders full 4×4 board with tiles
-- No movement / merge logic yet (next build)
+- Slide + merge logic implemented (classic 2048 rules)
+- One merge per tile per move (e.g. [2,2,2,2] -> [4,4, , ])
+- Keyboard input: Arrow keys + WASD
+- Touch swipe input: pointer-based swipe detection
+- After a valid move (board changed): spawn exactly 1 tile (90% 2, 10% 4)
+- Score increments by merged tile value created
 MD
 
-# global: Build #33
+# global: Build #34

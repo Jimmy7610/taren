@@ -63,3 +63,29 @@
     opacity: 0.82;
     font-size: 14px;
 }
+
+.t2048-hud {
+    width: min(520px, 92vw);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 2px 0 10px;
+    padding: 18px 24px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.t2048-hud__label {
+    opacity: 0.78;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.t2048-hud__value {
+    font-weight: 800;
+    font-size: 24px;
+    font-family: monospace;
+}
