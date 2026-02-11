@@ -1,6 +1,9 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
+const MAX_PARTICLES = 5000;
+const SPAWN_RATE = 12; // Increased for richer flow
+
 interface Particle {
     x: number;
     y: number;
@@ -10,50 +13,53 @@ interface Particle {
     maxLife: number;
     size: number;
     color: string;
+    glint: boolean;
 }
-
-const MAX_PARTICLES = 5000;
-const SPAWN_RATE = 8; // particles per frame while active
 
 export const DigitalSand: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const { theme } = useTheme();
     const [isInteracting, setIsInteracting] = useState(false);
     const [hasInteracted, setHasInteracted] = useState(false);
-    const pointerPos = useRef({ x: 0, y: 0 });
+    const pointerPos = useRef({ x: 0, y: 0, vx: 0, vy: 0 });
+    const lastPointerPos = useRef({ x: 0, y: 0 });
     const particles = useRef<Particle[]>([]);
     const animationFrameId = useRef<number>(0);
-    const pool = useRef<Particle[]>([]);
+    const time = useRef<number>(0);
 
     // Theme-based colors
     const colors = theme === 'dark'
-        ? ['#f2f2f2', '#e5e5e5', '#d4d4d4', '#ff5f1f'] // dark mode: off-whites + subtle accent
-        : ['#171717', '#262626', '#404040', '#ff5f1f']; // light mode: charcoals + subtle accent
+        ? ['#f2f2f2', '#e5e5e5', '#a3a3a3', '#ff5f1f'] // dark mode: off-whites + subtle accent
+        : ['#171717', '#262626', '#525252', '#ff5f1f']; // light mode: charcoals + subtle accent
 
     const initParticle = useCallback((p: Particle, x: number, y: number) => {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 2 + 0.5;
-        p.x = x;
-        p.y = y;
-        p.vx = Math.cos(angle) * speed;
-        p.vy = Math.sin(angle) * speed - 1; // slight initial upward burst
-        p.maxLife = Math.random() * 100 + 100;
+        const speed = Math.random() * 1.5 + 0.2;
+        p.x = x + (Math.random() - 0.5) * 10;
+        p.y = y + (Math.random() - 0.5) * 10;
+
+        // Blend pointer velocity into initial trajectory
+        p.vx = Math.cos(angle) * speed + pointerPos.current.vx * 0.1;
+        p.vy = Math.sin(angle) * speed + pointerPos.current.vy * 0.1 - 0.5;
+
+        p.maxLife = Math.random() * 150 + 150;
         p.life = p.maxLife;
-        p.size = Math.random() * 1.5 + 0.5;
-        // 95% regular, 5% accent
-        p.color = Math.random() > 0.95 ? colors[3] : colors[Math.floor(Math.random() * 3)];
+        p.size = Math.random() * 1.8 + 0.4;
+
+        const rand = Math.random();
+        p.glint = rand > 0.98;
+        p.color = p.glint ? colors[3] : colors[Math.floor(Math.random() * 3)];
+
         return p;
     }, [colors]);
 
     const spawnParticles = useCallback((x: number, y: number) => {
         for (let i = 0; i < SPAWN_RATE; i++) {
-            let p: Particle;
             if (particles.current.length < MAX_PARTICLES) {
-                p = { x: 0, y: 0, vx: 0, vy: 0, life: 0, maxLife: 0, size: 0, color: '' };
-                particles.current.push(initParticle(p, x, y));
+                particles.current.push(initParticle({} as Particle, x, y));
             } else {
-                // Recycle oldest
-                p = particles.current.shift()!;
+                // Recycle oldest (front of array)
+                const p = particles.current.shift()!;
                 particles.current.push(initParticle(p, x, y));
             }
         }
@@ -79,47 +85,70 @@ export const DigitalSand: React.FC = () => {
         window.addEventListener('resize', handleResize);
 
         const animate = () => {
-            // Background fill based on theme
-            ctx.fillStyle = theme === 'dark' ? '#0a0a0a' : '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            time.current += 0.005;
+
+            // Trailing effect: Draw transparent rect instead of clearing
+            const bg = theme === 'dark' ? '10, 10, 10' : '255, 255, 255';
+            ctx.fillStyle = `rgba(${bg}, 0.12)`;
+            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
             if (isInteracting) {
                 spawnParticles(pointerPos.current.x, pointerPos.current.y);
             }
 
             // Update & Draw
-            for (let i = particles.current.length - 1; i >= 0; i--) {
+            for (let i = 0; i < particles.current.length; i++) {
                 const p = particles.current[i];
 
-                // Physics
-                p.vy += 0.05; // gravity
+                // Low-frequency flow field (pseudo-noise)
+                const freq = 0.002;
+                const angle = Math.sin(p.x * freq + time.current) * Math.cos(p.y * freq - time.current) * Math.PI * 2;
+
+                p.vx += Math.cos(angle) * 0.02;
+                p.vy += Math.sin(angle) * 0.02 + 0.04; // gravity + flow
+
+                // Interaction drift
+                const dx = p.x - pointerPos.current.x;
+                const dy = p.y - pointerPos.current.y;
+                const distSq = dx * dx + dy * dy;
+                if (distSq < 150 * 150) {
+                    const dist = Math.sqrt(distSq);
+                    const force = (1 - dist / 150) * 0.05;
+                    p.vx += dx * force * 0.1;
+                    p.vy += dy * force * 0.1;
+                }
+
+                // Damping
+                p.vx *= 0.99;
+                p.vy *= 0.99;
+
                 p.x += p.vx;
                 p.y += p.vy;
                 p.life--;
 
-                // Interaction drift
-                if (isInteracting) {
-                    const dx = p.x - pointerPos.current.x;
-                    const dy = p.y - pointerPos.current.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 150) {
-                        p.vx += dx / 1000;
-                        p.vy += dy / 1000;
-                    }
-                }
-
                 if (p.life <= 0) {
                     particles.current.splice(i, 1);
+                    i--;
                     continue;
                 }
 
                 // Draw
-                const alpha = Math.min(1, p.life / 40);
+                const alpha = Math.min(1, p.life / 60);
                 ctx.globalAlpha = alpha;
                 ctx.fillStyle = p.color;
+
+                if (p.glint) {
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = p.color;
+                }
+
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
+
+                if (p.glint) {
+                    ctx.shadowBlur = 0;
+                }
             }
             ctx.globalAlpha = 1;
 
@@ -137,11 +166,20 @@ export const DigitalSand: React.FC = () => {
     const handlePointerDown = (e: React.PointerEvent) => {
         setIsInteracting(true);
         setHasInteracted(true);
-        pointerPos.current = { x: e.clientX, y: e.clientY };
+        lastPointerPos.current = { x: e.clientX, y: e.clientY };
+        pointerPos.current = { x: e.clientX, y: e.clientY, vx: 0, vy: 0 };
     };
 
     const handlePointerMove = (e: React.PointerEvent) => {
-        pointerPos.current = { x: e.clientX, y: e.clientY };
+        const vx = e.clientX - lastPointerPos.current.x;
+        const vy = e.clientY - lastPointerPos.current.y;
+
+        pointerPos.current.x = e.clientX;
+        pointerPos.current.y = e.clientY;
+        pointerPos.current.vx = vx;
+        pointerPos.current.vy = vy;
+
+        lastPointerPos.current = { x: e.clientX, y: e.clientY };
     };
 
     const handlePointerUp = () => {
