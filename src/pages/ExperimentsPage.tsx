@@ -41,14 +41,14 @@ export const ExperimentsPage: React.FC = () => {
             description: "Gravitational synthesis of fluid strokes.",
             icon: PencilLine,
             path: "/experiments/orbit-ink",
-            status: "COMING_SOON" as const
+            status: "ACTIVE" as const
         },
         {
             title: "Signal Garden",
             description: "Resonant geometry blooming in real-time.",
             icon: Waves,
             path: "/experiments/signal-garden",
-            status: "COMING_SOON" as const
+            status: "ACTIVE" as const
         }
     ];
 

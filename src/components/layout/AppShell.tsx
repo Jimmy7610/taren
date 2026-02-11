@@ -7,7 +7,9 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
     const location = useLocation();
     const isFullscreenRoute = location.pathname.startsWith('/games/') ||
         location.pathname === '/experiments/digital-sand/play' ||
-        location.pathname === '/experiments/vector-field/play';
+        location.pathname === '/experiments/vector-field/play' ||
+        location.pathname === '/experiments/orbit-ink/play' ||
+        location.pathname === '/experiments/signal-garden/play';
 
     React.useEffect(() => {
         // Track page view (telemetry.ts handles filtering /api and duplicates)

@@ -14,6 +14,10 @@ import { DigitalSandPage } from './pages/DigitalSandPage';
 import { DigitalSandPlayPage } from './pages/DigitalSandPlayPage';
 import { VectorFieldPage } from './pages/VectorFieldPage';
 import { VectorFieldPlayPage } from './pages/VectorFieldPlayPage';
+import { OrbitInkPage } from './pages/OrbitInkPage';
+import { OrbitInkPlayPage } from './pages/OrbitInkPlayPage';
+import { SignalGardenPage } from './pages/SignalGardenPage';
+import { SignalGardenPlayPage } from './pages/SignalGardenPlayPage';
 import { DailyPage } from './pages/DailyPage';
 import { DailyTodayPage } from './pages/DailyTodayPage';
 import { strings } from './constants/strings';
@@ -35,6 +39,10 @@ function App() {
                         <Route path="/experiments/digital-sand/play" element={<DigitalSandPlayPage />} />
                         <Route path="/experiments/vector-field" element={<VectorFieldPage />} />
                         <Route path="/experiments/vector-field/play" element={<VectorFieldPlayPage />} />
+                        <Route path="/experiments/orbit-ink" element={<OrbitInkPage />} />
+                        <Route path="/experiments/orbit-ink/play" element={<OrbitInkPlayPage />} />
+                        <Route path="/experiments/signal-garden" element={<SignalGardenPage />} />
+                        <Route path="/experiments/signal-garden/play" element={<SignalGardenPlayPage />} />
                         <Route path="/daily" element={<DailyPage />} />
                         <Route path="/daily/today" element={<DailyTodayPage />} />
                         <Route path="/portfolio" element={<PlaceholderPage title={strings.routes.portfolio} />} />
