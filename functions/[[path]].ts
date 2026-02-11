@@ -7,6 +7,11 @@ interface PagesContext {
 export async function onRequest(context: PagesContext) {
   const url = new URL(context.request.url);
 
+  // Force /admin to serve index.html to bypass stale static files
+  if (url.pathname === "/admin" || url.pathname === "/admin/" || url.pathname.startsWith("/admin/")) {
+    return context.env.ASSETS.fetch(new Request(new URL("/index.html", url), context.request));
+  }
+
   // Allow direct access to real files (assets) and API/function routes
   if (url.pathname.includes(".") || url.pathname.startsWith("/api")) {
     return context.next();
