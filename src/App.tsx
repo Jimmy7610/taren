@@ -1,5 +1,4 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AppShell } from './components/layout/AppShell';
 import { Home } from './pages/Home';
@@ -8,9 +7,7 @@ import { PlaceholderPage } from './pages/PlaceholderPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { ExperimentsPage } from './pages/ExperimentsPage';
 import { GamesHubPage } from './pages/GamesHubPage';
-import { NeonSnakeIntroPage } from './pages/NeonSnakeIntroPage';
 import { NeonSnakePlayPage } from './pages/NeonSnakePlayPage';
-import { Game2048IntroPage } from './pages/Game2048IntroPage';
 import { Game2048PlayPage } from './pages/Game2048PlayPage';
 import { DigitalSandPage } from './pages/DigitalSandPage';
 import { DigitalSandPlayPage } from './pages/DigitalSandPlayPage';
@@ -34,9 +31,9 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/games" element={<GamesHubPage />} />
-                        <Route path="/games/neon-snake" element={<NeonSnakeIntroPage />} />
+                        <Route path="/games/neon-snake" element={<Navigate to="/games/neon-snake/play" replace />} />
                         <Route path="/games/neon-snake/play" element={<NeonSnakePlayPage />} />
-                        <Route path="/games/2048" element={<Game2048IntroPage />} />
+                        <Route path="/games/2048" element={<Navigate to="/games/2048/play" replace />} />
                         <Route path="/games/2048/play" element={<Game2048PlayPage />} />
                         <Route path="/experiments" element={<ExperimentsPage />} />
                         <Route path="/experiments/digital-sand" element={<DigitalSandPage />} />
