@@ -166,20 +166,30 @@ export const DigitalSand: React.FC = () => {
     const handlePointerDown = (e: React.PointerEvent) => {
         setIsInteracting(true);
         setHasInteracted(true);
-        lastPointerPos.current = { x: e.clientX, y: e.clientY };
-        pointerPos.current = { x: e.clientX, y: e.clientY, vx: 0, vy: 0 };
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            lastPointerPos.current = { x, y };
+            pointerPos.current = { x, y, vx: 0, vy: 0 };
+        }
     };
 
     const handlePointerMove = (e: React.PointerEvent) => {
-        const vx = e.clientX - lastPointerPos.current.x;
-        const vy = e.clientY - lastPointerPos.current.y;
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const vx = x - lastPointerPos.current.x;
+            const vy = y - lastPointerPos.current.y;
 
-        pointerPos.current.x = e.clientX;
-        pointerPos.current.y = e.clientY;
-        pointerPos.current.vx = vx;
-        pointerPos.current.vy = vy;
+            pointerPos.current.x = x;
+            pointerPos.current.y = y;
+            pointerPos.current.vx = vx;
+            pointerPos.current.vy = vy;
 
-        lastPointerPos.current = { x: e.clientX, y: e.clientY };
+            lastPointerPos.current = { x, y };
+        }
     };
 
     const handlePointerUp = () => {
