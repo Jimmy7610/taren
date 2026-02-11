@@ -25,10 +25,9 @@ export const GamesHubPage: React.FC = () => {
 
     const games = [
         {
-            title: strings.games.index.snake.title,
-            description: strings.games.index.snake.description,
-            image: snakeHero,
-            path: "/games/neon-snake/play",
+            title: "HEXLINE",
+            description: "A precision drift on a hex grid.",
+            path: "/games/hexline/play",
             status: "ACTIVE" as const,
             ctaLabel: "ENTER GAME"
         },

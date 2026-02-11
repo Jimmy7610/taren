@@ -9,6 +9,7 @@ import { ExperimentsPage } from './pages/ExperimentsPage';
 import { GamesHubPage } from './pages/GamesHubPage';
 import { NeonSnakePlayPage } from './pages/NeonSnakePlayPage';
 import { Game2048PlayPage } from './pages/Game2048PlayPage';
+import { HexlinePlayPage } from './pages/HexlinePlayPage';
 import { DigitalSandPage } from './pages/DigitalSandPage';
 import { DigitalSandPlayPage } from './pages/DigitalSandPlayPage';
 import { VectorFieldPage } from './pages/VectorFieldPage';
@@ -35,6 +36,7 @@ function App() {
                         <Route path="/games/neon-snake/play" element={<NeonSnakePlayPage />} />
                         <Route path="/games/2048" element={<Navigate to="/games/2048/play" replace />} />
                         <Route path="/games/2048/play" element={<Game2048PlayPage />} />
+                        <Route path="/games/hexline/play" element={<HexlinePlayPage />} />
                         <Route path="/experiments" element={<ExperimentsPage />} />
                         <Route path="/experiments/digital-sand" element={<DigitalSandPage />} />
                         <Route path="/experiments/digital-sand/play" element={<DigitalSandPlayPage />} />
