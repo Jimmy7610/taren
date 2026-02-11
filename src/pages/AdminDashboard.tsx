@@ -49,7 +49,7 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
     const width = 1200;
-    const height = 220;
+    const height = 250;
     const padding = 30;
 
     const maxVal = useMemo(() => {
@@ -113,7 +113,13 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                             <stop offset="0%" stopColor="currentColor" className="text-foreground/10" />
                             <stop offset="100%" stopColor="transparent" />
                         </linearGradient>
+                        <linearGradient id="inset-gradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="currentColor" className="text-foreground/5" />
+                            <stop offset="20%" stopColor="transparent" />
+                        </linearGradient>
                     </defs>
+                    <rect x={padding} y={padding} width={width - padding * 2} height={height - padding * 2} fill="currentColor" className="text-foreground/[0.02]" rx="4" />
+                    <rect x={padding} y={padding} width={width - padding * 2} height={height - padding * 2} fill="url(#inset-gradient)" rx="4" />
                     {/* Grid */}
                     {[0, 0.25, 0.5, 0.75, 1].map(v => {
                         const y = padding + v * (height - padding * 2);
@@ -269,8 +275,8 @@ const KPICard: React.FC<{
                 <span className="font-mono tracking-tight">
                     {isNeutral ? '→ 0 (0%)' : (
                         <>
-                            <span className="font-black">{isUp ? '↑' : '↓'} {isUp ? '+' : '-'}{Math.abs(diff)}</span>
-                            <span className="ml-1 opacity-40 font-medium">({isUp ? '+' : '-'}{Math.abs(pct)}%)</span>
+                            <span className="text-xs font-black">{isUp ? '↑' : '↓'} {isUp ? '+' : '-'}{Math.abs(diff)}</span>
+                            <span className="ml-1 opacity-80 font-medium">({isUp ? '+' : '-'}{Math.abs(pct)}%)</span>
                         </>
                     )}
                 </span>
@@ -353,7 +359,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-16">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-24">
                 <KPICard
                     title="Visitors"
                     value={current.visitors}
@@ -385,7 +391,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {/* SVG Activity Graph */}
-            <div className="mb-20">
+            <div className="mb-28">
                 <ActivitySVGChart bins={series} range={range} />
             </div>
 
@@ -456,17 +462,17 @@ export const AdminDashboard: React.FC = () => {
                     <table className="w-full text-left">
                         <thead className="bg-foreground/[0.01]">
                             <tr className="text-[9px] font-black uppercase tracking-widest text-foreground/20 border-b border-foreground/5">
-                                <th className="px-6 py-3">Tick</th>
-                                <th className="px-6 py-3">Type</th>
-                                <th className="px-6 py-3">Scope</th>
-                                <th className="px-6 py-3 text-right">Metric</th>
+                                <th className="px-6 py-2">Tick</th>
+                                <th className="px-6 py-2">Type</th>
+                                <th className="px-6 py-2">Scope</th>
+                                <th className="px-6 py-2 text-right">Metric</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-foreground/[0.02]">
                             {recent.map((e: any, i: number) => (
                                 <tr key={i} className="hover:bg-foreground/[0.01] transition-colors">
-                                    <td className="px-6 py-2.5 font-mono text-[9px] text-foreground/20">{new Date(e.ts).toLocaleTimeString([], { hour12: false })}</td>
-                                    <td className="px-6 py-2.5">
+                                    <td className="px-6 py-1.5 font-mono text-[9px] text-foreground/20">{new Date(e.ts).toLocaleTimeString([], { hour12: false })}</td>
+                                    <td className="px-6 py-1.5">
                                         <span className={`inline-block px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-tighter ${e.type === 'game_start' ? 'bg-accent/10 text-accent border border-accent/20' :
                                             e.type === 'game_end' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
                                                 'bg-foreground/5 text-foreground/40 border border-foreground/10'
@@ -474,8 +480,8 @@ export const AdminDashboard: React.FC = () => {
                                             {e.type}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-2.5 text-[10px] font-bold text-foreground/40">{e.game || e.path || '—'}</td>
-                                    <td className="px-6 py-2.5 text-right font-mono text-[10px] font-black text-foreground/30">
+                                    <td className="px-6 py-1.5 text-[10px] font-bold text-foreground/40">{e.game || e.path || '—'}</td>
+                                    <td className="px-6 py-1.5 text-right font-mono text-[10px] font-black text-foreground/30">
                                         {e.score !== undefined ? `SCORE ${e.score}` : e.duration_ms ? fmtMs(e.duration_ms) : '—'}
                                     </td>
                                 </tr>
