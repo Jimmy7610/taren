@@ -8,6 +8,7 @@ import { SnakeGame } from './pages/SnakeGame';
 import { Game2048Page } from './pages/Game2048Page';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { PlaceholderPage } from './pages/PlaceholderPage';
+import { AdminDashboard } from './pages/AdminDashboard';
 import { strings } from './constants/strings';
 
 // App entry point
@@ -18,6 +19,7 @@ function App() {
                 <AppShell>
                     <Routes>
                         <Route path="/" element={<Home />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/games" element={<GamesIndex />} />
                         <Route path="/games/snake" element={<SnakeGame />} />
                         <Route path="/games/2048" element={<Game2048Page />} />
