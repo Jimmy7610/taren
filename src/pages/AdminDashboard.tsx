@@ -141,7 +141,7 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
     );
 };
 
-const KPIDard: React.FC<{
+const KPICard: React.FC<{
     title: string;
     value: string | number;
     icon: React.ReactNode;
@@ -173,7 +173,7 @@ const KPIDard: React.FC<{
             <div className={`flex items-center gap-1.5 text-[11px] font-bold ${statusColor}`}>
                 {isNeutral ? <Minus className="h-3.5 w-3.5" /> : (isUp ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />)}
                 <span>
-                    {isNeutral ? '—' : `${isUp ? '↑' : '↓'} ${Math.abs(diff)} (${isUp ? '+' : '-'}${Math.abs(pct)}%)`}
+                    {isNeutral ? '—' : `${isUp ? '↑ +' : '↓ -'}${Math.abs(diff)} (${isUp ? '+' : '-'}${Math.abs(pct)}%)`}
                 </span>
                 <span className="text-foreground/20 font-medium tracking-tight ml-1">vs prev</span>
             </div>
@@ -250,28 +250,28 @@ export const AdminDashboard: React.FC = () => {
 
             {/* KPI Cards */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-                <KPIDard
+                <KPICard
                     title="Visitors"
                     value={current.visitors}
                     icon={<Users className="h-5 w-5" />}
                     current={current.visitors}
                     previous={previous.visitors}
                 />
-                <KPIDard
+                <KPICard
                     title="Page Views"
                     value={current.page_views}
                     icon={<Eye className="h-5 w-5" />}
                     current={current.page_views}
                     previous={previous.page_views}
                 />
-                <KPIDard
+                <KPICard
                     title="Most Played"
                     value={current.most_played}
                     icon={<Play className="h-5 w-5" />}
                     current={current.most_played_starts}
                     previous={previous.most_played_starts}
                 />
-                <KPIDard
+                <KPICard
                     title="Avg Game Duration"
                     value={fmtMs(current.avg_game_duration_ms)}
                     icon={<Clock className="h-5 w-5" />}
