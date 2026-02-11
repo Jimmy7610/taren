@@ -44,15 +44,14 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
         session_id: sessionId,
         duration_ms: body.duration_ms != null ? Math.min(Number(body.duration_ms), 3600000) : null,
         score: body.score != null ? Number(body.score) : null,
-        result: body.result ? String(body.result).slice(0, 32) : null,
         device: body.device ? String(body.device).slice(0, 32) : null,
         country: request.headers.get("cf-ipcountry") || null,
     };
 
     try {
         await env.DB.prepare(
-            `INSERT INTO events (ts, type, path, game, session_id, duration_ms, score, result, device, country)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`
+            `INSERT INTO events (ts, type, path, game, session_id, duration_ms, score, device, country)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)`
         )
             .bind(
                 allowed.ts,
@@ -62,7 +61,6 @@ export const onRequestPost: PagesFunction<Env> = async (ctx) => {
                 allowed.session_id,
                 allowed.duration_ms,
                 allowed.score,
-                allowed.result,
                 allowed.device,
                 allowed.country
             )

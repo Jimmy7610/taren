@@ -9,7 +9,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
 
     try {
         const rows = await env.DB.prepare(
-            `SELECT ts, type, path, game, duration_ms, score, result, device, country
+            `SELECT ts, type, path, game, duration_ms, score, device, country
        FROM events
        ORDER BY ts DESC
        LIMIT ?1`
