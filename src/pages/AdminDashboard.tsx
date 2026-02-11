@@ -90,16 +90,16 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
     const startsLine = useMemo(() => generatePath(bins.map(b => b.starts)), [bins, maxVal]);
 
     return (
-        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.01] p-6 transition-all hover:bg-foreground/[0.02]">
+        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-6 transition-all hover:bg-foreground/[0.04]">
             <div className="flex items-end justify-between mb-8">
                 <div>
-                    <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-foreground/60 mb-1">Network Activity</h3>
+                    <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-foreground/70 mb-1">System Telemetry</h3>
                     <div className="flex gap-4">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-foreground/30">
-                            <div className="h-2 w-2 rounded-full bg-accent ring-4 ring-accent/10" /> Views
+                        <div className="flex items-center gap-2 text-[10px] font-black text-foreground/40">
+                            <div className="h-2 w-2 rounded-full bg-accent ring-4 ring-accent/15" /> Views
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-foreground/30">
-                            <div className="h-2 w-2 rounded-full bg-emerald-400 ring-4 ring-emerald-400/10" /> Starts
+                        <div className="flex items-center gap-2 text-[10px] font-black text-foreground/40">
+                            <div className="h-2 w-2 rounded-full bg-emerald-500 ring-4 ring-emerald-500/15" /> Starts
                         </div>
                     </div>
                 </div>
@@ -108,6 +108,12 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
 
             <div className="relative">
                 <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
+                    <defs>
+                        <linearGradient id="area-gradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="currentColor" className="text-foreground/10" />
+                            <stop offset="100%" stopColor="transparent" />
+                        </linearGradient>
+                    </defs>
                     {/* Grid */}
                     {[0, 0.25, 0.5, 0.75, 1].map(v => {
                         const y = padding + v * (height - padding * 2);
@@ -115,9 +121,9 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                             <React.Fragment key={v}>
                                 <line
                                     x1={padding} y1={y} x2={width - padding} y2={y}
-                                    stroke="currentColor" strokeWidth="1" className="text-foreground/10"
+                                    stroke="currentColor" strokeWidth="1" className="text-foreground/25"
                                 />
-                                <text x={0} y={y + 3} className="text-[9px] font-bold fill-foreground/20">
+                                <text x={0} y={y + 3} className="text-[9px] font-black fill-foreground/30">
                                     {Math.round(maxVal * (1 - v))}
                                 </text>
                             </React.Fragment>
@@ -125,26 +131,26 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                     })}
 
                     {/* Views Area Fill */}
-                    <path d={viewsArea} className="fill-accent/[0.04]" />
+                    <path d={viewsArea} fill="url(#area-gradient)" className="opacity-20" />
 
                     {/* Lines */}
                     <path
                         d={viewsLine}
                         fill="none"
                         stroke="var(--color-accent)"
-                        strokeWidth="3.5"
+                        strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_12px_rgba(80,227,194,0.4)]"
+                        className="drop-shadow-[0_4px_16px_rgba(80,227,194,0.5)]"
                     />
                     <path
                         d={startsLine}
                         fill="none"
-                        stroke="#059669"
-                        strokeWidth="3.5"
+                        stroke="#10b981"
+                        strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_12px_rgba(5,150,105,0.4)]"
+                        className="drop-shadow-[0_4px_16px_rgba(16,185,129,0.5)]"
                     />
 
                     {/* Interactive Slices */}
@@ -258,12 +264,16 @@ const KPICard: React.FC<{
                 {value}
             </div>
 
-            <div className={`flex items-center gap-1.5 text-[11px] font-bold ${statusColor}`}>
-                {isNeutral ? <Minus className="h-3 w-3" /> : (isUp ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />)}
+            <div className={`flex items-center gap-2 text-[11px] ${statusColor}`}>
+                {isNeutral ? <Minus className="h-3 w-3" /> : (isUp ? <TrendingUp className="h-3.5 w-3.5 opacity-80" /> : <TrendingDown className="h-3.5 w-3.5 opacity-80" />)}
                 <span className="font-mono tracking-tight">
-                    {isNeutral ? '→ 0 (0%)' : `${isUp ? '↑' : '↓'} ${isUp ? '+' : '-'}${Math.abs(diff)} (${isUp ? '+' : '-'}${Math.abs(pct)}%)`}
+                    {isNeutral ? '→ 0 (0%)' : (
+                        <>
+                            <span className="font-black">{isUp ? '↑' : '↓'} {isUp ? '+' : '-'}{Math.abs(diff)}</span>
+                            <span className="ml-1 opacity-40 font-medium">({isUp ? '+' : '-'}{Math.abs(pct)}%)</span>
+                        </>
+                    )}
                 </span>
-                <span className="text-foreground/20 font-medium tracking-tight ml-0.5">vs prev</span>
             </div>
         </div>
     );
