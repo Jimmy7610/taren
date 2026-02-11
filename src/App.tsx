@@ -12,6 +12,8 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { ExperimentsPage } from './pages/ExperimentsPage';
 import { DigitalSandPage } from './pages/DigitalSandPage';
 import { DigitalSandPlayPage } from './pages/DigitalSandPlayPage';
+import { DailyPage } from './pages/DailyPage';
+import { DailyTodayPage } from './pages/DailyTodayPage';
 import { strings } from './constants/strings';
 
 // App entry point
@@ -29,7 +31,8 @@ function App() {
                         <Route path="/experiments" element={<ExperimentsPage />} />
                         <Route path="/experiments/digital-sand" element={<DigitalSandPage />} />
                         <Route path="/experiments/digital-sand/play" element={<DigitalSandPlayPage />} />
-                        <Route path="/daily" element={<PlaceholderPage title={strings.routes.daily} type="daily" />} />
+                        <Route path="/daily" element={<DailyPage />} />
+                        <Route path="/daily/today" element={<DailyTodayPage />} />
                         <Route path="/portfolio" element={<PlaceholderPage title={strings.routes.portfolio} />} />
                         <Route path="/code" element={<PlaceholderPage title={strings.routes.code} />} />
                         <Route path="/:category/:slug" element={<ProjectDetail />} />
