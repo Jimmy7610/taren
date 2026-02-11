@@ -1,9 +1,5 @@
-interface Env {
-    DB: D1Database;
-}
-
-export const onRequestPost: PagesFunction<Env> = async (ctx) => {
-    return new Response(JSON.stringify({ status: "ok" }), {
+export const onRequest: PagesFunction = async (context) => {
+    return new Response(JSON.stringify({ ok: true }), {
         headers: { "Content-Type": "application/json" }
     });
 };
