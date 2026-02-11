@@ -109,17 +109,21 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
             <div className="relative">
                 <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
                     <defs>
+                        <linearGradient id="graph-bg" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#0f0f0f" />
+                            <stop offset="100%" stopColor="#141414" />
+                        </linearGradient>
                         <linearGradient id="area-gradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="currentColor" className="text-foreground/10" />
+                            <stop offset="0%" stopColor="currentColor" className="text-foreground/15" />
                             <stop offset="100%" stopColor="transparent" />
                         </linearGradient>
-                        <linearGradient id="inset-gradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="currentColor" className="text-foreground/5" />
-                            <stop offset="20%" stopColor="transparent" />
+                        <linearGradient id="top-shadow" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="black" stopOpacity="0.4" />
+                            <stop offset="15%" stopColor="black" stopOpacity="0" />
                         </linearGradient>
                     </defs>
-                    <rect x={padding} y={padding} width={width - padding * 2} height={height - padding * 2} fill="currentColor" className="text-foreground/[0.02]" rx="4" />
-                    <rect x={padding} y={padding} width={width - padding * 2} height={height - padding * 2} fill="url(#inset-gradient)" rx="4" />
+                    <rect x={padding} y={padding} width={width - padding * 2} height={height - padding * 2} fill="url(#graph-bg)" rx="4" />
+                    <rect x={padding} y={padding} width={width - padding * 2} height={height - padding * 2} fill="url(#top-shadow)" rx="4" />
                     {/* Grid */}
                     {[0, 0.25, 0.5, 0.75, 1].map(v => {
                         const y = padding + v * (height - padding * 2);
@@ -143,11 +147,11 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                     <path
                         d={viewsLine}
                         fill="none"
-                        stroke="var(--color-accent)"
+                        stroke="#70e9d6" // Brighter accent
                         strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_16px_rgba(80,227,194,0.5)]"
+                        className="drop-shadow-[0_4px_20px_rgba(112,233,214,0.6)]"
                     />
                     <path
                         d={startsLine}
@@ -156,7 +160,7 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                         strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_16px_rgba(16,185,129,0.5)]"
+                        className="drop-shadow-[0_4px_20px_rgba(16,185,129,0.4)]"
                     />
 
                     {/* Interactive Slices */}
