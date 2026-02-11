@@ -43,11 +43,15 @@ async function apiFetch(endpoint) {
     }
 }
 
-function renderError(parent, message) {
-    const div = document.createElement("div");
-    div.className = "inline-error";
-    div.textContent = `⚠️ ${message}`;
-    parent.appendChild(div);
+function renderTrend(val, prev) {
+    if (prev === null || prev === undefined || prev === 0) return "—";
+    const diff = val - prev;
+    const pct = Math.round((diff / prev) * 100);
+    const dir = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
+    const sign = diff > 0 ? "+" : "";
+    const icon = diff > 0 ? "↑" : diff < 0 ? "↓" : "—";
+
+    return `<span class="trend trend--${dir}" title="vs previous period">${icon} ${sign}${pct}%</span>`;
 }
 
 async function loadKPIs() {
@@ -55,20 +59,31 @@ async function loadKPIs() {
     const elements = ['kpiVisitors', 'kpiPageViews', 'kpiMostPlayed', 'kpiAvgRun'];
 
     if (!res.ok) {
-        elements.forEach(id => $(id).textContent = "ERR");
-        console.warn("KPIs failed to load", res.error);
+        elements.forEach(id => {
+            const el = $(id);
+            el.textContent = "ERR";
+            el.classList.add('is-error');
+        });
         return;
     }
 
-    const { data } = res;
-    $("kpiVisitors").textContent = data.visitors ?? "—";
-    $("kpiVisitorsMeta").textContent = data.visitors_meta ?? "unique sessions";
-    $("kpiPageViews").textContent = data.page_views ?? "—";
-    $("kpiPageViewsMeta").textContent = data.page_views_meta ?? "views";
-    $("kpiMostPlayed").textContent = data.most_played ?? "—";
-    $("kpiMostPlayedMeta").textContent = data.most_played_meta ?? "by starts";
-    $("kpiAvgRun").textContent = fmtMs(data.avg_game_duration_ms);
-    $("kpiAvgRunMeta").textContent = data.avg_game_duration_meta ?? "avg duration";
+    const { current, previous } = res.data;
+
+    // Visitors
+    $("kpiVisitors").textContent = current.visitors ?? "—";
+    $("kpiVisitorsMeta").innerHTML = renderTrend(current.visitors, previous.visitors);
+
+    // Page Views
+    $("kpiPageViews").textContent = current.page_views ?? "—";
+    $("kpiPageViewsMeta").innerHTML = renderTrend(current.page_views, previous.page_views);
+
+    // Most Played (Subtle trend or just starts)
+    $("kpiMostPlayed").textContent = current.most_played ?? "—";
+    $("kpiMostPlayedMeta").innerHTML = current.most_played_starts ? `${current.most_played_starts} starts` : "by starts";
+
+    // Avg Duration
+    $("kpiAvgRun").textContent = fmtMs(current.avg_game_duration_ms);
+    $("kpiAvgRunMeta").innerHTML = renderTrend(current.avg_game_duration_ms, previous.avg_game_duration_ms);
 }
 
 async function loadTopGames() {
@@ -155,7 +170,6 @@ async function loadRecentEvents() {
 }
 
 async function loadAll() {
-    // Fire all requests in parallel for speed, but handle them gracefully
     await Promise.allSettled([
         loadKPIs(),
         loadTopGames(),
