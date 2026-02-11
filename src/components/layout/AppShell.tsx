@@ -5,7 +5,9 @@ import { sendEvent } from '../../utils/telemetry';
 
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const location = useLocation();
-    const isGameRoute = location.pathname.startsWith('/games/');
+    const isFullscreenRoute = location.pathname.startsWith('/games/') ||
+        location.pathname === '/experiments/digital-sand/play' ||
+        location.pathname === '/experiments/vector-field/play';
 
     React.useEffect(() => {
         // Track page view (telemetry.ts handles filtering /api and duplicates)
@@ -15,8 +17,8 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
     return (
         <div className="relative flex min-h-screen flex-col overflow-x-hidden">
             <div className="grain-overlay" aria-hidden="true" />
-            <TopBar />
-            {isGameRoute ? (
+            {!isFullscreenRoute && <TopBar />}
+            {isFullscreenRoute ? (
                 <div className="flex-1 flex flex-col overflow-hidden">
                     {children}
                 </div>

@@ -158,13 +158,13 @@ export const VectorField: React.FC = () => {
 
     return (
         <div
-            className="h-full w-full select-none touch-none"
+            className="fixed inset-0 z-0 select-none touch-none overflow-hidden"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerUp}
         >
-            <canvas ref={canvasRef} />
+            <canvas ref={canvasRef} className="block h-full w-full" />
 
             {/* Instruction Overlay */}
             <div className={`pointer-events-none absolute inset-0 flex items-center justify-center transition-opacity duration-1000 ${hasInteracted ? 'opacity-0' : 'opacity-100'
