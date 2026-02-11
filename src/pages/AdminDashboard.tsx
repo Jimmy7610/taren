@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-    TrendingUp, TrendingDown, Minus,
-    Users, Eye, Play, Clock, Home
+    Users, Eye, Play, Clock, TrendingUp, TrendingDown, Minus,
+    ArrowLeft, ChevronRight, Activity, Zap, ShieldCheck, Home
 } from 'lucide-react';
 import { BUILD_COUNTER } from '../constants/build';
 
@@ -41,102 +42,189 @@ const fmtMs = (ms: number) => {
 };
 
 /**
- * Pure SVG Activity Chart (Zero Dependencies)
+ * Precision SVG Activity Chart (Zero Dependencies)
+ * Vercel-style smoothing, dynamic scaling, and interactive tooltips.
  */
 const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, range }) => {
-    const width = 1000;
-    const height = 200;
-    const padding = 20;
+    const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+
+    const width = 1200;
+    const height = 220;
+    const padding = 30;
 
     const maxVal = useMemo(() => {
         const vals = bins.flatMap(b => [b.views, b.starts]);
-        return Math.max(...vals, 10);
+        return Math.max(...vals, 12); // Minimum scale floor
     }, [bins]);
 
-    const pointsViews = useMemo(() => {
-        if (bins.length < 2) return "";
-        return bins.map((b, i) => {
-            const x = (i / (bins.length - 1)) * (width - padding * 2) + padding;
-            const y = height - ((b.views / maxVal) * (height - padding * 2) + padding);
-            return `${x},${y}`;
-        }).join(" ");
-    }, [bins, maxVal]);
+    // Simple monotone-ish cubic smoothing path generator
+    const generatePath = (data: number[], type: 'line' | 'area' = 'line') => {
+        if (data.length < 2) return "";
 
-    const pointsStarts = useMemo(() => {
-        if (bins.length < 2) return "";
-        return bins.map((b, i) => {
-            const x = (i / (bins.length - 1)) * (width - padding * 2) + padding;
-            const y = height - ((b.starts / maxVal) * (height - padding * 2) + padding);
-            return `${x},${y}`;
-        }).join(" ");
-    }, [bins, maxVal]);
+        const getX = (i: number) => (i / (data.length - 1)) * (width - padding * 2) + padding;
+        const getY = (v: number) => height - ((v / maxVal) * (height - padding * 2) + padding);
+
+        let d = `M ${getX(0)} ${getY(data[0])}`;
+
+        for (let i = 0; i < data.length - 1; i++) {
+            const x1 = getX(i);
+            const y1 = getY(data[i]);
+            const x2 = getX(i + 1);
+            const y2 = getY(data[i + 1]);
+
+            // Cubic tension
+            const cp1x = x1 + (x2 - x1) / 2.5;
+            const cp2x = x2 - (x2 - x1) / 2.5;
+
+            d += ` C ${cp1x} ${y1}, ${cp2x} ${y2}, ${x2} ${y2}`;
+        }
+
+        if (type === 'area') {
+            d += ` L ${getX(data.length - 1)} ${height - padding} L ${getX(0)} ${height - padding} Z`;
+        }
+        return d;
+    };
+
+    const viewsLine = useMemo(() => generatePath(bins.map(b => b.views)), [bins, maxVal]);
+    const viewsArea = useMemo(() => generatePath(bins.map(b => b.views), 'area'), [bins, maxVal]);
+    const startsLine = useMemo(() => generatePath(bins.map(b => b.starts)), [bins, maxVal]);
 
     return (
-        <div className="relative w-full overflow-hidden rounded-xl border border-foreground/5 bg-foreground/[0.01] p-4">
-            <div className="flex items-center justify-between mb-4">
+        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.01] p-6 transition-all hover:bg-foreground/[0.02]">
+            <div className="flex items-end justify-between mb-8">
                 <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground/30">Activity</h3>
-                    <p className="text-[10px] font-bold text-foreground/20">Views vs Starts • {range}</p>
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-foreground/40">
-                        <div className="h-1.5 w-1.5 rounded-full bg-accent" /> Views
+                    <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-foreground/60 mb-1">Network Activity</h3>
+                    <div className="flex gap-4">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-foreground/30">
+                            <div className="h-2 w-2 rounded-full bg-accent ring-4 ring-accent/10" /> Views
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-foreground/30">
+                            <div className="h-2 w-2 rounded-full bg-emerald-400 ring-4 ring-emerald-400/10" /> Starts
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-foreground/40">
-                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Starts
-                    </div>
                 </div>
+                <span className="text-[10px] font-black text-foreground/20 uppercase tracking-widest">{range} TELEMETRY</span>
             </div>
 
-            <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
-                {/* Horizontal Grid Lines */}
-                {[0, 0.5, 1].map(v => (
-                    <line
-                        key={v}
-                        x1={padding} y1={padding + v * (height - padding * 2)}
-                        x2={width - padding} y2={padding + v * (height - padding * 2)}
-                        stroke="currentColor" strokeWidth="1" className="text-foreground/5"
+            <div className="relative">
+                <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
+                    {/* Grid */}
+                    {[0, 0.25, 0.5, 0.75, 1].map(v => {
+                        const y = padding + v * (height - padding * 2);
+                        return (
+                            <React.Fragment key={v}>
+                                <line
+                                    x1={padding} y1={y} x2={width - padding} y2={y}
+                                    stroke="currentColor" strokeWidth="1" className="text-foreground/[0.03]"
+                                />
+                                <text x={0} y={y + 3} className="text-[9px] font-bold fill-foreground/10">
+                                    {Math.round(maxVal * (1 - v))}
+                                </text>
+                            </React.Fragment>
+                        );
+                    })}
+
+                    {/* Views Area Fill */}
+                    <path d={viewsArea} className="fill-accent/[0.03]" />
+
+                    {/* Lines */}
+                    <path
+                        d={viewsLine}
+                        fill="none"
+                        stroke="var(--color-accent)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="drop-shadow-[0_4px_12px_rgba(80,227,194,0.3)]"
                     />
-                ))}
+                    <path
+                        d={startsLine}
+                        fill="none"
+                        stroke="#10b981"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="drop-shadow-[0_4px_12px_rgba(16,185,129,0.3)]"
+                    />
 
-                {/* Page Views Path */}
-                <polyline
-                    fill="none"
-                    stroke="var(--color-accent)"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    points={pointsViews}
-                    className="drop-shadow-[0_0_8px_rgba(80,227,194,0.3)]"
-                />
+                    {/* Interactive Slices */}
+                    {bins.map((b, i) => {
+                        const x = (i / (bins.length - 1)) * (width - padding * 2) + padding;
+                        return (
+                            <g key={i} onMouseEnter={() => setHoverIndex(i)} onMouseLeave={() => setHoverIndex(null)}>
+                                <rect x={x - 10} y={0} width={20} height={height} fill="transparent" />
+                                {hoverIndex === i && (
+                                    <>
+                                        <line x1={x} y1={padding} x2={x} y2={height - padding} stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" className="text-foreground/20" />
+                                        <circle cx={x} cy={height - ((b.views / maxVal) * (height - padding * 2) + padding)} r="5" className="fill-accent ring-4 ring-accent/20" />
+                                        <circle cx={x} cy={height - ((b.starts / maxVal) * (height - padding * 2) + padding)} r="5" className="fill-emerald-400 ring-4 ring-emerald-400/20" />
+                                    </>
+                                )}
+                            </g>
+                        );
+                    })}
+                </svg>
 
-                {/* Game Starts Path */}
-                <polyline
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    points={pointsStarts}
-                    className="drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]"
-                />
+                {/* Tooltip Overlay */}
+                {hoverIndex !== null && bins[hoverIndex] && (
+                    <div className="pointer-events-none absolute top-0 z-50 rounded-lg border border-foreground/10 bg-background/95 p-3 shadow-2xl backdrop-blur-sm animate-in fade-in zoom-in-95 duration-200"
+                        style={{ left: `${(hoverIndex / (bins.length - 1)) * 100}%`, transform: 'translateX(-50%)' }}>
+                        <div className="text-[10px] font-black uppercase tracking-tighter text-foreground/40 mb-2 truncate">
+                            {new Date(bins[hoverIndex].t || 0).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center justify-between gap-4">
+                                <span className="text-[10px] font-bold text-foreground/60 uppercase">Views</span>
+                                <span className="text-xs font-black text-accent">{bins[hoverIndex].views}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-4">
+                                <span className="text-[10px] font-bold text-foreground/60 uppercase">Starts</span>
+                                <span className="text-xs font-black text-emerald-400">{bins[hoverIndex].starts}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
 
-                {/* Data Points (optional, keeping minimal) */}
-                {bins.length < 40 && bins.map((b, i) => {
-                    const x = (i / (bins.length - 1)) * (width - padding * 2) + padding;
-                    return (
-                        <g key={i} className="group cursor-help">
-                            <rect x={x - 10} y={0} width={20} height={height} fill="transparent" />
-                            <circle
-                                cx={x}
-                                cy={height - ((b.views / maxVal) * (height - padding * 2) + padding)}
-                                r="3"
-                                className="fill-accent opacity-0 group-hover:opacity-100 transition-opacity"
-                            />
-                        </g>
-                    );
-                })}
-            </svg>
+/**
+ * Real-time event pulse indicator.
+ */
+const LivePulse: React.FC = () => {
+    const [count, setCount] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchLive = async () => {
+            try {
+                const res = await fetch('/api/admin/live?window=5m', { credentials: "include" });
+                if (res.ok) {
+                    const d = await res.json();
+                    setCount(d.count);
+                }
+            } catch (err) {
+                console.error("Live pulse error", err);
+            }
+        };
+        fetchLive();
+        const interval = setInterval(fetchLive, 30000); // 30s poll
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="flex items-center gap-4 py-2 px-4 rounded-full bg-emerald-500/5 border border-emerald-500/10 animate-in fade-in slide-in-from-top-4 duration-1000">
+            <div className="flex items-center gap-2">
+                <div className="relative">
+                    <div className="h-2 w-2 rounded-full bg-emerald-400 animate-ping absolute" />
+                    <div className="h-2 w-2 rounded-full bg-emerald-400 relative" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400/80">Live Pulse</span>
+            </div>
+            <div className="h-3 w-px bg-emerald-500/20" />
+            <span className="text-[10px] font-bold text-emerald-400/60 transition-all">
+                {count ?? '—'} events in last 5m
+            </span>
         </div>
     );
 };
@@ -156,24 +244,24 @@ const KPICard: React.FC<{
     const statusColor = isNeutral ? 'text-foreground/30' : (isUp ? 'text-emerald-400' : 'text-rose-400');
 
     return (
-        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 transition-all hover:bg-foreground/[0.04] hover:translate-y-[-2px]">
+        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 transition-all hover:bg-foreground/[0.04] hover:translate-y-[-2px] animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="absolute top-0 left-0 h-full w-[2px] bg-accent opacity-0 transition-opacity group-hover:opacity-100" />
 
             <div className="flex items-center justify-between mb-6">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/40">{title}</span>
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40">{title}</span>
                 <div className="text-foreground/20 group-hover:text-accent/50 transition-colors">
                     {icon}
                 </div>
             </div>
 
-            <div className="text-4xl font-black tracking-tighter text-foreground mb-2">
+            <div className="text-4xl font-black tracking-tighter text-foreground mb-4 font-mono">
                 {value}
             </div>
 
             <div className={`flex items-center gap-1.5 text-[11px] font-bold ${statusColor}`}>
                 {isNeutral ? <Minus className="h-3.5 w-3.5" /> : (isUp ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />)}
-                <span>
-                    {isNeutral ? '—' : `${isUp ? '↑ +' : '↓ -'}${Math.abs(diff)} (${isUp ? '+' : '-'}${Math.abs(pct)}%)`}
+                <span className="font-mono">
+                    {isNeutral ? '0 (0%)' : `${isUp ? '↑ +' : '↓ -'}${Math.abs(diff)} (${isUp ? '+' : '-'}${Math.abs(pct)}%)`}
                 </span>
                 <span className="text-foreground/20 font-medium tracking-tight ml-1">vs prev</span>
             </div>
@@ -226,10 +314,16 @@ export const AdminDashboard: React.FC = () => {
     return (
         <div className="mx-auto max-w-7xl animate-in fade-in duration-700">
             {/* SaaS Header / Pills (Now integrated with global layout) */}
-            <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 className="text-3xl font-black tracking-tighter text-foreground sm:text-4xl text-gradient">System Overview</h1>
-                    <p className="mt-1 text-sm font-medium text-foreground/40">Build {BUILD_COUNTER} • Protected analytics</p>
+            <div className="mb-16 flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-6">
+                    <div>
+                        <h1 className="text-4xl font-black tracking-tighter text-foreground sm:text-5xl text-gradient">System Core</h1>
+                        <p className="mt-2 text-sm font-medium text-foreground/40 flex items-center gap-2">
+                            <ShieldCheck className="h-4 w-4 text-emerald-400/50" />
+                            Build {BUILD_COUNTER} • Performance Hub
+                        </p>
+                    </div>
+                    <LivePulse />
                 </div>
 
                 <div className="flex items-center gap-1 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-1.5 shadow-inner">
@@ -249,7 +343,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {/* KPI Cards */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-16">
                 <KPICard
                     title="Visitors"
                     value={current.visitors}
@@ -281,7 +375,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
 
             {/* SVG Activity Graph */}
-            <div className="mb-12">
+            <div className="mb-20">
                 <ActivitySVGChart bins={series} range={range} />
             </div>
 
@@ -303,7 +397,7 @@ export const AdminDashboard: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-foreground/5">
-                                {games.map((g, i) => (
+                                {games.map((g: any, i: number) => (
                                     <tr key={i} className="hover:bg-foreground/[0.03] transition-colors group">
                                         <td className="px-6 py-4 text-xs font-black text-foreground/80">{g.game}</td>
                                         <td className="px-6 py-4 text-right font-mono text-xs font-bold text-foreground/60">{g.starts}</td>
@@ -330,7 +424,7 @@ export const AdminDashboard: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-foreground/5">
-                                {pages.map((p, i) => (
+                                {pages.map((p: any, i: number) => (
                                     <tr key={i} className="hover:bg-foreground/[0.03] transition-colors group">
                                         <td className="px-6 py-4 text-[11px] font-bold text-foreground/60 truncate max-w-[200px]">{p.path}</td>
                                         <td className="px-6 py-4 text-right font-mono text-xs font-bold text-foreground/60">{p.views}</td>
@@ -359,7 +453,7 @@ export const AdminDashboard: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-foreground/2">
-                            {recent.map((e, i) => (
+                            {recent.map((e: any, i: number) => (
                                 <tr key={i} className="hover:bg-foreground/[0.01] transition-colors">
                                     <td className="px-6 py-4 font-mono text-[9px] text-foreground/30">{new Date(e.ts).toLocaleTimeString()}</td>
                                     <td className="px-6 py-4">
