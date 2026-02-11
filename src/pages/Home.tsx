@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Gamepad2, Music, Clapperboard, Briefcase, Code } from 'lucide-react';
+import { Gamepad2, TestTube, Calendar, Briefcase, Code } from 'lucide-react';
 import { strings } from '../constants/strings';
 
 export const Home: React.FC = () => {
@@ -32,8 +32,8 @@ export const Home: React.FC = () => {
 
     const portals = [
         { name: strings.routes.games, icon: Gamepad2, path: '/games', color: 'text-orange-500' },
-        { name: strings.routes.music, icon: Music, path: '/music', color: 'text-blue-500' },
-        { name: strings.routes.videos, icon: Clapperboard, path: '/videos', color: 'text-red-500' },
+        { name: strings.routes.experiments, icon: TestTube, path: '/experiments', color: 'text-blue-500' },
+        { name: strings.routes.daily, icon: Calendar, path: '/daily', color: 'text-red-500' },
         { name: strings.routes.portfolio, icon: Briefcase, path: '/portfolio', color: 'text-emerald-500' },
         { name: strings.routes.code, icon: Code, path: '/code', color: 'text-indigo-500' },
     ];

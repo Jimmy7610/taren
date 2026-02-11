@@ -7,8 +7,8 @@ export const strings = {
     },
     routes: {
         games: "Games",
-        music: "Music",
-        videos: "Videos",
+        experiments: "Experiments",
+        daily: "Daily",
         portfolio: "Portfolio",
         code: "Code",
     },
@@ -33,6 +33,11 @@ export const strings = {
     },
     placeholders: {
         comingSoon: "Coming soon...",
+        forming: {
+            experiments: "Experiments are forming here.",
+            daily: "Daily is forming here.",
+            generic: "Something new is forming here."
+        },
         description: "This portal is currently under development. Explore other islands in the archipelago.",
     }
 };

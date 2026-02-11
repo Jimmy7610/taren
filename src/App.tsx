@@ -23,8 +23,8 @@ function App() {
                         <Route path="/games" element={<GamesIndex />} />
                         <Route path="/games/snake" element={<SnakeGame />} />
                         <Route path="/games/2048" element={<Game2048Page />} />
-                        <Route path="/music" element={<PlaceholderPage title={strings.routes.music} />} />
-                        <Route path="/videos" element={<PlaceholderPage title={strings.routes.videos} />} />
+                        <Route path="/experiments" element={<PlaceholderPage title={strings.routes.experiments} type="experiments" />} />
+                        <Route path="/daily" element={<PlaceholderPage title={strings.routes.daily} type="daily" />} />
                         <Route path="/portfolio" element={<PlaceholderPage title={strings.routes.portfolio} />} />
                         <Route path="/code" element={<PlaceholderPage title={strings.routes.code} />} />
                         <Route path="/:category/:slug" element={<ProjectDetail />} />
