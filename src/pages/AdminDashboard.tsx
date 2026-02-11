@@ -144,12 +144,12 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                             <stop offset="100%" stopColor="#141414" />
                         </linearGradient>
                         <linearGradient id="area-gradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="currentColor" className="text-foreground/15" />
+                            <stop offset="0%" stopColor="#50e3c2" stopOpacity="0.08" />
                             <stop offset="100%" stopColor="transparent" />
                         </linearGradient>
                         <linearGradient id="top-shadow" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="black" stopOpacity="0.4" />
-                            <stop offset="15%" stopColor="black" stopOpacity="0" />
+                            <stop offset="0%" stopColor="black" stopOpacity="0.3" />
+                            <stop offset="10%" stopColor="black" stopOpacity="0" />
                         </linearGradient>
                     </defs>
                     <rect x={padding} y={padding} width={width - padding * 2} height={height - padding * 2} fill="url(#graph-bg)" rx="4" />
@@ -161,9 +161,9 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                             <React.Fragment key={v}>
                                 <line
                                     x1={padding} y1={y} x2={width - padding} y2={y}
-                                    stroke="currentColor" strokeWidth="1" className="text-foreground/25"
+                                    stroke="currentColor" strokeWidth="1" className="text-foreground/[0.15]"
                                 />
-                                <text x={0} y={y + 3} className="text-[9px] font-black fill-foreground/30">
+                                <text x={0} y={y + 3} className="text-[9px] font-black fill-foreground/20">
                                     {Math.round(maxVal * (1 - v))}
                                 </text>
                             </React.Fragment>
@@ -173,24 +173,27 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                     {/* Views Area Fill */}
                     <path d={viewsArea} fill="url(#area-gradient)" className="opacity-20" />
 
+                    {/* Views Area Fill */}
+                    <path d={viewsArea} fill="url(#area-gradient)" />
+
                     {/* Lines */}
                     <path
                         d={viewsLine}
                         fill="none"
-                        stroke="#70e9d6" // Brighter accent
+                        stroke="#f2f2f2" // Premium Off-White
                         strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_20px_rgba(112,233,214,0.6)]"
+                        className="drop-shadow-[0_2px_12px_rgba(80,227,194,0.3)]"
                     />
                     <path
                         d={startsLine}
                         fill="none"
                         stroke="#10b981"
-                        strokeWidth="4"
+                        strokeWidth="3.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_20px_rgba(16,185,129,0.4)]"
+                        className="opacity-40"
                     />
 
                     {/* Precision Tracking Line */}
@@ -217,22 +220,22 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                 {/* Tooltip Overlay */}
                 {hoverIndex !== null && bins[hoverIndex] && !isTouch && (
                     <div
-                        className="pointer-events-none absolute z-50 rounded-[6px] border border-white/10 bg-[#111] p-[8px_10px] shadow-[0_8px_20px_rgba(0,0,0,0.4)] animate-in fade-in duration-150"
+                        className="pointer-events-none absolute z-50 rounded-[6px] border border-white/5 bg-[#111] p-[8px_10px] shadow-[0_8px_20px_rgba(0,0,0,0.6)] animate-in fade-in duration-150"
                         style={{
                             left: mousePos.x,
-                            top: mousePos.y - 10,
+                            top: mousePos.y - 12,
                             transform: `translate(${hoverIndex > bins.length / 2 ? '-110%' : '10%'}, -100%)`,
                             fontFamily: 'monospace',
-                            fontSize: '12px',
+                            fontSize: '11px',
                             lineHeight: '1.4',
                             whiteSpace: 'nowrap'
                         }}
                     >
-                        <div className="text-white/40 uppercase mb-0.5">
+                        <div className="text-white/20 uppercase text-[10px] mb-1 font-bold">
                             {new Date(bins[hoverIndex].t || 0).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}
                         </div>
-                        <div className="text-white">Views: {bins[hoverIndex].views}</div>
-                        <div className="text-white">Starts: {bins[hoverIndex].starts}</div>
+                        <div className="text-white/80">Views: <span className="text-white font-bold">{bins[hoverIndex].views}</span></div>
+                        <div className="text-white/80">Starts: <span className="text-white font-bold">{bins[hoverIndex].starts}</span></div>
                     </div>
                 )}
             </div>
