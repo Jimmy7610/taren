@@ -3,24 +3,13 @@ import { useLocation } from 'react-router-dom';
 import { TopBar } from './TopBar';
 import { sendEvent } from '../../utils/telemetry';
 
-/**
- * AppShell: global layout wrapper.
- * Renders TopBar on ALL routes. Game routes get full-bleed (no padding/max-width/footer).
- */
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const location = useLocation();
     const isGameRoute = location.pathname.startsWith('/games/');
 
     React.useEffect(() => {
-        // Track page view
-        sendEvent({ type: 'page_view', path: location.pathname });
-
-        // Specific game open hooks
-        if (location.pathname === '/games/snake') {
-            sendEvent({ type: 'game_open', game: 'snake' });
-        } else if (location.pathname === '/games/2048') {
-            sendEvent({ type: 'game_open', game: '2048' });
-        }
+        // Track page view (telemetry.ts handles filtering /api and duplicates)
+        sendEvent({ type: 'page_view' });
     }, [location.pathname]);
 
     return (
@@ -28,7 +17,6 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
             <div className="grain-overlay" aria-hidden="true" />
             <TopBar />
             {isGameRoute ? (
-                /* Game routes: full-bleed, no padding, no footer */
                 <div className="flex-1 flex flex-col overflow-hidden">
                     {children}
                 </div>

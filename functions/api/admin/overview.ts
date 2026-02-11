@@ -17,6 +17,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     const since = rangeToSinceMs(range);
 
     try {
+        // Visitors = COUNT DISTINCT session_id
         const visitors = await env.DB.prepare(
             `SELECT COUNT(DISTINCT session_id) as n FROM events WHERE ts >= ?1`
         ).bind(since).first<any>();
@@ -40,7 +41,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
             visitors: visitors?.n ?? 0,
             visitors_meta: "unique sessions",
             page_views: pageViews?.n ?? 0,
-            page_views_meta: "views",
+            page_views_meta: "total views",
             most_played: mostPlayed?.game ?? "—",
             most_played_meta: mostPlayed?.n ? `${mostPlayed.n} starts` : "by starts",
             avg_game_duration_ms: avgRun?.n ? Math.floor(avgRun.n) : 0,

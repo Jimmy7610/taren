@@ -17,9 +17,10 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     const since = rangeToSinceMs(range);
 
     try {
+        // Top games: Group by game, count starts, average duration from ends
         const rows = await env.DB.prepare(
             `SELECT game,
-              SUM(CASE WHEN type='game_start' THEN 1 ELSE 0 END) as starts,
+              COUNT(CASE WHEN type='game_start' THEN 1 ELSE NULL END) as starts,
               AVG(CASE WHEN type='game_end' THEN duration_ms ELSE NULL END) as avg_duration_ms
        FROM events
        WHERE ts >= ?1 AND game IS NOT NULL
@@ -31,7 +32,7 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
         return new Response(JSON.stringify({
             items: (rows.results || []).map(r => ({
                 game: r.game,
-                starts: r.starts ?? 0,
+                starts: Number(r.starts) || 0,
                 avg_duration_ms: r.avg_duration_ms ? Math.floor(r.avg_duration_ms) : 0
             }))
         }), {

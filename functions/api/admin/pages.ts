@@ -17,13 +17,15 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     const since = rangeToSinceMs(range);
 
     try {
+        // Filter out API and Assets noise
         const rows = await env.DB.prepare(
             `SELECT path, COUNT(*) as views
        FROM events
        WHERE ts >= ?1 AND type='page_view' AND path IS NOT NULL
+       AND path NOT LIKE '/api/%' AND path NOT LIKE '/assets/%'
        GROUP BY path
        ORDER BY views DESC
-       LIMIT 12`
+       LIMIT 15`
         ).bind(since).all<any>();
 
         return new Response(JSON.stringify({

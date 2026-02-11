@@ -35,6 +35,9 @@ export const SnakeGame: React.FC = () => {
         return localStorage.getItem('snake_sound') !== 'off';
     });
 
+    // Telemetry tracking refs
+    const startTimeRef = React.useRef<number | null>(null);
+
     // Save sound preference
     useEffect(() => {
         localStorage.setItem('snake_sound', isSoundOn ? 'on' : 'off');
@@ -49,6 +52,30 @@ export const SnakeGame: React.FC = () => {
     useEffect(() => {
         localStorage.setItem('snake_highscores_v1', JSON.stringify(highscores));
     }, [highscores]);
+
+    // Game Telemetry
+    useEffect(() => {
+        if (gameState === 'PLAYING') {
+            startTimeRef.current = performance.now();
+            import('../utils/telemetry').then(m => {
+                m.sendEvent({ type: 'game_start', game: 'snake' });
+            });
+        } else if (gameState === 'GAMEOVER') {
+            if (startTimeRef.current) {
+                const duration = Math.floor(performance.now() - startTimeRef.current);
+                import('../utils/telemetry').then(m => {
+                    m.sendEvent({
+                        type: 'game_end',
+                        game: 'snake',
+                        score: score,
+                        duration_ms: duration,
+                        result: 'game_over'
+                    });
+                });
+                startTimeRef.current = null;
+            }
+        }
+    }, [gameState]); // we don't include score here to avoid re-triggering, GAMEOVER is atomic
 
     // SEO & Transitions
     useEffect(() => {

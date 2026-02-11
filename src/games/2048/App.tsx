@@ -47,6 +47,10 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
     const pulseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const audioRef = useRef(new AudioEngine(loadMute()));
 
+    // Telemetry tracking refs
+    const gameIdRef = useRef<string | null>(null);
+    const startTimeRef = useRef<number | null>(null);
+
     // Sync score/best/mute to parent shell
     useEffect(() => { onScoreChange?.(score); }, [score, onScoreChange]);
     useEffect(() => { onBestScoreChange?.(bestScore); }, [bestScore, onBestScoreChange]);
@@ -86,6 +90,13 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
         setHasWon(false);
         setShowWinOverlay(false);
         setIsGameEnded(false);
+
+        // Telemetry: start
+        gameIdRef.current = "2048";
+        startTimeRef.current = performance.now();
+        import("../../utils/telemetry").then(m => {
+            m.sendEvent({ type: 'game_start', game: '2048' });
+        });
     }, []);
 
     const restart = useCallback(async () => {
@@ -145,6 +156,21 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
                 if (isGameOver(spawnRes.grid)) {
                     setIsGameEnded(true);
                     sfxGameOver(audioRef.current);
+
+                    // Telemetry: end
+                    if (startTimeRef.current) {
+                        const duration = Math.floor(performance.now() - startTimeRef.current);
+                        import("../../utils/telemetry").then(m => {
+                            m.sendEvent({
+                                type: 'game_end',
+                                game: '2048',
+                                score: newScore,
+                                duration_ms: duration,
+                                result: 'game_over'
+                            });
+                        });
+                        startTimeRef.current = null;
+                    }
                 }
 
                 return spawnRes.grid;
@@ -209,7 +235,22 @@ export default function App({ onScoreChange, onBestScoreChange, onMuteChange }: 
                     title="Experiment Success"
                     body="Target value 2048 reached."
                     primaryLabel="Continue"
-                    onPrimary={() => setShowWinOverlay(false)}
+                    onPrimary={() => {
+                        setShowWinOverlay(false);
+                        // Telemetry: win (but user continues)
+                        if (startTimeRef.current && gameIdRef.current) {
+                            import("../../utils/telemetry").then(m => {
+                                m.sendEvent({
+                                    type: 'game_end',
+                                    game: '2048',
+                                    score: score,
+                                    duration_ms: Math.floor(performance.now() - (startTimeRef.current || 0)),
+                                    result: 'win'
+                                });
+                            });
+                            // We don't reset startTimeRef because they are continuing
+                        }
+                    }}
                     secondaryLabel="Restart"
                     onSecondary={restart}
                 />
