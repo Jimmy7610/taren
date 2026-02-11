@@ -25,9 +25,10 @@ export const GamesHubPage: React.FC = () => {
 
     const games = [
         {
-            title: "HEXLINE",
-            description: "A precision drift on a hex grid.",
-            path: "/games/hexline/play",
+            title: strings.games.index.snake.title,
+            description: strings.games.index.snake.description,
+            image: snakeHero,
+            path: "/games/neon-snake/play",
             status: "ACTIVE" as const,
             ctaLabel: "ENTER GAME"
         },
@@ -36,6 +37,13 @@ export const GamesHubPage: React.FC = () => {
             description: strings.games.index.twoZeroFourEight.description,
             image: hero2048,
             path: "/games/2048/play",
+            status: "ACTIVE" as const,
+            ctaLabel: "ENTER GAME"
+        },
+        {
+            title: "HEXLINE",
+            description: "A precision drift on a hex grid.",
+            path: "/games/hexline/play",
             status: "ACTIVE" as const,
             ctaLabel: "ENTER GAME"
         },
