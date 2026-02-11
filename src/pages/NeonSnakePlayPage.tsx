@@ -20,7 +20,7 @@ const DIFFICULTY_CONFIG = {
     HARD: { label: 'Hard', speed: 70, color: 'text-red-500', rampUp: true },
 };
 
-export const SnakeGame: React.FC = () => {
+export const NeonSnakePlayPage: React.FC = () => {
     const [gameState, setGameState] = useState<'IDLE' | 'READY' | 'PLAYING' | 'PAUSED' | 'GAMEOVER'>('IDLE');
     const [difficulty, setDifficulty] = useState<Difficulty>(() => {
         return (localStorage.getItem('snake_difficulty') as Difficulty) || 'NORMAL';

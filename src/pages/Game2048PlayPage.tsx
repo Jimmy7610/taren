@@ -12,7 +12,7 @@ import { loadMute, saveMute, AudioEngine } from '../games/2048/audio/audio';
  * 3-column main with left scoreboard + center game + right controls + audio toggle,
  * mobile footer.
  */
-export const Game2048Page: React.FC = () => {
+export const Game2048PlayPage: React.FC = () => {
     const [score, setScore] = useState(0);
     const [bestScore, setBestScore] = useState(0);
     const [isMuted, setIsMuted] = useState(() => loadMute());

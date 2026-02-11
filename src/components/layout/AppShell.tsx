@@ -5,11 +5,9 @@ import { sendEvent } from '../../utils/telemetry';
 
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const location = useLocation();
-    const isFullscreenRoute = location.pathname.startsWith('/games/') ||
-        location.pathname === '/experiments/digital-sand/play' ||
-        location.pathname === '/experiments/vector-field/play' ||
-        location.pathname === '/experiments/orbit-ink/play' ||
-        location.pathname === '/experiments/signal-garden/play';
+    const isFullscreenRoute = location.pathname.endsWith('/play') ||
+        location.pathname.startsWith('/games/snake') && location.pathname.includes('/play') ||
+        location.pathname.startsWith('/games/2048') && location.pathname.includes('/play');
 
     React.useEffect(() => {
         // Track page view (telemetry.ts handles filtering /api and duplicates)
