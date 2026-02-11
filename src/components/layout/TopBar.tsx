@@ -12,7 +12,7 @@ export const TopBar: React.FC = () => {
     const isFullscreen = location.pathname.endsWith('/play') || location.pathname.startsWith('/games/');
 
     return (
-        <header className={`${isFullscreen ? 'absolute' : 'sticky'} top-0 z-[100] w-full border-b border-foreground/10 bg-background/80 backdrop-blur-md`}>
+        <header className={`${isFullscreen ? 'fixed' : 'sticky'} top-0 z-[100] w-full border-b border-foreground/10 bg-background/80 backdrop-blur-md`}>
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-3">
                     <Link

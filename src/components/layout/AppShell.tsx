@@ -17,7 +17,7 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
     return (
         <div className="relative flex min-h-screen flex-col overflow-x-hidden">
             <div className="grain-overlay" aria-hidden="true" />
-            {!isFullscreenRoute && <TopBar />}
+            <TopBar />
             {isFullscreenRoute ? (
                 <div className="flex-1 flex flex-col overflow-hidden">
                     {children}
