@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { TopBar } from './TopBar';
+import { sendEvent } from '../../utils/telemetry';
 
 /**
  * AppShell: global layout wrapper.
@@ -9,6 +10,18 @@ import { TopBar } from './TopBar';
 export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const location = useLocation();
     const isGameRoute = location.pathname.startsWith('/games/');
+
+    React.useEffect(() => {
+        // Track page view
+        sendEvent({ type: 'page_view', path: location.pathname });
+
+        // Specific game open hooks
+        if (location.pathname === '/games/snake') {
+            sendEvent({ type: 'game_open', game: 'snake' });
+        } else if (location.pathname === '/games/2048') {
+            sendEvent({ type: 'game_open', game: '2048' });
+        }
+    }, [location.pathname]);
 
     return (
         <div className="relative flex min-h-screen flex-col overflow-x-hidden">

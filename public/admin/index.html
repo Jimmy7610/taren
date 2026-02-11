@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TAREN • Admin</title>
+    <link rel="stylesheet" href="./admin.css" />
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="topbar__left">
+            <a class="topbar__brand" href="/">Taren</a>
+            <span class="topbar__tag">Admin</span>
+        </div>
+        <div class="topbar__right">
+            <div class="segmented" role="tablist" aria-label="Range filter">
+                <button class="segmented__btn is-active" data-range="24h">24h</button>
+                <button class="segmented__btn" data-range="7d">7d</button>
+                <button class="segmented__btn" data-range="30d">30d</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="grid">
+            <div class="card">
+                <div class="card__label">Visitors</div>
+                <div class="card__value" id="kpiVisitors">—</div>
+                <div class="card__meta" id="kpiVisitorsMeta">—</div>
+            </div>
+
+            <div class="card">
+                <div class="card__label">Page views</div>
+                <div class="card__value" id="kpiPageViews">—</div>
+                <div class="card__meta" id="kpiPageViewsMeta">—</div>
+            </div>
+
+            <div class="card">
+                <div class="card__label">Most played</div>
+                <div class="card__value" id="kpiMostPlayed">—</div>
+                <div class="card__meta" id="kpiMostPlayedMeta">—</div>
+            </div>
+
+            <div class="card">
+                <div class="card__label">Avg game run</div>
+                <div class="card__value" id="kpiAvgRun">—</div>
+                <div class="card__meta" id="kpiAvgRunMeta">—</div>
+            </div>
+        </section>
+
+        <section class="twoCol">
+            <div class="panel">
+                <div class="panel__header">
+                    <h2 class="panel__title">Top Games</h2>
+                    <div class="panel__hint">Starts, avg duration</div>
+                </div>
+                <div class="tableWrap">
+                    <table class="table" aria-label="Top games">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th class="num">Starts</th>
+                                <th class="num">Avg (mm:ss)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topGamesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel__header">
+                    <h2 class="panel__title">Top Pages</h2>
+                    <div class="panel__hint">Views</div>
+                </div>
+                <div class="tableWrap">
+                    <table class="table" aria-label="Top pages">
+                        <thead>
+                            <tr>
+                                <th>Path</th>
+                                <th class="num">Views</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topPagesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel__header">
+                <h2 class="panel__title">Recent Events</h2>
+                <div class="panel__hint">Last 50</div>
+            </div>
+            <div class="tableWrap">
+                <table class="table" aria-label="Recent events">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>Path</th>
+                            <th>Game</th>
+                            <th class="num">Duration</th>
+                            <th class="num">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <span class="muted">Protected by Cloudflare Access • Anonymous usage telemetry only</span>
+        </footer>
+    </main>
+
+    <script src="./admin.js" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+name = "taren-analytics"
+main = "src/index.ts"
+compatibility_date = "2026-02-11"
+
+# Bind D1 database in Cloudflare dashboard then paste binding here:
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "taren_analytics"
+# database_id = "REPLACE_ME"
