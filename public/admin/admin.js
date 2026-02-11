@@ -191,5 +191,21 @@ document.querySelectorAll(".segmented__btn").forEach(btn => {
 
 // Initial Load
 document.addEventListener("DOMContentLoaded", () => {
+    // Inject visual section markers if not in HTML
+    const grid = document.querySelector('.grid');
+    if (grid) {
+        grid.insertAdjacentHTML('beforebegin', `
+            <div class="section-header">
+                <span class="section-title">Overview</span>
+                <div class="section-line"></div>
+            </div>
+        `);
+        grid.insertAdjacentHTML('afterend', `
+            <div class="section-header">
+                <span class="section-title">Performance Hub</span>
+                <div class="section-line"></div>
+            </div>
+        `);
+    }
     loadAll();
 });
