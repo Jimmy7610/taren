@@ -6,7 +6,7 @@ import { strings } from '../constants/strings';
 export const Home: React.FC = () => {
     // SEO & Transitions
     useEffect(() => {
-        document.title = `TAREN | Digital Playground (v57)`;
+        document.title = `TAREN | Digital Playground (v58)`;
 
         const updateMeta = (name: string, content: string, isProperty = false) => {
             const attr = isProperty ? 'property' : 'name';

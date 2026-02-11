@@ -9,7 +9,7 @@ export async function onRequest(context: PagesContext) {
 
   // Force /admin to serve index.html to bypass stale static files
   if (url.pathname === "/admin" || url.pathname === "/admin/" || url.pathname.startsWith("/admin/")) {
-    return context.env.ASSETS.fetch(new Request(new URL("/index.html", url), context.request));
+    return context.env.ASSETS.fetch(url.origin + "/index.html");
   }
 
   // Allow direct access to real files (assets) and API/function routes
