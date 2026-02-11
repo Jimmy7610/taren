@@ -52,9 +52,9 @@ export const Home: React.FC = () => {
                     <Link
                         key={portal.path}
                         to={portal.path}
-                        className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/5 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-accent/30 hover:bg-foreground/[0.08] hover:shadow-[0_20px_40px_-15px_rgba(255,95,31,0.15)] focus-visible:outline-2 focus-visible:outline-accent"
+                        className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/5 p-8 transition-all duration-300 hover:translate-y-[-3px] hover:border-accent/30 hover:bg-foreground/[0.08] hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] focus-visible:outline-2 focus-visible:outline-accent dark:hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.5)]"
                     >
-                        <div className="mb-4 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        <div className="mb-4 transition-transform duration-500 group-hover:scale-[1.05] group-hover:rotate-1">
                             <portal.icon className={`h-10 w-10 ${portal.color}`} />
                         </div>
                         <span className="text-sm font-bold uppercase tracking-widest text-foreground/60 transition-colors group-hover:text-foreground">

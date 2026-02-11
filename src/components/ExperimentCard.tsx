@@ -21,7 +21,7 @@ export const ExperimentCard: React.FC<ExperimentCardProps> = ({
 
     const CardContent = (
         <>
-            <div className={`mb-4 transition-transform duration-500 ${isActive ? 'group-hover:scale-110 group-hover:rotate-3' : 'opacity-40'}`}>
+            <div className={`mb-4 transition-transform duration-500 ${isActive ? 'group-hover:scale-[1.05]' : 'opacity-40'}`}>
                 {isActive ? <Icon className="h-10 w-10 text-accent" /> : <Lock className="h-10 w-10 text-foreground/20" />}
             </div>
             <div className="text-center">
@@ -36,8 +36,8 @@ export const ExperimentCard: React.FC<ExperimentCardProps> = ({
             {/* Status Pill */}
             <div className="mt-4">
                 <span className={`px-2 py-0.5 rounded-full text-[9px] font-black tracking-tighter uppercase border ${isActive
-                        ? 'border-accent/30 text-accent bg-accent/5'
-                        : 'border-foreground/5 text-foreground/20 bg-foreground/[0.02]'
+                    ? 'border-accent/30 text-accent bg-accent/5'
+                    : 'border-foreground/5 text-foreground/20 bg-foreground/[0.02]'
                     }`}>
                     {status.replace('_', ' ')}
                 </span>
@@ -53,7 +53,7 @@ export const ExperimentCard: React.FC<ExperimentCardProps> = ({
         return (
             <Link
                 to={path}
-                className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/5 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-accent/30 hover:bg-foreground/[0.08] hover:shadow-[0_20px_40px_-15px_rgba(255,95,31,0.15)] focus-visible:outline-2 focus-visible:outline-accent"
+                className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/5 p-8 transition-all duration-300 hover:translate-y-[-3px] hover:border-accent/30 hover:bg-foreground/[0.08] hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] focus-visible:outline-2 focus-visible:outline-accent dark:hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.5)]"
             >
                 {CardContent}
             </Link>
@@ -61,7 +61,7 @@ export const ExperimentCard: React.FC<ExperimentCardProps> = ({
     }
 
     return (
-        <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/[0.02] bg-foreground/[0.02] p-8 cursor-not-allowed select-none">
+        <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/[0.02] bg-foreground/[0.02] p-8 cursor-default select-none transition-opacity duration-300 hover:opacity-100 group">
             {CardContent}
         </div>
     );

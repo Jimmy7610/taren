@@ -40,6 +40,21 @@ export const TopBar: React.FC = () => {
                     )}
                 </button>
             </div>
+
+            {/* Taren Signature: Subtle animated gradient line */}
+            <div className="absolute bottom-0 left-0 h-[1px] w-full overflow-hidden opacity-10">
+                <div className="h-full w-[300%] animate-signature-flow bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
+            </div>
+
+            <style>{`
+                @keyframes signature-flow {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(33%); }
+                }
+                .animate-signature-flow {
+                    animation: signature-flow 25s linear infinite;
+                }
+            `}</style>
         </header>
     );
 };
