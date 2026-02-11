@@ -135,11 +135,23 @@ export const VectorField: React.FC = () => {
     const handlePointerDown = (e: React.PointerEvent) => {
         setIsInteracting(true);
         setHasInteracted(true);
-        pointerPos.current = { x: e.clientX, y: e.clientY };
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            pointerPos.current = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
     };
 
     const handlePointerMove = (e: React.PointerEvent) => {
-        pointerPos.current = { x: e.clientX, y: e.clientY };
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (rect) {
+            pointerPos.current = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
     };
 
     const handlePointerUp = () => setIsInteracting(false);
