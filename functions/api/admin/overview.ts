@@ -43,6 +43,25 @@ async function getMetrics(db: D1Database, start: number, end: number) {
     };
 }
 
+async function getSeries(db: D1Database, start: number, range: string) {
+    let bucketFormat = '%Y-%m-%d %H:00'; // Hourly for 24h
+    if (range === "7d" || range === "30d") bucketFormat = '%Y-%m-%d'; // Daily
+
+    const query = `
+    SELECT 
+      strftime('${bucketFormat}', ts / 1000, 'unixepoch') as bucket,
+      COUNT(CASE WHEN type='page_view' THEN 1 END) as views,
+      COUNT(CASE WHEN type='game_start' THEN 1 END) as starts
+    FROM events
+    WHERE ts >= ?1
+    GROUP BY bucket
+    ORDER BY bucket ASC
+  `;
+
+    const results = await db.prepare(query).bind(start).all<any>();
+    return results.results || [];
+}
+
 export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     const { request, env } = ctx;
     const url = new URL(request.url);
@@ -52,12 +71,14 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     try {
         const current = await getMetrics(env.DB, current_start, now);
         const previous = await getMetrics(env.DB, previous_start, current_start);
+        const series = await getSeries(env.DB, current_start, range);
 
         return new Response(JSON.stringify({
             ok: true,
             range,
             current,
             previous,
+            series,
             // Legacy structure for basic fallback
             visitors: current.visitors,
             visitors_meta: "unique sessions",
