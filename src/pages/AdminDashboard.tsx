@@ -115,9 +115,9 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                             <React.Fragment key={v}>
                                 <line
                                     x1={padding} y1={y} x2={width - padding} y2={y}
-                                    stroke="currentColor" strokeWidth="1" className="text-foreground/[0.03]"
+                                    stroke="currentColor" strokeWidth="1" className="text-foreground/10"
                                 />
-                                <text x={0} y={y + 3} className="text-[9px] font-bold fill-foreground/10">
+                                <text x={0} y={y + 3} className="text-[9px] font-bold fill-foreground/20">
                                     {Math.round(maxVal * (1 - v))}
                                 </text>
                             </React.Fragment>
@@ -125,26 +125,26 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                     })}
 
                     {/* Views Area Fill */}
-                    <path d={viewsArea} className="fill-accent/[0.03]" />
+                    <path d={viewsArea} className="fill-accent/[0.04]" />
 
                     {/* Lines */}
                     <path
                         d={viewsLine}
                         fill="none"
                         stroke="var(--color-accent)"
-                        strokeWidth="3"
+                        strokeWidth="3.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_12px_rgba(80,227,194,0.3)]"
+                        className="drop-shadow-[0_4px_12px_rgba(80,227,194,0.4)]"
                     />
                     <path
                         d={startsLine}
                         fill="none"
-                        stroke="#10b981"
-                        strokeWidth="3"
+                        stroke="#059669"
+                        strokeWidth="3.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_4px_12px_rgba(16,185,129,0.3)]"
+                        className="drop-shadow-[0_4px_12px_rgba(5,150,105,0.4)]"
                     />
 
                     {/* Interactive Slices */}
@@ -241,15 +241,15 @@ const KPICard: React.FC<{
     const isNeutral = previous === 0 || current === previous;
     const isUp = diff > 0;
 
-    const statusColor = isNeutral ? 'text-foreground/30' : (isUp ? 'text-emerald-400' : 'text-rose-400');
+    const statusColor = isNeutral ? 'text-foreground/30' : (isUp ? 'text-emerald-500/80' : 'text-rose-500/80');
 
     return (
-        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 transition-all hover:bg-foreground/[0.04] hover:translate-y-[-2px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.01] p-6 transition-all hover:bg-foreground/[0.03] hover:translate-y-[-2px] animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="absolute top-0 left-0 h-full w-[2px] bg-accent opacity-0 transition-opacity group-hover:opacity-100" />
 
-            <div className="flex items-center justify-between mb-6">
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40">{title}</span>
-                <div className="text-foreground/20 group-hover:text-accent/50 transition-colors">
+            <div className="flex items-center justify-between mb-7">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/30">{title}</span>
+                <div className="text-foreground/10 group-hover:text-accent/40 transition-colors">
                     {icon}
                 </div>
             </div>
@@ -259,11 +259,11 @@ const KPICard: React.FC<{
             </div>
 
             <div className={`flex items-center gap-1.5 text-[11px] font-bold ${statusColor}`}>
-                {isNeutral ? <Minus className="h-3.5 w-3.5" /> : (isUp ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />)}
-                <span className="font-mono">
-                    {isNeutral ? '0 (0%)' : `${isUp ? '↑ +' : '↓ -'}${Math.abs(diff)} (${isUp ? '+' : '-'}${Math.abs(pct)}%)`}
+                {isNeutral ? <Minus className="h-3 w-3" /> : (isUp ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />)}
+                <span className="font-mono tracking-tight">
+                    {isNeutral ? '→ 0 (0%)' : `${isUp ? '↑' : '↓'} ${isUp ? '+' : '-'}${Math.abs(diff)} (${isUp ? '+' : '-'}${Math.abs(pct)}%)`}
                 </span>
-                <span className="text-foreground/20 font-medium tracking-tight ml-1">vs prev</span>
+                <span className="text-foreground/20 font-medium tracking-tight ml-0.5">vs prev</span>
             </div>
         </div>
     );
@@ -318,8 +318,8 @@ export const AdminDashboard: React.FC = () => {
                 <div className="flex flex-col gap-6">
                     <div>
                         <h1 className="text-4xl font-black tracking-tighter text-foreground sm:text-5xl text-gradient">System Core</h1>
-                        <p className="mt-2 text-sm font-medium text-foreground/40 flex items-center gap-2">
-                            <ShieldCheck className="h-4 w-4 text-emerald-400/50" />
+                        <p className="mt-2 text-xs font-bold text-foreground/20 flex items-center gap-2 uppercase tracking-widest">
+                            <ShieldCheck className="h-3.5 w-3.5 text-emerald-500/30" />
                             Build {BUILD_COUNTER} • Performance Hub
                         </p>
                     </div>
@@ -444,29 +444,29 @@ export const AdminDashboard: React.FC = () => {
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-foreground/[0.02]">
+                        <thead className="bg-foreground/[0.01]">
                             <tr className="text-[9px] font-black uppercase tracking-widest text-foreground/20 border-b border-foreground/5">
-                                <th className="px-6 py-4">Tick</th>
-                                <th className="px-6 py-4">Type</th>
-                                <th className="px-6 py-4">Scope</th>
-                                <th className="px-6 py-4 text-right">Metric</th>
+                                <th className="px-6 py-3">Tick</th>
+                                <th className="px-6 py-3">Type</th>
+                                <th className="px-6 py-3">Scope</th>
+                                <th className="px-6 py-3 text-right">Metric</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-foreground/2">
+                        <tbody className="divide-y divide-foreground/[0.02]">
                             {recent.map((e: any, i: number) => (
                                 <tr key={i} className="hover:bg-foreground/[0.01] transition-colors">
-                                    <td className="px-6 py-4 font-mono text-[9px] text-foreground/30">{new Date(e.ts).toLocaleTimeString()}</td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-2.5 font-mono text-[9px] text-foreground/20">{new Date(e.ts).toLocaleTimeString([], { hour12: false })}</td>
+                                    <td className="px-6 py-2.5">
                                         <span className={`inline-block px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-tighter ${e.type === 'game_start' ? 'bg-accent/10 text-accent border border-accent/20' :
-                                            e.type === 'game_end' ? 'bg-emerald-400/10 text-emerald-400 border border-emerald-400/20' :
+                                            e.type === 'game_end' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' :
                                                 'bg-foreground/5 text-foreground/40 border border-foreground/10'
                                             }`}>
                                             {e.type}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-[10px] font-bold text-foreground/50">{e.game || e.path || '—'}</td>
-                                    <td className="px-6 py-4 text-right font-mono text-[10px] font-bold text-foreground/30">
-                                        {e.score ? `S:${e.score}` : e.duration_ms ? fmtMs(e.duration_ms) : '—'}
+                                    <td className="px-6 py-2.5 text-[10px] font-bold text-foreground/40">{e.game || e.path || '—'}</td>
+                                    <td className="px-6 py-2.5 text-right font-mono text-[10px] font-black text-foreground/30">
+                                        {e.score !== undefined ? `SCORE ${e.score}` : e.duration_ms ? fmtMs(e.duration_ms) : '—'}
                                     </td>
                                 </tr>
                             ))}
