@@ -224,15 +224,12 @@ export const AdminDashboard: React.FC = () => {
     const { current, previous } = data;
 
     return (
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 animate-in fade-in duration-700">
-            {/* SaaS Header */}
-            <div className="mb-12 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mx-auto max-w-7xl animate-in fade-in duration-700">
+            {/* SaaS Header / Pills (Now integrated with global layout) */}
+            <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-                        <h1 className="text-3xl font-black tracking-tighter text-foreground text-gradient">System Core</h1>
-                    </div>
-                    <p className="text-sm font-medium text-foreground/40">Real-time telemetry and project performance hubs</p>
+                    <h1 className="text-3xl font-black tracking-tighter text-foreground sm:text-4xl text-gradient">System Overview</h1>
+                    <p className="mt-1 text-sm font-medium text-foreground/40">Build {BUILD_COUNTER} • Protected analytics</p>
                 </div>
 
                 <div className="flex items-center gap-1 rounded-xl border border-foreground/10 bg-foreground/[0.03] p-1.5 shadow-inner">
@@ -241,8 +238,8 @@ export const AdminDashboard: React.FC = () => {
                             key={r}
                             onClick={() => setRange(r)}
                             className={`rounded-lg px-6 py-2 text-[10px] font-black tracking-widest transition-all uppercase ${range === r
-                                    ? 'bg-background text-foreground shadow-xl ring-1 ring-foreground/5'
-                                    : 'text-foreground/30 hover:text-foreground/60'
+                                ? 'bg-background text-foreground shadow-xl ring-1 ring-foreground/5'
+                                : 'text-foreground/30 hover:text-foreground/60'
                                 }`}
                         >
                             {r}
@@ -367,8 +364,8 @@ export const AdminDashboard: React.FC = () => {
                                     <td className="px-6 py-4 font-mono text-[9px] text-foreground/30">{new Date(e.ts).toLocaleTimeString()}</td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-block px-1.5 py-0.5 rounded-sm text-[8px] font-black uppercase tracking-tighter ${e.type === 'game_start' ? 'bg-accent/10 text-accent border border-accent/20' :
-                                                e.type === 'game_end' ? 'bg-emerald-400/10 text-emerald-400 border border-emerald-400/20' :
-                                                    'bg-foreground/5 text-foreground/40 border border-foreground/10'
+                                            e.type === 'game_end' ? 'bg-emerald-400/10 text-emerald-400 border border-emerald-400/20' :
+                                                'bg-foreground/5 text-foreground/40 border border-foreground/10'
                                             }`}>
                                             {e.type}
                                         </span>
