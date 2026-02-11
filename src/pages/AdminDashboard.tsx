@@ -47,6 +47,13 @@ const fmtMs = (ms: number) => {
  */
 const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, range }) => {
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isTouch, setIsTouch] = useState(false);
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    }, []);
 
     const width = 1200;
     const height = 250;
@@ -56,6 +63,24 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
         const vals = bins.flatMap(b => [b.views, b.starts]);
         return Math.max(...vals, 12); // Minimum scale floor
     }, [bins]);
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (isTouch || !containerRef.current || bins.length < 2) return;
+
+        const rect = containerRef.current.getBoundingClientRect();
+        const svgMouseX = ((e.clientX - rect.left) / rect.width) * width;
+
+        // Find nearest bin
+        const chartWidth = width - padding * 2;
+        const relativeX = svgMouseX - padding;
+        const index = Math.min(
+            Math.max(0, Math.round((relativeX / chartWidth) * (bins.length - 1))),
+            bins.length - 1
+        );
+
+        setHoverIndex(index);
+        setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
 
     // Simple monotone-ish cubic smoothing path generator
     const generatePath = (data: number[], type: 'line' | 'area' = 'line') => {
@@ -90,7 +115,12 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
     const startsLine = useMemo(() => generatePath(bins.map(b => b.starts)), [bins, maxVal]);
 
     return (
-        <div className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-6 transition-all hover:bg-foreground/[0.04]">
+        <div
+            ref={containerRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={() => setHoverIndex(null)}
+            className="relative group rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-6 transition-all hover:bg-foreground/[0.04]"
+        >
             <div className="flex items-end justify-between mb-8">
                 <div>
                     <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-foreground/70 mb-1">System Telemetry</h3>
@@ -163,41 +193,46 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                         className="drop-shadow-[0_4px_20px_rgba(16,185,129,0.4)]"
                     />
 
-                    {/* Interactive Slices */}
-                    {bins.map((b, i) => {
-                        const x = (i / (bins.length - 1)) * (width - padding * 2) + padding;
-                        return (
-                            <g key={i} onMouseEnter={() => setHoverIndex(i)} onMouseLeave={() => setHoverIndex(null)}>
-                                <rect x={x - 10} y={0} width={20} height={height} fill="transparent" />
-                                {hoverIndex === i && (
-                                    <>
-                                        <line x1={x} y1={padding} x2={x} y2={height - padding} stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" className="text-foreground/20" />
-                                        <circle cx={x} cy={height - ((b.views / maxVal) * (height - padding * 2) + padding)} r="5" className="fill-accent ring-4 ring-accent/20" />
-                                        <circle cx={x} cy={height - ((b.starts / maxVal) * (height - padding * 2) + padding)} r="5" className="fill-emerald-400 ring-4 ring-emerald-400/20" />
-                                    </>
-                                )}
-                            </g>
-                        );
-                    })}
+                    {/* Precision Tracking Line */}
+                    {hoverIndex !== null && !isTouch && (
+                        <line
+                            x1={(hoverIndex / (bins.length - 1)) * (width - padding * 2) + padding}
+                            y1={padding}
+                            x2={(hoverIndex / (bins.length - 1)) * (width - padding * 2) + padding}
+                            y2={height - padding}
+                            stroke="rgba(255,255,255,0.35)"
+                            strokeWidth="1"
+                        />
+                    )}
+
+                    {/* Interactive Circles */}
+                    {hoverIndex !== null && bins[hoverIndex] && !isTouch && (
+                        <>
+                            <circle cx={(hoverIndex / (bins.length - 1)) * (width - padding * 2) + padding} cy={height - ((bins[hoverIndex].views / maxVal) * (height - padding * 2) + padding)} r="5" className="fill-accent ring-4 ring-accent/20" />
+                            <circle cx={(hoverIndex / (bins.length - 1)) * (width - padding * 2) + padding} cy={height - ((bins[hoverIndex].starts / maxVal) * (height - padding * 2) + padding)} r="5" className="fill-emerald-400 ring-4 ring-emerald-400/20" />
+                        </>
+                    )}
                 </svg>
 
                 {/* Tooltip Overlay */}
-                {hoverIndex !== null && bins[hoverIndex] && (
-                    <div className="pointer-events-none absolute top-0 z-50 rounded-lg border border-foreground/10 bg-background/95 p-3 shadow-2xl backdrop-blur-sm animate-in fade-in zoom-in-95 duration-200"
-                        style={{ left: `${(hoverIndex / (bins.length - 1)) * 100}%`, transform: 'translateX(-50%)' }}>
-                        <div className="text-[10px] font-black uppercase tracking-tighter text-foreground/40 mb-2 truncate">
-                            {new Date(bins[hoverIndex].t || 0).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {hoverIndex !== null && bins[hoverIndex] && !isTouch && (
+                    <div
+                        className="pointer-events-none absolute z-50 rounded-[6px] border border-white/10 bg-[#111] p-[8px_10px] shadow-[0_8px_20px_rgba(0,0,0,0.4)] animate-in fade-in duration-150"
+                        style={{
+                            left: mousePos.x,
+                            top: mousePos.y - 10,
+                            transform: `translate(${hoverIndex > bins.length / 2 ? '-110%' : '10%'}, -100%)`,
+                            fontFamily: 'monospace',
+                            fontSize: '12px',
+                            lineHeight: '1.4',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <div className="text-white/40 uppercase mb-0.5">
+                            {new Date(bins[hoverIndex].t || 0).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}
                         </div>
-                        <div className="flex flex-col gap-1.5">
-                            <div className="flex items-center justify-between gap-4">
-                                <span className="text-[10px] font-bold text-foreground/60 uppercase">Views</span>
-                                <span className="text-xs font-black text-accent">{bins[hoverIndex].views}</span>
-                            </div>
-                            <div className="flex items-center justify-between gap-4">
-                                <span className="text-[10px] font-bold text-foreground/60 uppercase">Starts</span>
-                                <span className="text-xs font-black text-emerald-400">{bins[hoverIndex].starts}</span>
-                            </div>
-                        </div>
+                        <div className="text-white">Views: {bins[hoverIndex].views}</div>
+                        <div className="text-white">Starts: {bins[hoverIndex].starts}</div>
                     </div>
                 )}
             </div>
