@@ -12,6 +12,8 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { ExperimentsPage } from './pages/ExperimentsPage';
 import { DigitalSandPage } from './pages/DigitalSandPage';
 import { DigitalSandPlayPage } from './pages/DigitalSandPlayPage';
+import { VectorFieldPage } from './pages/VectorFieldPage';
+import { VectorFieldPlayPage } from './pages/VectorFieldPlayPage';
 import { DailyPage } from './pages/DailyPage';
 import { DailyTodayPage } from './pages/DailyTodayPage';
 import { strings } from './constants/strings';
@@ -31,6 +33,8 @@ function App() {
                         <Route path="/experiments" element={<ExperimentsPage />} />
                         <Route path="/experiments/digital-sand" element={<DigitalSandPage />} />
                         <Route path="/experiments/digital-sand/play" element={<DigitalSandPlayPage />} />
+                        <Route path="/experiments/vector-field" element={<VectorFieldPage />} />
+                        <Route path="/experiments/vector-field/play" element={<VectorFieldPlayPage />} />
                         <Route path="/daily" element={<DailyPage />} />
                         <Route path="/daily/today" element={<DailyTodayPage />} />
                         <Route path="/portfolio" element={<PlaceholderPage title={strings.routes.portfolio} />} />

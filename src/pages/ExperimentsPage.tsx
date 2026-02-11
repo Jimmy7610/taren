@@ -34,7 +34,7 @@ export const ExperimentsPage: React.FC = () => {
             description: "Flowing paths carved by hidden forces.",
             icon: Move,
             path: "/experiments/vector-field",
-            status: "COMING_SOON" as const
+            status: "ACTIVE" as const
         },
         {
             title: "Orbit Ink",
