@@ -23,9 +23,9 @@ const DICTIONARY_EN = ["CAT", "DOG", "SUN", "MOON", "BIRD", "FISH", "TREE", "BOO
 const DICTIONARY_SV = ["HEJ", "SOL", "MÅNE", "BOK", "FISK", "HUND", "KATT", "FÅGEL", "GÅVA", "LEKA", "BARN", "STJÄRNA", "BOLL", "KAKA", "MJÖLK"];
 
 const ARENA_WIDTH = 1000;
-const ARENA_HEIGHT = 560;
-const TRAY_Y_START = 440;
-const TRAY_GAP_Y = 80;
+const ARENA_HEIGHT = 625; // 16:10 ratio
+const TRAY_Y_START = 380;
+const TRAY_GAP_Y = 70;
 
 // --- i18n Strings ---
 const STRINGS = {
@@ -105,9 +105,14 @@ export const LetterLabPlayPage: React.FC = () => {
 
     // Prevent body scroll
     useEffect(() => {
-        const originalStyle = window.getComputedStyle(document.body).overflow;
+        const originalStyle = document.body.style.overflow;
+        const originalHeight = document.body.style.height;
         document.body.style.overflow = 'hidden';
-        return () => { document.body.style.overflow = originalStyle; };
+        document.body.style.height = '100dvh';
+        return () => {
+            document.body.style.overflow = originalStyle;
+            document.body.style.height = originalHeight;
+        };
     }, []);
     const [wordsBuilt, setWordsBuilt] = useState(0);
     const [bestSession, setBestSession] = useState(() => Number(localStorage.getItem('kids_best_session')) || 0);
@@ -207,7 +212,8 @@ export const LetterLabPlayPage: React.FC = () => {
         if (!tile) return;
 
         // Hit test for rail area (Simplified: upper central portion)
-        const isOnRail = tile.y < ARENA_HEIGHT * 0.5 && tile.y > 50;
+        // Hit test for rail area (Simplified: upper central portion)
+        const isOnRail = tile.y < ARENA_HEIGHT * 0.45 && tile.y > 60;
 
         if (isOnRail) {
             setRailLetters(prev => [...prev, { ...tile, isDragging: false }]);
@@ -319,7 +325,7 @@ export const LetterLabPlayPage: React.FC = () => {
 
     // 6. RENDER
     return (
-        <div className="relative flex h-[calc(100vh-64px)] w-full overflow-hidden bg-background text-foreground select-none">
+        <div className="relative flex h-[calc(100vh-64px)] min-h-0 w-full overflow-hidden bg-background text-foreground select-none">
             {/* LEFT Panel */}
             <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20 overflow-hidden">
                 <div className="mb-12">
@@ -400,9 +406,9 @@ export const LetterLabPlayPage: React.FC = () => {
                                 : 'bg-foreground/[0.04] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95 cursor-grab duration-500 ease-out'
                                 }`}
                             style={{
-                                left: 0,
-                                top: 0,
-                                transform: `translate3d(${tile.x}px, ${tile.y}px, 0) translate(-50%, -50%) rotate(${tile.isDragging ? 0 : tile.rotation}deg)`
+                                left: `${(tile.x / ARENA_WIDTH) * 100}%`,
+                                top: `${(tile.y / ARENA_HEIGHT) * 100}%`,
+                                transform: `translate(-50%, -50%) rotate(${tile.isDragging ? 0 : tile.rotation}deg)`
                             }}
                         >
                             {tile.char}
