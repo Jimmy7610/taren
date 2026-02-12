@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { Trophy, Settings, Baby, ArrowLeft, X, Check, Lock, MousePointer2, Sparkles } from 'lucide-react';
 
 // @ts-ignore
-import wordsEnRaw from './words/words_en.txt?raw';
+import wordsEnRaw from '../kids/letter-lab/words/words_en.txt?raw';
 // @ts-ignore
-import wordsSvRaw from './words/words_sv.txt?raw';
+import wordsSvRaw from '../kids/letter-lab/words/words_sv.txt?raw';
 
 // --- Types ---
 type Language = 'EN' | 'SV';
