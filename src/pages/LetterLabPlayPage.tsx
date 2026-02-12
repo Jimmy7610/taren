@@ -22,9 +22,10 @@ const LETTERS_SV = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ";
 const DICTIONARY_EN = ["CAT", "DOG", "SUN", "MOON", "BIRD", "FISH", "TREE", "BOOK", "PLAY", "LOVE", "KIDS", "STAR", "BALL", "CAKE", "MILK"];
 const DICTIONARY_SV = ["HEJ", "SOL", "MÅNE", "BOK", "FISK", "HUND", "KATT", "FÅGEL", "GÅVA", "LEKA", "BARN", "STJÄRNA", "BOLL", "KAKA", "MJÖLK"];
 
-const ARENA_WIDTH = 900;
+const ARENA_WIDTH = 1000;
 const ARENA_HEIGHT = 560;
-const TRAY_Y = 460;
+const TRAY_Y_START = 440;
+const TRAY_GAP_Y = 80;
 
 // --- i18n Strings ---
 const STRINGS = {
@@ -101,6 +102,13 @@ export const LetterLabPlayPage: React.FC = () => {
     // 1. STATE & STORAGE
     const [gameState, setGameState] = useState<GameState>('IDLE');
     const [language, setLanguage] = useState<Language>(() => (localStorage.getItem('kids_lang') as Language) || 'EN');
+
+    // Prevent body scroll
+    useEffect(() => {
+        const originalStyle = window.getComputedStyle(document.body).overflow;
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = originalStyle; };
+    }, []);
     const [wordsBuilt, setWordsBuilt] = useState(0);
     const [bestSession, setBestSession] = useState(() => Number(localStorage.getItem('kids_best_session')) || 0);
     const [customWords, setCustomWords] = useState<Record<Language, string[]>>(() => {
@@ -130,10 +138,18 @@ export const LetterLabPlayPage: React.FC = () => {
 
     // 2. TRAY LOGIC
     const getTrayPosition = useCallback((index: number, total: number) => {
-        const spacing = 80;
-        const totalWidth = (total - 1) * spacing;
-        const startX = ARENA_WIDTH / 2 - totalWidth / 2;
-        return { x: startX + index * spacing, y: TRAY_Y };
+        const lettersPerRow = Math.ceil(total / 2);
+        const rowIndex = Math.floor(index / lettersPerRow);
+        const colIndex = index % lettersPerRow;
+
+        const spacing = 90;
+        const rowWidth = (lettersPerRow - 1) * spacing;
+        const startX = ARENA_WIDTH / 2 - rowWidth / 2;
+
+        return {
+            x: startX + colIndex * spacing,
+            y: TRAY_Y_START + rowIndex * TRAY_GAP_Y
+        };
     }, []);
 
     const startGame = () => {
@@ -305,7 +321,7 @@ export const LetterLabPlayPage: React.FC = () => {
     return (
         <div className="relative flex h-[calc(100vh-64px)] w-full overflow-hidden bg-background text-foreground select-none">
             {/* LEFT Panel */}
-            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20">
+            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20 overflow-hidden">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">{t.wordsBuilt}</h3>
                     <div className="text-5xl font-mono font-bold tabular-nums text-foreground">{wordsBuilt.toString().padStart(3, '0')}</div>
@@ -322,7 +338,7 @@ export const LetterLabPlayPage: React.FC = () => {
             <main className="flex-1 relative flex items-center justify-center p-4 lg:p-8 overflow-hidden z-10">
                 <div
                     ref={boardRef}
-                    className="relative w-full h-full max-w-[900px] max-h-[560px] aspect-[16/10] bg-foreground/[0.01] rounded-3xl border border-foreground/5 shadow-2xl overflow-hidden"
+                    className="relative w-full h-full max-w-[1000px] max-h-[560px] aspect-[16/10] bg-foreground/[0.01] rounded-3xl border border-foreground/5 shadow-2xl overflow-hidden"
                 >
                     {/* Status Message Overlay */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] pointer-events-none">
@@ -380,8 +396,8 @@ export const LetterLabPlayPage: React.FC = () => {
                             onPointerMove={(e) => handlePointerMove(e, tile.id)}
                             onPointerUp={(e) => handlePointerUp(e, tile.id)}
                             className={`letter-tile absolute w-16 h-16 rounded-2xl flex items-center justify-center font-mono text-3xl font-black transition-all ${tile.isDragging
-                                    ? 'z-50 scale-110 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] bg-accent text-background ring-4 ring-accent/20 cursor-grabbing duration-0'
-                                    : 'bg-foreground/[0.04] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95 cursor-grab duration-500 ease-out'
+                                ? 'z-50 scale-110 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] bg-accent text-background ring-4 ring-accent/20 cursor-grabbing duration-0'
+                                : 'bg-foreground/[0.04] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95 cursor-grab duration-500 ease-out'
                                 }`}
                             style={{
                                 left: 0,
@@ -434,7 +450,7 @@ export const LetterLabPlayPage: React.FC = () => {
             </main>
 
             {/* RIGHT Panel */}
-            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20">
+            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20 overflow-hidden">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><Settings className="h-3 w-3" /> {t.controls}</h3>
                     <ul className="space-y-3 text-[10px] font-medium text-foreground/60 tracking-wider">
