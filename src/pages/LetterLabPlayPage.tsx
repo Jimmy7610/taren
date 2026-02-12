@@ -27,6 +27,72 @@ const LETTERS_SV = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ";
 const DICTIONARY_EN = ["CAT", "DOG", "SUN", "MOON", "BIRD", "FISH", "TREE", "BOOK", "PLAY", "LOVE", "KIDS", "STAR", "BALL", "CAKE", "MILK"];
 const DICTIONARY_SV = ["HEJ", "SOL", "MÅNE", "BOK", "FISK", "HUND", "KATT", "FÅGEL", "GÅVA", "LEKA", "BARN", "STJÄRNA", "BOLL", "KAKA", "MJÖLK"];
 
+// --- i18n Strings ---
+const STRINGS = {
+    EN: {
+        buildWordTitle: "BUILD A WORD",
+        hint: "Tap a letter → tap the rail to place it.",
+        emptyRail: "EMPTY RAIL",
+        controls: "CONTROLS",
+        rules: "RULES",
+        parentMode: "PARENT MODE",
+        exit: "EXIT LAB",
+        wordsBuilt: "Words Built",
+        bestSession: "Best Session",
+        currentWord: "Current:",
+        checkWord: "Check Word",
+        tapToStart: "Tap to Start",
+        locked: "LOCKED",
+        notAWord: "NOT A WORD",
+        helpPick: "1. Pick",
+        helpBuild: "2. Build",
+        helpText: "Tap a letter to grab it.",
+        c1: "Tap a letter to pick",
+        c2: "Tap rail to drop",
+        c3: "Form valid words",
+        r1: "Letters appear. Find connections. Lock the sequence.",
+        parentTitle: "Parent Control",
+        activeLang: "Active Language",
+        customWords: "Custom Words",
+        parentHint: "Parent Mode allows customization of the dictionary.",
+        add: "Add",
+        addWord: "Add word...",
+        parentCheck: "Parent Check",
+        cancel: "Cancel"
+    },
+    SV: {
+        buildWordTitle: "BYGG ETT ORD",
+        hint: "Tryck på en bokstav → tryck på raden för att placera den.",
+        emptyRail: "TOM RAD",
+        controls: "KONTROLLER",
+        rules: "REGLER",
+        parentMode: "FÖRÄLDRA-LÄGE",
+        exit: "LÄMNA LABB",
+        wordsBuilt: "Byggda Ord",
+        bestSession: "Bästa Session",
+        currentWord: "Nuvarande:",
+        checkWord: "Kontrollera",
+        tapToStart: "Tryck för att Starta",
+        locked: "LÅST",
+        notAWord: "EJ ETT ORD",
+        helpPick: "1. Välj",
+        helpBuild: "2. Bygg",
+        helpText: "Tryck på en bokstav för att ta den.",
+        c1: "Tryck på en bokstav för att välja",
+        c2: "Tryck på raden för att släppa",
+        c3: "Skapa giltiga ord",
+        r1: "Bokstäver visas. Hitta samband. Lås sekvensen.",
+        parentTitle: "Föräldrakontroll",
+        activeLang: "Aktivt Språk",
+        customWords: "Egna Ord",
+        parentHint: "Föräldraläget låter dig anpassa ordlistan.",
+        add: "Lägg till",
+        addWord: "Lägg till ord...",
+        parentCheck: "Föräldrakontroll",
+        cancel: "Avbryt"
+    }
+};
+
 // --- Helper Functions ---
 const getRandomChar = (lang: Language) => {
     const chars = lang === 'EN' ? LETTERS_EN : LETTERS_SV;
@@ -71,6 +137,8 @@ export const LetterLabPlayPage: React.FC = () => {
     const boardSize = useRef({ width: 0, height: 0 });
 
     // 2. PHYSICS ENGINE (Direct DOM Updates)
+    const t = STRINGS[language];
+
     const updatePhysics = useCallback((time: number) => {
         if (gameState !== 'PLAYING' || document.hidden || !boardRef.current) {
             lastTimeRef.current = time;
@@ -310,14 +378,14 @@ export const LetterLabPlayPage: React.FC = () => {
             {/* LEFT Panel (Scoreboard) */}
             <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20">
                 <div className="mb-12">
-                    <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">Words Built</h3>
+                    <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">{t.wordsBuilt}</h3>
                     <div className="text-5xl font-mono font-bold tabular-nums text-foreground" key={wordsBuilt}>
                         {wordsBuilt.toString().padStart(3, '0')}
                     </div>
                 </div>
                 <div className="mt-auto pt-8 border-t border-foreground/5">
                     <h3 className="text-[10px] font-bold text-foreground/20 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                        <Trophy className="h-3 w-3" /> Best Session
+                        <Trophy className="h-3 w-3" /> {t.bestSession}
                     </h3>
                     <div className="text-xl font-mono font-bold text-foreground/30">
                         {bestSession.toString().padStart(3, '0')}
@@ -325,163 +393,170 @@ export const LetterLabPlayPage: React.FC = () => {
                 </div>
             </aside>
 
-            {/* CENTER Board */}
-            <main className="flex-1 relative flex flex-col items-center p-8 overflow-hidden z-10" ref={boardRef}>
-                {/* Status Message Overlay (Centered) */}
-                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
-                    {statusMessage.text && (
-                        <div className={`px-6 py-2 rounded-full text-xs font-black tracking-[0.4em] uppercase shadow-2xl animate-in zoom-in slide-in-from-top-4 duration-300 ${statusMessage.type === 'success' ? 'bg-accent text-background border-glow' : 'bg-red-500/90 text-white animate-shake'
-                            }`}>
-                            {statusMessage.text}
+            {/* CENTER Board Area (Constrained like Hexline) */}
+            <main className="flex-1 relative flex items-center justify-center p-4 lg:p-8 overflow-hidden z-10">
+                <div
+                    ref={boardRef}
+                    className="relative w-full h-full max-w-[900px] max-h-[560px] aspect-[16/10] bg-foreground/[0.01] rounded-3xl border border-foreground/5 shadow-2xl overflow-hidden"
+                >
+                    {/* Status Message Overlay (Centered in Board) */}
+                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+                        {statusMessage.text && (
+                            <div className={`px-6 py-2 rounded-full text-xs font-black tracking-[0.4em] uppercase shadow-2xl animate-in zoom-in slide-in-from-top-4 duration-300 ${statusMessage.type === 'success' ? 'bg-accent text-background border-glow' : 'bg-red-500/90 text-white animate-shake'
+                                }`}>
+                                {statusMessage.text === 'LOCKED' ? t.locked : statusMessage.text === 'NOT A WORD' ? t.notAWord : statusMessage.text}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="h-full flex flex-col items-center p-8">
+                        {/* Rail Area */}
+                        <div className="mt-4 w-full max-w-xl text-center">
+                            {/* Goal Header */}
+                            <div className="mb-4">
+                                <h2 className="text-[10px] font-black tracking-[0.4em] uppercase text-foreground/40 mb-1">{t.buildWordTitle}</h2>
+                                <p className="text-[9px] font-bold tracking-[0.1em] text-foreground/20 uppercase italic">
+                                    {pickedTileId ? (language === 'EN' ? 'Tap the rail to drop' : 'Tryck på raden för att släppa') : t.hint}
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={handleRailClick}
+                                className={`w-full h-24 flex items-center justify-center gap-2 border-b-2 border-foreground/5 relative group/rail transition-colors ${pickedTileId ? 'border-accent/40 bg-accent/[0.02]' : 'hover:bg-foreground/[0.01]'}`}
+                            >
+                                {railLetters.length === 0 && !pickedTileId && (
+                                    <span className="text-[10px] font-bold text-foreground/5 uppercase tracking-[0.6em] group-hover/rail:text-foreground/10 transition-colors">
+                                        {t.emptyRail}
+                                    </span>
+                                )}
+                                {railLetters.map((tile, i) => (
+                                    <div
+                                        key={`${tile.id}-${i}`}
+                                        onClick={(e) => { e.stopPropagation(); removeFromRail(i); }}
+                                        className="w-14 h-14 rounded-xl bg-foreground text-background font-mono text-2xl font-bold flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 animate-in slide-in-from-bottom-2"
+                                    >
+                                        {tile.char}
+                                    </div>
+                                ))}
+                                {/* Ghost Slot */}
+                                {pickedTileId && (
+                                    <div className="w-14 h-14 rounded-xl border-2 border-dashed border-accent/40 flex items-center justify-center font-mono text-2xl font-bold text-accent/40 animate-pulse">
+                                        {tiles.find(t => t.id === pickedTileId)?.char}
+                                    </div>
+                                )}
+                                <div className={`absolute -bottom-1 left-0 right-0 h-1 transition-colors ${pickedTileId ? 'bg-accent' : 'bg-foreground/5'}`} />
+                            </button>
+
+                            {/* Current Word Preview */}
+                            <div className="mt-4 h-4 flex items-center justify-center gap-4 text-[10px] font-black tracking-[0.4em] uppercase">
+                                {railLetters.length > 0 && (
+                                    <>
+                                        <span className="text-foreground/20">{t.currentWord}</span>
+                                        <span className="text-foreground/60">{railLetters.map(t => t.char).join(' ')}</span>
+                                        <button
+                                            onClick={validateWord}
+                                            className="ml-4 px-4 py-1 rounded-full bg-foreground/5 hover:bg-accent hover:text-background transition-all text-[8px] tracking-[0.2em]"
+                                        >
+                                            {t.checkWord}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Play Board */}
+                        <div className="flex-1 w-full relative mt-8">
+                            {tiles.map(tile => (
+                                <button
+                                    key={tile.id}
+                                    ref={el => { if (el) tileElements.current.set(tile.id, el); }}
+                                    onClick={() => handlePickTile(tile.id)}
+                                    className={`letter-tile absolute w-14 h-14 rounded-2xl flex items-center justify-center font-mono text-2xl font-black transition-all duration-300 ${pickedTileId === tile.id
+                                        ? 'bg-accent text-background scale-125 z-50 shadow-[0_0_30px_rgba(255,165,0,0.4)] ring-4 ring-accent/20 rotate-0'
+                                        : 'bg-foreground/[0.05] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95'
+                                        }`}
+                                >
+                                    {tile.char}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Start Overlay */}
+                    {gameState === 'IDLE' && (
+                        <div className="absolute inset-0 z-[60] flex items-center justify-center bg-background/80 backdrop-blur-md animate-in fade-in duration-500">
+                            <button
+                                onClick={startGame}
+                                className="group flex flex-col items-center gap-4 p-12 transition-all hover:scale-105"
+                            >
+                                <div className="relative">
+                                    <div className="absolute inset-0 blur-3xl bg-accent/20 rounded-full group-hover:bg-accent/30 transition-colors" />
+                                    <Baby className="h-16 w-16 text-foreground relative z-10" />
+                                </div>
+                                <div className="text-center">
+                                    <h2 className="text-2xl font-bold tracking-[0.3em] uppercase mb-2">Letter Lab</h2>
+                                    <p className="text-[10px] font-black tracking-[0.5em] uppercase text-foreground/40 group-hover:text-accent group-hover:tracking-[0.8em] transition-all duration-700">
+                                        {t.tapToStart}
+                                    </p>
+                                </div>
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Onboarding Overlay (Subtle) */}
+                    {gameState === 'PLAYING' && showOnboarding && (
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                            <div className="bg-foreground/5 backdrop-blur-xl border border-foreground/10 rounded-2xl p-6 shadow-2xl flex items-center gap-6">
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="p-3 rounded-full bg-accent/10 text-accent">
+                                        <MousePointer2 className="h-5 w-5" />
+                                    </div>
+                                    <span className="text-[9px] font-bold uppercase tracking-widest text-foreground/40">{t.helpPick}</span>
+                                </div>
+                                <div className="h-4 w-px bg-foreground/10" />
+                                <div className="flex flex-col items-center gap-2">
+                                    <div className="p-3 rounded-full bg-purple-500/10 text-purple-500">
+                                        <Sparkles className="h-5 w-5" />
+                                    </div>
+                                    <span className="text-[9px] font-bold uppercase tracking-widest text-foreground/40">{t.helpBuild}</span>
+                                </div>
+                                <div className="ml-4 max-w-[120px]">
+                                    <p className="text-[10px] font-medium leading-relaxed text-foreground/60 italic">
+                                        "{t.helpText}"
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
-
-                {/* Rail Area */}
-                <div className="mt-12 w-full max-w-2xl text-center">
-                    {/* Goal Header */}
-                    <div className="mb-4">
-                        <h2 className="text-[10px] font-black tracking-[0.4em] uppercase text-foreground/40 mb-1">Build a Word</h2>
-                        <p className="text-[9px] font-bold tracking-[0.1em] text-foreground/20 uppercase italic">
-                            {pickedTileId ? 'Tap the rail to drop' : 'Tap a letter → tap the rail to place it.'}
-                        </p>
-                    </div>
-
-                    <button
-                        onClick={handleRailClick}
-                        className={`w-full h-32 flex items-center justify-center gap-2 border-b-2 border-foreground/5 relative group/rail transition-colors ${pickedTileId ? 'border-accent/40 bg-accent/[0.02]' : 'hover:bg-foreground/[0.01]'}`}
-                    >
-                        {railLetters.length === 0 && !pickedTileId && (
-                            <span className="text-[10px] font-bold text-foreground/5 uppercase tracking-[0.6em] group-hover/rail:text-foreground/10 transition-colors">
-                                EMPTY RAIL
-                            </span>
-                        )}
-                        {railLetters.map((tile, i) => (
-                            <div
-                                key={`${tile.id}-${i}`}
-                                onClick={(e) => { e.stopPropagation(); removeFromRail(i); }}
-                                className="w-16 h-16 rounded-xl bg-foreground text-background font-mono text-3xl font-bold flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 animate-in slide-in-from-bottom-2"
-                            >
-                                {tile.char}
-                            </div>
-                        ))}
-                        {/* Ghost Slot */}
-                        {pickedTileId && (
-                            <div className="w-16 h-16 rounded-xl border-2 border-dashed border-accent/40 flex items-center justify-center font-mono text-3xl font-bold text-accent/40 animate-pulse">
-                                {tiles.find(t => t.id === pickedTileId)?.char}
-                            </div>
-                        )}
-                        <div className={`absolute -bottom-1 left-0 right-0 h-1 transition-colors ${pickedTileId ? 'bg-accent' : 'bg-foreground/5'}`} />
-                    </button>
-
-                    {/* Current Word Preview */}
-                    <div className="mt-4 h-4 flex items-center justify-center gap-4 text-[10px] font-black tracking-[0.4em] uppercase">
-                        {railLetters.length > 0 && (
-                            <>
-                                <span className="text-foreground/20">Current:</span>
-                                <span className="text-foreground/60">{railLetters.map(t => t.char).join(' ')}</span>
-                                <button
-                                    onClick={validateWord}
-                                    className="ml-4 px-4 py-1 rounded-full bg-foreground/5 hover:bg-accent hover:text-background transition-all text-[8px] tracking-[0.2em]"
-                                >
-                                    Check Word
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </div>
-
-                {/* Drifting Board */}
-                <div className="flex-1 w-full relative">
-                    {tiles.map(tile => (
-                        <button
-                            key={tile.id}
-                            ref={el => { if (el) tileElements.current.set(tile.id, el); }}
-                            onClick={() => handlePickTile(tile.id)}
-                            className={`letter-tile absolute w-14 h-14 rounded-2xl flex items-center justify-center font-mono text-2xl font-black transition-all duration-300 ${pickedTileId === tile.id
-                                ? 'bg-accent text-background scale-125 z-50 shadow-[0_0_30px_rgba(255,165,0,0.4)] ring-4 ring-accent/20 rotate-0'
-                                : 'bg-foreground/[0.05] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95'
-                                }`}
-                        >
-                            {tile.char}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Start Overlay */}
-                {gameState === 'IDLE' && (
-                    <div className="absolute inset-0 z-[60] flex items-center justify-center bg-background/80 backdrop-blur-md animate-in fade-in duration-500">
-                        <button
-                            onClick={startGame}
-                            className="group flex flex-col items-center gap-4 p-12 transition-all hover:scale-105"
-                        >
-                            <div className="relative">
-                                <div className="absolute inset-0 blur-3xl bg-accent/20 rounded-full group-hover:bg-accent/30 transition-colors" />
-                                <Baby className="h-16 w-16 text-foreground relative z-10" />
-                            </div>
-                            <div className="text-center">
-                                <h2 className="text-2xl font-bold tracking-[0.3em] uppercase mb-2">Letter Lab</h2>
-                                <p className="text-[10px] font-black tracking-[0.5em] uppercase text-foreground/40 group-hover:text-accent group-hover:tracking-[0.8em] transition-all duration-700">
-                                    Tap to Start
-                                </p>
-                            </div>
-                        </button>
-                    </div>
-                )}
-
-                {/* Onboarding Overlay (Subtle) */}
-                {gameState === 'PLAYING' && showOnboarding && (
-                    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                        <div className="bg-foreground/5 backdrop-blur-xl border border-foreground/10 rounded-2xl p-6 shadow-2xl flex items-center gap-6">
-                            <div className="flex flex-col items-center gap-2">
-                                <div className="p-3 rounded-full bg-accent/10 text-accent">
-                                    <MousePointer2 className="h-5 w-5" />
-                                </div>
-                                <span className="text-[9px] font-bold uppercase tracking-widest text-foreground/40">1. Pick</span>
-                            </div>
-                            <div className="h-4 w-px bg-foreground/10" />
-                            <div className="flex flex-col items-center gap-2">
-                                <div className="p-3 rounded-full bg-purple-500/10 text-purple-500">
-                                    <Sparkles className="h-5 w-5" />
-                                </div>
-                                <span className="text-[9px] font-bold uppercase tracking-widest text-foreground/40">2. Build</span>
-                            </div>
-                            <div className="ml-4 max-w-[120px]">
-                                <p className="text-[10px] font-medium leading-relaxed text-foreground/60 italic">
-                                    "Tap a floating letter to grab it."
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </main>
 
             {/* RIGHT Panel (Controls) */}
             <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                        <Settings className="h-3 w-3" /> Controls
+                        <Settings className="h-3 w-3" /> {t.controls}
                     </h3>
                     <ul className="space-y-3 text-[10px] font-medium text-foreground/60 tracking-wider">
-                        <li className="flex items-center gap-2"><Check className="h-3 w-3 text-accent" /> Tap a letter to pick</li>
-                        <li className="flex items-center gap-2"><Check className="h-3 w-3 text-accent" /> Tap rail to drop</li>
-                        <li className="flex items-center gap-2"><Check className="h-3 w-3 text-accent" /> Form valid words</li>
+                        <li className="flex items-center gap-2"><Check className="h-3 w-3 text-accent" /> {t.c1}</li>
+                        <li className="flex items-center gap-2"><Check className="h-3 w-3 text-accent" /> {t.c2}</li>
+                        <li className="flex items-center gap-2"><Check className="h-3 w-3 text-accent" /> {t.c3}</li>
                     </ul>
                 </div>
 
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                        Rules
+                        {t.rules}
                     </h3>
                     <p className="text-[10px] italic leading-relaxed text-foreground/30">
-                        Letters appear. Find connections. Lock the sequence.
+                        {t.r1}
                     </p>
                 </div>
 
                 <div className="mt-auto space-y-6">
                     <div>
                         <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-foreground/20 mb-3">
-                            <span>Language</span>
+                            <span>{language === 'EN' ? 'Language' : 'Språk'}</span>
                             <span className="text-accent">{language}</span>
                         </div>
                         <div className="flex gap-2">
@@ -504,14 +579,14 @@ export const LetterLabPlayPage: React.FC = () => {
                         onClick={openParentCheck}
                         className="w-full py-3 rounded-lg border border-foreground/5 bg-foreground/[0.05] hover:bg-foreground/[0.08] transition-all flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-foreground/40 hover:text-foreground"
                     >
-                        <Lock className="h-3 w-3" /> Parent Mode
+                        <Lock className="h-3 w-3" /> {t.parentMode}
                     </button>
 
                     <Link
                         to="/kids"
                         className="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-foreground/20 hover:text-foreground transition-colors"
                     >
-                        <ArrowLeft className="h-3 w-3" /> Exit Lab
+                        <ArrowLeft className="h-3 w-3" /> {t.exit}
                     </Link>
                 </div>
             </aside>
@@ -520,7 +595,7 @@ export const LetterLabPlayPage: React.FC = () => {
             {showParentCheck && (
                 <div className="absolute inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-xl animate-in fade-in duration-300">
                     <div className={`p-12 text-center transition-transform ${parentCheckError ? 'animate-shake' : ''}`}>
-                        <h3 className="text-sm font-bold tracking-[0.4em] uppercase mb-8 text-foreground/40">Parent Check</h3>
+                        <h3 className="text-sm font-bold tracking-[0.4em] uppercase mb-8 text-foreground/40">{t.parentCheck}</h3>
                         <div className="text-4xl font-mono font-bold mb-8">
                             {mathQuestion.a} + {mathQuestion.b} = ?
                         </div>
@@ -544,7 +619,7 @@ export const LetterLabPlayPage: React.FC = () => {
                             onClick={() => setShowParentCheck(false)}
                             className="mt-12 text-[10px] font-bold uppercase tracking-widest text-foreground/20 hover:text-foreground"
                         >
-                            Cancel
+                            {t.cancel}
                         </button>
                     </div>
                 </div>
@@ -554,7 +629,7 @@ export const LetterLabPlayPage: React.FC = () => {
                 <div className="absolute inset-0 z-[100] flex items-center justify-center bg-background/98 backdrop-blur-2xl animate-in zoom-in duration-500">
                     <div className="max-w-xl w-full p-12 overflow-y-auto max-h-[80vh]">
                         <div className="flex items-center justify-between mb-12">
-                            <h3 className="text-sm font-black tracking-[0.4em] uppercase">Parent Control</h3>
+                            <h3 className="text-sm font-black tracking-[0.4em] uppercase">{t.parentTitle}</h3>
                             <button onClick={() => setShowParentPanel(false)}>
                                 <X className="h-5 w-5 text-foreground/40 hover:text-foreground" />
                             </button>
@@ -562,7 +637,7 @@ export const LetterLabPlayPage: React.FC = () => {
 
                         {/* Language */}
                         <section className="mb-12">
-                            <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">Active Language</h4>
+                            <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">{t.activeLang}</h4>
                             <div className="flex gap-4">
                                 {(['EN', 'SV'] as Language[]).map(lang => (
                                     <button
@@ -579,7 +654,7 @@ export const LetterLabPlayPage: React.FC = () => {
 
                         {/* Custom Words */}
                         <section className="mb-8">
-                            <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">Custom Words ({language})</h4>
+                            <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">{t.customWords} ({language})</h4>
                             <div className="space-y-2 mb-8 max-h-48 overflow-y-auto pr-4">
                                 {customWords[language].map(word => (
                                     <div key={word} className="flex items-center justify-between p-3 rounded-lg bg-foreground/5 group">
@@ -590,14 +665,14 @@ export const LetterLabPlayPage: React.FC = () => {
                                     </div>
                                 ))}
                                 {customWords[language].length === 0 && (
-                                    <p className="text-[10px] italic text-foreground/20">No custom words added.</p>
+                                    <p className="text-[10px] italic text-foreground/20">{language === 'EN' ? 'No custom words added.' : 'Inga egna ord tillagda.'}</p>
                                 )}
                             </div>
                             <div className="flex gap-2">
                                 <input
                                     id="addWordInput"
                                     type="text"
-                                    placeholder="Add word..."
+                                    placeholder={t.addWord}
                                     className="flex-1 bg-foreground/5 rounded-lg px-4 py-3 text-xs focus:outline-none focus:ring-1 ring-accent/50"
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -614,13 +689,13 @@ export const LetterLabPlayPage: React.FC = () => {
                                     }}
                                     className="px-6 rounded-lg bg-foreground text-background text-[10px] font-black uppercase tracking-widest"
                                 >
-                                    Add
+                                    {t.add}
                                 </button>
                             </div>
                         </section>
 
                         <div className="text-[10px] leading-relaxed text-foreground/20 italic">
-                            Parent Mode allows customization of the dictionary. Changes persist in local storage.
+                            {t.parentHint}
                         </div>
                     </div>
                 </div>
