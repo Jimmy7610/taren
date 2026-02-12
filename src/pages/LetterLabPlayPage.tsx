@@ -58,7 +58,9 @@ const STRINGS = {
         add: "Add",
         addWord: "Add word...",
         parentCheck: "Parent Check",
-        cancel: "Cancel"
+        cancel: "Cancel",
+        wordList: "WORD LIBRARY",
+        includedWords: "Included Words"
     },
     SV: {
         buildWordTitle: "BYGG ETT ORD",
@@ -89,7 +91,9 @@ const STRINGS = {
         add: "Lägg till",
         addWord: "Lägg till ord...",
         parentCheck: "Föräldrakontroll",
-        cancel: "Avbryt"
+        cancel: "Avbryt",
+        wordList: "ORDLISTA",
+        includedWords: "Inkluderade Ord"
     }
 };
 
@@ -140,6 +144,16 @@ export const LetterLabPlayPage: React.FC = () => {
     const [parentCheckError, setParentCheckError] = useState(false);
 
     const t = STRINGS[language];
+
+    // Word sorting and memoization
+    const sortedBaseWords = useMemo(() => {
+        const dict = language === 'EN' ? DICTIONARY_EN : DICTIONARY_SV;
+        return [...dict].sort((a, b) => a.localeCompare(b, language === 'SV' ? 'sv' : 'en'));
+    }, [language]);
+
+    const sortedCustomWords = useMemo(() => {
+        return [...customWords[language]].sort((a, b) => a.localeCompare(b, language === 'SV' ? 'sv' : 'en'));
+    }, [customWords, language]);
 
     // 2. TRAY LOGIC
     const getTrayPosition = useCallback((index: number, total: number) => {
@@ -512,42 +526,69 @@ export const LetterLabPlayPage: React.FC = () => {
             )}
             {showParentPanel && (
                 <div className="absolute inset-0 z-[100] flex items-center justify-center bg-background/98 backdrop-blur-2xl animate-in zoom-in duration-500">
-                    <div className="max-w-xl w-full p-12 overflow-y-auto max-h-[80vh]">
-                        <div className="flex items-center justify-between mb-12">
+                    <div className="max-w-xl w-full p-12 overflow-hidden flex flex-col max-h-[90vh]">
+                        <div className="flex items-center justify-between mb-8 flex-shrink-0">
                             <h3 className="text-sm font-black tracking-[0.4em] uppercase">{t.parentTitle}</h3>
                             <button onClick={() => setShowParentPanel(false)}><X className="h-5 w-5 text-foreground/40 hover:text-foreground" /></button>
                         </div>
-                        <section className="mb-12">
-                            <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">{t.activeLang}</h4>
-                            <div className="flex gap-4">
-                                {(['EN', 'SV'] as Language[]).map(lang => (
-                                    <button
-                                        key={lang}
-                                        onClick={() => setLanguage(lang)}
-                                        className={`px-8 py-3 rounded-xl border-2 transition-all font-bold tracking-widest ${language === lang ? 'border-accent text-accent' : 'border-foreground/5 text-foreground/20'}`}
-                                    >
-                                        {lang}
-                                    </button>
-                                ))}
-                            </div>
-                        </section>
-                        <section className="mb-8">
-                            <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">{t.customWords} ({language})</h4>
-                            <div className="space-y-2 mb-8 max-h-48 overflow-y-auto pr-4">
-                                {customWords[language].map(word => (
-                                    <div key={word} className="flex items-center justify-between p-3 rounded-lg bg-foreground/5 group">
-                                        <span className="font-mono font-bold tracking-widest">{word}</span>
-                                        <button onClick={() => removeCustomWord(word)} className="opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-4 w-4 text-red-500/60 hover:text-red-500" /></button>
+
+                        <div className="flex-1 overflow-y-auto pr-6 space-y-12 pb-8 scrollbar-hide">
+                            <section>
+                                <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">{t.activeLang}</h4>
+                                <div className="flex gap-4">
+                                    {(['EN', 'SV'] as Language[]).map(lang => (
+                                        <button
+                                            key={lang}
+                                            onClick={() => setLanguage(lang)}
+                                            className={`px-8 py-3 rounded-xl border-2 transition-all font-bold tracking-widest ${language === lang ? 'border-accent text-accent' : 'border-foreground/5 text-foreground/20'}`}
+                                        >
+                                            {lang}
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section>
+                                <h4 className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-6">{t.wordList} ({language})</h4>
+
+                                <div className="space-y-10">
+                                    {/* Custom Words Section */}
+                                    <div>
+                                        <h5 className="text-[9px] font-bold text-accent uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                            <Sparkles className="h-3 w-3" /> {t.customWords}
+                                        </h5>
+                                        <div className="grid grid-cols-2 gap-2 mb-4">
+                                            {sortedCustomWords.map(word => (
+                                                <div key={word} className="flex items-center justify-between p-2 px-3 rounded bg-foreground/5 group border border-foreground/5">
+                                                    <span className="font-mono text-[10px] font-bold tracking-[0.2em]">{word}</span>
+                                                    <button onClick={() => removeCustomWord(word)} className="opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3.5 w-3.5 text-red-500/60 hover:text-red-500" /></button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {sortedCustomWords.length === 0 && <p className="text-[10px] italic text-foreground/20 mb-4">{language === 'EN' ? 'No custom words added.' : 'Inga egna ord tillagda.'}</p>}
+
+                                        <div className="flex gap-2">
+                                            <input id="addWordInput" type="text" placeholder={t.addWord} className="flex-1 bg-foreground/5 rounded px-3 py-2 text-[10px] focus:outline-none focus:ring-1 ring-accent/50" onKeyDown={(e) => e.key === 'Enter' && (addCustomWord((e.target as HTMLInputElement).value), (e.target as HTMLInputElement).value = '')} />
+                                            <button onClick={() => { const el = document.getElementById('addWordInput') as HTMLInputElement; addCustomWord(el.value); el.value = ''; }} className="px-5 rounded bg-foreground text-background text-[9px] font-black uppercase tracking-widest">{t.add}</button>
+                                        </div>
                                     </div>
-                                ))}
-                                {customWords[language].length === 0 && <p className="text-[10px] italic text-foreground/20">{language === 'EN' ? 'No custom words added.' : 'Inga egna ord tillagda.'}</p>}
-                            </div>
-                            <div className="flex gap-2">
-                                <input id="addWordInput" type="text" placeholder={t.addWord} className="flex-1 bg-foreground/5 rounded-lg px-4 py-3 text-xs focus:outline-none focus:ring-1 ring-accent/50" onKeyDown={(e) => e.key === 'Enter' && (addCustomWord((e.target as HTMLInputElement).value), (e.target as HTMLInputElement).value = '')} />
-                                <button onClick={() => { const el = document.getElementById('addWordInput') as HTMLInputElement; addCustomWord(el.value); el.value = ''; }} className="px-6 rounded-lg bg-foreground text-background text-[10px] font-black uppercase tracking-widest">{t.add}</button>
-                            </div>
-                        </section>
-                        <div className="text-[10px] leading-relaxed text-foreground/20 italic">{t.parentHint}</div>
+
+                                    {/* Included Words Section */}
+                                    <div>
+                                        <h5 className="text-[9px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">{t.includedWords}</h5>
+                                        <div className="grid grid-cols-3 gap-2 opacity-60">
+                                            {sortedBaseWords.map(word => (
+                                                <div key={word} className="p-2 rounded bg-foreground/[0.02] border border-foreground/5 text-center">
+                                                    <span className="font-mono text-[9px] font-medium tracking-[0.2em] text-foreground/30">{word}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div className="text-[10px] leading-relaxed text-foreground/20 italic mt-8 border-t border-foreground/5 pt-8">{t.parentHint}</div>
+                        </div>
                     </div>
                 </div>
             )}
