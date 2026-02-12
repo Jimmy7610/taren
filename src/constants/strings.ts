@@ -8,6 +8,7 @@ export const strings = {
     routes: {
         games: "Games",
         experiments: "Experiments",
+        kids: "Kids",
         daily: "Daily",
         portfolio: "Portfolio",
         code: "Code",
@@ -28,6 +29,28 @@ export const strings = {
             dormant: {
                 label: "Coming later",
                 description: "A dormant experiment yet to be unveiled…"
+            }
+        },
+        kids: {
+            index: {
+                title: "KIDS",
+                letterLab: {
+                    title: "LETTER LAB",
+                    description: "Build words. Discover letters.",
+                    cta: "Enter Lab"
+                },
+                numberLab: {
+                    title: "NUMBER LAB",
+                    description: "Small numbers. Quiet confidence.",
+                },
+                patternLab: {
+                    title: "PATTERN LAB",
+                    description: "Sequences waiting to be found.",
+                },
+                shapeLab: {
+                    title: "SHAPE LAB",
+                    description: "Match forms. Learn relationships.",
+                }
             }
         }
     },

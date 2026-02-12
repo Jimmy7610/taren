@@ -8,7 +8,8 @@ export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) 
     const isFullscreenRoute = location.pathname.endsWith('/play') ||
         location.pathname.startsWith('/games/snake') && location.pathname.includes('/play') ||
         location.pathname.startsWith('/games/2048') && location.pathname.includes('/play') ||
-        location.pathname.startsWith('/games/hexline') && location.pathname.includes('/play');
+        location.pathname.startsWith('/games/hexline') && location.pathname.includes('/play') ||
+        location.pathname.startsWith('/kids/letter-lab') && location.pathname.includes('/play');
 
     React.useEffect(() => {
         // Track page view (telemetry.ts handles filtering /api and duplicates)

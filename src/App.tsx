@@ -18,6 +18,9 @@ import { OrbitInkPage } from './pages/OrbitInkPage';
 import { OrbitInkPlayPage } from './pages/OrbitInkPlayPage';
 import { SignalGardenPage } from './pages/SignalGardenPage';
 import { SignalGardenPlayPage } from './pages/SignalGardenPlayPage';
+import { KidsHubPage } from './pages/KidsHubPage';
+import { LetterLabIntroPage } from './pages/LetterLabIntroPage';
+import { LetterLabPlayPage } from './pages/LetterLabPlayPage';
 import { DailyPage } from './pages/DailyPage';
 import { DailyTodayPage } from './pages/DailyTodayPage';
 import { strings } from './constants/strings';
@@ -46,6 +49,9 @@ function App() {
                         <Route path="/experiments/orbit-ink/play" element={<OrbitInkPlayPage />} />
                         <Route path="/experiments/signal-garden" element={<SignalGardenPage />} />
                         <Route path="/experiments/signal-garden/play" element={<SignalGardenPlayPage />} />
+                        <Route path="/kids" element={<KidsHubPage />} />
+                        <Route path="/kids/letter-lab" element={<LetterLabIntroPage />} />
+                        <Route path="/kids/letter-lab/play" element={<LetterLabPlayPage />} />
                         <Route path="/daily" element={<DailyPage />} />
                         <Route path="/daily/today" element={<DailyTodayPage />} />
                         <Route path="/portfolio" element={<PlaceholderPage title={strings.routes.portfolio} />} />
