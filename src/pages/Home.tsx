@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Gamepad2, TestTube, Calendar, Briefcase, Code, Baby } from 'lucide-react';
 import { strings } from '../constants/strings';
+import { BUILD_COUNTER } from '../constants/build';
 import kidsPlaceholder from '../assets/images/kids/kids-placeholder.svg';
 
 export const Home: React.FC = () => {
     // SEO & Transitions
     useEffect(() => {
-        document.title = `TAREN | Digital Playground (v58)`;
+        document.title = `TAREN | Digital Playground (v${BUILD_COUNTER})`;
 
         const updateMeta = (name: string, content: string, isProperty = false) => {
             const attr = isProperty ? 'property' : 'name';
