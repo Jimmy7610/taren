@@ -327,7 +327,7 @@ export const LetterLabPlayPage: React.FC = () => {
     return (
         <div className="relative flex h-[calc(100vh-64px)] min-h-0 w-full overflow-hidden bg-background text-foreground select-none">
             {/* LEFT Panel */}
-            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20 overflow-hidden">
+            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-12 z-20 overflow-hidden -translate-y-6">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">{t.wordsBuilt}</h3>
                     <div className="text-5xl font-mono font-bold tabular-nums text-foreground">{wordsBuilt.toString().padStart(3, '0')}</div>
@@ -341,7 +341,7 @@ export const LetterLabPlayPage: React.FC = () => {
             </aside>
 
             {/* CENTER Arena */}
-            <main className="flex-1 relative flex items-center justify-center p-4 lg:p-8 overflow-hidden z-10">
+            <main className="flex-1 relative flex items-center justify-center p-4 lg:p-8 overflow-hidden z-10 -translate-y-12">
                 <div
                     ref={boardRef}
                     className="relative w-full h-full max-w-[1000px] max-h-[560px] aspect-[16/10] bg-foreground/[0.01] rounded-3xl border border-foreground/5 shadow-2xl overflow-hidden"
@@ -456,7 +456,7 @@ export const LetterLabPlayPage: React.FC = () => {
             </main>
 
             {/* RIGHT Panel */}
-            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20 overflow-hidden">
+            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-12 z-20 overflow-hidden -translate-y-6">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><Settings className="h-3 w-3" /> {t.controls}</h3>
                     <ul className="space-y-3 text-[10px] font-medium text-foreground/60 tracking-wider">
