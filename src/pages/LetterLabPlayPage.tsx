@@ -2,6 +2,11 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom';
 import { Trophy, Settings, Baby, ArrowLeft, X, Check, Lock, MousePointer2, Sparkles } from 'lucide-react';
 
+// @ts-ignore
+import wordsEnRaw from './words/words_en.txt?raw';
+// @ts-ignore
+import wordsSvRaw from './words/words_sv.txt?raw';
+
 // --- Types ---
 type Language = 'EN' | 'SV';
 type GameState = 'IDLE' | 'PLAYING';
@@ -19,8 +24,8 @@ interface LetterTileData {
 const LETTERS_EN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const LETTERS_SV = "ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ";
 
-const DICTIONARY_EN = ["CAT", "DOG", "SUN", "MOON", "BIRD", "FISH", "TREE", "BOOK", "PLAY", "LOVE", "KIDS", "STAR", "BALL", "CAKE", "MILK"];
-const DICTIONARY_SV = ["HEJ", "SOL", "MÅNE", "BOK", "FISK", "HUND", "KATT", "FÅGEL", "GÅVA", "LEKA", "BARN", "STJÄRNA", "BOLL", "KAKA", "MJÖLK"];
+const DICTIONARY_EN = wordsEnRaw.split(/\r?\n/).map((w: string) => w.trim().toUpperCase()).filter(Boolean);
+const DICTIONARY_SV = wordsSvRaw.split(/\r?\n/).map((w: string) => w.trim().toUpperCase()).filter(Boolean);
 
 const ARENA_WIDTH = 1000;
 const ARENA_HEIGHT = 625; // 16:10 ratio
