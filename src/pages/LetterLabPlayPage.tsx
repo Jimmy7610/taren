@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Trophy, Settings, Languages, Baby, ArrowLeft, X, Check, Lock } from 'lucide-react';
+import { Trophy, Settings, Languages, Baby, ArrowLeft, X, Check, Lock, MousePointer2, Sparkles } from 'lucide-react';
 import { strings } from '../constants/strings';
 
 // --- Types ---
 type Language = 'EN' | 'SV';
 type GameState = 'IDLE' | 'PLAYING';
 
-interface LetterTile {
+interface LetterTileData {
     id: string;
     char: string;
+}
+
+interface PhysicsState {
     x: number;
     y: number;
-    speedX: number;
-    speedY: number;
+    vx: number;
+    vy: number;
     rotation: number;
 }
 
@@ -43,11 +46,14 @@ export const LetterLabPlayPage: React.FC = () => {
         return { EN: en, SV: sv };
     });
 
+    // Onboarding state
+    const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem('taren:kids:letter-lab:onboardDismissed'));
+
     // Game Objects
-    const [tiles, setTiles] = useState<LetterTile[]>([]);
-    const [railLetters, setRailLetters] = useState<LetterTile[]>([]);
-    const [draggedTileId, setDraggedTileId] = useState<string | null>(null);
+    const [tiles, setTiles] = useState<LetterTileData[]>([]);
+    const [railLetters, setRailLetters] = useState<LetterTileData[]>([]);
     const [pickedTileId, setPickedTileId] = useState<string | null>(null);
+    const [statusMessage, setStatusMessage] = useState<{ text: string, type: 'error' | 'success' | 'info' | null }>({ text: '', type: null });
 
     // Overlays
     const [showParentCheck, setShowParentCheck] = useState(false);
@@ -56,83 +62,124 @@ export const LetterLabPlayPage: React.FC = () => {
     const [mathInput, setMathInput] = useState('');
     const [parentCheckError, setParentCheckError] = useState(false);
 
-    // Refs
-    const boardRef = useRef<HTMLDivElement>(null);
+    // Physics & SIM State (Mutable refs for performance)
+    const simulationData = useRef<Map<string, PhysicsState>>(new Map());
+    const tileElements = useRef<Map<string, HTMLButtonElement>>(new Map());
     const requestRef = useRef<number>();
+    const lastTimeRef = useRef<number>(0);
+    const boardRef = useRef<HTMLDivElement>(null);
 
-    // 2. EFFECTS
+    // 2. PHYSICS ENGINE (Direct DOM Updates)
+    const updatePhysics = useCallback((time: number) => {
+        if (gameState !== 'PLAYING' || document.hidden) {
+            lastTimeRef.current = time;
+            requestRef.current = requestAnimationFrame(updatePhysics);
+            return;
+        }
+
+        const dt = Math.min((time - lastTimeRef.current) / 1000, 0.1); // Clamp dt to 100ms
+        lastTimeRef.current = time;
+
+        simulationData.current.forEach((physics, id) => {
+            // Skip picked tile from drifting physics
+            if (id === pickedTileId) return;
+
+            let { x, y, vx, vy, rotation } = physics;
+
+            // Integrity check for NaNs
+            if (isNaN(x)) x = 50; if (isNaN(y)) y = 50;
+
+            x += vx * dt * 100; // Multiply for visible speed
+            y += vy * dt * 100;
+
+            // Corrected Bounce logic with buffer
+            const buffer = 8;
+            if (x < buffer) { x = buffer; vx = Math.abs(vx); }
+            if (x > 100 - buffer) { x = 100 - buffer; vx = -Math.abs(vx); }
+            if (y < buffer) { y = buffer; vy = Math.abs(vy); }
+            if (y > 100 - buffer) { y = 100 - buffer; vy = -Math.abs(vy); }
+
+            rotation += vx * 20 * dt;
+
+            // Store back
+            physics.x = x;
+            physics.y = y;
+            physics.vx = vx;
+            physics.vy = vy;
+            physics.rotation = rotation;
+
+            // Direct DOM update
+            const el = tileElements.current.get(id);
+            if (el) {
+                // translate3d for GPU acceleration, will-change: transform added in CSS
+                el.style.transform = `translate3d(${x}%, ${y}%, 0) translate(-50%, -50%) rotate(${rotation}deg)`;
+            }
+        });
+
+        requestRef.current = requestAnimationFrame(updatePhysics);
+    }, [gameState, pickedTileId]);
+
+    useEffect(() => {
+        lastTimeRef.current = performance.now();
+        requestRef.current = requestAnimationFrame(updatePhysics);
+        return () => { if (requestRef.current) cancelAnimationFrame(requestRef.current); };
+    }, [updatePhysics]);
+
+    // Handle visibility pause
+    useEffect(() => {
+        const handleVisibility = () => { if (document.hidden) lastTimeRef.current = performance.now(); };
+        document.addEventListener('visibilitychange', handleVisibility);
+        return () => document.removeEventListener('visibilitychange', handleVisibility);
+    }, []);
+
+    // 3. GAME LOGIC
     // Save preferences
     useEffect(() => { localStorage.setItem('kids_lang', language); }, [language]);
     useEffect(() => { localStorage.setItem('kids_best_session', bestSession.toString()); }, [bestSession]);
     useEffect(() => { localStorage.setItem('kids_words_en', JSON.stringify(customWords.EN)); }, [customWords.EN]);
     useEffect(() => { localStorage.setItem('kids_words_sv', JSON.stringify(customWords.SV)); }, [customWords.SV]);
 
-    // Animation loop for drifting letters
-    const updateTiles = useCallback(() => {
-        if (gameState !== 'PLAYING') return;
+    const spawnTile = useCallback(() => {
+        const id = Math.random().toString(36).substr(2, 9);
+        const char = getRandomChar(language);
 
-        setTiles(prev => prev.map(tile => {
-            if (tile.id === pickedTileId || tile.id === draggedTileId) return tile;
+        simulationData.current.set(id, {
+            x: 20 + Math.random() * 60,
+            y: 20 + Math.random() * 60,
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: (Math.random() - 0.5) * 0.15,
+            rotation: Math.random() * 360
+        });
 
-            let newX = tile.x + tile.speedX;
-            let newY = tile.y + tile.speedY;
-
-            // Simple bounce
-            let newSpeedX = tile.speedX;
-            let newSpeedY = tile.speedY;
-
-            if (newX < 5 || newX > 95) newSpeedX *= -1;
-            if (newY < 5 || newY > 95) newSpeedY *= -1;
-
-            return {
-                ...tile,
-                x: newX,
-                y: newY,
-                speedX: newSpeedX,
-                speedY: newSpeedY,
-                rotation: tile.rotation + tile.speedX * 0.1
-            };
-        }));
-
-        requestRef.current = requestAnimationFrame(updateTiles);
-    }, [gameState, pickedTileId, draggedTileId]);
-
-    useEffect(() => {
-        if (gameState === 'PLAYING') {
-            requestRef.current = requestAnimationFrame(updateTiles);
-        }
-        return () => { if (requestRef.current) cancelAnimationFrame(requestRef.current); };
-    }, [gameState, updateTiles]);
-
-    // Initialize/Spawn tiles
-    const spawnTiles = useCallback((count: number) => {
-        const newTiles: LetterTile[] = [];
-        for (let i = 0; i < count; i++) {
-            newTiles.push({
-                id: Math.random().toString(36).substr(2, 9),
-                char: getRandomChar(language),
-                x: 20 + Math.random() * 60,
-                y: 20 + Math.random() * 60,
-                speedX: (Math.random() - 0.5) * 0.2,
-                speedY: (Math.random() - 0.5) * 0.2,
-                rotation: Math.random() * 20 - 10
-            });
-        }
-        setTiles(prev => [...prev, ...newTiles]);
+        setTiles(prev => [...prev, { id, char }]);
     }, [language]);
 
-    // Start Game
     const startGame = () => {
         setGameState('PLAYING');
         setWordsBuilt(0);
-        setTiles([]);
         setRailLetters([]);
-        spawnTiles(8);
+        setPickedTileId(null);
+        simulationData.current.clear();
+        tileElements.current.clear();
+
+        // Spawn initial set
+        const ids: LetterTileData[] = [];
+        for (let i = 0; i < 8; i++) {
+            const id = Math.random().toString(36).substr(2, 9);
+            const char = getRandomChar(language);
+            simulationData.current.set(id, {
+                x: 20 + Math.random() * 60,
+                y: 20 + Math.random() * 60,
+                vx: (Math.random() - 0.5) * 0.15,
+                vy: (Math.random() - 0.5) * 0.15,
+                rotation: Math.random() * 360
+            });
+            ids.push({ id, char });
+        }
+        setTiles(ids);
     };
 
-    // 3. HANDLERS
-    // Word Validation
-    useEffect(() => {
+    const validateWord = useCallback(() => {
         const currentWord = railLetters.map(t => t.char).join('');
         if (currentWord.length < 2) return;
 
@@ -141,40 +188,75 @@ export const LetterLabPlayPage: React.FC = () => {
         const fullDict = [...dict, ...custom].map(w => w.toUpperCase());
 
         if (fullDict.includes(currentWord)) {
-            // Lock success
+            setStatusMessage({ text: 'LOCKED', type: 'success' });
             setWordsBuilt(prev => {
                 const updated = prev + 1;
                 if (updated > bestSession) setBestSession(updated);
                 return updated;
             });
 
-            // Animation/Clear logic would go here, for now just clear rail after delay
+            // Onboarding dismissal on first success
+            if (showOnboarding) {
+                setShowOnboarding(false);
+                localStorage.setItem('taren:kids:letter-lab:onboardDismissed', '1');
+            }
+
             setTimeout(() => {
                 setRailLetters([]);
-                spawnTiles(currentWord.length);
+                setStatusMessage({ text: '', type: null });
+                for (let i = 0; i < currentWord.length; i++) spawnTile();
             }, 800);
-        }
-    }, [railLetters, language, customWords, bestSession, spawnTiles]);
-
-    // Tile Interaction
-    const handlePickTile = (tile: LetterTile) => {
-        if (pickedTileId === tile.id) {
-            // Drop in rail?
-            setRailLetters(prev => [...prev, tile]);
-            setTiles(prev => prev.filter(t => t.id !== tile.id));
-            setPickedTileId(null);
         } else {
-            setPickedTileId(tile.id);
+            // Invalid word feedback
+            setStatusMessage({ text: 'NOT A WORD', type: 'error' });
+            setTimeout(() => setStatusMessage({ text: '', type: null }), 1000);
+        }
+    }, [railLetters, language, customWords, bestSession, spawnTile, showOnboarding]);
+
+    const handlePickTile = (id: string) => {
+        setPickedTileId(prev => prev === id ? null : id);
+
+        // Onboarding dismissal on first pick
+        if (showOnboarding && !pickedTileId) {
+            // We don't dismiss yet, maybe after placement is better
+        }
+    };
+
+    const handleRailClick = () => {
+        if (!pickedTileId) return;
+
+        const tile = tiles.find(t => t.id === pickedTileId);
+        if (tile) {
+            setRailLetters(prev => [...prev, tile]);
+            setTiles(prev => prev.filter(t => t.id !== pickedTileId));
+            simulationData.current.delete(pickedTileId);
+            tileElements.current.delete(pickedTileId);
+            setPickedTileId(null);
+
+            // Onboarding dismissal on first placement
+            if (showOnboarding) {
+                setShowOnboarding(false);
+                localStorage.setItem('taren:kids:letter-lab:onboardDismissed', '1');
+            }
         }
     };
 
     const removeFromRail = (index: number) => {
         const tile = railLetters[index];
         setRailLetters(prev => prev.filter((_, i) => i !== index));
-        setTiles(prev => [...prev, { ...tile, x: 50, y: 50 }]);
+
+        const id = tile.id;
+        simulationData.current.set(id, {
+            x: 50,
+            y: 30, // Drop from top
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: 0.1,
+            rotation: 0
+        });
+        setTiles(prev => [...prev, tile]);
     };
 
-    // Parent Mode
+    // 4. PARENT MODE
     const openParentCheck = () => {
         const a = 2 + Math.floor(Math.random() * 10);
         const b = 2 + Math.floor(Math.random() * 10);
@@ -210,14 +292,14 @@ export const LetterLabPlayPage: React.FC = () => {
         }));
     };
 
-    // 4. RENDER
+    // 5. RENDER
     return (
         <div className="relative flex h-[calc(100vh-64px)] w-full overflow-hidden bg-background text-foreground select-none">
             {/* LEFT Panel (Scoreboard) */}
-            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 group">
+            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 z-20">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">Words Built</h3>
-                    <div className="text-5xl font-mono font-bold tabular-nums text-foreground animate-in zoom-in duration-500" key={wordsBuilt}>
+                    <div className="text-5xl font-mono font-bold tabular-nums text-foreground" key={wordsBuilt}>
                         {wordsBuilt.toString().padStart(3, '0')}
                     </div>
                 </div>
@@ -232,24 +314,69 @@ export const LetterLabPlayPage: React.FC = () => {
             </aside>
 
             {/* CENTER Board */}
-            <main className="flex-1 relative flex flex-col items-center justify-center p-8 overflow-hidden" ref={boardRef}>
-                {/* Word Rail */}
-                <div className="w-full max-w-2xl h-32 mb-12 flex items-center justify-center gap-2 border-b-2 border-foreground/5 relative">
-                    {railLetters.length === 0 && (
-                        <span className="text-sm font-medium text-foreground/10 uppercase tracking-[0.4em] italic">
-                            Empty Rail
-                        </span>
+            <main className="flex-1 relative flex flex-col items-center p-8 overflow-hidden z-10" ref={boardRef}>
+                {/* Status Message Overlay (Centered) */}
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+                    {statusMessage.text && (
+                        <div className={`px-6 py-2 rounded-full text-xs font-black tracking-[0.4em] uppercase shadow-2xl animate-in zoom-in slide-in-from-top-4 duration-300 ${statusMessage.type === 'success' ? 'bg-accent text-background border-glow' : 'bg-red-500/90 text-white animate-shake'
+                            }`}>
+                            {statusMessage.text}
+                        </div>
                     )}
-                    {railLetters.map((tile, i) => (
-                        <button
-                            key={`${tile.id}-${i}`}
-                            onClick={() => removeFromRail(i)}
-                            className="w-16 h-16 rounded-xl bg-foreground text-background font-mono text-3xl font-bold flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 animate-in slide-in-from-bottom-2"
-                        >
-                            {tile.char}
-                        </button>
-                    ))}
-                    <div className="absolute -bottom-1 left-0 right-0 h-1 bg-accent/20" />
+                </div>
+
+                {/* Rail Area */}
+                <div className="mt-12 w-full max-w-2xl text-center">
+                    {/* Goal Header */}
+                    <div className="mb-4">
+                        <h2 className="text-[10px] font-black tracking-[0.4em] uppercase text-foreground/40 mb-1">Build a Word</h2>
+                        <p className="text-[9px] font-bold tracking-[0.1em] text-foreground/20 uppercase italic">
+                            {pickedTileId ? 'Tap the rail to drop' : 'Tap a letter → tap the rail to place it.'}
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={handleRailClick}
+                        className={`w-full h-32 flex items-center justify-center gap-2 border-b-2 border-foreground/5 relative group/rail transition-colors ${pickedTileId ? 'border-accent/40 bg-accent/[0.02]' : 'hover:bg-foreground/[0.01]'}`}
+                    >
+                        {railLetters.length === 0 && !pickedTileId && (
+                            <span className="text-[10px] font-bold text-foreground/5 uppercase tracking-[0.6em] group-hover/rail:text-foreground/10 transition-colors">
+                                EMPTY RAIL
+                            </span>
+                        )}
+                        {railLetters.map((tile, i) => (
+                            <div
+                                key={`${tile.id}-${i}`}
+                                onClick={(e) => { e.stopPropagation(); removeFromRail(i); }}
+                                className="w-16 h-16 rounded-xl bg-foreground text-background font-mono text-3xl font-bold flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 animate-in slide-in-from-bottom-2"
+                            >
+                                {tile.char}
+                            </div>
+                        ))}
+                        {/* Ghost Slot */}
+                        {pickedTileId && (
+                            <div className="w-16 h-16 rounded-xl border-2 border-dashed border-accent/40 flex items-center justify-center font-mono text-3xl font-bold text-accent/40 animate-pulse">
+                                {tiles.find(t => t.id === pickedTileId)?.char}
+                            </div>
+                        )}
+                        <div className={`absolute -bottom-1 left-0 right-0 h-1 transition-colors ${pickedTileId ? 'bg-accent' : 'bg-foreground/5'}`} />
+                    </button>
+
+                    {/* Current Word Preview */}
+                    <div className="mt-4 h-4 flex items-center justify-center gap-4 text-[10px] font-black tracking-[0.4em] uppercase">
+                        {railLetters.length > 0 && (
+                            <>
+                                <span className="text-foreground/20">Current:</span>
+                                <span className="text-foreground/60">{railLetters.map(t => t.char).join(' ')}</span>
+                                <button
+                                    onClick={validateWord}
+                                    className="ml-4 px-4 py-1 rounded-full bg-foreground/5 hover:bg-accent hover:text-background transition-all text-[8px] tracking-[0.2em]"
+                                >
+                                    Check Word
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </div>
 
                 {/* Drifting Board */}
@@ -257,16 +384,12 @@ export const LetterLabPlayPage: React.FC = () => {
                     {tiles.map(tile => (
                         <button
                             key={tile.id}
-                            onClick={() => handlePickTile(tile)}
-                            className={`absolute w-14 h-14 rounded-2xl flex items-center justify-center font-mono text-2xl font-black transition-all duration-300 ${pickedTileId === tile.id
-                                    ? 'bg-accent text-background scale-125 z-50 ring-4 ring-accent/20'
-                                    : 'bg-foreground/[0.05] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground'
+                            ref={el => { if (el) tileElements.current.set(tile.id, el); }}
+                            onClick={() => handlePickTile(tile.id)}
+                            className={`letter-tile absolute w-14 h-14 rounded-2xl flex items-center justify-center font-mono text-2xl font-black transition-all duration-300 ${pickedTileId === tile.id
+                                    ? 'bg-accent text-background scale-125 z-50 shadow-[0_0_30px_rgba(255,165,0,0.4)] ring-4 ring-accent/20 rotate-0'
+                                    : 'bg-foreground/[0.05] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95'
                                 }`}
-                            style={{
-                                left: `${tile.x}%`,
-                                top: `${tile.y}%`,
-                                transform: `translate(-50%, -50%) rotate(${tile.rotation}deg)`,
-                            }}
                         >
                             {tile.char}
                         </button>
@@ -275,7 +398,7 @@ export const LetterLabPlayPage: React.FC = () => {
 
                 {/* Start Overlay */}
                 {gameState === 'IDLE' && (
-                    <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md animate-in fade-in duration-500">
+                    <div className="absolute inset-0 z-[60] flex items-center justify-center bg-background/80 backdrop-blur-md animate-in fade-in duration-500">
                         <button
                             onClick={startGame}
                             className="group flex flex-col items-center gap-4 p-12 transition-all hover:scale-105"
@@ -293,10 +416,36 @@ export const LetterLabPlayPage: React.FC = () => {
                         </button>
                     </div>
                 )}
+
+                {/* Onboarding Overlay (Subtle) */}
+                {gameState === 'PLAYING' && showOnboarding && (
+                    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                        <div className="bg-foreground/5 backdrop-blur-xl border border-foreground/10 rounded-2xl p-6 shadow-2xl flex items-center gap-6">
+                            <div className="flex flex-col items-center gap-2">
+                                <div className="p-3 rounded-full bg-accent/10 text-accent">
+                                    <MousePointer2 className="h-5 w-5" />
+                                </div>
+                                <span className="text-[9px] font-bold uppercase tracking-widest text-foreground/40">1. Pick</span>
+                            </div>
+                            <div className="h-4 w-px bg-foreground/10" />
+                            <div className="flex flex-col items-center gap-2">
+                                <div className="p-3 rounded-full bg-purple-500/10 text-purple-500">
+                                    <Sparkles className="h-5 w-5" />
+                                </div>
+                                <span className="text-[9px] font-bold uppercase tracking-widest text-foreground/40">2. Build</span>
+                            </div>
+                            <div className="ml-4 max-w-[120px]">
+                                <p className="text-[10px] font-medium leading-relaxed text-foreground/60 italic">
+                                    "Tap a floating letter to grab it."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </main>
 
             {/* RIGHT Panel (Controls) */}
-            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8">
+            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 z-20">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
                         <Settings className="h-3 w-3" /> Controls
@@ -450,6 +599,10 @@ export const LetterLabPlayPage: React.FC = () => {
             )}
 
             <style>{`
+                .letter-tile {
+                    will-change: transform;
+                    contain: layout paint;
+                }
                 @keyframes shake {
                     0%, 100% { transform: translateX(0); }
                     25% { transform: translateX(-8px); }
@@ -457,6 +610,9 @@ export const LetterLabPlayPage: React.FC = () => {
                 }
                 .animate-shake {
                     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+                }
+                .border-glow {
+                    box-shadow: 0 0 20px rgba(255,165,0,0.4);
                 }
             `}</style>
         </div>
