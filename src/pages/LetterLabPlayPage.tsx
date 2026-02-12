@@ -92,34 +92,22 @@ export const LetterLabPlayPage: React.FC = () => {
         simulationData.current.forEach((physics, id) => {
             if (id === pickedTileId) return;
 
-            let { x, y, vx, vy, rotation } = physics;
+            let { x, y, rotation } = physics;
 
             // Integrity check
             if (isNaN(x)) x = width / 2; if (isNaN(y)) y = height / 2;
 
-            x += vx * dt * 100;
-            y += vy * dt * 100;
+            // DRIFT REMOVED - tiles are now static
+            // x += vx * dt * 100; 
+            // y += vy * dt * 100;
 
-            // Bounce logic with px buffer
-            const buffer = 40;
-            if (x < buffer) { x = buffer; vx = Math.abs(vx); }
-            if (x > width - buffer) { x = width - buffer; vx = -Math.abs(vx); }
-            if (y < buffer) { y = buffer; vy = Math.abs(vy); }
-            if (y > height - buffer) { y = height - buffer; vy = -Math.abs(vy); }
-
-            rotation += vx * 20 * dt;
-
-            // Store back
-            physics.x = x;
-            physics.y = y;
-            physics.vx = vx;
-            physics.vy = vy;
-            physics.rotation = rotation;
+            // Still allow a tiny rotation for life if vx was > 0, 
+            // but we'll just use a constant slow rotation or none.
+            // rotation += physics.vx * 20 * dt;
 
             // Direct DOM update
             const el = tileElements.current.get(id);
             if (el) {
-                // translate3d(x, y, 0) with px units for absolute placement in container
                 el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${rotation}deg)`;
             }
         });
@@ -166,9 +154,9 @@ export const LetterLabPlayPage: React.FC = () => {
         simulationData.current.set(id, {
             x: width * 0.2 + Math.random() * (width * 0.6),
             y: height * 0.2 + Math.random() * (height * 0.6),
-            vx: (Math.random() - 0.5) * 1.5, // Pixels based speed
-            vy: (Math.random() - 0.5) * 1.5,
-            rotation: Math.random() * 360
+            vx: 0, // NO DRIFT
+            vy: 0,
+            rotation: (Math.random() - 0.5) * 15 // Subtle static tilt
         });
 
         setTiles(prev => [...prev, { id, char }]);
@@ -191,11 +179,11 @@ export const LetterLabPlayPage: React.FC = () => {
             const id = crypto.randomUUID();
             const char = getRandomChar(language);
             simulationData.current.set(id, {
-                x: rect.width * 0.2 + Math.random() * (rect.width * 0.6) + (i * 2), // Ensure initial jitter
+                x: rect.width * 0.2 + Math.random() * (rect.width * 0.6) + (i * 2),
                 y: rect.height * 0.2 + Math.random() * (rect.height * 0.6) + (i * 2),
-                vx: (Math.random() - 0.5) * 1.5,
-                vy: (Math.random() - 0.5) * 1.5,
-                rotation: Math.random() * 360
+                vx: 0, // NO DRIFT
+                vy: 0,
+                rotation: (Math.random() - 0.5) * 15
             });
             ids.push({ id, char });
         }
@@ -271,11 +259,11 @@ export const LetterLabPlayPage: React.FC = () => {
         const id = tile.id;
         const { width, height } = boardSize.current;
         simulationData.current.set(id, {
-            x: width / 2,
-            y: height / 3, // Drop from top
-            vx: (Math.random() - 0.5) * 1.5,
-            vy: 1.0,
-            rotation: 0
+            x: width / 2 + (Math.random() - 0.5) * 100,
+            y: height / 3 + (Math.random() - 0.5) * 100,
+            vx: 0,
+            vy: 0,
+            rotation: (Math.random() - 0.5) * 10
         });
         setTiles(prev => [...prev, tile]);
     };
@@ -320,7 +308,7 @@ export const LetterLabPlayPage: React.FC = () => {
     return (
         <div className="relative flex h-[calc(100vh-64px)] w-full overflow-hidden bg-background text-foreground select-none">
             {/* LEFT Panel (Scoreboard) */}
-            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-12 z-20">
+            <aside className="w-64 border-r border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4">Words Built</h3>
                     <div className="text-5xl font-mono font-bold tabular-nums text-foreground" key={wordsBuilt}>
@@ -411,8 +399,8 @@ export const LetterLabPlayPage: React.FC = () => {
                             ref={el => { if (el) tileElements.current.set(tile.id, el); }}
                             onClick={() => handlePickTile(tile.id)}
                             className={`letter-tile absolute w-14 h-14 rounded-2xl flex items-center justify-center font-mono text-2xl font-black transition-all duration-300 ${pickedTileId === tile.id
-                                    ? 'bg-accent text-background scale-125 z-50 shadow-[0_0_30px_rgba(255,165,0,0.4)] ring-4 ring-accent/20 rotate-0'
-                                    : 'bg-foreground/[0.05] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95'
+                                ? 'bg-accent text-background scale-125 z-50 shadow-[0_0_30px_rgba(255,165,0,0.4)] ring-4 ring-accent/20 rotate-0'
+                                : 'bg-foreground/[0.05] text-foreground/60 border border-foreground/10 hover:bg-foreground/[0.08] hover:text-foreground active:scale-95'
                                 }`}
                         >
                             {tile.char}
@@ -469,7 +457,7 @@ export const LetterLabPlayPage: React.FC = () => {
             </main>
 
             {/* RIGHT Panel (Controls) */}
-            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-12 z-20">
+            <aside className="w-64 border-l border-foreground/5 bg-foreground/[0.02] flex flex-col p-8 pt-20 z-20">
                 <div className="mb-12">
                     <h3 className="text-[10px] font-bold text-foreground/40 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
                         <Settings className="h-3 w-3" /> Controls
@@ -486,14 +474,30 @@ export const LetterLabPlayPage: React.FC = () => {
                         Rules
                     </h3>
                     <p className="text-[10px] italic leading-relaxed text-foreground/30">
-                        Letters drift. Find connections. Lock the sequence.
+                        Letters appear. Find connections. Lock the sequence.
                     </p>
                 </div>
 
-                <div className="mt-auto space-y-4">
-                    <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-foreground/20">
-                        <span>Language</span>
-                        <span className="text-accent">{language}</span>
+                <div className="mt-auto space-y-6">
+                    <div>
+                        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-foreground/20 mb-3">
+                            <span>Language</span>
+                            <span className="text-accent">{language}</span>
+                        </div>
+                        <div className="flex gap-2">
+                            {(['EN', 'SV'] as Language[]).map(lang => (
+                                <button
+                                    key={lang}
+                                    onClick={() => setLanguage(lang)}
+                                    className={`flex-1 py-2 rounded border text-[10px] font-bold transition-all ${language === lang
+                                            ? 'border-accent bg-accent/5 text-accent'
+                                            : 'border-foreground/10 text-foreground/30 hover:border-foreground/20'
+                                        }`}
+                                >
+                                    {lang}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     <button
