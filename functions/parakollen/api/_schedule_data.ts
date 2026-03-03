@@ -231,8 +231,8 @@ export function getTodayEvents(todayDate: string): Event[] {
     const gameEnd = '2026-03-15';
 
     if (todayDate < gameStart) {
-        // Pre-games: show preview of opening day (Mar 7 first medal day)
-        return getScheduleForDate('2026-03-07');
+        // Pre-games: show preview of opening ceremony day (Mar 6)
+        return getScheduleForDate('2026-03-06');
     }
 
     if (todayDate > gameEnd) {

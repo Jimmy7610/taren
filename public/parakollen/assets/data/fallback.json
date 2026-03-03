@@ -7,6 +7,14 @@
         "note": "Pre-games fallback data for Paralympics Milano Cortina 2026 (6–15 March 2026)"
     },
     "today": {
+        "sports": [
+            "Alpint",
+            "Längdskidåkning",
+            "Paraishockey",
+            "Rullstolscurling",
+            "Skidskytte",
+            "Snowboard"
+        ],
         "events": [
             {
                 "id": "pk-alp-1",
@@ -84,7 +92,7 @@
             },
             {
                 "id": "pk-curling-1",
-                "startTime": "2026-03-06T15:00:00+01:00",
+                "startTime": "2026-03-06T09:35:00+01:00",
                 "endTime": null,
                 "status": "upcoming",
                 "sport": "Rullstolscurling",
@@ -151,6 +159,14 @@
         ]
     },
     "schedule": {
+        "sports": [
+            "Alpint",
+            "Längdskidåkning",
+            "Paraishockey",
+            "Rullstolscurling",
+            "Skidskytte",
+            "Snowboard"
+        ],
         "events": []
     },
     "results": {

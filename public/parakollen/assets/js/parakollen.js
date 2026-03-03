@@ -335,6 +335,7 @@ async function renderIdag(container) {
 
   // Extract sports for dropdown population
   extractSports(d.events || [], d.sports || []);
+  populateSportDropdowns();
 
   let events = d.events || [];
   if (state.filters.sweOnly) events = events.filter(e => e.isSWE);
@@ -527,6 +528,10 @@ async function renderSverige(container) {
     container.innerHTML = errorBanner + renderEmpty(t('emptyToday'));
     return;
   }
+
+  // Populate sports dropdown
+  extractSports(d.events || [], d.sports || []);
+  populateSportDropdowns();
 
   const allEvents = d.events || [];
   const sweEvents = allEvents.filter(e => e.isSWE);
