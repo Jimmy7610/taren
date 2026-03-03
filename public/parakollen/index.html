@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="sv" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parakollen – Paralympics Milano Cortina 2026 | TAREN</title>
+    <meta name="description"
+        content="Följ Paralympics 2026 i Milano Cortina. Medaljligan, resultat, tablå och nyheter i realtid.">
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Parakollen – Paralympics Milano Cortina 2026">
+    <meta property="og:description"
+        content="Följ Paralympics 2026 live. Medaljer, resultat, tablåer och svenska starter.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://taren.se/parakollen/">
+
+    <!-- Prevent FOUC: apply theme immediately -->
+    <script>
+        (function () {
+            var t = localStorage.getItem('pk_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+            var m = document.querySelector('meta[name="theme-color"]');
+            if (m) m.setAttribute('content', t === 'dark' ? '#0a0a0a' : '#fafafa');
+        })();
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/parakollen/assets/css/parakollen.css">
+</head>
+
+<body>
+    <!-- Grain overlay -->
+    <div class="pk-grain" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header class="pk-header">
+        <div class="pk-header-inner">
+            <div class="pk-flex pk-items-center pk-gap-md">
+                <a href="/parakollen/" class="pk-brand">
+                    <span class="pk-brand-accent"></span>
+                    <div>
+                        <div class="pk-brand-title">PARAKOLLEN</div>
+                        <div class="pk-brand-subtitle">Milano Cortina 2026</div>
+                    </div>
+                </a>
+            </div>
+            <div class="pk-header-meta" id="pk-header-meta">
+                <!-- Filled by JS: last updated + refresh button -->
+            </div>
+            <div class="pk-flex pk-items-center pk-gap-sm">
+                <button class="pk-icon-btn" id="pk-theme-toggle" aria-label="Byt tema" title="Byt tema">🌙</button>
+                <button class="pk-icon-btn" id="pk-lang-toggle" aria-label="Change language" title="Change language"
+                    style="font-size:12px;font-weight:700;">EN</button>
+                <a href="/" class="pk-icon-btn" aria-label="TAREN" title="Tillbaka till TAREN"
+                    style="font-size:12px;font-weight:700;text-decoration:none;">T</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- App container -->
+    <div class="pk-app">
+        <!-- Tabs -->
+        <nav class="pk-tabs" id="pk-tabs" role="tablist" aria-label="Parakollen navigation">
+            <!-- Filled by JS -->
+        </nav>
+
+        <!-- Filters -->
+        <div class="pk-filters" id="pk-filters">
+            <!-- Filled by JS (contextual per tab) -->
+        </div>
+
+        <!-- Content -->
+        <main class="pk-content" id="pk-content" role="tabpanel" aria-live="polite">
+            <!-- Filled by JS -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="pk-footer">
+            <div class="pk-footer-text">
+                <a href="/">TAREN</a> · Parakollen
+            </div>
+            <div class="pk-sources" id="pk-footer-sources"></div>
+        </footer>
+    </div>
+
+    <!-- Scripts (ES modules) -->
+    <script type="module" src="/parakollen/assets/js/parakollen.js"></script>
+</body>
+
+</html>

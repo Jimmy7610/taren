@@ -1,0 +1,271 @@
+{
+    "meta": {
+        "lastUpdated": "2026-03-03T09:00:00+01:00",
+        "sources": [
+            "fallback"
+        ],
+        "note": "Pre-games fallback data for Paralympics Milano Cortina 2026 (6–15 March 2026)"
+    },
+    "today": {
+        "events": [
+            {
+                "id": "pk-alp-1",
+                "startTime": "2026-03-06T10:00:00+01:00",
+                "endTime": null,
+                "status": "upcoming",
+                "sport": "Alpint",
+                "discipline": "Storslalom, stående",
+                "venue": "Bormio",
+                "participants": [
+                    {
+                        "name": "Ebba Årsjö",
+                        "nation": "SWE",
+                        "role": "athlete",
+                        "bib": null
+                    }
+                ],
+                "nations": [
+                    "SWE",
+                    "NOR",
+                    "AUT",
+                    "SUI",
+                    "GER"
+                ],
+                "isSWE": true,
+                "resultSummary": null,
+                "links": []
+            },
+            {
+                "id": "pk-bth-1",
+                "startTime": "2026-03-06T11:30:00+01:00",
+                "endTime": null,
+                "status": "upcoming",
+                "sport": "Skidskytte",
+                "discipline": "Sprint, sittande",
+                "venue": "Anterselva",
+                "participants": [
+                    {
+                        "name": "Zebastian Modin",
+                        "nation": "SWE",
+                        "role": "athlete",
+                        "bib": null
+                    }
+                ],
+                "nations": [
+                    "SWE",
+                    "UKR",
+                    "FRA",
+                    "GER",
+                    "CAN"
+                ],
+                "isSWE": true,
+                "resultSummary": null,
+                "links": []
+            },
+            {
+                "id": "pk-xcski-1",
+                "startTime": "2026-03-06T14:00:00+01:00",
+                "endTime": null,
+                "status": "upcoming",
+                "sport": "Längdskidåkning",
+                "discipline": "18 km fritt, stående",
+                "venue": "Tesero",
+                "participants": [],
+                "nations": [
+                    "NOR",
+                    "UKR",
+                    "CAN",
+                    "FIN",
+                    "GER"
+                ],
+                "isSWE": false,
+                "resultSummary": null,
+                "links": []
+            },
+            {
+                "id": "pk-curling-1",
+                "startTime": "2026-03-06T15:00:00+01:00",
+                "endTime": null,
+                "status": "upcoming",
+                "sport": "Rullstolscurling",
+                "discipline": "Gruppspel",
+                "venue": "Cortina",
+                "participants": [],
+                "nations": [
+                    "SWE",
+                    "NOR",
+                    "GBR",
+                    "CAN",
+                    "CHN"
+                ],
+                "isSWE": true,
+                "resultSummary": null,
+                "links": []
+            },
+            {
+                "id": "pk-hockey-1",
+                "startTime": "2026-03-06T17:00:00+01:00",
+                "endTime": null,
+                "status": "upcoming",
+                "sport": "Paraishockey",
+                "discipline": "Gruppspel",
+                "venue": "Milano",
+                "participants": [],
+                "nations": [
+                    "USA",
+                    "CAN",
+                    "GBR",
+                    "KOR",
+                    "ITA"
+                ],
+                "isSWE": false,
+                "resultSummary": null,
+                "links": []
+            }
+        ],
+        "news": [
+            {
+                "title": "Paralympics 2026: Allt du behöver veta om Milano Cortina",
+                "sourceName": "SVT",
+                "publishedAt": "2026-03-03T08:00:00+01:00",
+                "url": "https://www.svt.se",
+                "summary": "Den 6 mars smäller det igång – Sveriges paralympier siktar på medaljskörd i Italien.",
+                "category": "preview"
+            },
+            {
+                "title": "Zebastian Modin: 'Vi är redo för Milano'",
+                "sourceName": "Aftonbladet",
+                "publishedAt": "2026-03-02T16:30:00+01:00",
+                "url": "https://www.aftonbladet.se",
+                "summary": "Sveriges skidskyttestjärna laddar för sin tredje Paralympics.",
+                "category": "interview"
+            },
+            {
+                "title": "Guide: Så följer du Paralympics 2026 på TV",
+                "sourceName": "TV4",
+                "publishedAt": "2026-03-02T10:00:00+01:00",
+                "url": "https://www.tv4.se",
+                "summary": "TV-tablåer och streamingtips för kommande Paralympics.",
+                "category": "guide"
+            }
+        ]
+    },
+    "schedule": {
+        "events": []
+    },
+    "results": {
+        "events": []
+    },
+    "medals": {
+        "table": [
+            {
+                "nation": "CHN",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 1
+            },
+            {
+                "nation": "UKR",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 2
+            },
+            {
+                "nation": "USA",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 3
+            },
+            {
+                "nation": "SWE",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 4
+            },
+            {
+                "nation": "NOR",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 5
+            },
+            {
+                "nation": "GER",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 6
+            },
+            {
+                "nation": "CAN",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 7
+            },
+            {
+                "nation": "FRA",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 8
+            },
+            {
+                "nation": "AUT",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 9
+            },
+            {
+                "nation": "GBR",
+                "gold": 0,
+                "silver": 0,
+                "bronze": 0,
+                "total": 0,
+                "rank": 10
+            }
+        ]
+    },
+    "news": {
+        "items": [
+            {
+                "title": "Paralympics 2026: Allt du behöver veta om Milano Cortina",
+                "sourceName": "SVT",
+                "publishedAt": "2026-03-03T08:00:00+01:00",
+                "url": "https://www.svt.se",
+                "summary": "Den 6 mars smäller det igång – Sveriges paralympier siktar på medaljskörd i Italien.",
+                "category": "preview"
+            },
+            {
+                "title": "Zebastian Modin: 'Vi är redo för Milano'",
+                "sourceName": "Aftonbladet",
+                "publishedAt": "2026-03-02T16:30:00+01:00",
+                "url": "https://www.aftonbladet.se",
+                "summary": "Sveriges skidskyttestjärna laddar för sin tredje Paralympics.",
+                "category": "interview"
+            },
+            {
+                "title": "Guide: Så följer du Paralympics 2026 på TV",
+                "sourceName": "TV4",
+                "publishedAt": "2026-03-02T10:00:00+01:00",
+                "url": "https://www.tv4.se",
+                "summary": "TV-tablåer och streamingtips för kommande Paralympics.",
+                "category": "guide"
+            }
+        ]
+    }
+}
