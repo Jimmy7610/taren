@@ -142,8 +142,19 @@ function stockholmParts(d) {
     return { year: get('year'), month: get('month'), day: get('day'), hour: get('hour'), minute: get('minute') };
 }
 
+// Text normalization helpers
+function normalizeText(s) {
+    if (!s) return '';
+    return s.replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function sportKey(label) {
+    return normalizeText(label).toLowerCase();
+}
+
 export {
     formatTime, formatDateHuman, formatDateYMD, todayYMD,
     getTimeBlock, timeBlockLabel, groupBy, debounce,
-    statusBadge, flagEmoji, el, escapeHtml
+    statusBadge, flagEmoji, el, escapeHtml,
+    normalizeText, sportKey
 };

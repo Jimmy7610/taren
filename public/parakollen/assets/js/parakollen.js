@@ -1,7 +1,7 @@
 // parakollen.js – Main application: hash routing, tab views, filters, rendering
 import { t, getLang, toggleLang } from './i18n.js';
 import { initTheme, getTheme, toggleTheme } from './theme.js';
-import { formatTime, formatDateHuman, formatDateYMD, todayYMD, getTimeBlock, timeBlockLabel, groupBy, debounce, statusBadge, flagEmoji, escapeHtml } from './utils.js';
+import { formatTime, formatDateHuman, formatDateYMD, todayYMD, getTimeBlock, timeBlockLabel, groupBy, debounce, statusBadge, flagEmoji, escapeHtml, normalizeText, sportKey } from './utils.js';
 import { fetchAPI, startAutoRefresh, manualRefresh, setActiveTab } from './api.js';
 
 // ── State ──
@@ -233,31 +233,29 @@ function populateSportDropdowns() {
   const sportEl = document.getElementById('pk-filter-sport');
   const discEl = document.getElementById('pk-filter-discipline');
 
-  // Sports dropdown — full reset then repopulate
+  // Sports dropdown — full reset then repopulate using keys
   if (sportEl && data.sports) {
-    const prev = sportEl.value;
     sportEl.innerHTML = `<option value="">${t('filterSportAll')}</option>`;
-    for (const s of data.sports) {
+    for (const { key, label } of data.sports) {
       const opt = document.createElement('option');
-      opt.value = s; opt.textContent = s;
-      if (s === state.filters.sport) opt.selected = true;
+      opt.value = key; opt.textContent = label;
+      if (key === state.filters.sport) opt.selected = true;
       sportEl.appendChild(opt);
     }
-    // Restore selection if valid
     if (state.filters.sport && sportEl.value !== state.filters.sport) {
       state.filters.sport = '';
     }
   }
 
-  // Discipline dropdown — reset, then only add disciplines for selected sport
+  // Discipline dropdown — reset, only show disciplines for selected sport key
   if (discEl) {
     discEl.innerHTML = `<option value="">${t('filterDisciplineAll')}</option>`;
     if (state.filters.sport && data.disciplines) {
       const discs = data.disciplines[state.filters.sport] || [];
-      for (const d of discs) {
+      for (const { key, label } of discs) {
         const opt = document.createElement('option');
-        opt.value = d; opt.textContent = d;
-        if (d === state.filters.discipline) opt.selected = true;
+        opt.value = key; opt.textContent = label;
+        if (key === state.filters.discipline) opt.selected = true;
         discEl.appendChild(opt);
       }
     }
@@ -380,7 +378,7 @@ async function renderIdag(container) {
 
   let events = d.events || [];
   if (state.filters.sweOnly) events = events.filter(e => e.isSWE);
-  if (state.filters.sport) events = events.filter(e => e.sport === state.filters.sport);
+  if (state.filters.sport) events = events.filter(e => e._sportKey === state.filters.sport);
   if (state.filters.search) {
     const q = state.filters.search.toLowerCase();
     events = events.filter(e =>
@@ -716,8 +714,8 @@ async function renderTvTabla() {
 function applyFilters(events) {
   let filtered = events;
   if (state.filters.sweOnly) filtered = filtered.filter(e => e.isSWE);
-  if (state.filters.sport) filtered = filtered.filter(e => e.sport === state.filters.sport);
-  if (state.filters.discipline) filtered = filtered.filter(e => e.discipline === state.filters.discipline);
+  if (state.filters.sport) filtered = filtered.filter(e => e._sportKey === state.filters.sport);
+  if (state.filters.discipline) filtered = filtered.filter(e => e._discKey === state.filters.discipline);
   if (state.filters.search) {
     const q = state.filters.search.toLowerCase();
     filtered = filtered.filter(e =>
@@ -731,24 +729,51 @@ function applyFilters(events) {
 }
 
 function extractSports(events, canonicalSports) {
-  const eventSports = [...new Set(events.map(e => e.sport).filter(Boolean))];
-  // Merge canonical list (from API) with event-derived list
-  const allSports = canonicalSports && canonicalSports.length
-    ? [...new Set([...canonicalSports, ...eventSports])]
-    : eventSports;
-  const sports = allSports.filter(s => s !== 'Ceremoni').sort();
-  const disciplines = {};
+  // Normalize all event sport/discipline text and add canonical keys
   for (const e of events) {
-    if (e.sport && e.discipline) {
-      if (!disciplines[e.sport]) disciplines[e.sport] = new Set();
-      disciplines[e.sport].add(e.discipline);
+    e.sport = normalizeText(e.sport);
+    e.discipline = normalizeText(e.discipline);
+    e._sportKey = sportKey(e.sport);
+    e._discKey = sportKey(e.discipline);
+  }
+
+  // Build sports Map<key, label> — canonical list first, then events
+  const sportsMap = new Map();
+  if (canonicalSports && canonicalSports.length) {
+    for (const s of canonicalSports) {
+      const label = normalizeText(s);
+      if (label && label !== 'Ceremoni') sportsMap.set(sportKey(label), label);
     }
   }
-  const disciplineObj = {};
-  for (const [k, v] of Object.entries(disciplines)) {
-    disciplineObj[k] = [...v].sort();
+  for (const e of events) {
+    if (e.sport && e.sport !== 'Ceremoni' && !sportsMap.has(e._sportKey)) {
+      sportsMap.set(e._sportKey, e.sport);
+    }
   }
-  state.cache.sports = { sports, disciplines: disciplineObj };
+
+  // Sort by label and convert to array of {key, label}
+  const sports = [...sportsMap.entries()]
+    .sort((a, b) => a[1].localeCompare(b[1], 'sv'))
+    .map(([key, label]) => ({ key, label }));
+
+  // Build disciplines Map per sport key
+  const discMap = {};
+  for (const e of events) {
+    if (e._sportKey && e._discKey) {
+      if (!discMap[e._sportKey]) discMap[e._sportKey] = new Map();
+      if (!discMap[e._sportKey].has(e._discKey)) {
+        discMap[e._sportKey].set(e._discKey, e.discipline);
+      }
+    }
+  }
+  const disciplines = {};
+  for (const [sk, m] of Object.entries(discMap)) {
+    disciplines[sk] = [...m.entries()]
+      .sort((a, b) => a[1].localeCompare(b[1], 'sv'))
+      .map(([key, label]) => ({ key, label }));
+  }
+
+  state.cache.sports = { sports, disciplines };
 }
 
 // ── Boot ──
