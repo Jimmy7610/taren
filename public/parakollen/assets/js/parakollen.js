@@ -9,8 +9,33 @@ const state = {
   tab: 'idag',
   filters: { date: todayYMD(), sport: '', discipline: '', search: '', sweOnly: false },
   cache: {},
+  tvData: null,
   loading: false,
 };
+
+// ── TV-tablå data loader ──
+async function loadTvData() {
+  if (state.tvData) return state.tvData;
+  try {
+    const res = await fetch('/parakollen/assets/data/tv_tabla.json');
+    if (res.ok) state.tvData = await res.json();
+  } catch (e) { /* ignore – TV chips just won't show */ }
+  return state.tvData;
+}
+
+function getTvChannel(event) {
+  const tv = state.tvData;
+  if (!tv || !event) return null;
+  // Try date-specific entry first
+  const dateKey = event.startTime ? formatDateYMD(event.startTime) : '';
+  const byDate = tv.byDate?.[dateKey];
+  if (byDate) {
+    const match = byDate.find(e => e.sport === event.sport && e.time === formatTime(event.startTime));
+    if (match) return match.channel;
+  }
+  // Fall back to default sport mapping
+  return tv.default?.[event.sport] || null;
+}
 
 const TABS = [
   { id: 'idag', key: 'tabIdag' },
@@ -45,6 +70,9 @@ function init() {
 
   // Auto-refresh
   startAutoRefresh(() => navigateToTab(state.tab));
+
+  // Load TV data
+  loadTvData();
 
   // Initial route
   const hash = window.location.hash.replace('#/', '') || 'idag';
@@ -513,8 +541,12 @@ async function renderNyheter(container) {
 
   const sources = [...new Set(items.map(n => n.sourceName).filter(Boolean))];
 
+  // Build TV-tablå section
+  const tvSection = await renderTvTabla();
+
   container.innerHTML = errorBanner +
     items.map(renderNewsCard).join('') +
+    tvSection +
     `<div class="pk-sources pk-mt-lg">${t('newsSources')}: ${sources.join(' · ')}</div>`;
 }
 
@@ -590,6 +622,7 @@ function renderEventCard(event) {
         </div>
         <div class="pk-flex pk-items-center pk-gap-sm">
           ${sweFlag}
+          ${tvChip(event)}
           ${statusBadge(event.status)}
           <span class="pk-card-time">${formatTime(event.startTime)}</span>
         </div>
@@ -616,6 +649,54 @@ function renderNewsCard(item) {
       </div>
     </a>
   `;
+}
+
+// ── TV helpers ──
+function tvChip(event) {
+  const ch = getTvChannel(event);
+  if (!ch) return '';
+  return `<span class="pk-tv-chip">📺 ${escapeHtml(ch)}</span>`;
+}
+
+async function renderTvTabla() {
+  const tv = await loadTvData();
+  if (!tv) return '';
+
+  // Use today or the filters date for the TV schedule
+  const date = state.filters.date || todayYMD();
+  const entries = tv.byDate?.[date];
+
+  let html = `<div class="pk-tv-tabla pk-mt-xl">
+    <div class="pk-section-header">
+      <span class="pk-section-emoji">📺</span>
+      <span class="pk-section-title">TV-tablå ${formatDateHuman(date + 'T12:00:00+01:00')}</span>
+    </div>`;
+
+  if (!entries || !entries.length) {
+    html += `<p class="pk-tv-note">Ing TV-schema tillgängligt för detta datum. TV-tablåer uppdateras löpande.</p>`;
+    html += `</div>`;
+    return html;
+  }
+
+  html += `<table class="pk-tv-table">
+    <thead><tr>
+      <th>Tid</th><th>Sport</th><th>Gren</th><th>Kanal</th>
+    </tr></thead><tbody>`;
+
+  for (const e of entries) {
+    const note = e.note ? ` <span class="pk-tv-note-inline">${escapeHtml(e.note)}</span>` : '';
+    html += `<tr>
+      <td class="pk-tv-time">${escapeHtml(e.time)}</td>
+      <td>${escapeHtml(e.sport)}</td>
+      <td>${escapeHtml(e.discipline || '')}${note}</td>
+      <td class="pk-tv-channel">${escapeHtml(e.channel)}</td>
+    </tr>`;
+  }
+
+  html += `</tbody></table>
+    <p class="pk-tv-note">Källa: SVT. Sändningsschema kan ändras.</p>
+  </div>`;
+  return html;
 }
 
 // ── Filter helpers ──

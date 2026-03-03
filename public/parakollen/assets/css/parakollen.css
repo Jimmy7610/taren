@@ -993,6 +993,83 @@ body {
     margin-top: var(--pk-sp-lg);
 }
 
+.pk-mt-xl {
+    margin-top: var(--pk-sp-xl);
+}
+
+/* ---------- TV-tablå ---------- */
+.pk-tv-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: var(--pk-radius-full);
+    background: rgba(59, 130, 246, 0.12);
+    color: #60a5fa;
+    white-space: nowrap;
+}
+
+.pk-tv-tabla {
+    border-top: 1px solid var(--pk-border);
+    padding-top: var(--pk-sp-lg);
+}
+
+.pk-tv-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    margin-top: var(--pk-sp-md);
+}
+
+.pk-tv-table th {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--pk-text-muted);
+    text-align: left;
+    border-bottom: 1px solid var(--pk-border);
+}
+
+.pk-tv-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--pk-border);
+    color: var(--pk-text-secondary);
+}
+
+.pk-tv-table tr:hover td {
+    background: var(--pk-bg-card);
+}
+
+.pk-tv-time {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--pk-text);
+    white-space: nowrap;
+}
+
+.pk-tv-channel {
+    font-weight: 600;
+    color: #60a5fa;
+}
+
+.pk-tv-note {
+    font-size: 11px;
+    color: var(--pk-text-muted);
+    margin-top: var(--pk-sp-sm);
+    font-style: italic;
+}
+
+.pk-tv-note-inline {
+    font-size: 11px;
+    color: var(--pk-text-muted);
+    font-style: italic;
+}
+
 .pk-text-accent {
     color: var(--pk-accent);
 }

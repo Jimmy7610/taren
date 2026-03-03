@@ -1,0 +1,229 @@
+{
+    "note": "TV-sändningar Paralympics Milano Cortina 2026. Källa: SVT programtablå. Uppdateras löpande.",
+    "default": {
+        "Alpint": "SVT Play",
+        "Skidskytte": "SVT Play",
+        "Längdskidåkning": "SVT Play",
+        "Rullstolscurling": "SVT Play",
+        "Paraishockey": "SVT Play",
+        "Snowboard": "SVT Play",
+        "Ceremoni": "SVT1"
+    },
+    "byDate": {
+        "2026-03-06": [
+            {
+                "sport": "Ceremoni",
+                "discipline": "Invigningsceremoni",
+                "time": "20:00",
+                "channel": "SVT1",
+                "note": "Direkt från Arena di Verona"
+            }
+        ],
+        "2026-03-07": [
+            {
+                "sport": "Alpint",
+                "discipline": "Störtlopp",
+                "time": "09:30",
+                "channel": "SVT2",
+                "note": "Damer & herrar alla klasser"
+            },
+            {
+                "sport": "Skidskytte",
+                "discipline": "Sprint",
+                "time": "10:00",
+                "channel": "SVT Play",
+                "note": "Synnedsättning, stående, sittande"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Gruppspel: NOR–SWE",
+                "time": "09:35",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Sveriges match"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Gruppspel: SWE–KOR",
+                "time": "18:35",
+                "channel": "SVT2",
+                "note": "🇸🇪 Sveriges match"
+            },
+            {
+                "sport": "Snowboard",
+                "discipline": "Snowboardcross, seeding",
+                "time": "11:00",
+                "channel": "SVT Play"
+            },
+            {
+                "sport": "Paraishockey",
+                "discipline": "Gruppspel",
+                "time": "12:00",
+                "channel": "SVT Play"
+            }
+        ],
+        "2026-03-08": [
+            {
+                "sport": "Alpint",
+                "discipline": "Super-G",
+                "time": "09:30",
+                "channel": "SVT2"
+            },
+            {
+                "sport": "Skidskytte",
+                "discipline": "Jaktstart",
+                "time": "10:00",
+                "channel": "SVT Play"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Gruppspel",
+                "time": "09:35",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Sverige spelar"
+            },
+            {
+                "sport": "Snowboard",
+                "discipline": "Snowboardcross, final",
+                "time": "11:00",
+                "channel": "SVT2"
+            }
+        ],
+        "2026-03-09": [
+            {
+                "sport": "Alpint",
+                "discipline": "Kombination",
+                "time": "09:00",
+                "channel": "SVT2"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Gruppspel",
+                "time": "09:35",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Sverige spelar"
+            }
+        ],
+        "2026-03-10": [
+            {
+                "sport": "Alpint",
+                "discipline": "Storslalom (damer)",
+                "time": "09:00",
+                "channel": "SVT2"
+            },
+            {
+                "sport": "Längdskidåkning",
+                "discipline": "10 km klassiskt",
+                "time": "09:45",
+                "channel": "SVT2",
+                "note": "🇸🇪 Furuberg, Westerlund, Morelius, Modin"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Gruppspel",
+                "time": "09:35",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Sverige spelar"
+            }
+        ],
+        "2026-03-11": [
+            {
+                "sport": "Alpint",
+                "discipline": "Storslalom (herrar)",
+                "time": "09:00",
+                "channel": "SVT2"
+            },
+            {
+                "sport": "Skidskytte",
+                "discipline": "Medeldistans",
+                "time": "10:00",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Modin"
+            },
+            {
+                "sport": "Längdskidåkning",
+                "discipline": "Sprint",
+                "time": "10:00",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Westerlund, Modin"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Gruppspel",
+                "time": "09:35",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Sverige spelar"
+            }
+        ],
+        "2026-03-13": [
+            {
+                "sport": "Alpint",
+                "discipline": "Slalom (damer)",
+                "time": "09:00",
+                "channel": "SVT2"
+            },
+            {
+                "sport": "Skidskytte",
+                "discipline": "Individuellt",
+                "time": "10:00",
+                "channel": "SVT Play",
+                "note": "🇸🇪 Modin"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Semifinal",
+                "time": "09:35",
+                "channel": "SVT2",
+                "note": "🇸🇪 Sverige (om de avancerar)"
+            }
+        ],
+        "2026-03-14": [
+            {
+                "sport": "Alpint",
+                "discipline": "Slalom (herrar)",
+                "time": "09:00",
+                "channel": "SVT2"
+            },
+            {
+                "sport": "Längdskidåkning",
+                "discipline": "Stafett",
+                "time": "10:00",
+                "channel": "SVT1",
+                "note": "🇸🇪 Westerlund, Morelius deltar"
+            },
+            {
+                "sport": "Snowboard",
+                "discipline": "Banked Slalom",
+                "time": "10:00",
+                "channel": "SVT Play"
+            },
+            {
+                "sport": "Rullstolscurling",
+                "discipline": "Final",
+                "time": "14:35",
+                "channel": "SVT1"
+            }
+        ],
+        "2026-03-15": [
+            {
+                "sport": "Längdskidåkning",
+                "discipline": "20 km fritt",
+                "time": "09:00",
+                "channel": "SVT1",
+                "note": "🇸🇪 Westerlund, Morelius, Modin"
+            },
+            {
+                "sport": "Paraishockey",
+                "discipline": "Guldmatch",
+                "time": "12:00",
+                "channel": "SVT1"
+            },
+            {
+                "sport": "Ceremoni",
+                "discipline": "Avslutningsceremoni",
+                "time": "18:00",
+                "channel": "SVT1",
+                "note": "Direkt från Cortina"
+            }
+        ]
+    }
+}

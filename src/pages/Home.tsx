@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Gamepad2, TestTube, Calendar, Briefcase, Code, Baby } from 'lucide-react';
+import { Gamepad2, TestTube, Calendar, Briefcase, Code, Baby, Waves } from 'lucide-react';
 import { strings } from '../constants/strings';
 import { BUILD_COUNTER } from '../constants/build';
 import kidsPlaceholder from '../assets/images/kids/kids-placeholder.svg';
@@ -39,7 +39,10 @@ export const Home: React.FC = () => {
         { name: strings.routes.daily, icon: Calendar, path: '/daily', color: 'text-red-500' },
         { name: strings.routes.portfolio, icon: Briefcase, path: '/portfolio', color: 'text-emerald-500' },
         { name: strings.routes.code, icon: Code, path: '/code', color: 'text-indigo-500' },
+        { name: 'Parakollen', icon: Waves, path: '/parakollen/', color: 'text-cyan-500', external: true },
     ];
+
+    const tileClasses = "group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/5 p-8 transition-all duration-300 hover:translate-y-[-3px] hover:border-accent/30 hover:bg-foreground/[0.08] hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] focus-visible:outline-2 focus-visible:outline-accent dark:hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.5)]";
 
     return (
         <div className="flex min-h-[calc(100vh-120px)] flex-col items-center justify-center px-4 py-8 lg:py-0 lg:overflow-hidden">
@@ -50,30 +53,40 @@ export const Home: React.FC = () => {
                 <div className="h-0.5 w-24 bg-accent mx-auto" />
             </header>
 
-            <nav className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 animate-in slide-in-from-bottom-8 duration-700 delay-300 fill-mode-both">
-                {portals.map((portal) => (
-                    <Link
-                        key={portal.path}
-                        to={portal.path}
-                        className="group relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-foreground/5 bg-foreground/5 p-8 transition-all duration-300 hover:translate-y-[-3px] hover:border-accent/30 hover:bg-foreground/[0.08] hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] focus-visible:outline-2 focus-visible:outline-accent dark:hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.5)]"
-                    >
-                        {portal.image && (
-                            <div className="absolute inset-0 z-0 opacity-20 transition-opacity duration-500 group-hover:opacity-40">
-                                <img src={portal.image} alt="" className="h-full w-full object-cover" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            <nav className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 animate-in slide-in-from-bottom-8 duration-700 delay-300 fill-mode-both">
+                {portals.map((portal) => {
+                    const inner = (
+                        <>
+                            {portal.image && (
+                                <div className="absolute inset-0 z-0 opacity-20 transition-opacity duration-500 group-hover:opacity-40">
+                                    <img src={portal.image} alt="" className="h-full w-full object-cover" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                                </div>
+                            )}
+                            <div className="relative z-10 mb-4 transition-transform duration-500 group-hover:scale-[1.05] group-hover:rotate-1">
+                                <portal.icon className={`h-10 w-10 ${portal.color}`} />
                             </div>
-                        )}
-                        <div className="relative z-10 mb-4 transition-transform duration-500 group-hover:scale-[1.05] group-hover:rotate-1">
-                            <portal.icon className={`h-10 w-10 ${portal.color}`} />
-                        </div>
-                        <span className="relative z-10 text-sm font-bold uppercase tracking-widest text-foreground/60 transition-colors group-hover:text-foreground">
-                            {portal.name}
-                        </span>
+                            <span className="relative z-10 text-sm font-bold uppercase tracking-widest text-foreground/60 transition-colors group-hover:text-foreground">
+                                {portal.name}
+                            </span>
+                            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-accent/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        </>
+                    );
 
-                        {/* Subtle background glow on hover */}
-                        <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-accent/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    </Link>
-                ))}
+                    if (portal.external) {
+                        return (
+                            <a key={portal.path} href={portal.path} className={tileClasses}>
+                                {inner}
+                            </a>
+                        );
+                    }
+
+                    return (
+                        <Link key={portal.path} to={portal.path} className={tileClasses}>
+                            {inner}
+                        </Link>
+                    );
+                })}
             </nav>
 
             {/* Brand Story / Values */}
