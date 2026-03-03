@@ -13,19 +13,21 @@ function formatTime(iso) {
 function formatDateHuman(iso) {
     if (!iso) return '';
     const d = new Date(iso);
-    const day = d.getDate();
+    if (isNaN(d.getTime())) return '';
+    // Use Stockholm timezone for day and month extraction
+    const parts = stockholmParts(d);
     const months = t('months');
-    const month = months[d.getMonth()];
-    return `${day} ${month}`;
+    const month = months[parts.month - 1];
+    return `${parts.day} ${month}`;
 }
 
 function formatDateYMD(date) {
     if (!date) return '';
     const d = date instanceof Date ? date : new Date(date);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${dd}`;
+    if (isNaN(d.getTime())) return '';
+    // Use Stockholm timezone for YYYY-MM-DD derivation
+    const parts = stockholmParts(d);
+    return `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.day).padStart(2, '0')}`;
 }
 
 function todayYMD() {
@@ -33,7 +35,10 @@ function todayYMD() {
 }
 
 function getTimeBlock(iso) {
-    const h = new Date(iso).getHours();
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return 'morning';
+    // Use Stockholm timezone for time block grouping
+    const h = stockholmParts(d).hour;
     if (h < 10) return 'morning';
     if (h < 14) return 'midday';
     if (h < 18) return 'afternoon';
@@ -118,6 +123,23 @@ function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+// Stockholm timezone part extraction (avoids browser-local timezone)
+const _stockholmFmt = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: TZ,
+    year: 'numeric', month: 'numeric', day: 'numeric',
+    hour: 'numeric', minute: 'numeric',
+    hour12: false,
+});
+
+function stockholmParts(d) {
+    const parts = _stockholmFmt.formatToParts(d);
+    const get = (type) => {
+        const p = parts.find(p => p.type === type);
+        return p ? parseInt(p.value, 10) : 0;
+    };
+    return { year: get('year'), month: get('month'), day: get('day'), hour: get('hour'), minute: get('minute') };
 }
 
 export {

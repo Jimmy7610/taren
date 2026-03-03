@@ -156,8 +156,30 @@ export async function fetchUpstream(url: string, timeoutMs = 8000): Promise<Resp
 
 // ── Date helpers ──
 export function todayStockholm(): string {
+    // Returns YYYY-MM-DD in Europe/Stockholm timezone
     const now = new Date();
-    return now.toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
+    const fmt = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Europe/Stockholm',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+    });
+    // sv-SE format is YYYY-MM-DD
+    return fmt.format(now);
+}
+
+// Normalize a timestamp: if no offset, assume Europe/Stockholm (CET = +01:00, CEST = +02:00)
+export function normalizeTimestamp(raw: string): string | null {
+    if (!raw) return null;
+    const d = new Date(raw);
+    if (isNaN(d.getTime())) {
+        console.warn(`[pk:api] invalid timestamp skipped: ${raw}`);
+        return null;
+    }
+    return d.toISOString();
+}
+
+// Validate a date string is YYYY-MM-DD
+export function isValidDate(dateStr: string): boolean {
+    return /^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !isNaN(new Date(dateStr + 'T00:00:00').getTime());
 }
 
 export function makeApiMeta(sources: string[], error?: boolean): ApiMeta {

@@ -1,7 +1,7 @@
 // schedule.ts – GET /parakollen/api/schedule?date=YYYY-MM-DD&sport=...&discipline=...
 // Returns events for a given date, optionally filtered by sport/discipline.
 
-import { handleOptions, jsonResponse, makeApiMeta } from './_shared';
+import { handleOptions, jsonResponse, makeApiMeta, todayStockholm, isValidDate } from './_shared';
 import type { Event, ApiResponse } from './_shared';
 
 interface ScheduleData {
@@ -71,7 +71,8 @@ export async function onRequest(context: PagesContext): Promise<Response> {
     if (context.request.method === 'OPTIONS') return handleOptions(context.request);
 
     const url = new URL(context.request.url);
-    const date = url.searchParams.get('date') || new Date().toISOString().slice(0, 10);
+    const rawDate = url.searchParams.get('date') || '';
+    const date = (rawDate && isValidDate(rawDate)) ? rawDate : todayStockholm();
     const sport = url.searchParams.get('sport') || '';
     const discipline = url.searchParams.get('discipline') || '';
 

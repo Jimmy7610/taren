@@ -1,7 +1,7 @@
 // today.ts – GET /parakollen/api/today
 // Returns combined: upcoming events, live events, Swedish starts, latest news for today.
 
-import { handleOptions, jsonResponse, makeApiMeta } from './_shared';
+import { handleOptions, jsonResponse, makeApiMeta, todayStockholm } from './_shared';
 import type { Event, NewsItem, ApiResponse } from './_shared';
 
 interface TodayData {
@@ -11,7 +11,7 @@ interface TodayData {
 
 // Milano Cortina 2026 Paralympic schedule (curated fallback)
 function getFallbackEvents(): Event[] {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayStockholm();
     const gameStart = '2026-03-06';
     const gameEnd = '2026-03-15';
 
