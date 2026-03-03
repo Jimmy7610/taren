@@ -232,21 +232,34 @@ function populateSportDropdowns() {
   if (!data) return;
   const sportEl = document.getElementById('pk-filter-sport');
   const discEl = document.getElementById('pk-filter-discipline');
+
+  // Sports dropdown — full reset then repopulate
   if (sportEl && data.sports) {
+    const prev = sportEl.value;
+    sportEl.innerHTML = `<option value="">${t('filterSportAll')}</option>`;
     for (const s of data.sports) {
       const opt = document.createElement('option');
       opt.value = s; opt.textContent = s;
       if (s === state.filters.sport) opt.selected = true;
       sportEl.appendChild(opt);
     }
+    // Restore selection if valid
+    if (state.filters.sport && sportEl.value !== state.filters.sport) {
+      state.filters.sport = '';
+    }
   }
-  if (discEl && data.disciplines && state.filters.sport) {
-    const discs = data.disciplines[state.filters.sport] || [];
-    for (const d of discs) {
-      const opt = document.createElement('option');
-      opt.value = d; opt.textContent = d;
-      if (d === state.filters.discipline) opt.selected = true;
-      discEl.appendChild(opt);
+
+  // Discipline dropdown — reset, then only add disciplines for selected sport
+  if (discEl) {
+    discEl.innerHTML = `<option value="">${t('filterDisciplineAll')}</option>`;
+    if (state.filters.sport && data.disciplines) {
+      const discs = data.disciplines[state.filters.sport] || [];
+      for (const d of discs) {
+        const opt = document.createElement('option');
+        opt.value = d; opt.textContent = d;
+        if (d === state.filters.discipline) opt.selected = true;
+        discEl.appendChild(opt);
+      }
     }
   }
 }
