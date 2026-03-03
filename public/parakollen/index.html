@@ -16,6 +16,9 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://taren.se/parakollen/">
 
+    <!-- Build version (cache-bust key) -->
+    <script>window.PK_BUILD = "98";</script>
+
     <!-- Prevent FOUC: apply theme immediately -->
     <script>
         (function () {
@@ -31,8 +34,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="/parakollen/assets/css/parakollen.css">
+    <!-- Styles (cache-busted) -->
+    <link rel="stylesheet" href="/parakollen/assets/css/parakollen.css?v=98">
 </head>
 
 <body>
@@ -90,8 +93,8 @@
         </footer>
     </div>
 
-    <!-- Scripts (ES modules) -->
-    <script type="module" src="/parakollen/assets/js/parakollen.js"></script>
+    <!-- Scripts (ES modules, cache-busted) -->
+    <script type="module" src="/parakollen/assets/js/parakollen.js?v=98"></script>
 </body>
 
 </html>

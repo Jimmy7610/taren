@@ -51,6 +51,11 @@ const PARALYMPIC_END = new Date('2026-03-15T22:00:00+01:00');
 
 // ── Init ──
 function init() {
+  // Single-run guard
+  if (window.__PK_INIT_DONE__) return;
+  window.__PK_INIT_DONE__ = true;
+  console.log('[Parakollen] init build', window.PK_BUILD, 'listeners attached');
+
   initTheme();
   renderHeader();
   renderTabs();
@@ -83,7 +88,9 @@ function init() {
 function renderHeader() {
   const meta = document.getElementById('pk-header-meta');
   if (!meta) return;
+  const buildTag = window.PK_BUILD ? `<span class="pk-build-tag">Build #${window.PK_BUILD}</span>` : '';
   meta.innerHTML = `
+    ${buildTag}
     <span class="pk-last-updated">${t('lastUpdated')} <span id="pk-last-updated">--:--</span></span>
     <button class="pk-icon-btn" id="pk-refresh-btn" aria-label="${t('refresh')}" title="${t('refresh')}">
       <svg class="pk-icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.636-6.364"/><path d="M21 3v6h-6"/></svg>
@@ -260,6 +267,7 @@ function populateSportDropdowns() {
       }
     }
   }
+  console.log('[Parakollen] sports options', document.querySelectorAll('#pk-filter-sport option').length);
 }
 
 // ── View Router ──
