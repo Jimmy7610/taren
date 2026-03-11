@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Gamepad2, TestTube, Calendar, Briefcase, Code, Baby, Waves, Grid3X3 } from 'lucide-react';
+import { Gamepad2, TestTube, Calendar, Briefcase, Code, Baby, Waves } from 'lucide-react';
 import { strings } from '../constants/strings';
 import { BUILD_COUNTER } from '../constants/build';
 import kidsPlaceholder from '../assets/images/kids/kids-placeholder.svg';
@@ -39,7 +39,6 @@ export const Home: React.FC = () => {
         { name: strings.routes.daily, icon: Calendar, path: '/daily', color: 'text-red-500' },
         { name: strings.routes.portfolio, icon: Briefcase, path: '/portfolio', color: 'text-emerald-500' },
         { name: strings.routes.code, icon: Code, path: '/code', color: 'text-indigo-500' },
-        { name: 'Ninefold', icon: Grid3X3, path: '/ninefold/', color: 'text-neutral-500', external: true },
         { name: 'Parakollen', icon: Waves, path: '/parakollen/', color: 'text-cyan-500', external: true },
     ];
 
