@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninefold | TAREN</title>
+    <meta name="description" content="A quiet logic experiment in nine parts.">
+    
+    <!-- Theme Sync -->
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute('content', theme === 'dark' ? '#0A0A0A' : '#FDFDFD');
+            }
+        })();
+    </script>
+    <meta name="theme-color" content="#0A0A0A">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="nf-layout">
+        <header class="nf-header">
+            <div class="nf-header-left">
+                <a href="/" class="nf-back">← TAREN</a>
+            </div>
+            <h1 class="nf-title">NINEFOLD</h1>
+            <div class="nf-header-right">
+                <span id="nf-timer">00:00</span>
+            </div>
+        </header>
+
+        <main class="nf-main">
+            <div id="nf-setup" class="nf-setup">
+                <p class="nf-intro">A quiet logic experiment. Select a depth.</p>
+                <div class="nf-difficulty-list">
+                    <button class="nf-btn nf-diff-btn" data-level="faint">Faint</button>
+                    <button class="nf-btn nf-diff-btn" data-level="still">Still</button>
+                    <button class="nf-btn nf-diff-btn" data-level="deep">Deep</button>
+                </div>
+            </div>
+
+            <div id="nf-game" class="nf-game hidden">
+                <div id="nf-grid" class="nf-grid"></div>
+
+                <div class="nf-controls">
+                    <div class="nf-actions">
+                        <button id="nf-undo" class="nf-icon-btn" title="Undo">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h10a5 5 0 0 1 0 10H11M3 10l4-4M3 10l4 4"/></svg>
+                        </button>
+                        <button id="nf-erase" class="nf-icon-btn" title="Erase">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16l4-4M22 10.3c.4.4.4 1 0 1.4l-4.2 4.2-1.4-1.4 4.2-4.2c.4-.4 1-.4 1.4 0Z"/><path d="m18 2 4 4-6 6-4-4 6-6Z"/></svg>
+                        </button>
+                        <button id="nf-notes" class="nf-icon-btn" title="Notes Mode">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            <span class="nf-badge">OFF</span>
+                        </button>
+                    </div>
+
+                    <div class="nf-numpad">
+                        <button class="nf-num" data-val="1">1</button>
+                        <button class="nf-num" data-val="2">2</button>
+                        <button class="nf-num" data-val="3">3</button>
+                        <button class="nf-num" data-val="4">4</button>
+                        <button class="nf-num" data-val="5">5</button>
+                        <button class="nf-num" data-val="6">6</button>
+                        <button class="nf-num" data-val="7">7</button>
+                        <button class="nf-num" data-val="8">8</button>
+                        <button class="nf-num" data-val="9">9</button>
+                    </div>
+                </div>
+
+                <div class="nf-status">
+                    <span id="nf-mistakes">Mistakes: 0/3</span>
+                    <button id="nf-new-game" class="nf-text-btn">New Experiment</button>
+                </div>
+            </div>
+
+            <div id="nf-overlay" class="nf-overlay hidden">
+                <div class="nf-overlay-content">
+                    <h2 id="nf-overlay-title">Complete</h2>
+                    <p id="nf-overlay-text">The pattern is balanced.</p>
+                    <button id="nf-overlay-btn" class="nf-btn">Return</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="nf-footer">
+            TAREN · Ninefold
+        </footer>
+    </div>
+
+    <!-- Grain Overlay (matching Taren) -->
+    <div class="nf-grain" aria-hidden="true"></div>
+
+    <script src="assets/js/game.js"></script>
+</body>
+</html>

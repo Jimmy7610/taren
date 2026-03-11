@@ -26,6 +26,11 @@ export const strings = {
                 description: "A minimalist digital synthesis of logic and alignment.",
                 cta: "Enter Experiment"
             },
+            ninefold: {
+                title: "NINEFOLD",
+                description: "A quiet logic experiment in nine parts.",
+                cta: "Enter Experiment"
+            },
             dormant: {
                 label: "Coming later",
                 description: "A dormant experiment yet to be unveiled…"

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ExperimentCard } from '../components/ExperimentCard';
 import { strings } from '../constants/strings';
+import { Grid3X3 } from 'lucide-react';
 import snakeHero from '../games/snake/assets/snake-pixar-neon.png';
 import hero2048 from '../games/2048/assets/images/hero.png';
 
@@ -46,6 +47,15 @@ export const GamesHubPage: React.FC = () => {
             path: "/games/hexline/play",
             status: "ACTIVE" as const,
             ctaLabel: "ENTER GAME"
+        },
+        {
+            title: strings.games.index.ninefold.title,
+            description: strings.games.index.ninefold.description,
+            path: "/ninefold/",
+            status: "ACTIVE" as const,
+            icon: Grid3X3,
+            ctaLabel: "ENTER ROOM",
+            external: true
         },
         {
             title: "DORMANT",

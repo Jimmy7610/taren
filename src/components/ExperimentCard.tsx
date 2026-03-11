@@ -10,6 +10,7 @@ interface ExperimentCardProps {
     path: string;
     status: 'ACTIVE' | 'COMING_SOON';
     ctaLabel?: string;
+    external?: boolean;
 }
 
 export const ExperimentCard: React.FC<ExperimentCardProps> = ({
@@ -19,7 +20,8 @@ export const ExperimentCard: React.FC<ExperimentCardProps> = ({
     image,
     path,
     status,
-    ctaLabel
+    ctaLabel,
+    external
 }) => {
     const isActive = status === 'ACTIVE';
 
@@ -84,6 +86,13 @@ export const ExperimentCard: React.FC<ExperimentCardProps> = ({
         }`;
 
     if (isActive) {
+        if (external) {
+            return (
+                <a href={path} className={baseClasses}>
+                    {CardContent}
+                </a>
+            );
+        }
         return (
             <Link to={path} className={baseClasses}>
                 {CardContent}
