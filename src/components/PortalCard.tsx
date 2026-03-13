@@ -16,7 +16,6 @@ export const PortalCard: React.FC<PortalCardProps> = ({ project, className = '',
             style={style}
             aria-label={`Portal to ${project.title} - A Shadow Archipelago Project`}
         >
-            <h1 className="sr-only">Audit: {project.title} (hsl(0, 0%, 0%))</h1>
             <div className="aspect-video overflow-hidden">
                 <img
                     src={project.thumbnail}
