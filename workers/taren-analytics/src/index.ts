@@ -137,22 +137,27 @@ export default {
                 const currentStart = startOfToday - duration;
                 const previousStart = currentStart - duration;
 
-                const [current, previous] = await Promise.all([
-                    getMetrics(currentStart),
-                    getMetrics(previousStart)
-                ]);
+                try {
+                    const [current, previous] = await Promise.all([
+                        getMetrics(currentStart),
+                        getMetrics(previousStart)
+                    ]);
 
-                return json({
-                    ok: true,
-                    range,
-                    current,
-                    previous,
-                    // Fallback flat fields for legacy UI if any
-                    visitors: current.visitors,
-                    page_views: current.page_views,
-                    most_played: current.most_played,
-                    avg_game_duration_ms: current.avg_game_duration_ms
-                });
+                    return json({
+                        ok: true,
+                        range,
+                        current,
+                        previous,
+                        // Fallback flat fields for legacy UI if any
+                        visitors: current.visitors,
+                        page_views: current.page_views,
+                        most_played: current.most_played,
+                        avg_game_duration_ms: current.avg_game_duration_ms
+                    });
+                } catch (err: any) {
+                    console.error("Admin Overview Failure:", err);
+                    return bad("Internal analytics failure", 500);
+                }
             }
 
             if (path === "/api/admin/games") {
