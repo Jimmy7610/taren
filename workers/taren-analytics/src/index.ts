@@ -17,11 +17,14 @@ function bad(msg: string, code = 400) {
 }
 
 function rangeToSinceMs(range: string): number {
-    const now = Date.now();
-    if (range === "24h") return now - 24 * 60 * 60 * 1000;
-    if (range === "7d") return now - 7 * 24 * 60 * 60 * 1000;
-    if (range === "30d") return now - 30 * 24 * 60 * 60 * 1000;
-    return now - 24 * 60 * 60 * 1000;
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    const startOfToday = d.getTime();
+    
+    if (range === "24h") return startOfToday - 24 * 60 * 60 * 1000;
+    if (range === "7d") return startOfToday - 7 * 24 * 60 * 60 * 1000;
+    if (range === "30d") return startOfToday - 30 * 24 * 60 * 60 * 1000;
+    return startOfToday - 24 * 60 * 60 * 1000;
 }
 
 function clampInt(v: string | null, def: number, min: number, max: number) {

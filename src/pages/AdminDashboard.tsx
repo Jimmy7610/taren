@@ -180,20 +180,20 @@ const ActivitySVGChart: React.FC<{ bins: Bin[], range: string }> = ({ bins, rang
                     <path
                         d={viewsLine}
                         fill="none"
-                        stroke="#f2f2f2" // Premium Off-White
+                        stroke="currentColor" 
                         strokeWidth="4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="drop-shadow-[0_2px_12px_rgba(80,227,194,0.3)]"
+                        className="text-white drop-shadow-[0_2px_12px_rgba(80,227,194,0.3)]"
                     />
                     <path
                         d={startsLine}
                         fill="none"
-                        stroke="#10b981"
+                        stroke="currentColor"
                         strokeWidth="3.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="opacity-40"
+                        className="text-emerald-500 opacity-40"
                     />
 
                     {/* Precision Tracking Line */}
@@ -337,23 +337,29 @@ export const AdminDashboard: React.FC = () => {
 
     useEffect(() => {
         const fetchAll = async () => {
-            try {
-                const [ovRes, serRes, gamesRes, pagesRes, recentRes] = await Promise.all([
-                    fetch(`/api/admin/overview?range=${range}`, { credentials: "include" }),
-                    fetch(`/api/admin/timeseries?range=${range}`, { credentials: "include" }),
-                    fetch(`/api/admin/games?range=${range}`, { credentials: "include" }),
-                    fetch(`/api/admin/pages?range=${range}`, { credentials: "include" }),
-                    fetch(`/api/admin/recent?limit=50`, { credentials: "include" })
-                ]);
+            const safeFetch = async (url: string, def: any) => {
+                try {
+                    const res = await fetch(url, { credentials: "include" });
+                    return res.ok ? await res.json() : def;
+                } catch (err) {
+                    console.error(`Fetch error for ${url}`, err);
+                    return def;
+                }
+            };
 
-                if (ovRes.ok) setData(await ovRes.json());
-                if (serRes.ok) setSeries((await serRes.json()).bins || []);
-                if (gamesRes.ok) setGames((await gamesRes.json()).items || []);
-                if (pagesRes.ok) setPages((await pagesRes.json()).items || []);
-                if (recentRes.ok) setRecent((await recentRes.json()).items || []);
-            } catch (err) {
-                console.error("Admin fetch error", err);
-            }
+            const [ov, ser, gms, pgs, rec] = await Promise.all([
+                safeFetch(`/api/admin/overview?range=${range}`, null),
+                safeFetch(`/api/admin/timeseries?range=${range}`, { bins: [] }),
+                safeFetch(`/api/admin/games?range=${range}`, { items: [] }),
+                safeFetch(`/api/admin/pages?range=${range}`, { items: [] }),
+                safeFetch(`/api/admin/recent?limit=50`, { items: [] })
+            ]);
+
+            if (ov) setData(ov);
+            setSeries(ser.bins || []);
+            setGames(gms.items || []);
+            setPages(pgs.items || []);
+            setRecent(rec.items || []);
         };
         fetchAll();
     }, [range]);

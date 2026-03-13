@@ -35,8 +35,9 @@ export type TelemetryEvent = {
 };
 
 export async function sendEvent(evt: TelemetryEvent): Promise<void> {
-    // Respect DNT
-    if (navigator.doNotTrack === "1") return;
+    // Respect DNT & Global Privacy Control (GPC)
+    const isDNT = navigator.doNotTrack === "1" || (navigator as any).globalPrivacyControl === true;
+    if (isDNT) return;
 
     const path = evt.path ?? window.location.pathname;
 
