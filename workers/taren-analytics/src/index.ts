@@ -47,9 +47,16 @@ export default {
             let body: any;
             try { body = await req.json(); } catch { return bad("Invalid JSON"); }
 
+            // Security: Enforce freshness (reject ts more than 5m in future or 1h in past)
+            const now = Date.now();
+            const ts = Number(body.ts) || now;
+            if (ts > now + 300000 || ts < now - 3600000) {
+                return bad("Invalid timestamp: out of sync with real-time reality");
+            }
+
             // Allow only anonymous fields; reject obvious PII keys
             const allowed = {
-                ts: Number(body.ts) || Date.now(),
+                ts,
                 type: String(body.type || "").slice(0, 64),
                 path: body.path ? String(body.path).slice(0, 200) : null,
                 game: body.game ? String(body.game).slice(0, 32) : null,
@@ -57,6 +64,7 @@ export default {
                 duration_ms: body.duration_ms != null ? Number(body.duration_ms) : null,
                 score: body.score != null ? Number(body.score) : null,
                 moves: body.moves != null ? Number(body.moves) : null,
+                result: body.result ? String(body.result).slice(0, 32) : null,
                 device: body.device ? String(body.device).slice(0, 16) : null,
                 country: req.headers.get("cf-ipcountry") || null,
             };
@@ -69,64 +77,81 @@ export default {
                 return bad("Invalid duration_ms");
             }
 
-            await env.DB.prepare(
-                `INSERT INTO events (ts,type,path,game,session_id,duration_ms,score,moves,device,country)
-         VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)`
-            )
-                .bind(
-                    allowed.ts,
-                    allowed.type,
-                    allowed.path,
-                    allowed.game,
-                    allowed.session_id,
-                    allowed.duration_ms,
-                    allowed.score,
-                    allowed.moves,
-                    allowed.device,
-                    allowed.country
+            try {
+                await env.DB.prepare(
+                    `INSERT INTO events (ts,type,path,game,session_id,duration_ms,score,moves,result,device,country)
+                     VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)`
                 )
-                .run();
-
-            return json({ ok: true });
+                    .bind(
+                        allowed.ts,
+                        allowed.type,
+                        allowed.path,
+                        allowed.game,
+                        allowed.session_id,
+                        allowed.duration_ms,
+                        allowed.score,
+                        allowed.moves,
+                        allowed.result,
+                        allowed.device,
+                        allowed.country
+                    )
+                    .run();
+                return json({ ok: true });
+            } catch (err: any) {
+                console.error("D1 Ingest Failure:", err);
+                return bad("Persistence failure", 500);
+            }
         }
 
         // ---------------------------
         // Admin APIs (protected by Cloudflare Access)
-        // NOTE: Cloudflare Access policy must protect /api/admin/*
         // ---------------------------
         if (path.startsWith("/api/admin/")) {
             const range = url.searchParams.get("range") || "24h";
             const since = rangeToSinceMs(range);
-
+            
+            // Align overview with nested dashboard expectations
             if (path === "/api/admin/overview") {
-                const visitors = await env.DB.prepare(
-                    `SELECT COUNT(DISTINCT session_id) as n FROM events WHERE ts >= ?1`
-                ).bind(since).first<any>();
+                const getMetrics = async (sinceTs: number) => {
+                    const visitors = await env.DB.prepare(`SELECT COUNT(DISTINCT session_id) as n FROM events WHERE ts >= ?1`).bind(sinceTs).first<any>();
+                    const pageViews = await env.DB.prepare(`SELECT COUNT(*) as n FROM events WHERE ts >= ?1 AND type='page_view'`).bind(sinceTs).first<any>();
+                    const mostPlayed = await env.DB.prepare(`SELECT game, COUNT(*) as n FROM events WHERE ts >= ?1 AND type='game_start' AND game IS NOT NULL GROUP BY game ORDER BY n DESC LIMIT 1`).bind(sinceTs).first<any>();
+                    const avgRun = await env.DB.prepare(`SELECT AVG(duration_ms) as n FROM events WHERE ts >= ?1 AND type='game_end' AND duration_ms IS NOT NULL`).bind(sinceTs).first<any>();
+                    
+                    return {
+                        visitors: visitors?.n ?? 0,
+                        page_views: pageViews?.n ?? 0,
+                        most_played: mostPlayed?.game ?? "—",
+                        most_played_starts: mostPlayed?.n ?? 0,
+                        avg_game_duration_ms: avgRun?.n ? Math.floor(avgRun.n) : 0,
+                    };
+                };
 
-                const pageViews = await env.DB.prepare(
-                    `SELECT COUNT(*) as n FROM events WHERE ts >= ?1 AND type='page_view'`
-                ).bind(since).first<any>();
+                const now = Date.now();
+                const d = new Date(); d.setHours(0,0,0,0);
+                const startOfToday = d.getTime();
+                let duration = 24 * 60 * 60 * 1000;
+                if (range === "7d") duration = 7 * 24 * 60 * 60 * 1000;
+                if (range === "30d") duration = 30 * 24 * 60 * 60 * 1000;
 
-                const mostPlayed = await env.DB.prepare(
-                    `SELECT game, COUNT(*) as n FROM events
-           WHERE ts >= ?1 AND type='game_start' AND game IS NOT NULL
-           GROUP BY game ORDER BY n DESC LIMIT 1`
-                ).bind(since).first<any>();
+                const currentStart = startOfToday - duration;
+                const previousStart = currentStart - duration;
 
-                const avgRun = await env.DB.prepare(
-                    `SELECT AVG(duration_ms) as n FROM events
-           WHERE ts >= ?1 AND type='game_end' AND duration_ms IS NOT NULL`
-                ).bind(since).first<any>();
+                const [current, previous] = await Promise.all([
+                    getMetrics(currentStart),
+                    getMetrics(previousStart)
+                ]);
 
                 return json({
-                    visitors: visitors?.n ?? 0,
-                    visitors_meta: "unique sessions",
-                    page_views: pageViews?.n ?? 0,
-                    page_views_meta: "views",
-                    most_played: mostPlayed?.game ?? "—",
-                    most_played_meta: mostPlayed?.n ? `${mostPlayed.n} starts` : "by starts",
-                    avg_game_duration_ms: avgRun?.n ? Math.floor(avgRun.n) : 0,
-                    avg_game_duration_meta: "avg duration",
+                    ok: true,
+                    range,
+                    current,
+                    previous,
+                    // Fallback flat fields for legacy UI if any
+                    visitors: current.visitors,
+                    page_views: current.page_views,
+                    most_played: current.most_played,
+                    avg_game_duration_ms: current.avg_game_duration_ms
                 });
             }
 
