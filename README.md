@@ -1,36 +1,44 @@
 # Taren
 
-Taren is a dark, atmospheric, minimal, curated indie browser-game gallery.
+Taren is a quiet collection of small browser games built with vanilla HTML/CSS/JS. It prioritizes a dark, minimal, atmospheric, and premium experience.
 
-## Architecture
+## Current Playable Games
+- **Pulseframe** — Reflex / survival gameplay.
+- **Linebound** — Strategic grid-based gameplay.
+- **Memory Drift** — Calm memory and pattern recall.
 
-This is a clean, static website built using only **vanilla HTML, CSS, and JavaScript**. 
-There are no build dependencies, no frameworks (no React, no Vue), and no bundlers (no Vite).
+## Site Structure
+- `/` — Homepage / Landing
+- `/games/` — Game gallery and selection
+- `/about/` — Project information and philosophy
+- `/games/pulseframe/` — Pulseframe game folder
+- `/games/linebound/` — Linebound game folder
+- `/games/memory-drift/` — Memory Drift game folder
 
-The core structure is:
-- `/index.html` (Landing)
-- `/games/index.html` (Gallery)
-- `/about/index.html` (About)
-- `/assets/css/global.css` (Shared styling)
-- `/assets/js/main.js` (Minimal UI enhancements)
+## Technical Rules
+To maintain the Taren identity and simplicity, all development must follow these rules:
+- **No Frameworks:** Do not use React, Vue, Svelte, or similar.
+- **No Build Steps:** No Vite, Webpack, or npm build commands. The site runs as-is.
+- **No Dependencies:** No external libraries or APIs. Pure vanilla HTML, CSS, and JS.
+- **Isolation:** Every game must be fully isolated in its own folder. Shared logic is discouraged to keep games modular.
+- **No-Scroll Target:** Game pages should ideally fit within one desktop/laptop viewport without vertical scrolling.
 
-## Adding New Games
+## Build Badge
+A small build badge is displayed in the top-right corner of every page.
+- This allows Jimmy to verify that the live deployed site matches the latest pushed code.
+- **Before every push:** You MUST increase the `window.TAREN_BUILD_NUMBER` value by 1 in `/assets/js/build.js`.
 
-- Use `/templates/game-template/` as your starting point.
-- Copy it into `/games/game-name/`.
-- Add a card manually in `/games/index.html`.
-- Game thumbnails live in `/assets/images/games/` (Recommended: 1200x800 `.webp`).
-- Keep each game completely isolated from others.
-- Search for `INSTÄLLNING` in the new game's code to find safe values to tweak.
+## Game Thumbnails
+Game cards in the gallery use a standardized thumbnail system.
+- **Location:** `/assets/images/games/`
+- **Preferred Format:** `.webp`
+- **Recommended Size:** 1200x800 px (3:2 ratio)
+- **Guide:** See `/docs/game-thumbnails.md` for full instructions.
 
-For more details on the architectural rules for games, read `/docs/game-standard.md`.
-For instructions on replacing or generating game thumbnails, read `/docs/game-thumbnails.md`.
-
-## Version Control / Build Badge
-
-A small build badge is displayed on every page to verify that the live version matches the latest pushed code.
-**Before every push:** Increase the `window.TAREN_BUILD_NUMBER` value by 1 in `/assets/js/build.js`.
+## Tweakable Settings (INSTÄLLNING)
+The project uses a simple way to expose tweakable parameters.
+- Search for the keyword `INSTÄLLNING` in VS Code to find safe values to change (colors, speeds, sizes, volumes).
+- All future games must use `INSTÄLLNING -` comments for any value intended to be adjusted later.
 
 ## Deployment
-
-The site is deployed automatically through Cloudflare Pages from the `main` branch. Since it is entirely static, no build commands or package managers are required.
+Deployed via Cloudflare Pages from the `main` branch.
