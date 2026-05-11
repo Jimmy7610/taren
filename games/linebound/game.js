@@ -8,15 +8,17 @@ const SETTINGS = {
     gridSize: 10, // INSTÄLLNING - Nuvarande storlek på spelplanen. (10 eller 20)
     smallGridSize: 10, // INSTÄLLNING - Ändra första valbara spelplansstorleken.
     largeGridSize: 20, // INSTÄLLNING - Ändra andra valbara spelplansstorleken.
-    minDotRadius: 2.5, // INSTÄLLNING - Ändra minsta prickstorlek när spelplanen är stor.
-    maxDotRadius: 4, // INSTÄLLNING - Ändra största prickstorlek när spelplanen är mindre.
-    minLineThickness: 2, // INSTÄLLNING - Ändra minsta linjetjocklek för stora spelplaner.
-    maxLineThickness: 4, // INSTÄLLNING - Ändra största linjetjocklek för mindre spelplaner.
+    boardPadding: 36, // INSTÄLLNING - Ändra luft runt spelplanen. Högre värde = mer marginal runt rutnätet.
+    smallBoardDotRadius: 4.5, // INSTÄLLNING - Ändra prickstorlek för 10x10-läget.
+    largeBoardDotRadius: 2.4, // INSTÄLLNING - Ändra prickstorlek för 20x20-läget.
+    smallBoardLineThickness: 3.5, // INSTÄLLNING - Ändra linjetjocklek för 10x10-läget.
+    largeBoardLineThickness: 1.6, // INSTÄLLNING - Ändra linjetjocklek för 20x20-läget.
+    smallBoardBoxOpacity: 0.22, // INSTÄLLNING - Ändra hur tydligt fångade rutor fylls i 10x10.
+    largeBoardBoxOpacity: 0.12, // INSTÄLLNING - Ändra hur tydligt fångade rutor syns i 20x20-läget. Lägre värde = renare spelplan.
     edgeHitPadding: 18, // INSTÄLLNING - Ändra hur nära musen behöver vara en linje för att den ska kunna väljas. Högre värde = lättare att klicka.
     edgeClickableInset: 0.05, // INSTÄLLNING - Ändra hur mycket av linjens ytterkanter som inte ska räknas (0.05 = ca 90% är klickbar).
     aiThinkingDelay: 450, // INSTÄLLNING - Ändra hur länge AI väntar innan den gör sitt drag (i ms). Högre värde = mer mänsklig känsla.
     aiSafeMoveBias: 0.85, // INSTÄLLNING - Ändra hur ofta AI försöker välja ett säkert drag. Lägre värde = enklare AI.
-    boxFillOpacity: 0.22, // INSTÄLLNING - Ändra hur tydligt fångade rutor fylls med färg.
     colors: {
         player: '#8b6cff', // INSTÄLLNING - Spelarens färg
         ai: '#4cc9f0',     // INSTÄLLNING - AI:s färg
@@ -70,7 +72,7 @@ function resize() {
     canvas.height = container.clientHeight;
     
     // Calculate board size leaving some padding
-    const padding = 60;
+    const padding = SETTINGS.boardPadding;
     boardSize = Math.min(canvas.width, canvas.height) - padding * 2;
     spacing = boardSize / SETTINGS.gridSize;
     
@@ -426,8 +428,9 @@ function draw() {
     
     // Dynamic scaling
     const tRatio = (s - SETTINGS.smallGridSize) / Math.max(1, SETTINGS.largeGridSize - SETTINGS.smallGridSize);
-    const dotRad = SETTINGS.maxDotRadius - tRatio * (SETTINGS.maxDotRadius - SETTINGS.minDotRadius);
-    const lineThick = SETTINGS.maxLineThickness - tRatio * (SETTINGS.maxLineThickness - SETTINGS.minLineThickness);
+    const dotRad = SETTINGS.smallBoardDotRadius - tRatio * (SETTINGS.smallBoardDotRadius - SETTINGS.largeBoardDotRadius);
+    const lineThick = SETTINGS.smallBoardLineThickness - tRatio * (SETTINGS.smallBoardLineThickness - SETTINGS.largeBoardLineThickness);
+    const boxOpacity = SETTINGS.smallBoardBoxOpacity - tRatio * (SETTINGS.smallBoardBoxOpacity - SETTINGS.largeBoardBoxOpacity);
     
     // Draw filled boxes
     for (let y = 0; y < s; y++) {
@@ -437,7 +440,7 @@ function draw() {
                 const py = offsetY + y * spacing;
                 
                 ctx.fillStyle = (boxes[y][x] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
-                ctx.globalAlpha = SETTINGS.boxFillOpacity;
+                ctx.globalAlpha = boxOpacity;
                 ctx.fillRect(px, py, spacing, spacing);
                 ctx.globalAlpha = 1.0;
             }

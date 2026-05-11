@@ -18,21 +18,24 @@
     </nav>
 
     <main class="game-wrapper fade-in-up delay-1">
-        <div id="game-container">
-            <canvas id="gameCanvas"></canvas>
-            
-            <!-- HUD -->
-            <div id="hud">
-                <div class="hud-top">
+        <div class="linebound-layout">
+            <!-- HUD (External to board) -->
+            <div id="hud-external">
+                <div class="hud-row-1">
                     <div id="scoreDisplay">You: 0 | Computer: 0</div>
+                    <div id="turnDisplay" class="turn-player">Your Turn</div>
+                </div>
+                <div class="hud-row-2">
                     <div class="board-size-selector">
                         <span style="font-size: 0.875rem; color: var(--text-muted); margin-right: 8px;">Board</span>
                         <button class="btn-size active" data-size="10">10x10</button>
                         <button class="btn-size" data-size="20">20x20</button>
                     </div>
-                    <div id="turnDisplay" class="turn-player">Your Turn</div>
                 </div>
             </div>
+
+            <div id="game-container">
+                <canvas id="gameCanvas"></canvas>
 
             <!-- Start Screen -->
             <div id="startScreen" class="overlay">
