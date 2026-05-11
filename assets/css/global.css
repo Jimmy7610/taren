@@ -5,6 +5,7 @@
   --bg-gradient: radial-gradient(circle at 50% -20%, #1a1528, #09090b 70%);
   --accent: #8b6cff;
   --accent-glow: rgba(139, 108, 255, 0.2);
+  --featured-card-glow: rgba(139, 108, 255, 0.25); /* INSTÄLLNING - Ändra hur stark glow den spelbara Pulseframe-kortet får. */
   --text: #fafafa;
   --text-muted: #a1a1aa;
   --card-bg: rgba(24, 24, 27, 0.6);
@@ -296,4 +297,22 @@ p {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Featured / Playable Game Cards */
+.card-featured {
+  border-color: var(--border-hover);
+  box-shadow: 0 0 20px -5px var(--featured-card-glow);
+}
+
+.card-featured:hover {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 30px -5px var(--featured-card-glow);
+}
+
+.badge-playable {
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 0 10px var(--accent-glow);
 }
