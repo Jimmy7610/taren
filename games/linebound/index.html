@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Linebound - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="/assets/js/build.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="game-wrapper fade-in-up delay-1">
+        <div id="game-container">
+            <canvas id="gameCanvas"></canvas>
+            
+            <!-- HUD -->
+            <div id="hud">
+                <div class="hud-top">
+                    <div id="scoreDisplay">You: 0 | AI: 0</div>
+                    <div id="turnDisplay" class="turn-player">Your Turn</div>
+                </div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="startScreen" class="overlay">
+                <h1>Linebound</h1>
+                <p>Click between two dots to draw a line.<br>Complete a box to score and play again.</p>
+                <button id="startBtn" class="btn">Start</button>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="gameOverScreen" class="overlay hidden">
+                <h1 id="resultTitle">Game Over</h1>
+                <div class="score-board">
+                    <p>You: <span id="finalScorePlayer">0</span></p>
+                    <p>AI: <span id="finalScoreAI">0</span></p>
+                </div>
+                <button id="retryBtn" class="btn">Restart</button>
+            </div>
+        </div>
+    </main>
+    <script src="game.js" defer></script>
+</body>
+</html>
