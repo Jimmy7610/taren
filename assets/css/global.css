@@ -39,6 +39,11 @@
   --build-badge-top: 14px; /* INSTÄLLNING - Ändra avståndet från toppen för build-rutan. */
   --build-badge-right: 14px; /* INSTÄLLNING - Ändra avståndet från högerkanten för build-rutan. */
   --build-badge-opacity: 0.78; /* INSTÄLLNING - Ändra hur tydlig build-rutan ska vara. */
+
+  /* Gallery Cards */
+  --concept-thumbnail-opacity: 0.9; /* INSTÄLLNING - Ändra hur tydliga konceptbildernas CSS-effekter ska vara. */
+  --featured-card-border-opacity: 0.55; /* INSTÄLLNING - Ändra hur tydlig Pulseframe-kortets markerade kant ska vara. */
+  --game-card-glow-strength: 0.28; /* INSTÄLLNING - Ändra hur stark glow-effekten på spelkorten ska vara. */
 }
 
 * {
@@ -184,10 +189,12 @@ p {
 .btn-disabled {
   background-color: transparent;
   color: var(--text-muted);
-  border: 1px solid var(--border);
-  cursor: not-allowed;
-  font-size: 0.875rem;
-  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: default;
+  font-size: 0.75rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  opacity: 0.6;
 }
 
 .btn-disabled:hover {
@@ -276,8 +283,18 @@ p {
   width: 100%;
   height: 100%;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  /* Placeholders will use individual inline styles or JS to look unique */
+  opacity: var(--concept-thumbnail-opacity);
 }
+
+.concept-void-runner { background: linear-gradient(180deg, transparent 20%, rgba(20,20,30,0.8) 100%), linear-gradient(90deg, #111 0%, #3a1c71 50%, #111 100%); }
+.concept-signal-lost { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px), radial-gradient(circle at 70% 30%, #4a5568, #1a202c 80%); }
+.concept-orbline { background: radial-gradient(circle at 30% 70%, rgba(139, 108, 255, 0.4) 0%, transparent 50%), radial-gradient(circle at 70% 30%, rgba(74, 222, 128, 0.4) 0%, transparent 50%), #0d0d12; }
+.concept-static-bloom { background: radial-gradient(ellipse at 50% 50%, rgba(244, 114, 182, 0.25) 0%, transparent 70%), #18181b; filter: blur(4px) contrast(1.1); }
+.concept-memory-drift { background: linear-gradient(45deg, rgba(96, 165, 250, 0.15) 0%, transparent 40%), linear-gradient(-45deg, rgba(192, 132, 252, 0.15) 0%, transparent 40%), #111827; }
+.concept-night-signal { background: radial-gradient(circle at 50% 100%, rgba(251, 191, 36, 0.1) 0%, transparent 60%), #1f2937; }
+.concept-echo-veil { background: radial-gradient(circle at center, rgba(45, 212, 191, 0.1) 0%, rgba(45, 212, 191, 0.05) 30%, transparent 70%), #0f172a; }
+.concept-hollow-path { background: linear-gradient(180deg, #27272a 0%, #000 100%); box-shadow: inset 0 20px 50px rgba(0,0,0,0.8); }
+.concept-pulseframe { background: radial-gradient(circle at 50% 40%, rgba(139, 108, 255, 0.5) 0%, rgba(139, 108, 255, 0) 70%), #09090b; }
 
 .card:hover .card-visual-inner {
   transform: scale(1.05);
@@ -342,12 +359,12 @@ p {
 
 /* Featured / Playable Game Cards */
 .card-featured {
-  border-color: var(--border-hover);
-  box-shadow: 0 0 20px -5px var(--featured-card-glow);
+  border-color: rgba(139, 108, 255, var(--featured-card-border-opacity));
+  box-shadow: 0 0 20px -5px rgba(139, 108, 255, var(--game-card-glow-strength));
 }
 
 .card-featured:hover {
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 30px -5px var(--featured-card-glow);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 40px 0 rgba(139, 108, 255, var(--game-card-glow-strength));
 }
 
 .badge-playable {
