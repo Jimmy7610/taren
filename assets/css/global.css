@@ -34,6 +34,11 @@
   /* Homepage Layout */
   --home-hero-offset: -5vh; /* INSTÄLLNING - Ändra om startsidans innehåll ska flyttas upp/ner. Negativt värde = uppåt. */
   --home-content-gap: 24px; /* INSTÄLLNING - Ändra avståndet mellan titel, text och knapp på startsidan. */
+
+  /* Build Badge */
+  --build-badge-top: 14px; /* INSTÄLLNING - Ändra avståndet från toppen för build-rutan. */
+  --build-badge-right: 14px; /* INSTÄLLNING - Ändra avståndet från högerkanten för build-rutan. */
+  --build-badge-opacity: 0.78; /* INSTÄLLNING - Ändra hur tydlig build-rutan ska vara. */
 }
 
 * {
@@ -351,4 +356,23 @@ p {
   border: none;
   font-weight: 600;
   box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Build Badge */
+.build-badge {
+  position: fixed;
+  top: var(--build-badge-top);
+  right: var(--build-badge-right);
+  background-color: rgba(5, 5, 7, 0.6);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(139, 108, 255, 0.3);
+  box-shadow: 0 0 10px rgba(139, 108, 255, 0.1);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 9999;
+  opacity: var(--build-badge-opacity);
+  pointer-events: none;
 }

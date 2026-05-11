@@ -40,6 +40,11 @@ const ENEMY_RADIUS = 18; // INSTÄLLNING - Ändra fiendens storlek. Högre värd
 --template-accent: #8b6cff; /* INSTÄLLNING - Ändra accentfärgen för just detta spel. */
 ```
 
+## Build Versioning
+
+All pages load `/assets/js/build.js` to display the current build badge in the top-right corner. 
+Before pushing updates, increment the `TAREN_BUILD_NUMBER` in that file so the live site reflects the latest version.
+
 ## A Note on Pulseframe
 
 Pulseframe is the first fully playable game in the gallery and serves as a strong reference for "game feel" and polish. However, **future games should not copy its logic directly unless necessary**. Each game should be uniquely built for its own mechanics using the `/templates/game-template/`.

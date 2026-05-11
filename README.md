@@ -24,6 +24,11 @@ The core structure is:
 
 For more details on the architectural rules for games, read `/docs/game-standard.md`.
 
+## Version Control / Build Badge
+
+A small build badge is displayed on every page to verify that the live version matches the latest pushed code.
+**Before every push:** Increase the `window.TAREN_BUILD_NUMBER` value by 1 in `/assets/js/build.js`.
+
 ## Deployment
 
 The site is deployed automatically through Cloudflare Pages from the `main` branch. Since it is entirely static, no build commands or package managers are required.
