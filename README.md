@@ -16,8 +16,13 @@ The core structure is:
 
 ## Adding New Games
 
-Every future game must be isolated in its own folder under `/games/game-name/`. 
-No game code should ever be loaded on the main page or games index page. If one future game breaks, no other page or game is affected.
+- Use `/templates/game-template/` as your starting point.
+- Copy it into `/games/game-name/`.
+- Add a card manually in `/games/index.html`.
+- Keep each game completely isolated from others.
+- Search for `INSTÄLLNING` in the new game's code to find safe values to tweak.
+
+For more details on the architectural rules for games, read `/docs/game-standard.md`.
 
 ## Deployment
 

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Taren Game Template</title>
+    <!-- Link to the global Taren styles -->
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <!-- Link to the specific game styles -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- Global Taren Navbar -->
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <!-- Game Content Wrapper -->
+    <main class="game-wrapper fade-in-up delay-1">
+        <div id="game-container">
+            <canvas id="gameCanvas"></canvas>
+            
+            <!-- Start Screen Overlay -->
+            <div id="startScreen" class="overlay">
+                <h1>Game Title</h1>
+                <p>A short, atmospheric description of the game mechanics.<br>Use the mouse or keyboard to play.</p>
+                <button id="startBtn" class="btn">Start Game</button>
+            </div>
+
+            <!-- Game Over Overlay -->
+            <div id="gameOverScreen" class="overlay hidden">
+                <h1>Game Over</h1>
+                <div class="score-board">
+                    <p>Score: <span id="finalScore">0</span></p>
+                    <p>Best: <span id="bestScore">0</span></p>
+                </div>
+                <button id="retryBtn" class="btn">Retry</button>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Game Logic -->
+    <script src="./game.js" defer></script>
+</body>
+</html>
