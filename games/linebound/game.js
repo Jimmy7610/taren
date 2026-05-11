@@ -69,21 +69,32 @@ let offsetY = 0;
 let spacing = 0;
 
 function resize() {
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = container.getBoundingClientRect();
+    
+    // Set actual internal canvas resolution
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    
+    // Set display size
+    canvas.style.width = `${rect.width}px`;
+    canvas.style.height = `${rect.height}px`;
+    
+    // Normalize coordinate system to use CSS pixels
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
     
     // Calculate board size leaving some padding
     const padding = SETTINGS.boardPadding;
-    boardSize = Math.min(canvas.width, canvas.height) - padding * 2;
+    boardSize = Math.min(rect.width, rect.height) - padding * 2;
     spacing = boardSize / SETTINGS.gridSize;
     
-    offsetX = (canvas.width - boardSize) / 2;
-    offsetY = (canvas.height - boardSize) / 2;
+    offsetX = (rect.width - boardSize) / 2;
+    offsetY = (rect.height - boardSize) / 2;
     
     draw();
 }
 window.addEventListener('resize', resize);
-resize();
 
 container.addEventListener('mousemove', (e) => {
     if (gameState !== 'PLAYING' || turn !== 'PLAYER') return;
@@ -163,9 +174,11 @@ function clearComputerTimer() {
     }
 }
 
-function resetGame() {
+function hardResetBoard(size) {
     clearComputerTimer();
+    SETTINGS.gridSize = size || SETTINGS.gridSize;
     const s = SETTINGS.gridSize;
+    
     playerScore = 0;
     aiScore = 0;
     turn = 'PLAYER';
@@ -181,7 +194,12 @@ function resetGame() {
     startScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
     
-    draw();
+    // Force a fresh layout calculation and redraw
+    resize();
+}
+
+function resetGame() {
+    hardResetBoard(SETTINGS.gridSize);
 }
 
 function updateScoreUI() {
@@ -429,8 +447,13 @@ function aiMove() {
 
 // Rendering
 function draw() {
+    // Hard clear with absolute transform just in case
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = '#050507';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
     
     if (gameState === 'MENU') return;
     
@@ -566,9 +589,11 @@ sizeBtns.forEach(btn => {
         
         sizeBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        SETTINGS.gridSize = newSize;
         initAudio();
-        resize(); // Recalculate layout immediately
-        resetGame();
+        
+        hardResetBoard(newSize);
     });
 });
+
+// Initialize first layout
+resize();
