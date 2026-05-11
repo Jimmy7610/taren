@@ -1,0 +1,122 @@
+:root {
+    --night-page-top-offset: 16px;
+    --night-section-gap: 20px;
+    --night-panel-size: min(450px, calc(100vh - 300px));
+}
+
+.night-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--night-section-gap);
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.night-container {
+    padding-top: var(--night-page-top-offset) !important;
+}
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 24px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: var(--night-panel-size);
+    aspect-ratio: 1 / 1;
+    background-color: #050507;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: crosshair;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: inset 0 0 50px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.5);
+}
+
+#target-ring {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+#target-ring.hit {
+    border-color: #8b6cff;
+    box-shadow: 0 0 30px rgba(139, 108, 255, 0.4);
+    transform: scale(1.02);
+}
+
+#target-ring.miss {
+    border-color: #ff4c4c;
+    box-shadow: 0 0 30px rgba(255, 76, 76, 0.4);
+}
+
+.pulse {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+.pulse.true { border-color: #8b6cff; box-shadow: 0 0 15px rgba(139, 108, 255, 0.3); }
+.pulse.false { border-color: #2a2a35; }
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(5, 5, 7, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.overlay.hidden { display: none; }
+
+.overlay-title { font-size: 1.75rem; margin-bottom: 0.5rem; }
+.overlay-desc { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem; max-width: 240px; }
+
+.instruction-text {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}

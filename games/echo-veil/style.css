@@ -1,0 +1,114 @@
+:root {
+    --echo-page-top-offset: 16px;
+    --echo-section-gap: 20px;
+    --echo-panel-size: min(450px, calc(100vh - 300px));
+}
+
+.echo-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--echo-section-gap);
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.echo-container {
+    padding-top: var(--echo-page-top-offset) !important;
+}
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 24px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+.stat-value { font-size: 1.5rem; font-weight: 700; font-family: var(--font-mono); }
+
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: var(--echo-panel-size);
+    aspect-ratio: 1 / 1;
+    background-color: #08080a;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: crosshair;
+    overflow: hidden;
+    box-shadow: inset 0 0 50px rgba(0,0,0,1);
+}
+
+#veil {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 20%, #050507 80%);
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.echo-point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #8b6cff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px #8b6cff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.echo-point.revealed { opacity: 1; }
+.echo-point.found { background-color: #4cc9f0; box-shadow: 0 0 20px #4cc9f0; opacity: 1; }
+
+#pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 2px solid rgba(139, 108, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.pulse-animation {
+    animation: pulseRing 1.5s ease-out forwards;
+}
+
+@keyframes pulseRing {
+    0% { width: 0; height: 0; opacity: 0.8; }
+    100% { width: 150%; height: 150%; opacity: 0; }
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(5, 5, 7, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 2rem;
+    text-align: center;
+}
+
+.overlay.hidden { display: none; }
+
+.instruction-text { font-size: 0.875rem; color: var(--text-muted); }
+.instruction-text.active { color: var(--accent); }

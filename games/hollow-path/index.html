@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hollow Path - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/assets/js/build.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
+    <script src="./game.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container path-container fade-in-up delay-1">
+            <header class="mb-4 center-content" style="min-height: auto;">
+                <h1 class="mb-2">Hollow Path</h1>
+                <p>Find the quiet way through the dark.</p>
+            </header>
+
+            <div class="path-layout fade-in-up delay-2">
+                <div class="hud">
+                    <div class="stat-box">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-value" id="levelDisplay">1</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Moves</span>
+                        <span class="stat-value" id="moveDisplay">20</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="bestLevelDisplay">0</span>
+                    </div>
+                </div>
+
+                <div id="game-container">
+                    <div id="grid-container"></div>
+                    
+                    <div id="startScreen" class="overlay">
+                        <h2 class="overlay-title">Hollow Path</h2>
+                        <p class="overlay-desc">Move from node to node. Reach the white exit. Used paths will collapse.</p>
+                        <button id="startBtn" class="btn">Enter Path</button>
+                    </div>
+
+                    <div id="winScreen" class="overlay hidden">
+                        <h2 class="overlay-title">Path Cleared</h2>
+                        <p id="winMessage">The light is reached.</p>
+                        <button id="nextBtn" class="btn">Deeper</button>
+                    </div>
+
+                    <div id="gameOverScreen" class="overlay hidden">
+                        <h2 class="overlay-title">Path Collapsed</h2>
+                        <p id="failMessage">The darkness closed in.</p>
+                        <button id="retryBtn" class="btn">Return</button>
+                    </div>
+                </div>
+                
+                <p class="instruction-text">Every step matters. The path behind you vanishes.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

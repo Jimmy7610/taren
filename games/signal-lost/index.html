@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Lost - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/assets/js/build.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
+    <script src="./game.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container signal-container fade-in-up delay-1">
+            <header class="mb-4 center-content" style="min-height: auto;">
+                <h1 class="mb-2">Signal Lost</h1>
+                <p>Find what was left behind in the static.</p>
+            </header>
+
+            <div class="signal-layout fade-in-up delay-2">
+                <div class="hud">
+                    <div class="stat-box">
+                        <span class="stat-label">Round</span>
+                        <span class="stat-value" id="roundDisplay">1</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="bestRoundDisplay">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value" id="timeDisplay">20</span>
+                    </div>
+                </div>
+
+                <div id="game-container">
+                    <div id="screen">
+                        <div id="noise-layer"></div>
+                        <div id="wave-container">
+                            <svg id="signal-wave" viewBox="0 0 100 20" preserveAspectRatio="none">
+                                <path id="wave-path" d="" />
+                            </svg>
+                        </div>
+                        <div id="lock-indicator" class="hidden">LOCKED</div>
+                    </div>
+
+                    <div id="controls">
+                        <input type="range" id="freqSlider" min="0" max="100" step="0.1" value="50">
+                        <div id="strength-meter">
+                            <div id="strength-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="startScreen" class="overlay">
+                        <h2 class="overlay-title">Signal Lost</h2>
+                        <p class="overlay-desc">Adjust the slider to find the hidden frequency. Watch the wave stabilize.</p>
+                        <button id="startBtn" class="btn">Start Search</button>
+                    </div>
+
+                    <div id="gameOverScreen" class="overlay hidden">
+                        <h2 class="overlay-title">Signal Lost</h2>
+                        <p id="failMessage">The noise became overwhelming.</p>
+                        <button id="retryBtn" class="btn">Reconnect</button>
+                    </div>
+                </div>
+                
+                <p class="instruction-text">Tune the dial. Silence the static. Find the signal.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -7,15 +7,25 @@ Taren is a quiet collection of small browser games built with vanilla HTML/CSS/J
 - **Linebound** — Strategic grid-based gameplay.
 - **Memory Drift** — Calm memory and pattern recall.
 - **Static Bloom** — Puzzle / chain reaction strategy.
+- **Void Runner** — Arcade / survival movement.
+- **Signal Lost** — Tuning / mystery puzzle.
+- **Night Signal** — Timing / signal recognition.
+- **Echo Veil** — Spatial memory / mystery.
+- **Hollow Path** — Minimal maze / path exploration.
 
 ## Site Structure
 - `/` — Homepage / Landing
 - `/games/` — Game gallery and selection
 - `/about/` — Project information and philosophy
-- `/games/pulseframe/` — Pulseframe game folder
-- `/games/linebound/` — Linebound game folder
-- `/games/memory-drift/` — Memory Drift game folder
-- `/games/static-bloom/` — Static Bloom game folder
+- `/games/pulseframe/`
+- `/games/linebound/`
+- `/games/memory-drift/`
+- `/games/static-bloom/`
+- `/games/void-runner/`
+- `/games/signal-lost/`
+- `/games/night-signal/`
+- `/games/echo-veil/`
+- `/games/hollow-path/`
 
 ## Technical Rules
 To maintain the Taren identity and simplicity, all development must follow these rules:

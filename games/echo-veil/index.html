@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo Veil - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/assets/js/build.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
+    <script src="./game.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container echo-container fade-in-up delay-1">
+            <header class="mb-4 center-content" style="min-height: auto;">
+                <h1 class="mb-2">Echo Veil</h1>
+                <p>Remember what the echo reveals.</p>
+            </header>
+
+            <div class="echo-layout fade-in-up delay-2">
+                <div class="hud">
+                    <div class="stat-box">
+                        <span class="stat-label">Round</span>
+                        <span class="stat-value" id="roundDisplay">1</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Find</span>
+                        <span class="stat-value" id="targetDisplay">0 / 3</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="bestRoundDisplay">0</span>
+                    </div>
+                </div>
+
+                <div id="game-container">
+                    <div id="veil"></div>
+                    <div id="echo-points"></div>
+                    <div id="pulse-ring"></div>
+                    
+                    <div id="startScreen" class="overlay">
+                        <h2 class="overlay-title">Echo Veil</h2>
+                        <p class="overlay-desc">Watch the pulse. Remember the locations. Click where the echoes appeared.</p>
+                        <button id="startBtn" class="btn">Release Echo</button>
+                    </div>
+
+                    <div id="gameOverScreen" class="overlay hidden">
+                        <h2 class="overlay-title">Lost in Veil</h2>
+                        <p id="failMessage">The memory faded too soon.</p>
+                        <button id="retryBtn" class="btn">Try Again</button>
+                    </div>
+                </div>
+                
+                <p id="statusText" class="instruction-text">Pulse ready. Concentration required.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

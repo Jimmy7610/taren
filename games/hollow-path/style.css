@@ -1,0 +1,97 @@
+:root {
+    --path-page-top-offset: 16px;
+    --path-section-gap: 20px;
+    --path-panel-size: min(450px, calc(100vh - 300px));
+}
+
+.path-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--path-section-gap);
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.path-container {
+    padding-top: var(--path-page-top-offset) !important;
+}
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 24px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.stat-box { display: flex; flex-direction: column; align-items: center; }
+.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+.stat-value { font-size: 1.5rem; font-weight: 700; font-family: var(--font-mono); }
+
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: var(--path-panel-size);
+    aspect-ratio: 1 / 1;
+    background-color: #050507;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: inset 0 0 50px rgba(0,0,0,1);
+}
+
+#grid-container {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+.node {
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.node::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background-color: #1a1a25;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.node.visible::before { background-color: #3a3a45; }
+.node.player::before { background-color: #8b6cff; box-shadow: 0 0 15px #8b6cff; width: 10px; height: 10px; }
+.node.exit::before { background-color: #fff; box-shadow: 0 0 20px #fff; width: 12px; height: 12px; }
+.node.collapsed::before { opacity: 0; }
+.node.dead { background-color: rgba(255, 76, 76, 0.05); }
+
+.node.interactive { cursor: pointer; }
+.node.interactive:hover::before { background-color: #8b6cff; opacity: 0.5; }
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(5, 5, 7, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 2rem;
+    text-align: center;
+}
+
+.overlay.hidden { display: none; }
+
+.instruction-text { font-size: 0.875rem; color: var(--text-muted); }

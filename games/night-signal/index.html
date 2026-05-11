@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Night Signal - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/assets/js/build.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
+    <script src="./game.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container night-container fade-in-up delay-1">
+            <header class="mb-4 center-content" style="min-height: auto;">
+                <h1 class="mb-2">Night Signal</h1>
+                <p>Answer only the right pulse in the dark.</p>
+            </header>
+
+            <div class="night-layout fade-in-up delay-2">
+                <div class="hud">
+                    <div class="stat-box">
+                        <span class="stat-label">Score</span>
+                        <span class="stat-value" id="scoreDisplay">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Lives</span>
+                        <span class="stat-value" id="livesDisplay">3</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Best</span>
+                        <span class="stat-value" id="bestScoreDisplay">0</span>
+                    </div>
+                </div>
+
+                <div id="game-container">
+                    <div id="target-ring"></div>
+                    <div id="pulses-container"></div>
+                    
+                    <div id="startScreen" class="overlay">
+                        <h2 class="overlay-title">Night Signal</h2>
+                        <p class="overlay-desc">Wait for the violet pulse. Click when it hits the ring. Avoid the grey noise.</p>
+                        <button id="startBtn" class="btn">Monitor</button>
+                    </div>
+
+                    <div id="gameOverScreen" class="overlay hidden">
+                        <h2 class="overlay-title">Monitor Down</h2>
+                        <p id="finalScoreText">Final Score: 0</p>
+                        <button id="retryBtn" class="btn">Restart</button>
+                    </div>
+                </div>
+                
+                <p class="instruction-text">Precision matters. Missed signals fade forever.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
