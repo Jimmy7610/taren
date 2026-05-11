@@ -5,16 +5,16 @@
 // ==================================================
 
 const SETTINGS = {
-    gridSize: 10, // INSTÄLLNING - Nuvarande storlek på spelplanen. (10 eller 20)
-    smallGridSize: 10, // INSTÄLLNING - Ändra första valbara spelplansstorleken.
-    largeGridSize: 20, // INSTÄLLNING - Ändra andra valbara spelplansstorleken.
+    gridSize: 5, // INSTÄLLNING - Nuvarande storlek på spelplanen. (5 eller 10)
+    smallGridSize: 5, // INSTÄLLNING - Ändra minsta valbara spelplansstorleken.
+    largeGridSize: 10, // INSTÄLLNING - Ändra största valbara spelplansstorleken.
     boardPadding: 36, // INSTÄLLNING - Ändra luft runt spelplanen. Högre värde = mer marginal runt rutnätet.
-    smallBoardDotRadius: 4.5, // INSTÄLLNING - Ändra prickstorlek för 10x10-läget.
-    largeBoardDotRadius: 2.4, // INSTÄLLNING - Ändra prickstorlek för 20x20-läget.
-    smallBoardLineThickness: 3.5, // INSTÄLLNING - Ändra linjetjocklek för 10x10-läget.
-    largeBoardLineThickness: 1.6, // INSTÄLLNING - Ändra linjetjocklek för 20x20-läget.
-    smallBoardBoxOpacity: 0.22, // INSTÄLLNING - Ändra hur tydligt fångade rutor fylls i 10x10.
-    largeBoardBoxOpacity: 0.12, // INSTÄLLNING - Ändra hur tydligt fångade rutor syns i 20x20-läget. Lägre värde = renare spelplan.
+    smallBoardDotRadius: 5, // INSTÄLLNING - Ändra prickstorlek för 5x5-läget.
+    largeBoardDotRadius: 3.6, // INSTÄLLNING - Ändra prickstorlek för 10x10-läget.
+    smallBoardLineThickness: 4, // INSTÄLLNING - Ändra linjetjocklek för 5x5-läget.
+    largeBoardLineThickness: 2.6, // INSTÄLLNING - Ändra linjetjocklek för 10x10-läget.
+    smallBoardBoxOpacity: 0.22, // INSTÄLLNING - Ändra hur tydligt fångade rutor syns i 5x5-läget.
+    largeBoardBoxOpacity: 0.16, // INSTÄLLNING - Ändra hur tydligt fångade rutor syns i 10x10-läget.
     edgeHitPadding: 18, // INSTÄLLNING - Ändra hur nära musen behöver vara en linje för att den ska kunna väljas. Högre värde = lättare att klicka.
     edgeClickableInset: 0.05, // INSTÄLLNING - Ändra hur mycket av linjens ytterkanter som inte ska räknas (0.05 = ca 90% är klickbar).
     aiThinkingDelay: 450, // INSTÄLLNING - Ändra hur länge AI väntar innan den gör sitt drag (i ms). Högre värde = mer mänsklig känsla.
