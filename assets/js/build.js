@@ -1,5 +1,5 @@
 // INSTÄLLNING - Öka detta nummer med 1 innan varje push till main, så Jimmy kan se att live-sidan visar rätt version.
-window.TAREN_BUILD_NUMBER = 24;
+window.TAREN_BUILD_NUMBER = 25;
 
 document.addEventListener('DOMContentLoaded', () => {
     const badge = document.createElement('div');

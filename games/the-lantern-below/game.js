@@ -27,6 +27,18 @@ const CONFIG = {
     machineColor: '#4cc9f0', // INSTÄLLNING - Ändra färgen på maskinen.
     tileColor: '#0a0a0c', // INSTÄLLNING - Ändra färgen på golvplattorna.
     wallColor: '#121216', // INSTÄLLNING - Ändra färgen på väggarna.
+    
+    // BUILD 25 - Shadow & Polish Settings
+    shadowSpeed: 58, // INSTÄLLNING - Ändra hur snabbt skuggorna rör sig.
+    shadowRadius: 20, // INSTÄLLNING - Ändra hur stor träffyta skuggorna har.
+    shadowInvulnerabilityDuration: 1400, // INSTÄLLNING - Ändra hur länge spelaren är skyddad efter att ha träffats av en skugga.
+    shadowColor: '#11091f', // INSTÄLLNING - Ändra skuggornas grundfärg.
+    shadowEyeColor: '#8b6cff', // INSTÄLLNING - Ändra färgen på skuggornas svaga ögon/glöd.
+    shadowLanternDimDuration: 2200, // INSTÄLLNING - Ändra hur länge lyktan blir svagare efter skuggträff.
+    shadowLanternDimAmount: 0.68, // INSTÄLLNING - Ändra hur mycket lyktans ljus minskar efter skuggträff.
+    gateOpenGlow: 1.6, // INSTÄLLNING - Ändra hur starkt porten lyser när den öppnas.
+    runeActivatedGlow: 1.7, // INSTÄLLNING - Ändra hur starkt aktiverade runor lyser.
+    ambientParticleBoost: 1.25, // INSTÄLLNING - Ändra mängden extra atmosfäriska partiklar.
 };
 
 // Rooms Data
@@ -38,20 +50,18 @@ const ROOMS = {
             { x: 0, y: 520, w: 960, h: 20 },
             { x: 0, y: 0, w: 20, h: 540 },
             { x: 940, y: 0, w: 20, h: 540 },
-            // Interior walls
             { x: 200, y: 150, w: 20, h: 240 },
             { x: 740, y: 150, w: 20, h: 240 },
         ],
         exits: [
             { x: 430, y: 0, w: 100, h: 20, target: 'rune_hall', entryX: 480, entryY: 500 },
         ],
-        fragments: [
-            { id: 'f1', x: 480, y: 270 },
-        ],
+        fragments: [{ id: 'f1', x: 480, y: 270 }],
         runes: [],
         machines: [],
         key: null,
-        gate: null
+        gate: null,
+        shadows: []
     },
     rune_hall: {
         name: 'The Hall of Runes',
@@ -76,7 +86,10 @@ const ROOMS = {
         ],
         machines: [],
         key: null,
-        gate: null
+        gate: null,
+        shadows: [
+            { x: 480, y: 200, points: [{x: 480, y: 150}, {x: 480, y: 350}], pIndex: 0 }
+        ]
     },
     fragment_vault: {
         name: 'The Echo Vault',
@@ -84,7 +97,7 @@ const ROOMS = {
             { x: 0, y: 0, w: 960, h: 20 },
             { x: 0, y: 520, w: 960, h: 20 },
             { x: 0, y: 0, w: 20, h: 540 },
-            { x: 940, y: 220, w: 20, h: 100, passage: true }, // Entrance
+            { x: 940, y: 220, w: 20, h: 100, passage: true },
             { x: 940, y: 0, w: 20, h: 220 },
             { x: 940, y: 320, w: 20, h: 220 },
         ],
@@ -98,18 +111,21 @@ const ROOMS = {
         runes: [],
         machines: [],
         key: { x: 480, y: 270, collected: false },
-        gate: null
+        gate: null,
+        shadows: [
+            { x: 100, y: 270, points: [{x: 100, y: 270}, {x: 400, y: 270}], pIndex: 0 },
+            { x: 480, y: 100, points: [{x: 480, y: 100}, {x: 480, y: 440}], pIndex: 0 }
+        ]
     },
     machine_room: {
         name: 'The Deep Engine',
         walls: [
             { x: 0, y: 0, w: 960, h: 20 },
             { x: 0, y: 520, w: 960, h: 20 },
-            { x: 0, y: 220, w: 20, h: 100, passage: true }, // Entrance from hall
+            { x: 0, y: 220, w: 20, h: 100, passage: true },
             { x: 0, y: 0, w: 20, h: 220 },
             { x: 0, y: 320, w: 20, h: 220 },
             { x: 940, y: 0, w: 20, h: 540 },
-            // Passage to start_chamber
             { x: 430, y: 520, w: 100, h: 20, passage: true },
         ],
         exits: [
@@ -117,17 +133,14 @@ const ROOMS = {
             { x: 430, y: 520, w: 100, h: 20, target: 'start_chamber', entryX: 480, entryY: 40 },
             { x: 430, y: 0, w: 100, h: 20, target: 'lower_gate', entryX: 480, entryY: 500, requiresGate: true },
         ],
-        fragments: [
-            { id: 'f6', x: 150, y: 400 },
-        ],
-        runes: [
-            { id: 'r3', x: 480, y: 440, activated: false },
-        ],
-        machines: [
-            { id: 'm1', x: 480, y: 270, activated: false },
-        ],
+        fragments: [{ id: 'f6', x: 150, y: 400 }],
+        runes: [{ id: 'r3', x: 480, y: 440, activated: false }],
+        machines: [{ id: 'm1', x: 480, y: 270, activated: false }],
         key: null,
-        gate: { x: 430, y: 0, w: 100, h: 25, opened: false }
+        gate: { x: 430, y: 0, w: 100, h: 25, opened: false },
+        shadows: [
+            { x: 700, y: 100, points: [{x: 700, y: 100}, {x: 700, y: 400}, {x: 850, y: 400}, {x: 850, y: 100}], pIndex: 0 }
+        ]
     },
     lower_gate: {
         name: 'The Lower Light',
@@ -137,17 +150,14 @@ const ROOMS = {
             { x: 0, y: 0, w: 20, h: 540 },
             { x: 940, y: 0, w: 20, h: 540 },
         ],
-        exits: [
-            { x: 430, y: 520, w: 100, h: 20, target: 'machine_room', entryX: 480, entryY: 40 },
-        ],
-        fragments: [
-            { id: 'f7', x: 480, y: 150 },
-        ],
+        exits: [{ x: 430, y: 520, w: 100, h: 20, target: 'machine_room', entryX: 480, entryY: 40 }],
+        fragments: [{ id: 'f7', x: 480, y: 150 }],
         runes: [],
         machines: [],
         key: null,
         gate: null,
-        isFinalRoom: true
+        isFinalRoom: true,
+        shadows: []
     }
 };
 
@@ -164,6 +174,10 @@ let state = {
     statusText: '',
     statusTimer: null,
     lastTime: 0,
+    
+    // BUILD 25 State
+    invulnerableTimer: 0,
+    lanternDimTimer: 0,
 };
 
 let player = {
@@ -177,7 +191,7 @@ let player = {
 const input = {
     up: false, down: false, left: false, right: false,
     interact: false,
-    interactPressed: false // For one-shot detection
+    interactPressed: false
 };
 
 const particles = [];
@@ -198,7 +212,8 @@ function init() {
     offscreenCanvas.height = CONFIG.canvasWorldHeight;
     offscreenCtx = offscreenCanvas.getContext('2d');
 
-    for (let i = 0; i < CONFIG.particleCount; i++) {
+    const pCount = Math.floor(CONFIG.particleCount * CONFIG.ambientParticleBoost);
+    for (let i = 0; i < pCount; i++) {
         particles.push({
             x: Math.random() * CONFIG.canvasWorldWidth,
             y: Math.random() * CONFIG.canvasWorldHeight,
@@ -237,11 +252,12 @@ function resetGame() {
         statusText: '',
         statusTimer: null,
         lastTime: performance.now(),
+        invulnerableTimer: 0,
+        lanternDimTimer: 0,
     };
     player.x = 480;
     player.y = 400;
     
-    // Reset room state in data if needed, but we use Sets in 'state' instead
     document.getElementById('winScreen').classList.add('hidden');
     document.getElementById('gameSubtitle').innerText = "Find the lower light.";
     updateHUD();
@@ -280,9 +296,14 @@ function gameLoop(timestamp) {
 
 function update(dt) {
     updatePlayer(dt);
+    updateShadows(dt);
     checkRoomTransitions();
     handleInteractions();
     
+    // Update invulnerability/dimming
+    if (state.invulnerableTimer > 0) state.invulnerableTimer -= dt * 1000;
+    if (state.lanternDimTimer > 0) state.lanternDimTimer -= dt * 1000;
+
     // Update particles
     particles.forEach(p => {
         p.x += Math.cos(p.angle) * p.speed;
@@ -293,7 +314,6 @@ function update(dt) {
         if (p.y > CONFIG.canvasWorldHeight) p.y = 0;
     });
 
-    // Reset one-shot input
     input.interactPressed = false;
 }
 
@@ -313,16 +333,47 @@ function updatePlayer(dt) {
     if (!checkCollision(player.x, ny)) player.y = ny;
 }
 
+function updateShadows(dt) {
+    const room = ROOMS[state.currentRoomId];
+    if (!room.shadows) return;
+
+    room.shadows.forEach(s => {
+        const target = s.points[s.pIndex];
+        const dx = target.x - s.x;
+        const dy = target.y - s.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 2) {
+            s.pIndex = (s.pIndex + 1) % s.points.length;
+        } else {
+            s.x += (dx / dist) * CONFIG.shadowSpeed * dt;
+            s.y += (dy / dist) * CONFIG.shadowSpeed * dt;
+        }
+
+        // Check player collision
+        if (state.invulnerableTimer <= 0) {
+            const pDist = getDist(player.x, player.y, s.x, s.y);
+            if (pDist < player.radius + CONFIG.shadowRadius) {
+                onShadowHit();
+            }
+        }
+    });
+}
+
+function onShadowHit() {
+    state.invulnerableTimer = CONFIG.shadowInvulnerabilityDuration;
+    state.lanternDimTimer = CONFIG.shadowLanternDimDuration;
+    setStatus("The shadow dims your lantern.");
+}
+
 function checkCollision(x, y) {
     const room = ROOMS[state.currentRoomId];
-    // Walls
     for (const wall of room.walls) {
         if (x + player.radius > wall.x && x - player.radius < wall.x + wall.w &&
             y + player.radius > wall.y && y - player.radius < wall.y + wall.h) {
             return true;
         }
     }
-    // Gate
     if (room.gate && !state.gateOpened) {
         const g = room.gate;
         if (x + player.radius > g.x && x - player.radius < g.x + g.w &&
@@ -339,10 +390,8 @@ function checkRoomTransitions() {
         if (player.x + player.radius > exit.x && player.x - player.radius < exit.x + exit.w &&
             player.y + player.radius > exit.y && player.y - player.radius < exit.y + exit.h) {
             
-            // Check gate requirements
             if (exit.requiresGate && !state.gateOpened) {
                 setStatus("The gate is sealed.");
-                // Push player back slightly
                 if (player.y < 50) player.y = 50;
                 continue;
             }
@@ -357,13 +406,13 @@ function changeRoom(roomId, x, y) {
     state.currentRoomId = roomId;
     player.x = x;
     player.y = y;
+    state.invulnerableTimer = 500; // Small grace period on entry
     updateHUD();
 }
 
 function handleInteractions() {
     const room = ROOMS[state.currentRoomId];
     
-    // Fragments (auto-collect)
     room.fragments.forEach(f => {
         if (!state.fragmentsCollected.has(f.id)) {
             const dist = getDist(player.x, player.y, f.x, f.y);
@@ -376,7 +425,6 @@ function handleInteractions() {
         }
     });
 
-    // Key
     if (room.key && !state.hasKey) {
         const dist = getDist(player.x, player.y, room.key.x, room.key.y);
         if (dist < player.radius + 15) {
@@ -386,7 +434,6 @@ function handleInteractions() {
         }
     }
 
-    // Rune interactions (Press E)
     room.runes.forEach(r => {
         if (!state.runesActivated.has(r.id)) {
             const dist = getDist(player.x, player.y, r.x, r.y);
@@ -402,7 +449,6 @@ function handleInteractions() {
         }
     });
 
-    // Gate interaction (Press E)
     if (room.gate && !state.gateOpened) {
         const dist = getDist(player.x, player.y, room.gate.x + room.gate.w/2, room.gate.y + room.gate.h/2);
         if (dist < CONFIG.interactionRadius + 10) {
@@ -420,7 +466,6 @@ function handleInteractions() {
         }
     }
 
-    // Machine interaction (Press E)
     room.machines.forEach(m => {
         const dist = getDist(player.x, player.y, m.x, m.y);
         if (dist < CONFIG.interactionRadius) {
@@ -441,7 +486,6 @@ function handleInteractions() {
         }
     });
 
-    // Final Objective in Final Room
     if (room.isFinalRoom) {
         const dist = getDist(player.x, player.y, 480, 150);
         if (dist < 40) {
@@ -474,18 +518,11 @@ function setStatus(msg, isHint = false) {
     const el = document.getElementById('statusOverlay');
     el.innerText = msg;
     el.classList.add('visible');
-    
     if (state.statusTimer) clearTimeout(state.statusTimer);
-    
     if (!isHint) {
-        state.statusTimer = setTimeout(() => {
-            el.classList.remove('visible');
-        }, CONFIG.statusMessageDuration);
+        state.statusTimer = setTimeout(() => { el.classList.remove('visible'); }, CONFIG.statusMessageDuration);
     } else {
-        // Hints disappear quickly if not near
-        state.statusTimer = setTimeout(() => {
-            el.classList.remove('visible');
-        }, 100);
+        state.statusTimer = setTimeout(() => { el.classList.remove('visible'); }, 100);
     }
 }
 
@@ -503,6 +540,7 @@ function render() {
 
     drawFloor();
     drawObjects();
+    drawShadows();
     drawPlayer();
     drawLanternLight();
 }
@@ -512,8 +550,14 @@ function drawFloor() {
     const tileSize = 60;
     for (let x = 0; x < canvas.width; x += tileSize) {
         for (let y = 0; y < canvas.height; y += tileSize) {
-            ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+            ctx.strokeStyle = 'rgba(255,255,255,0.015)';
             ctx.strokeRect(x, y, tileSize, tileSize);
+            
+            // Build 25 - Cracked details
+            if ((x * y) % 31 === 0) {
+                ctx.fillStyle = 'rgba(255,255,255,0.01)';
+                ctx.fillRect(x + 15, y + 20, 20, 1);
+            }
         }
     }
 }
@@ -529,78 +573,90 @@ function drawObjects() {
         ctx.strokeRect(w.x, w.y, w.w, w.h);
     });
 
-    // Exits
-    ctx.fillStyle = 'rgba(0,0,0,1)';
-    room.exits.forEach(e => {
-        ctx.fillRect(e.x, e.y, e.w, e.h);
-    });
-
-    // Gate
-    if (room.gate && !state.gateOpened) {
+    // Gate Polish
+    if (room.gate) {
         const g = room.gate;
-        ctx.fillStyle = '#0a0a0f';
+        const opened = state.gateOpened;
+        ctx.fillStyle = opened ? '#050507' : '#0a0a0f';
         ctx.fillRect(g.x, g.y, g.w, g.h);
-        ctx.strokeStyle = CONFIG.machineColor;
-        ctx.globalAlpha = 0.4;
+        ctx.strokeStyle = opened ? CONFIG.machineColor : '#222';
+        if (opened) {
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = CONFIG.machineColor;
+            ctx.globalAlpha = CONFIG.gateOpenGlow * 0.4;
+        }
         ctx.strokeRect(g.x, g.y, g.w, g.h);
         ctx.globalAlpha = 1.0;
-        for(let i=0; i<6; i++) {
-            ctx.fillStyle = 'rgba(255,255,255,0.1)';
-            ctx.fillRect(g.x + 15 + i*18, g.y, 4, g.h);
+        ctx.shadowBlur = 0;
+
+        if (!opened) {
+            for(let i=0; i<6; i++) {
+                ctx.fillStyle = 'rgba(255,255,255,0.08)';
+                ctx.fillRect(g.x + 15 + i*18, g.y, 4, g.h);
+            }
         }
     }
 
-    // Runes
+    // Runes Polish
     room.runes.forEach(r => {
         const active = state.runesActivated.has(r.id);
+        const pDist = getDist(player.x, player.y, r.x, r.y);
+        const near = pDist < 100;
         const pulse = Math.sin(Date.now() / 1000 * CONFIG.runePulseSpeed) * 0.2 + 0.8;
+        
         ctx.fillStyle = '#1a1a25';
         ctx.fillRect(r.x - 20, r.y - 30, 40, 60);
+        
         ctx.strokeStyle = CONFIG.runeColor;
         ctx.lineWidth = active ? 3 : 1;
-        ctx.globalAlpha = active ? 1 : pulse * 0.4;
-        ctx.strokeRect(r.x - 15, r.y - 25, 30, 50);
-        if (active) {
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = CONFIG.runeColor;
-            ctx.strokeRect(r.x - 10, r.y - 20, 20, 40);
-        }
-        ctx.globalAlpha = 1.0;
-        ctx.shadowBlur = 0;
-        ctx.lineWidth = 1;
-    });
-
-    // Machines
-    room.machines.forEach(m => {
-        const active = state.machineActivated;
-        const pulse = Math.sin(Date.now() / 1000 * CONFIG.machinePulseSpeed) * 0.3 + 0.7;
-        ctx.fillStyle = '#1a1a25';
-        ctx.beginPath();
-        ctx.arc(m.x, m.y, 25, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = CONFIG.machineColor;
-        ctx.lineWidth = active ? 3 : 1;
-        ctx.globalAlpha = active ? pulse : 0.3;
-        ctx.stroke();
+        ctx.globalAlpha = active ? CONFIG.runeActivatedGlow * 0.5 : (near ? 0.6 : pulse * 0.3);
+        
         if (active) {
             ctx.shadowBlur = 20;
-            ctx.shadowColor = CONFIG.machineColor;
+            ctx.shadowColor = CONFIG.runeColor;
+            // Activation ring
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, 35 + Math.sin(Date.now()/200)*3, 0, Math.PI*2);
             ctx.stroke();
         }
+        
+        ctx.strokeRect(r.x - 15, r.y - 25, 30, 50);
         ctx.globalAlpha = 1.0;
         ctx.shadowBlur = 0;
         ctx.lineWidth = 1;
     });
 
-    // Key
-    if (room.key && !state.hasKey) {
-        const pulse = Math.sin(Date.now() / 600) * 4;
-        ctx.fillStyle = '#fff';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#fff';
-        ctx.fillRect(room.key.x - 5, room.key.y - 5 + pulse, 10, 10);
+    // Machine Polish
+    room.machines.forEach(m => {
+        const active = state.machineActivated;
+        const ready = state.runesActivated.size >= CONFIG.runeGoal;
+        const pulse = Math.sin(Date.now() / 1000 * CONFIG.machinePulseSpeed) * 0.3 + 0.7;
+        
+        ctx.fillStyle = '#1a1a25';
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, 30, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.strokeStyle = CONFIG.machineColor;
+        ctx.lineWidth = active ? 4 : (ready ? 2 : 1);
+        ctx.globalAlpha = active ? CONFIG.machineGlowWhenAwakened * 0.5 : (ready ? pulse : 0.2);
+        
+        if (active) {
+            ctx.shadowBlur = 30;
+            ctx.shadowColor = CONFIG.machineColor;
+            // Energy ring
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, 45 + pulse*5, 0, Math.PI*2);
+            ctx.stroke();
+        }
+        
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, 25, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = 1.0;
         ctx.shadowBlur = 0;
-    }
+        ctx.lineWidth = 1;
+    });
 
     // Fragments
     room.fragments.forEach(f => {
@@ -621,7 +677,7 @@ function drawObjects() {
     });
 
     // Particles
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
     particles.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -629,8 +685,45 @@ function drawObjects() {
     });
 }
 
+function drawShadows() {
+    const room = ROOMS[state.currentRoomId];
+    if (!room.shadows) return;
+
+    room.shadows.forEach(s => {
+        const pulse = Math.sin(Date.now() / 400) * 4;
+        
+        // Aura
+        const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, CONFIG.shadowRadius + 15);
+        grad.addColorStop(0, 'rgba(17, 9, 31, 0.6)');
+        grad.addColorStop(1, 'rgba(17, 9, 31, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, CONFIG.shadowRadius + 15, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body
+        ctx.fillStyle = CONFIG.shadowColor;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, CONFIG.shadowRadius + pulse, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Eyes
+        ctx.fillStyle = CONFIG.shadowEyeColor;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = CONFIG.shadowEyeColor;
+        ctx.beginPath();
+        ctx.arc(s.x - 6, s.y - 4, 3, 0, Math.PI * 2);
+        ctx.arc(s.x + 6, s.y - 4, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+    });
+}
+
 function drawPlayer() {
     const pulse = Math.sin(Date.now() / 800) * 2;
+    const invuln = state.invulnerableTimer > 0 && Math.floor(Date.now()/100)%2 === 0;
+    
+    ctx.globalAlpha = invuln ? 0.4 : 1.0;
     ctx.fillStyle = '#121216';
     ctx.beginPath();
     ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
@@ -645,11 +738,17 @@ function drawPlayer() {
     ctx.arc(player.x + 4, player.y - 4, 3.5 + pulse/2, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1.0;
 }
 
 function drawLanternLight() {
     const pulse = Math.sin(Date.now() / 600) * CONFIG.lanternPulseAmount;
-    const r = CONFIG.lanternRadius + pulse;
+    let r = CONFIG.lanternRadius + pulse;
+    
+    // Dimming logic
+    if (state.lanternDimTimer > 0) {
+        r *= CONFIG.shadowLanternDimAmount;
+    }
 
     offscreenCtx.globalCompositeOperation = 'source-over';
     offscreenCtx.fillStyle = `rgba(0, 0, 0, ${CONFIG.darknessOpacity})`;
@@ -667,6 +766,12 @@ function drawLanternLight() {
     offscreenCtx.fill();
 
     ctx.drawImage(offscreenCanvas, 0, 0);
+
+    // Fog near lower gate
+    if (state.currentRoomId === 'lower_gate') {
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
 
     const bloom = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, r);
     bloom.addColorStop(0, 'rgba(245, 211, 138, 0.12)');
