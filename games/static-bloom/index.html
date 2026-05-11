@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Bloom - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/assets/js/build.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
+    <script src="./game.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container bloom-container fade-in-up delay-1">
+            <header class="mb-4 center-content" style="min-height: auto;">
+                <h1 class="mb-2">Static Bloom</h1>
+                <p>Bloom the grid before the signal fades.</p>
+            </header>
+
+            <div class="bloom-layout fade-in-up delay-2">
+                <!-- HUD -->
+                <div class="hud">
+                    <div class="stat-box">
+                        <span class="stat-label">Level</span>
+                        <span class="stat-value" id="levelDisplay">1</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Pulses</span>
+                        <span class="stat-value" id="pulseDisplay">8</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">Blooms</span>
+                        <span class="stat-value" id="bloomCountDisplay">0 / 12</span>
+                    </div>
+                </div>
+
+                <!-- Game Container -->
+                <div id="game-container">
+                    <div id="grid-container"></div>
+                    
+                    <!-- Overlays -->
+                    <div id="startScreen" class="overlay">
+                        <h2 class="overlay-title">Static Bloom</h2>
+                        <p class="overlay-desc">Click nodes to add energy. Reach the bloom target.</p>
+                        <button id="startBtn" class="btn">Start Run</button>
+                    </div>
+
+                    <div id="winScreen" class="overlay hidden">
+                        <h2 class="overlay-title">Bloom Stable</h2>
+                        <p id="winMessage">Level 1 Complete</p>
+                        <button id="nextBtn" class="btn">Next Signal</button>
+                    </div>
+
+                    <div id="gameOverScreen" class="overlay hidden">
+                        <h2 class="overlay-title">Signal Lost</h2>
+                        <p id="failMessage">The grid remained dark.</p>
+                        <button id="retryBtn" class="btn">Try Again</button>
+                    </div>
+                </div>
+                
+                <!-- Status/Instruction -->
+                <div class="status-panel">
+                    <div id="statusText" class="status-text">Ready</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

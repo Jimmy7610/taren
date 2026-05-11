@@ -1,11 +1,12 @@
 # Taren Current Status
 
-**Current Build:** Build 18
+**Current Build:** Build 19
 
 ## Playable Games
 1.  **Pulseframe** — Reflex-based survival action.
 2.  **Linebound** — Tactical dots-and-boxes strategy with Computer opponent.
 3.  **Memory Drift** — Atmospheric pattern-recall ritual.
+4.  **Static Bloom** — Puzzle-based chain reaction strategy.
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.
@@ -17,7 +18,6 @@
 ## Active Future Concepts
 - **Void Runner** (Placeholder gallery card)
 - **Signal Lost** (Placeholder gallery card)
-- **Static Bloom** (Placeholder gallery card)
 - **Night Signal** (Placeholder gallery card)
 - **Echo Veil** (Placeholder gallery card)
 - **Hollow Path** (Placeholder gallery card)

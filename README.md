@@ -6,6 +6,7 @@ Taren is a quiet collection of small browser games built with vanilla HTML/CSS/J
 - **Pulseframe** — Reflex / survival gameplay.
 - **Linebound** — Strategic grid-based gameplay.
 - **Memory Drift** — Calm memory and pattern recall.
+- **Static Bloom** — Puzzle / chain reaction strategy.
 
 ## Site Structure
 - `/` — Homepage / Landing
@@ -14,6 +15,7 @@ Taren is a quiet collection of small browser games built with vanilla HTML/CSS/J
 - `/games/pulseframe/` — Pulseframe game folder
 - `/games/linebound/` — Linebound game folder
 - `/games/memory-drift/` — Memory Drift game folder
+- `/games/static-bloom/` — Static Bloom game folder
 
 ## Technical Rules
 To maintain the Taren identity and simplicity, all development must follow these rules:

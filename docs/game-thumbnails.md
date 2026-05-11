@@ -19,9 +19,10 @@ Use:
 
 ## 4. Naming rule
 Use lowercase kebab-case for all image names, matching the exact name of the concept. Do not use spaces or Swedish characters:
-- `linebound-thumbnail.webp`
 - `pulseframe-thumbnail.webp`
+- `linebound-thumbnail.webp`
 - `memory-drift-thumbnail.webp`
+- `static-bloom-thumbnail.webp`
 - `void-runner-thumbnail.webp`
 
 ## 5. How to replace an image
