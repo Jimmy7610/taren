@@ -51,6 +51,7 @@ let gameState = 'MENU'; // MENU, PLAYING, GAMEOVER
 let turn = 'PLAYER'; // PLAYER or AI
 let playerScore = 0;
 let aiScore = 0;
+let computerTimer = null;
 
 // Grid Data
 let hLines = [];
@@ -155,11 +156,20 @@ function playSound(type) {
     }
 }
 
+function clearComputerTimer() {
+    if (computerTimer) {
+        clearTimeout(computerTimer);
+        computerTimer = null;
+    }
+}
+
 function resetGame() {
+    clearComputerTimer();
     const s = SETTINGS.gridSize;
     playerScore = 0;
     aiScore = 0;
     turn = 'PLAYER';
+    hoveredLine = null;
     
     hLines = Array(s + 1).fill(0).map(() => Array(s).fill(0));
     vLines = Array(s + 1).fill(0).map(() => Array(s).fill(0));
@@ -309,7 +319,7 @@ function placeLine(type, x, y, actor) {
         if (checkGameOver()) return;
         
         if (actor === 'AI') {
-            setTimeout(aiMove, SETTINGS.aiThinkingDelay);
+            computerTimer = setTimeout(aiMove, SETTINGS.aiThinkingDelay);
         }
     } else {
         turn = (actor === 'PLAYER') ? 'AI' : 'PLAYER';
@@ -317,7 +327,7 @@ function placeLine(type, x, y, actor) {
         draw();
         
         if (turn === 'AI') {
-            setTimeout(aiMove, SETTINGS.aiThinkingDelay);
+            computerTimer = setTimeout(aiMove, SETTINGS.aiThinkingDelay);
         }
     }
 }
@@ -551,9 +561,12 @@ document.getElementById('retryBtn').addEventListener('click', () => {
 const sizeBtns = document.querySelectorAll('.btn-size');
 sizeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
+        const newSize = parseInt(btn.getAttribute('data-size'));
+        if (SETTINGS.gridSize === newSize && gameState !== 'MENU') return;
+        
         sizeBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        SETTINGS.gridSize = parseInt(btn.getAttribute('data-size'));
+        SETTINGS.gridSize = newSize;
         initAudio();
         resize(); // Recalculate layout immediately
         resetGame();
