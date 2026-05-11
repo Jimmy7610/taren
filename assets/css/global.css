@@ -27,8 +27,13 @@
   /* Atmospherics */
   --ambient-glow-speed: 24s; /* INSTÄLLNING - Ändra hur snabbt bakgrundens glow rör sig. */
   --ambient-noise-opacity: 0.04; /* INSTÄLLNING - Ändra hur stark bruset (grain) är i bakgrunden. */
+  --ambient-canvas-opacity: 1; /* INSTÄLLNING - Ändra hur tydliga de subtila partiklarna på startsidan är. */
   --transition-speed: 0.6s; /* INSTÄLLNING - Ändra hur snabbt kort och sidor övergår. */
   --hover-ease: cubic-bezier(0.2, 0.8, 0.2, 1); /* INSTÄLLNING - Ändra känslan för hovers (snabb in, långsam ut). */
+  
+  /* Homepage Layout */
+  --home-hero-offset: -5vh; /* INSTÄLLNING - Ändra om startsidans innehåll ska flyttas upp/ner. Negativt värde = uppåt. */
+  --home-content-gap: 24px; /* INSTÄLLNING - Ändra avståndet mellan titel, text och knapp på startsidan. */
 }
 
 * {
@@ -79,12 +84,13 @@ body::before {
 /* Ambient Canvas Layer */
 .ambient-canvas {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
   z-index: 0;
+  opacity: var(--ambient-canvas-opacity);
+  display: block;
 }
 
 main {
@@ -193,6 +199,12 @@ p {
   justify-content: center;
   text-align: center;
   min-height: calc(100vh - 100px); /* minus approx nav height */
+  transform: translateY(var(--home-hero-offset));
+  gap: var(--home-content-gap);
+}
+
+.center-content > * {
+  margin-bottom: 0 !important; /* Åsidosätt utility-klasser för att låta gap styra avståndet */
 }
 
 .mb-2 { margin-bottom: var(--spacing-2); }
