@@ -1,13 +1,22 @@
-/* Memory Drift Specific Styles */
+:root {
+    --memory-page-top-offset: 16px; /* INSTÄLLNING - Ändra hur långt ner Memory Drift börjar från navbaren. Lägre värde = mindre scroll. */
+    --memory-section-gap: 20px; /* INSTÄLLNING - Ändra avståndet mellan titel, HUD och spelplan. Lägre värde = kompaktare layout. */
+    --memory-panel-size: 420px; /* INSTÄLLNING - Ändra storlek på Memory Drift-spelpanelen. Lägre värde = lättare att få plats utan scroll. */
+    --memory-hud-padding: 12px 20px; /* INSTÄLLNING - Ändra luft inuti score/HUD-rutan. */
+}
 
 .memory-layout {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-6);
+    gap: var(--memory-section-gap);
     max-width: 600px;
     margin: 0 auto;
     width: 100%;
+}
+
+.memory-container {
+    padding-top: var(--memory-page-top-offset) !important;
 }
 
 /* HUD */
@@ -15,7 +24,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: var(--spacing-3) var(--spacing-4);
+    padding: var(--memory-hud-padding);
     background-color: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -49,7 +58,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 40px;
+    height: 32px;
 }
 
 .status-text {
@@ -79,7 +88,7 @@
 #game-container {
     position: relative;
     width: 100%;
-    max-width: 480px;
+    max-width: var(--memory-panel-size);
     aspect-ratio: 1 / 1;
     background-color: #08080a;
     border: 1px solid var(--border);
