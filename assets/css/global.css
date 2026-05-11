@@ -284,6 +284,29 @@ p {
   height: 100%;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   opacity: var(--concept-thumbnail-opacity);
+  position: relative;
+}
+
+.card-visual-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--card-image, none);
+  background-size: cover;
+  background-position: center;
+  opacity: var(--card-image-opacity, 1); /* INSTÄLLNING - Ändra hur tydligt spelkortets bild ska synas ovanpå fallback-effekten. */
+  z-index: 1;
+}
+
+.card-visual-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: #000;
+  /* Only show overlay if an image is actually loaded (can't detect perfectly in CSS, but we set overlay variable per card if needed) */
+  opacity: var(--card-image-overlay-opacity, 0); /* INSTÄLLNING - Ändra hur mörk overlay som läggs över spelbilden för bättre läsbarhet. */
+  z-index: 2;
+  pointer-events: none;
 }
 
 .concept-void-runner { background: linear-gradient(180deg, transparent 20%, rgba(20,20,30,0.8) 100%), linear-gradient(90deg, #111 0%, #3a1c71 50%, #111 100%); }

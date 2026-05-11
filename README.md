@@ -19,10 +19,12 @@ The core structure is:
 - Use `/templates/game-template/` as your starting point.
 - Copy it into `/games/game-name/`.
 - Add a card manually in `/games/index.html`.
+- Game thumbnails live in `/assets/images/games/` (Recommended: 1200x800 `.webp`).
 - Keep each game completely isolated from others.
 - Search for `INSTÄLLNING` in the new game's code to find safe values to tweak.
 
 For more details on the architectural rules for games, read `/docs/game-standard.md`.
+For instructions on replacing or generating game thumbnails, read `/docs/game-thumbnails.md`.
 
 ## Version Control / Build Badge
 
