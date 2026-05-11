@@ -10,24 +10,24 @@
 
 const SETTINGS = {
     player: {
-        smoothing: 15, // INSTÄLLNING - Ändra hur mjukt orben följer musen. Lägre värde = mer glid, högre värde = snabbare respons.
+        smoothing: 18, // INSTÄLLNING - Ändra hur mjukt orben följer musen. Lägre värde = mer glid, högre värde = snabbare respons.
         radius: 8, // INSTÄLLNING - Ändra spelarorbens basstorlek. Högre värde = större orb och lättare att träffas.
-        trailLengthMax: 25, // INSTÄLLNING - Ändra max antal punkter i spelarens svans vid hög fart.
-        trailLengthMin: 10, // INSTÄLLNING - Ändra minsta antal punkter i spelarens svans.
-        trailFadeSpeed: 6, // INSTÄLLNING - Ändra hur snabbt svansen bleknar bort.
+        trailLengthMax: 20, // INSTÄLLNING - Ändra max antal punkter i spelarens svans vid hög fart.
+        trailLengthMin: 12, // INSTÄLLNING - Ändra minsta antal punkter i spelarens svans.
+        trailFadeSpeed: 8, // INSTÄLLNING - Ändra hur snabbt svansen bleknar bort.
         idlePulseSpeed: 4, // INSTÄLLNING - Ändra hur snabbt orben "andas" när den står still.
         idlePulseIntensity: 1.5, // INSTÄLLNING - Ändra hur mycket orben växer/krymper när den andas.
-        microParticleSpeedThreshold: 300, // INSTÄLLNING - Ändra hur snabbt man måste röra sig för att släppa små partiklar.
+        microParticleSpeedThreshold: 200, // INSTÄLLNING - Ändra hur snabbt man måste röra sig för att släppa små partiklar.
         glowIntensityMult: 50, // INSTÄLLNING - Ändra hur mycket glöden ökar vid fart. Lägre = ökar snabbare.
     },
     nearMiss: {
         distancePadding: 35, // INSTÄLLNING - Ändra hur nära spelaren måste vara ett hot (utöver hitboxen) för att få Near Miss.
         bonus: 15, // INSTÄLLNING - Ändra hur många poäng en Near Miss ger.
-        cooldown: 1.5, // INSTÄLLNING - Ändra hur ofta Near Miss kan triggas, i sekunder.
-        timeDilationScale: 0.2, // INSTÄLLNING - Ändra hur mycket fienderna saktas ner (0.2 = 20% hastighet).
-        timeDilationRecovery: 0.8, // INSTÄLLNING - Ändra hur snabbt tiden återgår till normalt (högre = snabbare).
+        cooldown: 0.8, // INSTÄLLNING - Ändra hur ofta Near Miss kan triggas, i sekunder.
+        timeDilationScale: 0.35, // INSTÄLLNING - Ändra hur mycket tiden saktas ner vid extremt nära Near Miss. Lägre värde = mer slowmotion.
+        timeDilationRecovery: 3.5, // INSTÄLLNING - Ändra hur snabbt tiden återgår till normalt (högre = snabbare).
         arenaPulseScale: 1.02, // INSTÄLLNING - Ändra hur mycket arenan "hoppar" till vid en near miss.
-        popupLifetime: 800, // INSTÄLLNING - Ändra hur länge "+15" texten visas, i millisekunder.
+        popupLifetime: 600, // INSTÄLLNING - Ändra hur länge "+15" texten visas, i millisekunder.
     },
     arena: {
         paddingMult: 0.85, // INSTÄLLNING - Ändra hur mycket marginal arenan har från fönstrets kant (0.85 = 85% av skärmen).
@@ -37,9 +37,9 @@ const SETTINGS = {
     },
     scoring: {
         passiveRate: 15, // INSTÄLLNING - Ändra hur många poäng man får per sekund bara för att överleva.
-        waveClearBonus: 500, // INSTÄLLNING - Ändra hur mycket bonus man får vid klarad våg.
+        waveClearBonus: 250, // INSTÄLLNING - Ändra hur mycket bonus man får vid klarad våg.
         waveDuration: 25, // INSTÄLLNING - Ändra hur lång tid en våg varar (i sekunder).
-        breatherDuration: 2.0, // INSTÄLLNING - Ändra hur lång paus det är mellan vågorna (i sekunder).
+        breatherDuration: 2.5, // INSTÄLLNING - Ändra hur lång andningspausen är mellan intensiva sekvenser. Högre värde = lugnare tempo.
     },
     threats: {
         enemyOrb: {
@@ -55,10 +55,10 @@ const SETTINGS = {
             maxRadiusMult: 1.3, // INSTÄLLNING - Ändra hur stor vågen blir jämfört med arenan innan den försvinner.
         },
         laser: {
-            chargeTime: 1.5, // INSTÄLLNING - Ändra hur länge lasern siktar/varnar innan den skjuter (sekunder).
+            chargeTime: 1.2, // INSTÄLLNING - Ändra hur länge lasern siktar/varnar innan den skjuter (sekunder). Högre värde = lättare och mer rättvist.
             fireTime: 0.4, // INSTÄLLNING - Ändra hur länge lasern är aktiv/dödlig efter skottet (sekunder).
-            collisionPadding: 12, // INSTÄLLNING - Ändra hur nära laserns centrum man kan vara innan man dör.
-            chargeTrackingSpeed: 2, // INSTÄLLNING - Ändra hur snabbt lasern följer efter spelaren under siktandet.
+            collisionPadding: 10, // INSTÄLLNING - Ändra hur bred laserträffen är. Lägre värde = mer förlåtande.
+            chargeTrackingSpeed: 2.5, // INSTÄLLNING - Ändra hur snabbt lasern följer efter spelaren under siktandet.
         }
     },
     pickups: {
@@ -78,6 +78,9 @@ const SETTINGS = {
     audio: {
         droneVolume: 0.08, // INSTÄLLNING - Ändra volymen på bakgrundsbrummet.
         masterRampTime: 0.1, // INSTÄLLNING - Ändra hur mjukt ljudet startar.
+    },
+    ui: {
+        deathOverlayDelay: 280, // INSTÄLLNING - Ändra hur snabbt Game Over-rutan visas efter död. Lägre värde = snabbare restart-känsla.
     }
 };
 
@@ -765,7 +768,7 @@ function killPlayer() {
     
     setTimeout(() => {
         gameOverScreen.classList.remove('hidden');
-    }, 800);
+    }, SETTINGS.ui.deathOverlayDelay);
 }
 
 function spawnThreats() {
