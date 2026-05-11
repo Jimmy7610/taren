@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 19
+**Current Build:** Build 20
 
 ## Playable Games
 1.  **Pulseframe** — Reflex-based survival action.
