@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 25
+**Current Build:** Build 26
 
 ## Playable Games
 1.  **The Lantern Below** — Adventure / exploration with multi-room system, shadows, and engine polish.
@@ -23,5 +23,5 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- **The Lantern Below:** Multi-room foundation complete. Shadows, patrol paths, and visual polish added in Build 25.
+- **The Lantern Below:** Multi-room content fixed in Build 26. All 7 fragments, key, and runes are now reachable and visible. Shadows and visual polish active.
 - Future quiet experiments may appear later.

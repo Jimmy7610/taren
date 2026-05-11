@@ -28,7 +28,7 @@ const CONFIG = {
     tileColor: '#0a0a0c', // INSTÄLLNING - Ändra färgen på golvplattorna.
     wallColor: '#121216', // INSTÄLLNING - Ändra färgen på väggarna.
     
-    // BUILD 25 - Shadow & Polish Settings
+    // BUILD 25/26 - Shadow & Polish Settings
     shadowSpeed: 58, // INSTÄLLNING - Ändra hur snabbt skuggorna rör sig.
     shadowRadius: 20, // INSTÄLLNING - Ändra hur stor träffyta skuggorna har.
     shadowInvulnerabilityDuration: 1400, // INSTÄLLNING - Ändra hur länge spelaren är skyddad efter att ha träffats av en skugga.
@@ -42,11 +42,12 @@ const CONFIG = {
 };
 
 // Rooms Data
+// IMPORTANT: Walls must have gaps where exits are located!
 const ROOMS = {
     start_chamber: {
         name: 'The Descent',
         walls: [
-            { x: 0, y: 0, w: 960, h: 20 },
+            { x: 0, y: 0, w: 430, h: 20 }, { x: 530, y: 0, w: 430, h: 20 }, // Top wall with gap
             { x: 0, y: 520, w: 960, h: 20 },
             { x: 0, y: 0, w: 20, h: 540 },
             { x: 940, y: 0, w: 20, h: 540 },
@@ -54,7 +55,7 @@ const ROOMS = {
             { x: 740, y: 150, w: 20, h: 240 },
         ],
         exits: [
-            { x: 430, y: 0, w: 100, h: 20, target: 'rune_hall', entryX: 480, entryY: 500 },
+            { x: 430, y: -20, w: 100, h: 40, target: 'rune_hall', entryX: 480, entryY: 480 },
         ],
         fragments: [{ id: 'f1', x: 480, y: 270 }],
         runes: [],
@@ -67,22 +68,22 @@ const ROOMS = {
         name: 'The Hall of Runes',
         walls: [
             { x: 0, y: 0, w: 960, h: 20 },
-            { x: 0, y: 520, w: 960, h: 20 },
-            { x: 0, y: 0, w: 20, h: 540 },
-            { x: 940, y: 0, w: 20, h: 540 },
+            { x: 0, y: 520, w: 430, h: 20 }, { x: 530, y: 520, w: 430, h: 20 }, // Bottom gap
+            { x: 0, y: 0, w: 20, h: 220 }, { x: 0, y: 320, w: 20, h: 220 }, // Left gap
+            { x: 940, y: 0, w: 20, h: 220 }, { x: 940, y: 320, w: 20, h: 220 }, // Right gap
         ],
         exits: [
-            { x: 430, y: 520, w: 100, h: 20, target: 'start_chamber', entryX: 480, entryY: 40 },
-            { x: 940, y: 220, w: 20, h: 100, target: 'machine_room', entryX: 40, entryY: 270 },
-            { x: 0, y: 220, w: 20, h: 100, target: 'fragment_vault', entryX: 920, entryY: 270 },
+            { x: 430, y: 520, w: 100, h: 40, target: 'start_chamber', entryX: 480, entryY: 60 },
+            { x: 940, y: 220, w: 40, h: 100, target: 'machine_room', entryX: 60, entryY: 270 },
+            { x: -20, y: 220, w: 40, h: 100, target: 'fragment_vault', entryX: 900, entryY: 270 },
         ],
         fragments: [
-            { id: 'f2', x: 100, y: 100 },
-            { id: 'f3', x: 860, y: 100 },
+            { id: 'f2', x: 200, y: 400 },
+            { id: 'f3', x: 760, y: 400 },
         ],
         runes: [
-            { id: 'r1', x: 250, y: 120, activated: false },
-            { id: 'r2', x: 710, y: 120, activated: false },
+            { id: 'r1', x: 250, y: 150, activated: false },
+            { id: 'r2', x: 710, y: 150, activated: false },
         ],
         machines: [],
         key: null,
@@ -97,12 +98,10 @@ const ROOMS = {
             { x: 0, y: 0, w: 960, h: 20 },
             { x: 0, y: 520, w: 960, h: 20 },
             { x: 0, y: 0, w: 20, h: 540 },
-            { x: 940, y: 220, w: 20, h: 100, passage: true },
-            { x: 940, y: 0, w: 20, h: 220 },
-            { x: 940, y: 320, w: 20, h: 220 },
+            { x: 940, y: 0, w: 20, h: 220 }, { x: 940, y: 320, w: 20, h: 220 }, // Right gap
         ],
         exits: [
-            { x: 940, y: 220, w: 20, h: 100, target: 'rune_hall', entryX: 40, entryY: 270 },
+            { x: 940, y: 220, w: 40, h: 100, target: 'rune_hall', entryX: 60, entryY: 270 },
         ],
         fragments: [
             { id: 'f4', x: 100, y: 440 },
@@ -113,25 +112,21 @@ const ROOMS = {
         key: { x: 480, y: 270, collected: false },
         gate: null,
         shadows: [
-            { x: 100, y: 270, points: [{x: 100, y: 270}, {x: 400, y: 270}], pIndex: 0 },
-            { x: 480, y: 100, points: [{x: 480, y: 100}, {x: 480, y: 440}], pIndex: 0 }
+            { x: 100, y: 270, points: [{x: 100, y: 270}, {x: 400, y: 270}], pIndex: 0 }
         ]
     },
     machine_room: {
         name: 'The Deep Engine',
         walls: [
-            { x: 0, y: 0, w: 960, h: 20 },
-            { x: 0, y: 520, w: 960, h: 20 },
-            { x: 0, y: 220, w: 20, h: 100, passage: true },
-            { x: 0, y: 0, w: 20, h: 220 },
-            { x: 0, y: 320, w: 20, h: 220 },
+            { x: 0, y: 0, w: 430, h: 20 }, { x: 530, y: 0, w: 430, h: 20 }, // Top gap
+            { x: 0, y: 520, w: 430, h: 20 }, { x: 530, y: 520, w: 430, h: 20 }, // Bottom gap
+            { x: 0, y: 0, w: 20, h: 220 }, { x: 0, y: 320, w: 20, h: 220 }, // Left gap
             { x: 940, y: 0, w: 20, h: 540 },
-            { x: 430, y: 520, w: 100, h: 20, passage: true },
         ],
         exits: [
-            { x: 0, y: 220, w: 20, h: 100, target: 'rune_hall', entryX: 920, entryY: 270 },
-            { x: 430, y: 520, w: 100, h: 20, target: 'start_chamber', entryX: 480, entryY: 40 },
-            { x: 430, y: 0, w: 100, h: 20, target: 'lower_gate', entryX: 480, entryY: 500, requiresGate: true },
+            { x: -20, y: 220, w: 40, h: 100, target: 'rune_hall', entryX: 900, entryY: 270 },
+            { x: 430, y: 520, w: 100, h: 40, target: 'start_chamber', entryX: 480, entryY: 60 },
+            { x: 430, y: -20, w: 100, h: 40, target: 'lower_gate', entryX: 480, entryY: 480, requiresGate: true },
         ],
         fragments: [{ id: 'f6', x: 150, y: 400 }],
         runes: [{ id: 'r3', x: 480, y: 440, activated: false }],
@@ -139,18 +134,18 @@ const ROOMS = {
         key: null,
         gate: { x: 430, y: 0, w: 100, h: 25, opened: false },
         shadows: [
-            { x: 700, y: 100, points: [{x: 700, y: 100}, {x: 700, y: 400}, {x: 850, y: 400}, {x: 850, y: 100}], pIndex: 0 }
+            { x: 700, y: 100, points: [{x: 700, y: 100}, {x: 700, y: 400}], pIndex: 0 }
         ]
     },
     lower_gate: {
         name: 'The Lower Light',
         walls: [
             { x: 0, y: 0, w: 960, h: 20 },
-            { x: 0, y: 520, w: 960, h: 20 },
+            { x: 0, y: 520, w: 430, h: 20 }, { x: 530, y: 520, w: 430, h: 20 }, // Bottom gap
             { x: 0, y: 0, w: 20, h: 540 },
             { x: 940, y: 0, w: 20, h: 540 },
         ],
-        exits: [{ x: 430, y: 520, w: 100, h: 20, target: 'machine_room', entryX: 480, entryY: 40 }],
+        exits: [{ x: 430, y: 520, w: 100, h: 40, target: 'machine_room', entryX: 480, entryY: 60 }],
         fragments: [{ id: 'f7', x: 480, y: 150 }],
         runes: [],
         machines: [],
@@ -174,8 +169,6 @@ let state = {
     statusText: '',
     statusTimer: null,
     lastTime: 0,
-    
-    // BUILD 25 State
     invulnerableTimer: 0,
     lanternDimTimer: 0,
 };
@@ -229,7 +222,31 @@ function init() {
     document.getElementById('startBtn').addEventListener('click', startGame);
     document.getElementById('restartBtn').addEventListener('click', resetGame);
 
+    validateAdventureContent();
     updateHUD();
+}
+
+// Development Sanity Check
+function validateAdventureContent() {
+    let totalF = 0;
+    let totalR = 0;
+    let totalK = 0;
+    let hasMachine = false;
+    let hasGate = false;
+
+    Object.values(ROOMS).forEach(r => {
+        totalF += r.fragments.length;
+        totalR += r.runes.length;
+        if (r.key) totalK++;
+        if (r.machines.length > 0) hasMachine = true;
+        if (r.gate) hasGate = true;
+    });
+
+    if (totalF !== 7) console.warn(`Content Error: Found ${totalF} fragments, expected 7.`);
+    if (totalR !== 3) console.warn(`Content Error: Found ${totalR} runes, expected 3.`);
+    if (totalK !== 1) console.warn(`Content Error: Found ${totalK} keys, expected 1.`);
+    if (!hasMachine) console.warn("Content Error: No machine found.");
+    if (!hasGate) console.warn("Content Error: No gate found.");
 }
 
 function startGame() {
@@ -300,11 +317,9 @@ function update(dt) {
     checkRoomTransitions();
     handleInteractions();
     
-    // Update invulnerability/dimming
     if (state.invulnerableTimer > 0) state.invulnerableTimer -= dt * 1000;
     if (state.lanternDimTimer > 0) state.lanternDimTimer -= dt * 1000;
 
-    // Update particles
     particles.forEach(p => {
         p.x += Math.cos(p.angle) * p.speed;
         p.y += Math.sin(p.angle) * p.speed;
@@ -350,7 +365,6 @@ function updateShadows(dt) {
             s.y += (dy / dist) * CONFIG.shadowSpeed * dt;
         }
 
-        // Check player collision
         if (state.invulnerableTimer <= 0) {
             const pDist = getDist(player.x, player.y, s.x, s.y);
             if (pDist < player.radius + CONFIG.shadowRadius) {
@@ -391,13 +405,22 @@ function checkRoomTransitions() {
             player.y + player.radius > exit.y && player.y - player.radius < exit.y + exit.h) {
             
             if (exit.requiresGate && !state.gateOpened) {
-                setStatus("The gate is sealed.");
-                if (player.y < 50) player.y = 50;
+                setStatus("The gate is sealed.", true);
                 continue;
             }
 
             changeRoom(exit.target, exit.entryX, exit.entryY);
             break;
+        }
+        
+        // Interaction hint near exit
+        const distToExit = getDist(player.x, player.y, exit.x + exit.w/2, exit.y + exit.h/2);
+        if (distToExit < 60) {
+            if (exit.requiresGate && !state.gateOpened) {
+                setStatus("The gate needs a key.", true);
+            } else {
+                setStatus("Passage", true);
+            }
         }
     }
 }
@@ -406,7 +429,7 @@ function changeRoom(roomId, x, y) {
     state.currentRoomId = roomId;
     player.x = x;
     player.y = y;
-    state.invulnerableTimer = 500; // Small grace period on entry
+    state.invulnerableTimer = 500;
     updateHUD();
 }
 
@@ -418,7 +441,7 @@ function handleInteractions() {
             const dist = getDist(player.x, player.y, f.x, f.y);
             if (dist < player.radius + 15) {
                 state.fragmentsCollected.add(f.id);
-                setStatus("Light fragment found.");
+                setStatus("Light fragment collected.");
                 updateHUD();
                 checkCompletion();
             }
@@ -429,7 +452,7 @@ function handleInteractions() {
         const dist = getDist(player.x, player.y, room.key.x, room.key.y);
         if (dist < player.radius + 15) {
             state.hasKey = true;
-            setStatus("Ancient key obtained.");
+            setStatus("Ancient key found.");
             updateHUD();
         }
     }
@@ -440,7 +463,7 @@ function handleInteractions() {
             if (dist < CONFIG.interactionRadius) {
                 if (input.interactPressed) {
                     state.runesActivated.add(r.id);
-                    setStatus(`Rune activated. (${state.runesActivated.size}/3)`);
+                    setStatus(`Rune awakened. (${state.runesActivated.size}/3)`);
                     updateHUD();
                 } else {
                     setStatus("Press E to activate rune.", true);
@@ -455,13 +478,13 @@ function handleInteractions() {
             if (state.hasKey) {
                 if (input.interactPressed) {
                     state.gateOpened = true;
-                    setStatus("The gate grinds open.");
+                    setStatus("The gate opens.");
                     updateHUD();
                 } else {
                     setStatus("Press E to open gate.", true);
                 }
             } else {
-                setStatus("The gate requires a key.", true);
+                setStatus("The gate needs a key.", true);
             }
         }
     }
@@ -492,7 +515,7 @@ function handleInteractions() {
             if (state.fragmentsCollected.size >= CONFIG.fragmentGoal && state.machineActivated) {
                 winGame();
             } else {
-                setStatus("The lower gate is still dark.", true);
+                setStatus("The path is still dark. Collect fragments.", true);
             }
         }
     }
@@ -527,10 +550,10 @@ function setStatus(msg, isHint = false) {
 }
 
 function updateHUD() {
-    document.getElementById('lightCount').innerText = `${state.fragmentsCollected.size} / ${CONFIG.fragmentGoal}`;
-    document.getElementById('keyCount').innerText = state.hasKey ? '1 / 1' : '0 / 1';
-    document.getElementById('runeCount').innerText = `${state.runesActivated.size} / ${CONFIG.runeGoal}`;
-    document.getElementById('gateStatus').innerText = state.gateOpened ? 'Open' : 'Sealed';
+    document.getElementById('lightCount').innerText = `Light ${state.fragmentsCollected.size} / ${CONFIG.fragmentGoal}`;
+    document.getElementById('keyCount').innerText = `Keys ${state.hasKey ? '1 / 1' : '0 / 1'}`;
+    document.getElementById('runeCount').innerText = `Runes ${state.runesActivated.size} / ${CONFIG.runeGoal}`;
+    document.getElementById('gateStatus').innerText = state.gateOpened ? 'Gate Open' : 'Gate Sealed';
 }
 
 // Rendering
@@ -553,9 +576,8 @@ function drawFloor() {
             ctx.strokeStyle = 'rgba(255,255,255,0.015)';
             ctx.strokeRect(x, y, tileSize, tileSize);
             
-            // Build 25 - Cracked details
             if ((x * y) % 31 === 0) {
-                ctx.fillStyle = 'rgba(255,255,255,0.01)';
+                ctx.fillStyle = 'rgba(255,255,255,0.02)';
                 ctx.fillRect(x + 15, y + 20, 20, 1);
             }
         }
@@ -565,25 +587,34 @@ function drawFloor() {
 function drawObjects() {
     const room = ROOMS[state.currentRoomId];
     
+    // Passages / Exits Glow
+    room.exits.forEach(e => {
+        const grad = ctx.createRadialGradient(e.x + e.w/2, e.y + e.h/2, 0, e.x + e.w/2, e.y + e.h/2, 50);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.05)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(e.x - 20, e.y - 20, e.w + 40, e.h + 40);
+    });
+
     // Walls
     ctx.fillStyle = CONFIG.wallColor;
     room.walls.forEach(w => {
         ctx.fillRect(w.x, w.y, w.w, w.h);
-        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
         ctx.strokeRect(w.x, w.y, w.w, w.h);
     });
 
-    // Gate Polish
+    // Gate
     if (room.gate) {
         const g = room.gate;
         const opened = state.gateOpened;
         ctx.fillStyle = opened ? '#050507' : '#0a0a0f';
         ctx.fillRect(g.x, g.y, g.w, g.h);
-        ctx.strokeStyle = opened ? CONFIG.machineColor : '#222';
+        ctx.strokeStyle = opened ? CONFIG.machineColor : '#333';
         if (opened) {
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = 20;
             ctx.shadowColor = CONFIG.machineColor;
-            ctx.globalAlpha = CONFIG.gateOpenGlow * 0.4;
+            ctx.globalAlpha = CONFIG.gateOpenGlow * 0.5;
         }
         ctx.strokeRect(g.x, g.y, g.w, g.h);
         ctx.globalAlpha = 1.0;
@@ -591,13 +622,13 @@ function drawObjects() {
 
         if (!opened) {
             for(let i=0; i<6; i++) {
-                ctx.fillStyle = 'rgba(255,255,255,0.08)';
+                ctx.fillStyle = 'rgba(255,255,255,0.1)';
                 ctx.fillRect(g.x + 15 + i*18, g.y, 4, g.h);
             }
         }
     }
 
-    // Runes Polish
+    // Runes
     room.runes.forEach(r => {
         const active = state.runesActivated.has(r.id);
         const pDist = getDist(player.x, player.y, r.x, r.y);
@@ -605,28 +636,27 @@ function drawObjects() {
         const pulse = Math.sin(Date.now() / 1000 * CONFIG.runePulseSpeed) * 0.2 + 0.8;
         
         ctx.fillStyle = '#1a1a25';
-        ctx.fillRect(r.x - 20, r.y - 30, 40, 60);
+        ctx.fillRect(r.x - 25, r.y - 40, 50, 80);
         
         ctx.strokeStyle = CONFIG.runeColor;
         ctx.lineWidth = active ? 3 : 1;
-        ctx.globalAlpha = active ? CONFIG.runeActivatedGlow * 0.5 : (near ? 0.6 : pulse * 0.3);
+        ctx.globalAlpha = active ? CONFIG.runeActivatedGlow * 0.6 : (near ? 0.7 : pulse * 0.4);
         
         if (active) {
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 25;
             ctx.shadowColor = CONFIG.runeColor;
-            // Activation ring
             ctx.beginPath();
-            ctx.arc(r.x, r.y, 35 + Math.sin(Date.now()/200)*3, 0, Math.PI*2);
+            ctx.arc(r.x, r.y, 45 + Math.sin(Date.now()/200)*4, 0, Math.PI*2);
             ctx.stroke();
         }
         
-        ctx.strokeRect(r.x - 15, r.y - 25, 30, 50);
+        ctx.strokeRect(r.x - 20, r.y - 35, 40, 70);
         ctx.globalAlpha = 1.0;
         ctx.shadowBlur = 0;
         ctx.lineWidth = 1;
     });
 
-    // Machine Polish
+    // Machines
     room.machines.forEach(m => {
         const active = state.machineActivated;
         const ready = state.runesActivated.size >= CONFIG.runeGoal;
@@ -634,50 +664,60 @@ function drawObjects() {
         
         ctx.fillStyle = '#1a1a25';
         ctx.beginPath();
-        ctx.arc(m.x, m.y, 30, 0, Math.PI * 2);
+        ctx.arc(m.x, m.y, 35, 0, Math.PI * 2);
         ctx.fill();
         
         ctx.strokeStyle = CONFIG.machineColor;
         ctx.lineWidth = active ? 4 : (ready ? 2 : 1);
-        ctx.globalAlpha = active ? CONFIG.machineGlowWhenAwakened * 0.5 : (ready ? pulse : 0.2);
+        ctx.globalAlpha = active ? CONFIG.machineGlowWhenAwakened * 0.6 : (ready ? pulse : 0.3);
         
         if (active) {
-            ctx.shadowBlur = 30;
+            ctx.shadowBlur = 40;
             ctx.shadowColor = CONFIG.machineColor;
-            // Energy ring
             ctx.beginPath();
-            ctx.arc(m.x, m.y, 45 + pulse*5, 0, Math.PI*2);
+            ctx.arc(m.x, m.y, 50 + pulse*8, 0, Math.PI*2);
             ctx.stroke();
         }
         
         ctx.beginPath();
-        ctx.arc(m.x, m.y, 25, 0, Math.PI * 2);
+        ctx.arc(m.x, m.y, 30, 0, Math.PI * 2);
         ctx.stroke();
         ctx.globalAlpha = 1.0;
         ctx.shadowBlur = 0;
         ctx.lineWidth = 1;
     });
 
+    // Key
+    if (room.key && !state.hasKey) {
+        const pulse = Math.sin(Date.now() / 400) * 6;
+        ctx.fillStyle = '#fff';
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = CONFIG.machineColor;
+        ctx.fillRect(room.key.x - 8, room.key.y - 8 + pulse, 16, 16);
+        ctx.strokeStyle = CONFIG.machineColor;
+        ctx.strokeRect(room.key.x - 10, room.key.y - 10 + pulse, 20, 20);
+        ctx.shadowBlur = 0;
+    }
+
     // Fragments
     room.fragments.forEach(f => {
         if (!state.fragmentsCollected.has(f.id)) {
-            const pulse = Math.sin(Date.now() / 500) * 5;
+            const pulse = Math.sin(Date.now() / 500) * 6;
             ctx.fillStyle = CONFIG.lanternColor;
-            ctx.shadowBlur = 15;
+            ctx.shadowBlur = 20;
             ctx.shadowColor = CONFIG.lanternColor;
             ctx.beginPath();
-            ctx.moveTo(f.x, f.y - 12 - pulse);
-            ctx.lineTo(f.x + 8, f.y - pulse);
-            ctx.lineTo(f.x, f.y + 12 - pulse);
-            ctx.lineTo(f.x - 8, f.y - pulse);
+            ctx.moveTo(f.x, f.y - 15 - pulse);
+            ctx.lineTo(f.x + 10, f.y - pulse);
+            ctx.lineTo(f.x, f.y + 15 - pulse);
+            ctx.lineTo(f.x - 10, f.y - pulse);
             ctx.closePath();
             ctx.fill();
             ctx.shadowBlur = 0;
         }
     });
 
-    // Particles
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
     particles.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -691,23 +731,19 @@ function drawShadows() {
 
     room.shadows.forEach(s => {
         const pulse = Math.sin(Date.now() / 400) * 4;
-        
-        // Aura
         const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, CONFIG.shadowRadius + 15);
-        grad.addColorStop(0, 'rgba(17, 9, 31, 0.6)');
+        grad.addColorStop(0, 'rgba(17, 9, 31, 0.7)');
         grad.addColorStop(1, 'rgba(17, 9, 31, 0)');
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(s.x, s.y, CONFIG.shadowRadius + 15, 0, Math.PI * 2);
         ctx.fill();
 
-        // Body
         ctx.fillStyle = CONFIG.shadowColor;
         ctx.beginPath();
         ctx.arc(s.x, s.y, CONFIG.shadowRadius + pulse, 0, Math.PI * 2);
         ctx.fill();
 
-        // Eyes
         ctx.fillStyle = CONFIG.shadowEyeColor;
         ctx.shadowBlur = 10;
         ctx.shadowColor = CONFIG.shadowEyeColor;
@@ -728,14 +764,14 @@ function drawPlayer() {
     ctx.beginPath();
     ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
     ctx.stroke();
 
     ctx.fillStyle = CONFIG.lanternColor;
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 15;
     ctx.shadowColor = CONFIG.lanternColor;
     ctx.beginPath();
-    ctx.arc(player.x + 4, player.y - 4, 3.5 + pulse/2, 0, Math.PI * 2);
+    ctx.arc(player.x + 4, player.y - 4, 4 + pulse/2, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
     ctx.globalAlpha = 1.0;
@@ -745,7 +781,6 @@ function drawLanternLight() {
     const pulse = Math.sin(Date.now() / 600) * CONFIG.lanternPulseAmount;
     let r = CONFIG.lanternRadius + pulse;
     
-    // Dimming logic
     if (state.lanternDimTimer > 0) {
         r *= CONFIG.shadowLanternDimAmount;
     }
@@ -767,15 +802,14 @@ function drawLanternLight() {
 
     ctx.drawImage(offscreenCanvas, 0, 0);
 
-    // Fog near lower gate
     if (state.currentRoomId === 'lower_gate') {
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
         ctx.fillRect(0,0,canvas.width,canvas.height);
     }
 
     const bloom = ctx.createRadialGradient(player.x, player.y, 0, player.x, player.y, r);
-    bloom.addColorStop(0, 'rgba(245, 211, 138, 0.12)');
-    bloom.addColorStop(0.6, 'rgba(245, 211, 138, 0.04)');
+    bloom.addColorStop(0, 'rgba(245, 211, 138, 0.15)');
+    bloom.addColorStop(0.6, 'rgba(245, 211, 138, 0.05)');
     bloom.addColorStop(1, 'rgba(245, 211, 138, 0)');
     ctx.fillStyle = bloom;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
