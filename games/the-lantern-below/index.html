@@ -24,7 +24,7 @@
             <div class="game-main-column">
                 <header class="mb-4 center-content" style="min-height: auto;">
                     <h1 class="mb-2">The Lantern Below</h1>
-                    <p>Find the lower light.</p>
+                    <p id="gameSubtitle">Find the lower light.</p>
                 </header>
 
                 <div class="lantern-layout">
@@ -38,6 +38,10 @@
                             <span class="stat-value" id="keyCount">0</span>
                         </div>
                         <div class="stat-box">
+                            <span class="stat-label">Runes</span>
+                            <span class="stat-value" id="runeCount">0 / 3</span>
+                        </div>
+                        <div class="stat-box">
                             <span class="stat-label">Gate</span>
                             <span class="stat-value" id="gateStatus">Sealed</span>
                         </div>
@@ -46,10 +50,18 @@
                     <div id="game-container">
                         <canvas id="gameCanvas"></canvas>
                         
+                        <div id="statusOverlay" class="status-message">Ready.</div>
+
                         <div id="startScreen" class="overlay">
                             <h2 class="overlay-title">The Lantern Below</h2>
                             <p class="overlay-desc">Explore the depths. Reveal what is hidden.</p>
                             <button id="startBtn" class="btn">Enter the Deep</button>
+                        </div>
+
+                        <div id="winScreen" class="overlay hidden">
+                            <h2 class="overlay-title">Light Found</h2>
+                            <p class="overlay-desc">You have found the lower light. The darkness recedes.</p>
+                            <button id="restartBtn" class="btn">Return to Surface</button>
                         </div>
                     </div>
                 </div>
@@ -59,8 +71,8 @@
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
                     <li>Move with <strong>WASD</strong> or <strong>arrows</strong>.</li>
-                    <li>Follow the <strong>lantern light</strong> to see.</li>
-                    <li>Collect <strong>fragments</strong> and open gates.</li>
+                    <li>Press <strong>E</strong> near runes, gates, and machines.</li>
+                    <li>Collect all <strong>fragments</strong> and find the light.</li>
                 </ul>
             </aside>
         </div>

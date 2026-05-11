@@ -1,9 +1,9 @@
 # Taren Current Status
 
-**Current Build:** Build 23
+**Current Build:** Build 24
 
 ## Playable Games
-1.  **The Lantern Below** — Adventure / exploration foundation.
+1.  **The Lantern Below** — Adventure / exploration with multi-room system.
 2.  **Pulseframe** — Reflex-based survival action.
 3.  **Linebound** — Tactical dots-and-boxes strategy.
 4.  **Memory Drift** — Atmospheric pattern-recall ritual.
@@ -23,5 +23,5 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- **The Lantern Below:** First larger adventure-style experiment.
+- **The Lantern Below:** Multi-room foundation complete. Interactions and mini-adventure playable.
 - Future quiet experiments may appear later.
