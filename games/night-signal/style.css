@@ -1,7 +1,11 @@
 :root {
-    --night-page-top-offset: 16px;
-    --night-section-gap: 20px;
-    --night-panel-size: min(450px, calc(100vh - 300px));
+    --night-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
+    --night-section-gap: 16px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och instruktion. */
+    --night-panel-size: min(450px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+}
+
+.fade-in-up.delay-1 {
+    padding-top: var(--night-page-top-offset);
 }
 
 .night-layout {
@@ -9,19 +13,14 @@
     flex-direction: column;
     align-items: center;
     gap: var(--night-section-gap);
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
-}
-
-.night-container {
-    padding-top: var(--night-page-top-offset) !important;
 }
 
 .hud {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    max-width: var(--night-panel-size);
     padding: 12px 24px;
     background-color: var(--card-bg);
     border: 1px solid var(--border);
@@ -34,17 +33,8 @@
     align-items: center;
 }
 
-.stat-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-}
-
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    font-family: var(--font-mono);
-}
+.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+.stat-value { font-size: 1.5rem; font-weight: 700; font-family: var(--font-mono); }
 
 #game-container {
     position: relative;
@@ -112,11 +102,6 @@
 }
 
 .overlay.hidden { display: none; }
-
 .overlay-title { font-size: 1.75rem; margin-bottom: 0.5rem; }
 .overlay-desc { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem; max-width: 240px; }
-
-.instruction-text {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-}
+.instruction-text { font-size: 0.875rem; color: var(--text-muted); }

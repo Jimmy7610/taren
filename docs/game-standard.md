@@ -13,6 +13,7 @@ This document outlines the rules and guidelines for developing and adding new ga
 - **Zero Cross-Contamination:** No game may depend on another game. No game may load another game's scripts. If one game breaks, the rest of the Taren site must continue to function perfectly.
 - **Global UI Integration:** Games must use the global Taren navbar and shared Taren design language (`/assets/css/global.css`) where appropriate.
 - **No-Scroll Layout:** On desktop/laptop screens, game pages should ideally fit within the viewport height (`100vh`) without requiring vertical scrolling. Use viewport-aware CSS (like `calc(100vh - 200px)`) to size game boards.
+- **In-Game Help:** Every game MUST include a "How to play" panel. On desktop, this should sit to the right of the game area. Use the shared classes `.game-play-layout`, `.game-main-column`, and `.game-help-panel` for consistency.
 - **Minimalism:** Keep game UI minimal but clear. Gameplay should remain readable and avoid feature creep.
 - **Vanilla Only:** Use pure vanilla HTML, CSS, and JavaScript. 
   - **Do NOT add external dependencies.**
@@ -40,5 +41,5 @@ Every playable game must have a thumbnail image in `/assets/images/games/` follo
 ## Reference Games
 
 - **Pulseframe:** Reference for high-polish reflex and survival feel.
-- **Linebound:** Reference for tactical, grid-based strategy and Computer AI.
-- **Memory Drift:** Reference for calm, atmospheric pattern recall and Web Audio API integration.
+- **Linebound:** Reference for tactical, grid-based strategy and Computer turn logic.
+- **Memory Drift:** Reference for calm, atmospheric pattern recall.

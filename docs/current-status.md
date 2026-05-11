@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 21
+**Current Build:** Build 22
 
 ## Playable Games
 1.  **Pulseframe** — Reflex-based survival action.
@@ -15,6 +15,7 @@
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.
+- **In-Game Help:** "How to play" panels integrated into all game views.
 - **Thumbnail System:** CSS-variable based image loading with CSS conceptual fallback.
 - **Isolated Architecture:** Each game is a self-contained vanilla project.
 - **No-Scroll Layouts:** All game pages optimized for single-viewport desktop play.

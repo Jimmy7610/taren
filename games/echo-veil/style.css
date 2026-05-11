@@ -1,7 +1,11 @@
 :root {
-    --echo-page-top-offset: 16px;
-    --echo-section-gap: 20px;
-    --echo-panel-size: min(450px, calc(100vh - 300px));
+    --echo-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
+    --echo-section-gap: 16px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och instruktion. */
+    --echo-panel-size: min(450px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+}
+
+.fade-in-up.delay-1 {
+    padding-top: var(--echo-page-top-offset);
 }
 
 .echo-layout {
@@ -9,19 +13,14 @@
     flex-direction: column;
     align-items: center;
     gap: var(--echo-section-gap);
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
-}
-
-.echo-container {
-    padding-top: var(--echo-page-top-offset) !important;
 }
 
 .hud {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    max-width: var(--echo-panel-size);
     padding: 12px 24px;
     background-color: var(--card-bg);
     border: 1px solid var(--border);
@@ -109,6 +108,5 @@
 }
 
 .overlay.hidden { display: none; }
-
 .instruction-text { font-size: 0.875rem; color: var(--text-muted); }
 .instruction-text.active { color: var(--accent); }

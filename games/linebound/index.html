@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/assets/css/global.css">
     <link rel="stylesheet" href="style.css">
     <script src="/assets/js/build.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
 </head>
 <body>
     <nav class="navbar fade-in-up">
@@ -17,42 +18,56 @@
         </div>
     </nav>
 
-    <main class="game-wrapper fade-in-up delay-1">
-        <div class="linebound-layout">
-            <!-- HUD (External to board) -->
-            <div id="hud-external">
-                <div class="hud-row-1">
-                    <div id="scoreDisplay">You: 0 | Computer: 0</div>
-                    <div id="turnDisplay" class="turn-player">Your Turn</div>
-                </div>
-                <div class="hud-row-2">
-                    <div class="board-size-selector">
-                        <span style="font-size: 0.875rem; color: var(--text-muted); margin-right: 8px;">Board</span>
-                        <button class="btn-size active" data-size="5">5x5</button>
-                        <button class="btn-size" data-size="10">10x10</button>
+    <main class="container fade-in-up delay-1">
+        <div class="game-play-layout">
+            <div class="game-main-column">
+                <div class="linebound-layout">
+                    <!-- HUD (External to board) -->
+                    <div id="hud-external">
+                        <div class="hud-row-1">
+                            <div id="scoreDisplay">You: 0 | Computer: 0</div>
+                            <div id="turnDisplay" class="turn-player">Your Turn</div>
+                        </div>
+                        <div class="hud-row-2">
+                            <div class="board-size-selector">
+                                <span style="font-size: 0.875rem; color: var(--text-muted); margin-right: 8px;">Board</span>
+                                <button class="btn-size active" data-size="5">5x5</button>
+                                <button class="btn-size" data-size="10">10x10</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="game-container">
+                        <canvas id="gameCanvas"></canvas>
+
+                        <!-- Start Screen -->
+                        <div id="startScreen" class="overlay">
+                            <h1>Linebound</h1>
+                            <p>Claim the space.</p>
+                            <button id="startBtn" class="btn">Start</button>
+                        </div>
+
+                        <!-- Game Over Screen -->
+                        <div id="gameOverScreen" class="overlay hidden">
+                            <h1 id="resultTitle">Game Over</h1>
+                            <div class="score-board">
+                                <p>You: <span id="finalScorePlayer">0</span></p>
+                                <p>Computer: <span id="finalScoreAI">0</span></p>
+                            </div>
+                            <button id="retryBtn" class="btn">Restart</button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="game-container">
-                <canvas id="gameCanvas"></canvas>
-
-            <!-- Start Screen -->
-            <div id="startScreen" class="overlay">
-                <h1>Linebound</h1>
-                <p>Click between two dots to draw a line.<br>Complete a box to score and play again.</p>
-                <button id="startBtn" class="btn">Start</button>
-            </div>
-
-            <!-- Game Over Screen -->
-            <div id="gameOverScreen" class="overlay hidden">
-                <h1 id="resultTitle">Game Over</h1>
-                <div class="score-board">
-                    <p>You: <span id="finalScorePlayer">0</span></p>
-                    <p>Computer: <span id="finalScoreAI">0</span></p>
-                </div>
-                <button id="retryBtn" class="btn">Restart</button>
-            </div>
+            <aside class="game-help-panel">
+                <h2 class="game-help-title">How to play</h2>
+                <ul class="game-help-list">
+                    <li>Draw <strong>lines</strong> between two nearby dots.</li>
+                    <li>Complete a <strong>square</strong> to score and keep your turn.</li>
+                    <li>The <strong>Computer</strong> plays after you unless you close a box.</li>
+                </ul>
+            </aside>
         </div>
     </main>
     <script src="game.js" defer></script>

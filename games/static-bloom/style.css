@@ -1,8 +1,11 @@
 :root {
-    --bloom-page-top-offset: 16px; /* INSTÄLLNING - Ändra hur långt ner Static Bloom börjar från navbaren. */
-    --bloom-section-gap: 20px; /* INSTÄLLNING - Ändra avståndet mellan titel, HUD och spelplan. */
-    --bloom-panel-size: min(480px, calc(100vh - 280px)); /* INSTÄLLNING - Ändra storlek på spelpanelen. */
-    --bloom-hud-padding: 12px 20px; /* INSTÄLLNING - Ändra luft inuti HUD-rutan. */
+    --bloom-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
+    --bloom-section-gap: 20px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och status. */
+    --bloom-panel-size: min(480px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+}
+
+.fade-in-up.delay-1 {
+    padding-top: var(--bloom-page-top-offset);
 }
 
 .bloom-layout {
@@ -10,21 +13,15 @@
     flex-direction: column;
     align-items: center;
     gap: var(--bloom-section-gap);
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
 }
 
-.bloom-container {
-    padding-top: var(--bloom-page-top-offset) !important;
-}
-
-/* HUD */
 .hud {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: var(--bloom-hud-padding);
+    max-width: var(--bloom-panel-size);
+    padding: 12px 20px;
     background-color: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -42,18 +39,14 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: 2px;
 }
 
 .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
     font-family: var(--font-mono);
-    color: var(--text);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-/* Status Panel */
 .status-panel {
     display: flex;
     justify-content: center;
@@ -65,14 +58,12 @@
     font-size: 1rem;
     color: var(--text-muted);
     letter-spacing: 0.05em;
-    transition: all 0.3s ease;
 }
 
 .status-text.active { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 .status-text.success { color: #4cc9f0; text-shadow: 0 0 10px rgba(76, 201, 240, 0.4); }
 .status-text.error { color: #ff4c4c; text-shadow: 0 0 10px rgba(255, 76, 76, 0.4); }
 
-/* Game Container */
 #game-container {
     position: relative;
     width: 100%;
@@ -95,10 +86,9 @@
     height: 100%;
 }
 
-/* Nodes */
 .node {
     background-color: #121216;
-    border-radius: 50%; /* Nodes are circles */
+    border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.03);
     cursor: default;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -108,7 +98,6 @@
     justify-content: center;
 }
 
-/* Charge Indicators */
 .node::after {
     content: "";
     position: absolute;
@@ -122,12 +111,10 @@
 .node.charge-1::after { background-color: rgba(139, 108, 255, 0.2); }
 .node.charge-2::after { background-color: rgba(139, 108, 255, 0.5); box-shadow: 0 0 10px rgba(139, 108, 255, 0.3); }
 
-/* Interactive state */
 .node.interactive { cursor: pointer; }
 .node.interactive:hover { background-color: #1a1a20; border-color: rgba(255, 255, 255, 0.08); }
 .node.interactive:active { transform: scale(0.9); }
 
-/* Bloom State */
 .node.bloomed {
     background-color: #fafafa;
     border-color: #fff;
@@ -136,17 +123,9 @@
     z-index: 2;
 }
 
-.node.bloomed::after {
-    display: none;
-}
+.node.bloomed::after { display: none; }
+.node.reaction { background-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 
-/* Reaction Highlight */
-.node.reaction {
-    background-color: var(--accent);
-    box-shadow: 0 0 20px var(--accent-glow);
-}
-
-/* Overlays */
 .overlay {
     position: absolute;
     inset: 0;
@@ -157,30 +136,14 @@
     align-items: center;
     justify-content: center;
     z-index: 10;
-    transition: opacity 0.4s ease;
     padding: var(--spacing-6);
     text-align: center;
 }
 
-.overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
+.overlay.hidden { opacity: 0; pointer-events: none; }
+.overlay-title { font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-2); }
+.overlay-desc { color: var(--text-muted); margin-bottom: var(--spacing-6); max-width: 300px; }
 
-.overlay-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-2);
-    text-shadow: 0 0 20px var(--accent-glow);
-}
-
-.overlay-desc {
-    color: var(--text-muted);
-    margin-bottom: var(--spacing-6);
-    max-width: 300px;
-}
-
-/* Level Clear Glow */
 .level-clear-flash {
     animation: clearFlash 0.6s ease-out forwards;
 }

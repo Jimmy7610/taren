@@ -1,8 +1,11 @@
 :root {
-    --memory-page-top-offset: 16px; /* INSTÄLLNING - Ändra hur långt ner Memory Drift börjar från navbaren. Lägre värde = mindre scroll. */
-    --memory-section-gap: 20px; /* INSTÄLLNING - Ändra avståndet mellan titel, HUD och spelplan. Lägre värde = kompaktare layout. */
-    --memory-panel-size: min(420px, calc(100vh - 280px)); /* INSTÄLLNING - Ändra storlek på Memory Drift-spelpanelen. Baseras på skärmhöjd. */
-    --memory-hud-padding: 12px 20px; /* INSTÄLLNING - Ändra luft inuti score/HUD-rutan. */
+    --memory-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
+    --memory-section-gap: 16px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och status. */
+    --memory-panel-size: min(420px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+}
+
+.fade-in-up.delay-1 {
+    padding-top: var(--memory-page-top-offset);
 }
 
 .memory-layout {
@@ -10,21 +13,15 @@
     flex-direction: column;
     align-items: center;
     gap: var(--memory-section-gap);
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
 }
 
-.memory-container {
-    padding-top: var(--memory-page-top-offset) !important;
-}
-
-/* HUD */
 .hud {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: var(--memory-hud-padding);
+    max-width: var(--memory-panel-size);
+    padding: 12px 20px;
     background-color: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -42,18 +39,14 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: 2px;
 }
 
 .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
     font-family: var(--font-mono);
-    color: var(--text);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-/* Status Panel */
 .status-panel {
     display: flex;
     justify-content: center;
@@ -62,29 +55,16 @@
 }
 
 .status-text {
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 500;
     color: var(--text-muted);
     letter-spacing: 0.05em;
-    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-.status-text.watch {
-    color: #4cc9f0;
-    text-shadow: 0 0 10px rgba(76, 201, 240, 0.4);
-}
+.status-text.watch { color: #4cc9f0; text-shadow: 0 0 10px rgba(76, 201, 240, 0.4); }
+.status-text.play { color: #8b6cff; text-shadow: 0 0 10px rgba(139, 108, 255, 0.4); }
+.status-text.error { color: #ff4c4c; text-shadow: 0 0 10px rgba(255, 76, 76, 0.4); }
 
-.status-text.play {
-    color: #8b6cff;
-    text-shadow: 0 0 10px rgba(139, 108, 255, 0.4);
-}
-
-.status-text.error {
-    color: #ff4c4c;
-    text-shadow: 0 0 10px rgba(255, 76, 76, 0.4);
-}
-
-/* Game Container */
 #game-container {
     position: relative;
     width: 100%;
@@ -102,71 +82,39 @@
 
 #grid-container {
     display: grid;
-    /* Grid sizing will be set via JS based on SETTINGS.gridSize */
     padding: var(--spacing-4);
     width: 100%;
     height: 100%;
 }
 
-/* Tiles */
 .tile {
     background-color: #121216;
     border-radius: var(--radius-md);
     border: 1px solid rgba(255, 255, 255, 0.02);
-    box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.01), 0 4px 10px rgba(0, 0, 0, 0.3);
     cursor: default;
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
     overflow: hidden;
 }
 
-/* Highlight gradient overlay */
-.tile::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+.tile.interactive { cursor: pointer; }
+.tile.interactive:hover { background-color: #18181d; border-color: rgba(255, 255, 255, 0.05); }
+.tile.interactive:active { transform: scale(0.95); }
 
-/* Clickable state */
-.tile.interactive {
-    cursor: pointer;
-}
-
-.tile.interactive:hover {
-    background-color: #18181d;
-    border-color: rgba(255, 255, 255, 0.05);
-}
-
-.tile.interactive:active {
-    transform: scale(0.95);
-}
-
-/* Glow States */
 .tile.glow-show {
-    background-color: var(--accent-glow); /* Can be overridden by JS */
+    background-color: var(--accent-glow);
     border-color: rgba(255, 255, 255, 0.4);
     box-shadow: 0 0 20px var(--accent-glow), inset 0 0 15px rgba(255, 255, 255, 0.2);
     transform: scale(1.02);
     z-index: 2;
 }
 
-.tile.glow-show::before {
-    opacity: 1;
-}
-
 .tile.glow-input {
-    background-color: var(--accent-glow); /* Can be overridden by JS */
+    background-color: var(--accent-glow);
     border-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 0 25px var(--accent-glow), inset 0 0 20px rgba(255, 255, 255, 0.4);
     transform: scale(0.95);
     z-index: 2;
-}
-
-.tile.glow-input::before {
-    opacity: 1;
 }
 
 .tile.glow-error {
@@ -174,7 +122,6 @@
     border-color: #ff4c4c;
     box-shadow: 0 0 20px rgba(255, 76, 76, 0.5);
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-    z-index: 2;
 }
 
 @keyframes shake {
@@ -184,7 +131,6 @@
     40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
-/* Overlays */
 .overlay {
     position: absolute;
     inset: 0;
@@ -198,31 +144,6 @@
     transition: opacity 0.3s ease;
 }
 
-.overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.overlay-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-4);
-    text-shadow: 0 0 20px var(--accent-glow);
-}
-
-#finalScoreDisplay {
-    font-size: 1.125rem;
-    color: var(--text-muted);
-    margin-bottom: var(--spacing-5);
-}
-
-/* Animations */
-.score-pulse {
-    animation: scorePulse 0.3s ease;
-}
-
-@keyframes scorePulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); color: #8b6cff; }
-    100% { transform: scale(1); }
-}
+.overlay.hidden { opacity: 0; pointer-events: none; }
+.overlay-title { font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-4); }
+#finalScoreDisplay { font-size: 1.125rem; color: var(--text-muted); margin-bottom: var(--spacing-5); }

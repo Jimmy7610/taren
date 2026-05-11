@@ -34,6 +34,7 @@ To maintain the Taren identity and simplicity, all development must follow these
 - **No Dependencies:** No external libraries or APIs. Pure vanilla HTML, CSS, and JS.
 - **Isolation:** Every game must be fully isolated in its own folder. Shared logic is discouraged to keep games modular.
 - **No-Scroll Target:** Game pages should ideally fit within one desktop/laptop viewport without vertical scrolling.
+- **Help Panels:** Each game includes a short "How to play" panel. On desktop, it appears to the right; on mobile, it stacks below.
 
 ## Build Badge
 A small build badge is displayed in the top-right corner of every page.

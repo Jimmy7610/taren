@@ -19,49 +19,60 @@
         </div>
     </nav>
 
-    <main>
-        <div class="container echo-container fade-in-up delay-1">
-            <header class="mb-4 center-content" style="min-height: auto;">
-                <h1 class="mb-2">Echo Veil</h1>
-                <p>Remember what the echo reveals.</p>
-            </header>
+    <main class="container fade-in-up delay-1">
+        <div class="game-play-layout">
+            <div class="game-main-column">
+                <header class="mb-4 center-content" style="min-height: auto;">
+                    <h1 class="mb-2">Echo Veil</h1>
+                    <p>Remember what the echo reveals.</p>
+                </header>
 
-            <div class="echo-layout fade-in-up delay-2">
-                <div class="hud">
-                    <div class="stat-box">
-                        <span class="stat-label">Round</span>
-                        <span class="stat-value" id="roundDisplay">1</span>
+                <div class="echo-layout">
+                    <div class="hud">
+                        <div class="stat-box">
+                            <span class="stat-label">Round</span>
+                            <span class="stat-value" id="roundDisplay">1</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Find</span>
+                            <span class="stat-value" id="targetDisplay">0 / 3</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Best</span>
+                            <span class="stat-value" id="bestRoundDisplay">0</span>
+                        </div>
                     </div>
-                    <div class="stat-box">
-                        <span class="stat-label">Find</span>
-                        <span class="stat-value" id="targetDisplay">0 / 3</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">Best</span>
-                        <span class="stat-value" id="bestRoundDisplay">0</span>
-                    </div>
-                </div>
 
-                <div id="game-container">
-                    <div id="veil"></div>
-                    <div id="echo-points"></div>
-                    <div id="pulse-ring"></div>
+                    <div id="game-container">
+                        <div id="veil"></div>
+                        <div id="echo-points"></div>
+                        <div id="pulse-ring"></div>
+                        
+                        <div id="startScreen" class="overlay">
+                            <h2 class="overlay-title">Echo Veil</h2>
+                            <p class="overlay-desc">Watch the pulse.</p>
+                            <button id="startBtn" class="btn">Release Echo</button>
+                        </div>
+
+                        <div id="gameOverScreen" class="overlay hidden">
+                            <h2 class="overlay-title">Lost in Veil</h2>
+                            <p id="failMessage">The memory faded too soon.</p>
+                            <button id="retryBtn" class="btn">Try Again</button>
+                        </div>
+                    </div>
                     
-                    <div id="startScreen" class="overlay">
-                        <h2 class="overlay-title">Echo Veil</h2>
-                        <p class="overlay-desc">Watch the pulse. Remember the locations. Click where the echoes appeared.</p>
-                        <button id="startBtn" class="btn">Release Echo</button>
-                    </div>
-
-                    <div id="gameOverScreen" class="overlay hidden">
-                        <h2 class="overlay-title">Lost in Veil</h2>
-                        <p id="failMessage">The memory faded too soon.</p>
-                        <button id="retryBtn" class="btn">Try Again</button>
-                    </div>
+                    <p id="statusText" class="instruction-text">Pulse ready.</p>
                 </div>
-                
-                <p id="statusText" class="instruction-text">Pulse ready. Concentration required.</p>
             </div>
+
+            <aside class="game-help-panel">
+                <h2 class="game-help-title">How to play</h2>
+                <ul class="game-help-list">
+                    <li>Watch the <strong>echo pulse</strong> reveal hidden points.</li>
+                    <li>Remember where the <strong>echoes</strong> appeared.</li>
+                    <li>Click the <strong>hidden locations</strong> after they fade.</li>
+                </ul>
+            </aside>
         </div>
     </main>
 </body>

@@ -1,23 +1,16 @@
-/* ==================================================
-// INSTÄLLNINGAR CSS FÖR LINEBOUND
-// ================================================== */
 :root {
     --linebound-player: #8b6cff; /* INSTÄLLNING - Färg på spelarens element. */
-    --linebound-ai: #4cc9f0; /* INSTÄLLNING - Färg på AI-motståndarens element. */
+    --linebound-ai: #4cc9f0; /* INSTÄLLNING - Färg på motståndarens element. */
     --linebound-neutral: #3f3f46; /* INSTÄLLNING - Färg på omarkerade linjer. */
     --linebound-dot: #fafafa; /* INSTÄLLNING - Färg på prickarna. */
 
     /* Layout */
-    --linebound-page-top-offset: 12px; /* INSTÄLLNING - Ändra hur långt ner Linebound börjar från navbaren. */
-    --linebound-page-gap: 14px; /* INSTÄLLNING - Ändra vertikalt avstånd mellan sektioner. */
-    --linebound-board-max-size: min(600px, calc(100vh - 280px)); /* INSTÄLLNING - Ändra brädets storlek. Baseras på skärmhöjd. */
+    --linebound-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
+    --linebound-board-max-size: min(600px, calc(100vh - 350px)); /* INSTÄLLNING - Maxstorlek på spelplanen. */
 }
 
-.game-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: var(--linebound-page-top-offset) var(--spacing-2);
+.fade-in-up.delay-1 {
+    padding-top: var(--linebound-page-top-offset);
 }
 
 .linebound-layout {
@@ -25,16 +18,15 @@
     flex-direction: column;
     width: 100%;
     max-width: var(--linebound-board-max-size);
-    gap: var(--linebound-page-gap);
+    gap: var(--spacing-3);
     align-items: center;
-    margin-top: 0;
 }
 
 #game-container {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     background-color: #050507;
     box-shadow: 0 0 50px rgba(139, 108, 255, 0.03), inset 0 0 30px rgba(0, 0, 0, 0.9);
     overflow: hidden;
@@ -70,7 +62,7 @@
 }
 
 .overlay h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: 3rem;
     color: var(--text);
     margin-bottom: var(--spacing-3);
     text-shadow: 0 0 30px var(--accent-glow);
@@ -102,10 +94,6 @@
     color: var(--text);
 }
 
-.score-board p span {
-    font-weight: 600;
-}
-
 #finalScorePlayer {
     color: var(--linebound-player);
     text-shadow: 0 0 15px rgba(139, 108, 255, 0.4);
@@ -121,7 +109,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-3);
-    padding: 0 var(--spacing-2);
 }
 
 .hud-row-1 {
