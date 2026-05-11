@@ -1,17 +1,22 @@
+:root {
+    --pulseframe-page-top-offset: 16px; /* INSTÄLLNING - Ändra hur långt ner Pulseframe börjar från navbaren. Lägre värde = mindre scroll. */
+    --pulseframe-section-gap: 20px; /* INSTÄLLNING - Ändra vertikalt avstånd mellan sektioner. */
+    --pulseframe-panel-size: min(800px, calc(100vh - 220px)); /* INSTÄLLNING - Ändra spelets storlek. Baseras på skärmhöjd för att undvika scroll. */
+}
+
 .game-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--spacing-2);
-    height: calc(100vh - 100px); /* minus nav height */
+    padding: var(--pulseframe-page-top-offset) var(--spacing-2);
     overflow: hidden;
 }
 
 #game-container {
     position: relative;
     width: 100%;
-    max-width: 800px; /* INSTÄLLNING - Ändra spelets maximala bredd. */
-    aspect-ratio: 1 / 1; /* INSTÄLLNING - Ändra spelets proportioner (1/1 = kvadratiskt). */
+    max-width: var(--pulseframe-panel-size);
+    aspect-ratio: 1 / 1;
     max-height: 100%;
     border-radius: var(--radius-md);
     background-color: #050507;

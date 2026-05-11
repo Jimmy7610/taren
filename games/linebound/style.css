@@ -6,24 +6,28 @@
     --linebound-ai: #4cc9f0; /* INSTÄLLNING - Färg på AI-motståndarens element. */
     --linebound-neutral: #3f3f46; /* INSTÄLLNING - Färg på omarkerade linjer. */
     --linebound-dot: #fafafa; /* INSTÄLLNING - Färg på prickarna. */
+
+    /* Layout */
+    --linebound-page-top-offset: 12px; /* INSTÄLLNING - Ändra hur långt ner Linebound börjar från navbaren. */
+    --linebound-page-gap: 14px; /* INSTÄLLNING - Ändra vertikalt avstånd mellan sektioner. */
+    --linebound-board-max-size: min(600px, calc(100vh - 280px)); /* INSTÄLLNING - Ändra brädets storlek. Baseras på skärmhöjd. */
 }
 
 .game-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: var(--spacing-4) var(--spacing-2);
-    min-height: calc(100vh - 80px);
+    padding: var(--linebound-page-top-offset) var(--spacing-2);
 }
 
 .linebound-layout {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 800px;
-    gap: 18px; /* INSTÄLLNING - Ändra avståndet mellan HUD/kontroller och spelplan. */
+    max-width: var(--linebound-board-max-size);
+    gap: var(--linebound-page-gap);
     align-items: center;
-    margin-top: 2vh;
+    margin-top: 0;
 }
 
 #game-container {
