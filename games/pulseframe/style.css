@@ -10,8 +10,8 @@
 #game-container {
     position: relative;
     width: 100%;
-    max-width: 800px;
-    aspect-ratio: 1 / 1;
+    max-width: 800px; /* INSTÄLLNING - Ändra spelets maximala bredd. */
+    aspect-ratio: 1 / 1; /* INSTÄLLNING - Ändra spelets proportioner (1/1 = kvadratiskt). */
     max-height: 100%;
     border-radius: var(--radius-md);
     background-color: #050507;
@@ -37,10 +37,10 @@
     justify-content: center;
     align-items: center;
     background-color: rgba(5, 5, 7, 0.9);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px); /* INSTÄLLNING - Ändra hur mycket bakgrunden suddas ut när menyer är uppe. */
     z-index: 10;
     text-align: center;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease; /* INSTÄLLNING - Ändra hur snabbt menyer tonas in/ut. */
 }
 
 .overlay.hidden {
@@ -141,7 +141,7 @@
 }
 
 .near-miss-anim {
-    animation: nearMissFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: nearMissFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; /* INSTÄLLNING - Ändra hur snabbt "+15" texten animeras. */
 }
 
 @keyframes nearMissFloat {

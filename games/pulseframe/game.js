@@ -2,6 +2,85 @@
  * Pulseframe - Minimalist Reflex Game (Phase 1 Polish)
  */
 
+// ==================================================
+// INSTÄLLNINGAR FÖR PULSEFRAME
+// Alla kommentarer som börjar med "INSTÄLLNING -" är värden som Jimmy enkelt kan testa att ändra i VS Code.
+// Ändra bara ett värde i taget och testa spelet efteråt.
+// ==================================================
+
+const SETTINGS = {
+    player: {
+        smoothing: 15, // INSTÄLLNING - Ändra hur mjukt orben följer musen. Lägre värde = mer glid, högre värde = snabbare respons.
+        radius: 8, // INSTÄLLNING - Ändra spelarorbens basstorlek. Högre värde = större orb och lättare att träffas.
+        trailLengthMax: 25, // INSTÄLLNING - Ändra max antal punkter i spelarens svans vid hög fart.
+        trailLengthMin: 10, // INSTÄLLNING - Ändra minsta antal punkter i spelarens svans.
+        trailFadeSpeed: 6, // INSTÄLLNING - Ändra hur snabbt svansen bleknar bort.
+        idlePulseSpeed: 4, // INSTÄLLNING - Ändra hur snabbt orben "andas" när den står still.
+        idlePulseIntensity: 1.5, // INSTÄLLNING - Ändra hur mycket orben växer/krymper när den andas.
+        microParticleSpeedThreshold: 300, // INSTÄLLNING - Ändra hur snabbt man måste röra sig för att släppa små partiklar.
+        glowIntensityMult: 50, // INSTÄLLNING - Ändra hur mycket glöden ökar vid fart. Lägre = ökar snabbare.
+    },
+    nearMiss: {
+        distancePadding: 35, // INSTÄLLNING - Ändra hur nära spelaren måste vara ett hot (utöver hitboxen) för att få Near Miss.
+        bonus: 15, // INSTÄLLNING - Ändra hur många poäng en Near Miss ger.
+        cooldown: 1.5, // INSTÄLLNING - Ändra hur ofta Near Miss kan triggas, i sekunder.
+        timeDilationScale: 0.2, // INSTÄLLNING - Ändra hur mycket fienderna saktas ner (0.2 = 20% hastighet).
+        timeDilationRecovery: 0.8, // INSTÄLLNING - Ändra hur snabbt tiden återgår till normalt (högre = snabbare).
+        arenaPulseScale: 1.02, // INSTÄLLNING - Ändra hur mycket arenan "hoppar" till vid en near miss.
+        popupLifetime: 800, // INSTÄLLNING - Ändra hur länge "+15" texten visas, i millisekunder.
+    },
+    arena: {
+        paddingMult: 0.85, // INSTÄLLNING - Ändra hur mycket marginal arenan har från fönstrets kant (0.85 = 85% av skärmen).
+        baseAlpha: 0.15, // INSTÄLLNING - Ändra arenans grundglöd.
+        pulseAlpha: 0.05, // INSTÄLLNING - Ändra hur mycket arenans kant pulserar i glöd.
+        pulseSpeed: 800, // INSTÄLLNING - Ändra hastigheten på arenans andning (millisekunder per cykel).
+    },
+    scoring: {
+        passiveRate: 15, // INSTÄLLNING - Ändra hur många poäng man får per sekund bara för att överleva.
+        waveClearBonus: 500, // INSTÄLLNING - Ändra hur mycket bonus man får vid klarad våg.
+        waveDuration: 25, // INSTÄLLNING - Ändra hur lång tid en våg varar (i sekunder).
+        breatherDuration: 2.0, // INSTÄLLNING - Ändra hur lång paus det är mellan vågorna (i sekunder).
+    },
+    threats: {
+        enemyOrb: {
+            baseSpeed: 150, // INSTÄLLNING - Ändra basfarten för studsande fiender.
+            speedVariance: 100, // INSTÄLLNING - Ändra hur mycket fiendens fart kan slumpas.
+            waveSpeedMult: 20, // INSTÄLLNING - Ändra hur mycket snabbare de blir per våg.
+            radius: 10, // INSTÄLLNING - Ändra storleken på studsande fiender.
+        },
+        pulseWave: {
+            baseSpeed: 100, // INSTÄLLNING - Ändra basfarten för expanderande vågor.
+            waveSpeedMult: 15, // INSTÄLLNING - Ändra hur mycket snabbare vågorna expanderar per nivå.
+            thickness: 12, // INSTÄLLNING - Ändra hur tjock den dödliga väggen är.
+            maxRadiusMult: 1.3, // INSTÄLLNING - Ändra hur stor vågen blir jämfört med arenan innan den försvinner.
+        },
+        laser: {
+            chargeTime: 1.5, // INSTÄLLNING - Ändra hur länge lasern siktar/varnar innan den skjuter (sekunder).
+            fireTime: 0.4, // INSTÄLLNING - Ändra hur länge lasern är aktiv/dödlig efter skottet (sekunder).
+            collisionPadding: 12, // INSTÄLLNING - Ändra hur nära laserns centrum man kan vara innan man dör.
+            chargeTrackingSpeed: 2, // INSTÄLLNING - Ändra hur snabbt lasern följer efter spelaren under siktandet.
+        }
+    },
+    pickups: {
+        spawnChance: 0.05, // INSTÄLLNING - Ändra chansen (per spawn-tick) att en pickup dyker upp.
+        maxOnScreen: 2, // INSTÄLLNING - Ändra hur många pickups som max får finnas samtidigt.
+        scoreValue: 50, // INSTÄLLNING - Ändra hur många poäng en pickup ger.
+        lifetime: 12, // INSTÄLLNING - Ändra hur länge en pickup lever innan den försvinner (sekunder).
+        magnetDistance: 60, // INSTÄLLNING - Ändra hur nära spelaren måste vara för att suga åt sig en pickup.
+        magnetStrength: 2, // INSTÄLLNING - Ändra hur starkt pickupen sugs mot spelaren.
+        radius: 5, // INSTÄLLNING - Ändra storleken på pickups.
+    },
+    particles: {
+        ambientCount: 30, // INSTÄLLNING - Ändra hur många ambient-partiklar som rör sig i bakgrunden.
+        deathCount: 40, // INSTÄLLNING - Ändra hur många partiklar som sprängs ut vid död.
+        pickupCount: 8, // INSTÄLLNING - Ändra hur många partiklar som flyger ut vid pickup.
+    },
+    audio: {
+        droneVolume: 0.08, // INSTÄLLNING - Ändra volymen på bakgrundsbrummet.
+        masterRampTime: 0.1, // INSTÄLLNING - Ändra hur mjukt ljudet startar.
+    }
+};
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d', { alpha: false });
 const container = document.getElementById('game-container');
@@ -28,7 +107,7 @@ let bestScore = localStorage.getItem('pulseframe_best') || 0;
 // Arena
 let centerX, centerY, arenaRadius;
 let arenaPulseScale = 1;
-let arenaBaseAlpha = 0.1;
+let arenaBaseAlpha = SETTINGS.arena.baseAlpha;
 let arenaFlashIntensity = 0;
 
 // Entities
@@ -45,7 +124,7 @@ let mouseY = 0;
 // Mechanics
 let nearMissCooldown = 0;
 let nextSpawnTime = 0;
-let enemyTimeScale = 1; // Used for ultra-subtle near-miss time dilation
+let enemyTimeScale = 1;
 
 // Resize handling
 function resize() {
@@ -53,7 +132,7 @@ function resize() {
     canvas.height = container.clientHeight;
     centerX = canvas.width / 2;
     centerY = canvas.height / 2;
-    arenaRadius = Math.min(centerX, centerY) * 0.85; // slightly more padding
+    arenaRadius = Math.min(centerX, centerY) * SETTINGS.arena.paddingMult;
 }
 window.addEventListener('resize', resize);
 resize();
@@ -79,14 +158,12 @@ function initAudio() {
         masterGain.connect(audioCtx.destination);
         masterGain.gain.value = 1;
         
-        // Ambient Drone
         droneOsc = audioCtx.createOscillator();
         droneGain = audioCtx.createGain();
         droneOsc.type = 'sine';
-        droneOsc.frequency.value = 55; // Low hum
-        droneGain.gain.value = 0; // Starts silent
+        droneOsc.frequency.value = 55;
+        droneGain.gain.value = 0;
         
-        // Add subtle LFO to drone
         const lfo = audioCtx.createOscillator();
         lfo.type = 'sine';
         lfo.frequency.value = 0.5;
@@ -101,8 +178,8 @@ function initAudio() {
         lfo.start();
     }
     audioEnabled = true;
-    masterGain.gain.setTargetAtTime(1, audioCtx.currentTime, 0.1);
-    droneGain.gain.setTargetAtTime(0.08, audioCtx.currentTime, 2);
+    masterGain.gain.setTargetAtTime(1, audioCtx.currentTime, SETTINGS.audio.masterRampTime);
+    droneGain.gain.setTargetAtTime(SETTINGS.audio.droneVolume, audioCtx.currentTime, 2);
 }
 
 function stopDrone() {
@@ -143,7 +220,6 @@ function playSound(type) {
         filter.frequency.setValueAtTime(2000, now);
         filter.frequency.exponentialRampToValueAtTime(100, now + 0.8);
         
-        // Silence drop effect
         masterGain.gain.setValueAtTime(1, now);
         masterGain.gain.setTargetAtTime(0.2, now, 0.05);
         masterGain.gain.setTargetAtTime(1, now + 0.5, 0.5);
@@ -151,7 +227,6 @@ function playSound(type) {
         osc.start(now);
         osc.stop(now + 0.8);
     } else if (type === 'nearmiss') {
-        // High frequency, sharp tick
         osc.type = 'square';
         osc.frequency.setValueAtTime(1200, now);
         osc.frequency.exponentialRampToValueAtTime(2000, now + 0.05);
@@ -164,22 +239,22 @@ function playSound(type) {
     } else if (type === 'laserCharge') {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(100, now);
-        osc.frequency.exponentialRampToValueAtTime(800, now + 1.5);
+        osc.frequency.exponentialRampToValueAtTime(800, now + SETTINGS.threats.laser.chargeTime);
         gainNode.gain.setValueAtTime(0.01, now);
-        gainNode.gain.linearRampToValueAtTime(0.1, now + 1.5);
+        gainNode.gain.linearRampToValueAtTime(0.1, now + SETTINGS.threats.laser.chargeTime);
         osc.start(now);
-        osc.stop(now + 1.5);
+        osc.stop(now + SETTINGS.threats.laser.chargeTime);
     } else if (type === 'laserFire') {
         osc.type = 'square';
         osc.frequency.setValueAtTime(400, now);
-        osc.frequency.exponentialRampToValueAtTime(100, now + 0.4);
+        osc.frequency.exponentialRampToValueAtTime(100, now + SETTINGS.threats.laser.fireTime);
         gainNode.gain.setValueAtTime(0.15, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + SETTINGS.threats.laser.fireTime);
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(8000, now);
-        filter.frequency.exponentialRampToValueAtTime(500, now + 0.4);
+        filter.frequency.exponentialRampToValueAtTime(500, now + SETTINGS.threats.laser.fireTime);
         osc.start(now);
-        osc.stop(now + 0.4);
+        osc.stop(now + SETTINGS.threats.laser.fireTime);
     }
 }
 
@@ -199,8 +274,8 @@ class Player {
         this.y = centerY;
         this.vx = 0;
         this.vy = 0;
-        this.baseRadius = 8;
-        this.radius = 8;
+        this.baseRadius = SETTINGS.player.radius;
+        this.radius = SETTINGS.player.radius;
         this.trail = [];
         this.speed = 0;
         this.time = 0;
@@ -219,48 +294,40 @@ class Player {
             targetY = centerY + Math.sin(angle) * (arenaRadius - this.baseRadius);
         }
 
-        // Interpolation
         const oldX = this.x;
         const oldY = this.y;
         
-        // Use smooth damping
-        this.x = lerp(this.x, targetX, 15 * dt);
-        this.y = lerp(this.y, targetY, 15 * dt);
+        this.x = lerp(this.x, targetX, SETTINGS.player.smoothing * dt);
+        this.y = lerp(this.y, targetY, SETTINGS.player.smoothing * dt);
         
-        // Calculate velocity vector
         this.vx = (this.x - oldX) / dt;
         this.vy = (this.y - oldY) / dt;
         this.speed = Math.hypot(this.vx, this.vy);
 
-        // Subtle breathing when idle
-        const idlePulse = Math.sin(this.time * 4) * 1.5;
+        const idlePulse = Math.sin(this.time * SETTINGS.player.idlePulseSpeed) * SETTINGS.player.idlePulseIntensity;
         this.radius = this.baseRadius + (this.speed < 50 ? idlePulse : 0);
 
-        // Trail stretching based on speed
         this.trail.push({ x: this.x, y: this.y, alpha: 1, speed: this.speed });
-        const maxTrail = Math.min(25, 10 + Math.floor(this.speed / 100));
+        const maxTrail = Math.min(SETTINGS.player.trailLengthMax, SETTINGS.player.trailLengthMin + Math.floor(this.speed / 100));
         while (this.trail.length > maxTrail) this.trail.shift();
         
         for (let i = 0; i < this.trail.length; i++) {
-            this.trail[i].alpha -= 6 * dt;
+            this.trail[i].alpha -= SETTINGS.player.trailFadeSpeed * dt;
         }
 
-        // Micro-particles when moving fast
-        if (this.speed > 300 && Math.random() < 0.3) {
+        if (this.speed > SETTINGS.player.microParticleSpeedThreshold && Math.random() < 0.3) {
             const angle = Math.atan2(-this.vy, -this.vx) + (Math.random() - 0.5);
             particles.push(new MicroParticle(this.x, this.y, angle));
         }
     }
 
     draw(ctx) {
-        // Draw trail
         if (this.trail.length > 1) {
             ctx.beginPath();
             ctx.moveTo(this.trail[0].x, this.trail[0].y);
             for (let i = 1; i < this.trail.length; i++) {
                 ctx.lineTo(this.trail[i].x, this.trail[i].y);
             }
-            // Glow intensifies with speed
             const glowStrength = Math.min(1, this.speed / 1000);
             ctx.strokeStyle = `rgba(139, 108, 255, ${0.3 + glowStrength * 0.3})`;
             ctx.lineWidth = this.radius * 1.4;
@@ -269,11 +336,10 @@ class Player {
             ctx.stroke();
         }
 
-        // Draw player
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
-        ctx.shadowBlur = 15 + Math.min(20, this.speed / 50);
+        ctx.shadowBlur = 15 + Math.min(20, this.speed / SETTINGS.player.glowIntensityMult);
         ctx.shadowColor = '#8b6cff';
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -282,12 +348,12 @@ class Player {
 
 class EnemyOrb {
     constructor() {
-        this.radius = 10;
+        this.radius = SETTINGS.threats.enemyOrb.radius;
         const angle = Math.random() * Math.PI * 2;
         this.x = centerX + Math.cos(angle) * arenaRadius;
         this.y = centerY + Math.sin(angle) * arenaRadius;
         
-        const speed = 150 + Math.random() * 100 + (wave * 20);
+        const speed = SETTINGS.threats.enemyOrb.baseSpeed + Math.random() * SETTINGS.threats.enemyOrb.speedVariance + (wave * SETTINGS.threats.enemyOrb.waveSpeedMult);
         const targetAngle = angle + Math.PI + (Math.random() - 0.5) * 1.5;
         this.vx = Math.cos(targetAngle) * speed;
         this.vy = Math.sin(targetAngle) * speed;
@@ -298,7 +364,6 @@ class EnemyOrb {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
 
-        // Bounce
         const d = dist(centerX, centerY, this.x, this.y);
         if (d > arenaRadius - this.radius) {
             const angle = Math.atan2(this.y - centerY, this.x - centerX);
@@ -311,7 +376,6 @@ class EnemyOrb {
             this.vx = this.vx - 2 * dot * normalX;
             this.vy = this.vy - 2 * dot * normalY;
             
-            // Arena edge reaction
             triggerArenaFlash(0.2, this.x, this.y);
         }
 
@@ -334,9 +398,9 @@ class PulseWave {
         this.x = centerX + (Math.random() - 0.5) * arenaRadius * 0.6;
         this.y = centerY + (Math.random() - 0.5) * arenaRadius * 0.6;
         this.radius = 1;
-        this.maxRadius = arenaRadius * 1.3;
-        this.speed = 100 + (wave * 15);
-        this.thickness = 12;
+        this.maxRadius = arenaRadius * SETTINGS.threats.pulseWave.maxRadiusMult;
+        this.speed = SETTINGS.threats.pulseWave.baseSpeed + (wave * SETTINGS.threats.pulseWave.waveSpeedMult);
+        this.thickness = SETTINGS.threats.pulseWave.thickness;
         this.markedForDeletion = false;
     }
 
@@ -351,7 +415,7 @@ class PulseWave {
         
         if (distanceToEdge < this.thickness / 2 + player.radius) {
             killPlayer();
-        } else if (distanceToEdge < this.thickness / 2 + player.radius + 25) {
+        } else if (distanceToEdge < this.thickness / 2 + player.radius + SETTINGS.nearMiss.distancePadding) {
             triggerNearMiss();
         }
     }
@@ -372,8 +436,8 @@ class PulseWave {
 class LaserSweep {
     constructor() {
         this.angle = Math.random() * Math.PI * 2;
-        this.chargeTime = 1.5;
-        this.fireTime = 0.4;
+        this.chargeTime = SETTINGS.threats.laser.chargeTime;
+        this.fireTime = SETTINGS.threats.laser.fireTime;
         this.state = 'CHARGE';
         this.markedForDeletion = false;
         
@@ -384,17 +448,14 @@ class LaserSweep {
         if (this.state === 'CHARGE') {
             this.chargeTime -= dt;
             
-            // Smooth tracking
             const targetAngle = Math.atan2(player.y - centerY, player.x - centerX);
             let diff = targetAngle - this.angle;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
             
-            // Track slower as it gets closer to firing
-            const trackingSpeed = Math.max(0.5, this.chargeTime * 2);
+            const trackingSpeed = Math.max(0.5, this.chargeTime * SETTINGS.threats.laser.chargeTrackingSpeed);
             this.angle += diff * trackingSpeed * dt;
 
-            // Spawn charge sparks
             if (Math.random() < 0.4) {
                 createParticles(centerX, centerY, '#c084fc', 1, 50);
             }
@@ -402,7 +463,7 @@ class LaserSweep {
             if (this.chargeTime <= 0) {
                 this.state = 'FIRE';
                 playSound('laserFire');
-                arenaFlashIntensity = 0.5; // Big arena flash on fire
+                arenaFlashIntensity = 0.5;
             }
         } else if (this.state === 'FIRE') {
             this.fireTime -= dt;
@@ -415,9 +476,9 @@ class LaserSweep {
             const distance = Math.abs(dx * py - dy * px);
             const dot = px * dx + py * dy;
             
-            if (distance < player.radius + 12 && dot > 0) {
+            if (distance < player.radius + SETTINGS.threats.laser.collisionPadding && dot > 0) {
                 killPlayer();
-            } else if (distance < player.radius + 35 && dot > 0) {
+            } else if (distance < player.radius + SETTINGS.threats.laser.collisionPadding + SETTINGS.nearMiss.distancePadding && dot > 0) {
                 triggerNearMiss();
             }
 
@@ -432,7 +493,7 @@ class LaserSweep {
         const endY = centerY + Math.sin(this.angle) * arenaRadius * 1.5;
 
         if (this.state === 'CHARGE') {
-            const chargeRatio = 1 - (this.chargeTime / 1.5);
+            const chargeRatio = 1 - (this.chargeTime / SETTINGS.threats.laser.chargeTime);
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(endX, endY);
@@ -443,13 +504,12 @@ class LaserSweep {
             ctx.stroke();
             ctx.setLineDash([]);
             
-            // Core origin glow
             ctx.beginPath();
             ctx.arc(centerX, centerY, 5 + chargeRatio * 15, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(192, 132, 252, ${chargeRatio})`;
             ctx.fill();
         } else {
-            const fireRatio = this.fireTime / 0.4; // 1 to 0
+            const fireRatio = this.fireTime / SETTINGS.threats.laser.fireTime;
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(endX, endY);
@@ -461,7 +521,6 @@ class LaserSweep {
             ctx.stroke();
             ctx.shadowBlur = 0;
             
-            // White core beam
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(endX, endY);
@@ -478,9 +537,9 @@ class Pickup {
         const r = Math.random() * (arenaRadius * 0.7);
         this.x = centerX + Math.cos(angle) * r;
         this.y = centerY + Math.sin(angle) * r;
-        this.radius = 5;
+        this.radius = SETTINGS.pickups.radius;
         this.markedForDeletion = false;
-        this.life = 12;
+        this.life = SETTINGS.pickups.lifetime;
         this.time = 0;
     }
 
@@ -489,19 +548,18 @@ class Pickup {
         this.time += dt;
         if (this.life <= 0) this.markedForDeletion = true;
 
-        // Subtle magnetism if close
         const d = dist(player.x, player.y, this.x, this.y);
-        if (d < 60) {
-            const amt = 2 * dt;
+        if (d < SETTINGS.pickups.magnetDistance) {
+            const amt = SETTINGS.pickups.magnetStrength * dt;
             this.x = lerp(this.x, player.x, amt);
             this.y = lerp(this.y, player.y, amt);
         }
 
         if (d < player.radius + this.radius + 5) {
-            addScore(50);
+            addScore(SETTINGS.pickups.scoreValue);
             playSound('pickup');
             this.markedForDeletion = true;
-            createParticles(this.x, this.y, '#fafafa', 8, 150);
+            createParticles(this.x, this.y, '#fafafa', SETTINGS.particles.pickupCount, 150);
         }
     }
 
@@ -513,7 +571,6 @@ class Pickup {
         ctx.shadowBlur = 15;
         ctx.shadowColor = '#fff';
         
-        // Blink when dying
         if (this.life < 3) {
             ctx.globalAlpha = Math.sin(this.life * 20) > 0 ? 1 : 0.3;
         } else {
@@ -543,7 +600,6 @@ class Particle {
     update(dt) {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
-        // friction
         this.vx *= 0.95;
         this.vy *= 0.95;
         
@@ -596,7 +652,7 @@ class AmbientParticle {
         if (randomizeParams) {
             this.size = 2 + Math.random() * 6;
             this.vx = (Math.random() - 0.5) * 10;
-            this.vy = -10 - Math.random() * 20; // Float up slowly
+            this.vy = -10 - Math.random() * 20;
             this.opacity = 0.02 + Math.random() * 0.05;
         }
     }
@@ -619,7 +675,7 @@ class AmbientParticle {
 // Systems
 function initAmbient() {
     ambientParticles = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < SETTINGS.particles.ambientCount; i++) {
         ambientParticles.push(new AmbientParticle());
     }
 }
@@ -636,32 +692,27 @@ function checkCollision(ex, ey, er) {
     
     if (d < player.radius + er) {
         killPlayer();
-    } else if (d < player.radius + er + 35) {
+    } else if (d < player.radius + er + SETTINGS.nearMiss.distancePadding) {
         triggerNearMiss();
     }
 }
 
 function triggerNearMiss() {
     if (nearMissCooldown <= 0 && gameState === 'PLAYING') {
-        addScore(15);
+        addScore(SETTINGS.nearMiss.bonus);
         playSound('nearmiss');
-        nearMissCooldown = 1.5;
+        nearMissCooldown = SETTINGS.nearMiss.cooldown;
         
-        // Time dilation: slow enemies, not player
-        enemyTimeScale = 0.2;
+        enemyTimeScale = SETTINGS.nearMiss.timeDilationScale;
+        arenaPulseScale = SETTINGS.nearMiss.arenaPulseScale;
         
-        // Tiny cinematic pulse
-        arenaPulseScale = 1.02;
-        
-        // Score popup styling
         nearMissIndicator.classList.remove('hidden');
         nearMissIndicator.classList.remove('near-miss-anim');
-        void nearMissIndicator.offsetWidth; // force reflow
+        void nearMissIndicator.offsetWidth; 
         
-        // Map canvas coords to screen for absolute positioning
         const rect = canvas.getBoundingClientRect();
         const screenX = rect.left + player.x;
-        const screenY = rect.top + player.y - 30; // Above player
+        const screenY = rect.top + player.y - 30; 
         
         nearMissIndicator.style.left = `${screenX}px`;
         nearMissIndicator.style.top = `${screenY}px`;
@@ -672,13 +723,12 @@ function triggerNearMiss() {
                 nearMissIndicator.classList.add('hidden');
                 nearMissIndicator.classList.remove('near-miss-anim');
             }
-        }, 800);
+        }, SETTINGS.nearMiss.popupLifetime);
     }
 }
 
 function triggerArenaFlash(intensity, x, y) {
     arenaFlashIntensity = Math.max(arenaFlashIntensity, intensity);
-    // Optional: could use x,y to draw a localized glow on the edge in draw()
 }
 
 function addScore(amount) {
@@ -686,7 +736,6 @@ function addScore(amount) {
     displayScore = Math.floor(score);
     scoreDisplay.innerText = `Score: ${displayScore}`;
     
-    // UI Pulse animation
     scoreDisplay.classList.remove('score-pulse');
     void scoreDisplay.offsetWidth;
     scoreDisplay.classList.add('score-pulse');
@@ -698,16 +747,12 @@ function killPlayer() {
     playSound('death');
     stopDrone();
     
-    // Implosion effect
-    // 1. Suck trail in
     player.trail = [];
     
-    // 2. Burst out
-    createParticles(player.x, player.y, '#fff', 40, 500);
-    createParticles(player.x, player.y, '#8b6cff', 40, 400);
+    createParticles(player.x, player.y, '#fff', SETTINGS.particles.deathCount, 500);
+    createParticles(player.x, player.y, '#8b6cff', SETTINGS.particles.deathCount, 400);
     
     arenaFlashIntensity = 1.0;
-    
     hud.classList.add('hidden');
     
     if (score > bestScore) {
@@ -718,7 +763,6 @@ function killPlayer() {
     finalScoreEl.innerText = Math.floor(score);
     bestScoreEl.innerText = bestScore;
     
-    // Smooth delay for death screen
     setTimeout(() => {
         gameOverScreen.classList.remove('hidden');
     }, 800);
@@ -726,7 +770,6 @@ function killPlayer() {
 
 function spawnThreats() {
     let enemyCount = enemies.length;
-    // Smoother ramping
     let maxEnemies = Math.floor(2 + wave * 1.5);
     
     if (enemyCount < maxEnemies) {
@@ -747,7 +790,7 @@ function spawnThreats() {
         }
     }
 
-    if (Math.random() < 0.05 && pickups.length < 2) {
+    if (Math.random() < SETTINGS.pickups.spawnChance && pickups.length < SETTINGS.pickups.maxOnScreen) {
         pickups.push(new Pickup());
     }
 }
@@ -781,24 +824,20 @@ function resetGame() {
 
 // Main Loop
 function update(dt) {
-    // Ambient always updates
     ambientParticles.forEach(p => p.update(dt));
     
     if (gameState !== 'PLAYING') {
         particles.forEach(p => p.update(dt));
         particles = particles.filter(p => !p.markedForDeletion);
-        // Fade arena flash
         if (arenaFlashIntensity > 0) arenaFlashIntensity = Math.max(0, arenaFlashIntensity - dt * 2);
         return;
     }
 
-    // Passive score
-    addScore(dt * 15);
+    addScore(dt * SETTINGS.scoring.passiveRate);
     waveTime += dt;
     
-    // Recover time scale from near miss
     if (enemyTimeScale < 1) {
-        enemyTimeScale += dt * 0.8;
+        enemyTimeScale += dt * SETTINGS.nearMiss.timeDilationRecovery;
         if (enemyTimeScale > 1) enemyTimeScale = 1;
     }
     
@@ -806,19 +845,17 @@ function update(dt) {
     if (arenaPulseScale > 1) arenaPulseScale = Math.max(1, arenaPulseScale - dt * 0.5);
     if (arenaFlashIntensity > 0) arenaFlashIntensity = Math.max(0, arenaFlashIntensity - dt * 2);
 
-    // Wave progression with breathing space
-    if (waveTime > 25 && wave < 5) {
+    if (waveTime > SETTINGS.scoring.waveDuration && wave < 5) {
         wave++;
         waveTime = 0;
-        addScore(500);
+        addScore(SETTINGS.scoring.waveClearBonus);
         waveDisplay.innerText = `Wave ${wave}`;
         waveDisplay.classList.add('score-pulse');
         setTimeout(() => waveDisplay.classList.remove('score-pulse'), 300);
         
-        // Clear board logic / breather
         arenaFlashIntensity = 0.3;
-        nextSpawnTime = 2.0; // 2 seconds of breathing room
-    } else if (wave === 5 && waveTime > 25) {
+        nextSpawnTime = SETTINGS.scoring.breatherDuration;
+    } else if (wave === 5 && waveTime > SETTINGS.scoring.waveDuration) {
         wave++;
         waveTime = 0;
         waveDisplay.innerText = `Wave ${wave}`;
@@ -827,14 +864,11 @@ function update(dt) {
     nextSpawnTime -= dt;
     if (nextSpawnTime <= 0) {
         spawnThreats();
-        // Dynamic spawn rate
         nextSpawnTime = Math.max(0.2, 0.6 - (wave * 0.05));
     }
 
-    // Player updates at normal time
     player.update(dt);
 
-    // Enemies update at dilated time
     const enemyDt = dt * enemyTimeScale;
     enemies.forEach(e => e.update(enemyDt));
     pickups.forEach(p => p.update(dt));
@@ -849,24 +883,21 @@ function draw() {
     ctx.fillStyle = '#050507';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw ambient background
     ambientParticles.forEach(p => p.draw(ctx));
 
     ctx.save();
     
-    // Cinematic scale pulse
     if (arenaPulseScale > 1) {
         ctx.translate(centerX, centerY);
         ctx.scale(arenaPulseScale, arenaPulseScale);
         ctx.translate(-centerX, -centerY);
     }
 
-    // Draw Arena
     ctx.beginPath();
     ctx.arc(centerX, centerY, arenaRadius, 0, Math.PI * 2);
     
-    const baseAlpha = gameState === 'GAME_OVER' ? 0.05 : 0.15;
-    const pulseAlpha = Math.sin(Date.now() / 800) * 0.05;
+    const baseAlpha = gameState === 'GAME_OVER' ? 0.05 : SETTINGS.arena.baseAlpha;
+    const pulseAlpha = Math.sin(Date.now() / SETTINGS.arena.pulseSpeed) * SETTINGS.arena.pulseAlpha;
     const currentAlpha = baseAlpha + pulseAlpha + arenaFlashIntensity;
     
     ctx.strokeStyle = `rgba(139, 108, 255, ${Math.min(1, currentAlpha)})`;
@@ -893,7 +924,7 @@ function draw() {
 
 function loop(timestamp) {
     let dt = (timestamp - lastTime) / 1000;
-    if (dt > 0.05) dt = 0.05; // Cap dt to prevent massive jumps on tab switch
+    if (dt > 0.05) dt = 0.05;
     lastTime = timestamp;
 
     update(dt);
