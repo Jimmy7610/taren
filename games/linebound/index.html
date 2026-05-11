@@ -24,7 +24,12 @@
             <!-- HUD -->
             <div id="hud">
                 <div class="hud-top">
-                    <div id="scoreDisplay">You: 0 | AI: 0</div>
+                    <div id="scoreDisplay">You: 0 | Computer: 0</div>
+                    <div class="board-size-selector">
+                        <span style="font-size: 0.875rem; color: var(--text-muted); margin-right: 8px;">Board</span>
+                        <button class="btn-size active" data-size="10">10x10</button>
+                        <button class="btn-size" data-size="20">20x20</button>
+                    </div>
                     <div id="turnDisplay" class="turn-player">Your Turn</div>
                 </div>
             </div>
@@ -41,7 +46,7 @@
                 <h1 id="resultTitle">Game Over</h1>
                 <div class="score-board">
                     <p>You: <span id="finalScorePlayer">0</span></p>
-                    <p>AI: <span id="finalScoreAI">0</span></p>
+                    <p>Computer: <span id="finalScoreAI">0</span></p>
                 </div>
                 <button id="retryBtn" class="btn">Restart</button>
             </div>

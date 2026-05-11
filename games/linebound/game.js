@@ -5,10 +5,15 @@
 // ==================================================
 
 const SETTINGS = {
-    gridSize: 5, // INSTÄLLNING - Ändra antal rutor per rad i Linebound. 5 betyder 5x5 rutor och 6x6 prickar.
-    dotRadius: 4, // INSTÄLLNING - Ändra storleken på prickarna. Högre värde = större prickar.
-    lineThickness: 4, // INSTÄLLNING - Ändra tjockleken på linjerna. Högre värde = tydligare linjer.
-    hoverDistance: 20, // INSTÄLLNING - Ändra hur nära musen behöver vara en linje för att den ska markeras.
+    gridSize: 10, // INSTÄLLNING - Nuvarande storlek på spelplanen. (10 eller 20)
+    smallGridSize: 10, // INSTÄLLNING - Ändra första valbara spelplansstorleken.
+    largeGridSize: 20, // INSTÄLLNING - Ändra andra valbara spelplansstorleken.
+    minDotRadius: 2.5, // INSTÄLLNING - Ändra minsta prickstorlek när spelplanen är stor.
+    maxDotRadius: 4, // INSTÄLLNING - Ändra största prickstorlek när spelplanen är mindre.
+    minLineThickness: 2, // INSTÄLLNING - Ändra minsta linjetjocklek för stora spelplaner.
+    maxLineThickness: 4, // INSTÄLLNING - Ändra största linjetjocklek för mindre spelplaner.
+    edgeHitPadding: 18, // INSTÄLLNING - Ändra hur nära musen behöver vara en linje för att den ska kunna väljas. Högre värde = lättare att klicka.
+    edgeClickableInset: 0.05, // INSTÄLLNING - Ändra hur mycket av linjens ytterkanter som inte ska räknas (0.05 = ca 90% är klickbar).
     aiThinkingDelay: 450, // INSTÄLLNING - Ändra hur länge AI väntar innan den gör sitt drag (i ms). Högre värde = mer mänsklig känsla.
     aiSafeMoveBias: 0.85, // INSTÄLLNING - Ändra hur ofta AI försöker välja ett säkert drag. Lägre värde = enklare AI.
     boxFillOpacity: 0.22, // INSTÄLLNING - Ändra hur tydligt fångade rutor fylls med färg.
@@ -168,7 +173,7 @@ function resetGame() {
 }
 
 function updateScoreUI() {
-    scoreDisplay.innerText = `You: ${playerScore} | AI: ${aiScore}`;
+    scoreDisplay.innerText = `You: ${playerScore} | Computer: ${aiScore}`;
     
     scoreDisplay.classList.remove('score-pulse');
     void scoreDisplay.offsetWidth;
@@ -179,14 +184,26 @@ function updateScoreUI() {
         turnDisplay.innerText = "Your Turn";
         turnDisplay.className = "turn-player";
     } else {
-        turnDisplay.innerText = "AI Turn";
+        turnDisplay.innerText = "Computer Turn";
         turnDisplay.className = "turn-ai";
     }
 }
 
+// Point to line segment distance
+function distToSegment(px, py, x1, y1, x2, y2) {
+    const l2 = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+    if (l2 === 0) return Math.hypot(px - x1, py - y1);
+    let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
+    t = Math.max(0, Math.min(1, t));
+    return {
+        dist: Math.hypot(px - (x1 + t * (x2 - x1)), py - (y1 + t * (y2 - y1))),
+        t: t
+    };
+}
+
 function updateHover() {
     hoveredLine = null;
-    let minDist = SETTINGS.hoverDistance;
+    let minDist = SETTINGS.edgeHitPadding;
     
     const s = SETTINGS.gridSize;
     
@@ -195,12 +212,14 @@ function updateHover() {
         for (let x = 0; x < s; x++) {
             if (hLines[y][x] !== 0) continue;
             
-            const px = offsetX + x * spacing + spacing / 2;
-            const py = offsetY + y * spacing;
+            const px1 = offsetX + x * spacing;
+            const py1 = offsetY + y * spacing;
+            const px2 = px1 + spacing;
+            const py2 = py1;
             
-            const dist = Math.hypot(mouseX - px, mouseY - py);
-            if (dist < minDist) {
-                minDist = dist;
+            const res = distToSegment(mouseX, mouseY, px1, py1, px2, py2);
+            if (res.dist < minDist && res.t > SETTINGS.edgeClickableInset && res.t < (1 - SETTINGS.edgeClickableInset)) {
+                minDist = res.dist;
                 hoveredLine = { type: 'h', x, y };
             }
         }
@@ -211,12 +230,14 @@ function updateHover() {
         for (let y = 0; y < s; y++) {
             if (vLines[x][y] !== 0) continue;
             
-            const px = offsetX + x * spacing;
-            const py = offsetY + y * spacing + spacing / 2;
+            const px1 = offsetX + x * spacing;
+            const py1 = offsetY + y * spacing;
+            const px2 = px1;
+            const py2 = py1 + spacing;
             
-            const dist = Math.hypot(mouseX - px, mouseY - py);
-            if (dist < minDist) {
-                minDist = dist;
+            const res = distToSegment(mouseX, mouseY, px1, py1, px2, py2);
+            if (res.dist < minDist && res.t > SETTINGS.edgeClickableInset && res.t < (1 - SETTINGS.edgeClickableInset)) {
+                minDist = res.dist;
                 hoveredLine = { type: 'v', x, y };
             }
         }
@@ -403,6 +424,11 @@ function draw() {
     
     const s = SETTINGS.gridSize;
     
+    // Dynamic scaling
+    const tRatio = (s - SETTINGS.smallGridSize) / Math.max(1, SETTINGS.largeGridSize - SETTINGS.smallGridSize);
+    const dotRad = SETTINGS.maxDotRadius - tRatio * (SETTINGS.maxDotRadius - SETTINGS.minDotRadius);
+    const lineThick = SETTINGS.maxLineThickness - tRatio * (SETTINGS.maxLineThickness - SETTINGS.minLineThickness);
+    
     // Draw filled boxes
     for (let y = 0; y < s; y++) {
         for (let x = 0; x < s; x++) {
@@ -426,7 +452,7 @@ function draw() {
             
             if (hLines[y][x] !== 0) {
                 ctx.strokeStyle = (hLines[y][x] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
-                ctx.lineWidth = SETTINGS.lineThickness;
+                ctx.lineWidth = lineThick;
                 
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = ctx.strokeStyle;
@@ -438,7 +464,7 @@ function draw() {
                 ctx.shadowBlur = 0;
             } else if (hoveredLine && hoveredLine.type === 'h' && hoveredLine.x === x && hoveredLine.y === y) {
                 ctx.strokeStyle = SETTINGS.colors.player;
-                ctx.lineWidth = SETTINGS.lineThickness;
+                ctx.lineWidth = lineThick;
                 ctx.globalAlpha = 0.5;
                 ctx.beginPath();
                 ctx.moveTo(px, py);
@@ -464,7 +490,7 @@ function draw() {
             
             if (vLines[x][y] !== 0) {
                 ctx.strokeStyle = (vLines[x][y] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
-                ctx.lineWidth = SETTINGS.lineThickness;
+                ctx.lineWidth = lineThick;
                 
                 ctx.shadowBlur = 10;
                 ctx.shadowColor = ctx.strokeStyle;
@@ -476,7 +502,7 @@ function draw() {
                 ctx.shadowBlur = 0;
             } else if (hoveredLine && hoveredLine.type === 'v' && hoveredLine.x === x && hoveredLine.y === y) {
                 ctx.strokeStyle = SETTINGS.colors.player;
-                ctx.lineWidth = SETTINGS.lineThickness;
+                ctx.lineWidth = lineThick;
                 ctx.globalAlpha = 0.5;
                 ctx.beginPath();
                 ctx.moveTo(px, py);
@@ -502,7 +528,7 @@ function draw() {
             const py = offsetY + y * spacing;
             
             ctx.beginPath();
-            ctx.arc(px, py, SETTINGS.dotRadius, 0, Math.PI * 2);
+            ctx.arc(px, py, dotRad, 0, Math.PI * 2);
             ctx.fill();
         }
     }
@@ -516,4 +542,17 @@ document.getElementById('startBtn').addEventListener('click', () => {
 document.getElementById('retryBtn').addEventListener('click', () => {
     initAudio();
     resetGame();
+});
+
+// Board Size Selection
+const sizeBtns = document.querySelectorAll('.btn-size');
+sizeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        sizeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        SETTINGS.gridSize = parseInt(btn.getAttribute('data-size'));
+        initAudio();
+        resize(); // Recalculate layout immediately
+        resetGame();
+    });
 });

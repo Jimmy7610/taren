@@ -146,3 +146,34 @@
     transform: scale(1.15);
     color: #fff !important;
 }
+
+.board-size-selector {
+    display: flex;
+    align-items: center;
+    pointer-events: auto;
+    background: rgba(24, 24, 27, 0.4);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-size {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.btn-size:hover {
+    color: var(--text);
+}
+
+.btn-size.active {
+    color: var(--linebound-player);
+    background: rgba(139, 108, 255, 0.15);
+}
