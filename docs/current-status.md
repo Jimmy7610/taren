@@ -1,9 +1,9 @@
 # Taren Current Status
 
-**Current Build:** Build 26
+**Current Build:** Build 27
 
 ## Playable Games
-1.  **The Lantern Below** — Adventure / exploration with multi-room system, shadows, and engine polish.
+1.  **The Lantern Below** — Adventure / exploration. Build 27 adds a major visual upgrade for a cinematic key-art feel.
 2.  **Pulseframe** — Reflex-based survival action.
 3.  **Linebound** — Tactical dots-and-boxes strategy.
 4.  **Memory Drift** — Atmospheric pattern-recall ritual.
@@ -23,5 +23,5 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- **The Lantern Below:** Multi-room content fixed in Build 26. All 7 fragments, key, and runes are now reachable and visible. Shadows and visual polish active.
+- **The Lantern Below:** Cinematic visual pass complete. Player is now a cloaked traveler. Environments feature cracked stone, fog, and enhanced lighting.
 - Future quiet experiments may appear later.
