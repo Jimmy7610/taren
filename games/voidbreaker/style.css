@@ -4,6 +4,15 @@
     --voidbreaker-bg: #09090b;
     --voidbreaker-border: rgba(255, 255, 255, 0.08);
     --voidbreaker-panel-bg: rgba(24, 24, 32, 0.6);
+    
+    --voidbreaker-page-top-offset: 16px; /* INSTÄLLNING - Ändra hur långt ner Voidbreaker börjar på sidan. Lägre värde = spelet hamnar högre upp. */
+    --voidbreaker-section-gap: 12px; /* INSTÄLLNING - Ändra avståndet mellan titel, HUD, spelruta och knappar. */
+    --voidbreaker-canvas-action-gap: 20px; /* INSTÄLLNING - Ändra avståndet mellan spelrutan och knapparna. */
+}
+
+/* Reduce main container top padding to lift game higher */
+main.py-8 {
+    padding-top: var(--voidbreaker-page-top-offset) !important;
 }
 
 .voidbreaker-module {
@@ -12,6 +21,7 @@
     align-items: center;
     width: 100%;
     max-width: 800px;
+    gap: var(--voidbreaker-section-gap);
 }
 
 .hud {
@@ -130,6 +140,7 @@ canvas {
 .game-controls {
     display: flex;
     gap: 16px;
+    margin-top: calc(var(--voidbreaker-canvas-action-gap) - var(--voidbreaker-section-gap));
 }
 
 .btn-ghost {

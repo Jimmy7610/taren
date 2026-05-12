@@ -6,7 +6,7 @@
 
 const CONFIG = {
     canvasWidth: 760, // INSTÄLLNING - Ändra grundbredden på spelområdet.
-    canvasHeight: 520, // INSTÄLLNING - Ändra grundhöjden på spelområdet.
+    canvasHeight: 460, // INSTÄLLNING - Ändra grundhöjden på spelområdet. Lägre värde = lättare att få plats utan scroll.
     startingLives: 3, // INSTÄLLNING - Ändra hur många liv spelaren börjar med.
     paddleWidth: 110, // INSTÄLLNING - Ändra paddelns bredd.
     paddleHeight: 14, // INSTÄLLNING - Ändra paddelns höjd.

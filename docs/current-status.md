@@ -1,9 +1,9 @@
 # Taren Current Status
 
-**Current Build:** Build 35
+**Current Build:** Build 36
 
 ## Playable Games
-1.  **Voidbreaker** — Arcade / breaker game. Build 35 adds powerups (Wide Paddle, Slow Ball, Multi Ball, Extra Life) and multi-ball support.
+1.  **Voidbreaker** — Arcade / breaker game. Build 36 adds a layout balance fix to lift the game higher and improve vertical rhythm.
 2.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug where the full shape was not rendered.
 3.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass with segmented controls, unified game module, and refined board aesthetics.
 4.  **Pulseframe** — Reflex-based survival action.
@@ -25,6 +25,6 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
+- Voidbreaker layout balance fix (Build 36).
 - Voidbreaker powerups and arcade polish (Build 35).
-- Tetrafall Hold preview fixed (Build 34).
 - Future quiet experiments may appear later.
