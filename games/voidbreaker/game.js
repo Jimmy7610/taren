@@ -174,7 +174,6 @@ function resetGame() {
     loadLevel(level - 1);
     resetBallAndPaddle();
     updateHUD();
-    hideOverlay();
 }
 
 function resetBallAndPaddle() {
@@ -612,11 +611,11 @@ function updateEffectsUI() {
 function showOverlay(title, subtitle) {
     document.getElementById('status-title').innerText = title;
     document.getElementById('status-subtitle').innerText = subtitle;
-    document.getElementById('status-overlay').classList.add('visible');
+    document.getElementById('status-overlay').classList.remove('hidden');
 }
 
 function hideOverlay() {
-    document.getElementById('status-overlay').classList.remove('visible');
+    document.getElementById('status-overlay').classList.add('hidden');
 }
 
 function updateHUD() {

@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 68 (Global Overlay Stabilization Patch)
+**Current Build:** Build 69 (Voidbreaker & Pulseframe Overlay Fixes)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

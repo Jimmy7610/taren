@@ -89,7 +89,7 @@ const ctx = canvas.getContext('2d', { alpha: false });
 const container = document.getElementById('game-container');
 
 // UI Elements
-const hud = document.getElementById('hud');
+const hud = document.querySelector('.game-stats-grid');
 const startScreen = document.getElementById('startScreen');
 const gameOverScreen = document.getElementById('gameOverScreen');
 const scoreDisplay = document.getElementById('scoreDisplay');
@@ -943,6 +943,11 @@ document.getElementById('startBtn').addEventListener('click', () => {
 });
 
 document.getElementById('retryBtn').addEventListener('click', () => {
+    initAudio();
+    resetGame();
+});
+
+document.getElementById('overlayRetryBtn').addEventListener('click', () => {
     initAudio();
     resetGame();
 });

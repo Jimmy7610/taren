@@ -48,12 +48,6 @@
 .effect-pill.slow { border-color: #4cc9f0; color: #4cc9f0; }
 
 /* Voidbreaker Overlay specific overrides */
-.game-overlay.visible {
-    display: grid !important;
-    opacity: 1;
-    pointer-events: all;
-}
-
 .game-overlay h2 {
     color: var(--accent);
 }
