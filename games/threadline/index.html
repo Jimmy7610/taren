@@ -17,52 +17,91 @@
         </div>
     </nav>
 
-    <main class="container py-8">
-        <div class="game-play-layout fade-in-up delay-1">
-            <div class="game-main-column">
-                <header class="text-center mb-4">
-                    <h1 class="mb-2">Threadline</h1>
-                    <p>Visit every node in one unbroken path.</p>
-                </header>
+    <main class="threadline-page container py-4">
+        <header class="threadline-header text-center mb-6 fade-in-up delay-1">
+            <h1 class="mb-1">Threadline</h1>
+            <p class="subtitle">Visit every node in one unbroken path.</p>
+        </header>
 
-                <div class="threadline-module">
-                    <div class="hud mb-4">
-                        <div class="hud-item">
-                            <span class="hud-label">Level</span>
-                            <span id="level-display" class="hud-value">1</span>
-                        </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Visited</span>
-                            <span id="visited-display" class="hud-value">0 / 0</span>
-                        </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Best</span>
-                            <span id="best-display" class="hud-value">1</span>
-                        </div>
+        <section class="threadline-shell fade-in-up delay-2">
+            <!-- LEFT PANEL: Campaign / Level Select -->
+            <aside class="threadline-panel threadline-campaign">
+                <div class="panel-header">
+                    <h2>Campaign</h2>
+                    <p>Path Puzzle</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Level</span>
+                        <span id="level-num" class="stat-value">01</span>
                     </div>
-
-                    <div class="canvas-container">
-                        <canvas id="gameCanvas"></canvas>
-                        <div id="status-display" class="status-display">Choose a starting node</div>
+                    <div class="stat-item">
+                        <span class="stat-label">Visited</span>
+                        <span id="visited-count" class="stat-value">0</span>
                     </div>
-
-                    <div class="game-controls mt-6">
-                        <button id="undo-btn" class="btn btn-ghost">Undo</button>
-                        <button id="restart-btn" class="btn btn-ghost">Restart</button>
-                        <button id="next-btn" class="btn btn-primary" style="display: none;">Next Level</button>
+                    <div class="stat-item">
+                        <span class="stat-label">Remaining</span>
+                        <span id="remaining-count" class="stat-value">0</span>
                     </div>
                 </div>
-            </div>
 
-            <aside class="game-help-panel">
-                <h2 class="game-help-title">How to play</h2>
-                <ul class="game-help-list">
-                    <li>Start on any glowing node.</li>
-                    <li>Move only to connected unvisited nodes.</li>
-                    <li>Visit every playable node exactly once.</li>
-                </ul>
+                <div id="status-text" class="status-box">
+                    Choose a starting node.
+                </div>
+
+                <div class="action-buttons">
+                    <button id="undo-btn" class="btn btn-panel" title="Undo (U)">Undo</button>
+                    <button id="reset-btn" class="btn btn-panel" title="Reset (R)">Reset</button>
+                    <button id="hint-btn" class="btn btn-panel btn-hint" title="Hint (H)">Hint</button>
+                    <button id="next-btn" class="btn btn-primary" style="display: none;">Next</button>
+                </div>
+
+                <div class="level-select-wrap">
+                    <h3>Level Select</h3>
+                    <div id="level-grid" class="level-grid">
+                        <!-- Levels 1-24 will be generated here -->
+                    </div>
+                </div>
             </aside>
-        </div>
+
+            <!-- CENTER: Puzzle Board -->
+            <section class="threadline-board-wrap">
+                <div class="canvas-container">
+                    <canvas id="gameCanvas"></canvas>
+                    <div id="clear-overlay" class="clear-overlay">
+                        <div class="clear-title">Level Cleared</div>
+                        <div class="clear-subtitle">Thread synchronized.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: Help / Rules -->
+            <aside class="threadline-panel threadline-help">
+                <div class="panel-section">
+                    <h3>How to play</h3>
+                    <ul class="help-list">
+                        <li>Start on any glowing node.</li>
+                        <li>Move only to connected unvisited nodes.</li>
+                        <li>Visit every playable node exactly once.</li>
+                        <li>Use <strong>Hint</strong> if the path becomes unclear.</li>
+                    </ul>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Rules</h3>
+                    <ul class="rules-list">
+                        <li>No revisits</li>
+                        <li>Connected moves only</li>
+                        <li>One continuous path</li>
+                    </ul>
+                </div>
+
+                <div class="panel-footer">
+                    <p class="quiet-note">No timer. Think slowly.</p>
+                </div>
+            </aside>
+        </section>
     </main>
 
     <script src="./game.js"></script>

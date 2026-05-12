@@ -3,7 +3,7 @@
 **Current Build:** Build 38
 
 ## Playable Games
-1.  **Threadline** — Logic / path puzzle. Build 38 introduces Threadline as the 13th playable game.
+1.  **Threadline** — Logic / path puzzle. Build 38 introduces a complete 3-column campaign layout with level select, hints, and progressive handcrafted levels.
 2.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control by tracking the pointer outside the canvas.
 3.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug where the full shape was not rendered.
 4.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass with segmented controls, unified game module, and refined board aesthetics.
@@ -26,6 +26,6 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- Threadline added as the 13th playable game (Build 38).
+- Threadline campaign and logic expansion (Build 38).
 - Voidbreaker mouse control fix (Build 37).
 - Future quiet experiments may appear later.
