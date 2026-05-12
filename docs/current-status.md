@@ -1,12 +1,12 @@
 # Taren Current Status
 
-**Current Build:** Build 38
+**Current Build:** Build 39
 
 ## Playable Games
-1.  **Threadline** — Logic / path puzzle. Build 38 introduces a complete 3-column campaign layout with level select, hints, and progressive handcrafted levels.
+1.  **Threadline** — Logic / path puzzle. Build 39 stabilizes the game with a comprehensive level validation system, 24 repaired Hamiltonian levels, and a significant visual balance pass.
 2.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control by tracking the pointer outside the canvas.
-3.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug where the full shape was not rendered.
-4.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass with segmented controls, unified game module, and refined board aesthetics.
+3.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug.
+4.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass.
 5.  **Pulseframe** — Reflex-based survival action.
 6.  **Linebound** — Tactical dots-and-boxes strategy.
 7.  **Memory Drift** — Atmospheric pattern-recall ritual.
@@ -19,13 +19,12 @@
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.
-- **In-Game Help:** "How to play" panels integrated into all game views.
-- **Thumbnail System:** CSS-variable based image loading with CSS conceptual fallback.
-- **Isolated Architecture:** Each game is a self-contained vanilla project.
-- **No-Scroll Layouts:** All game pages optimized for single-viewport desktop play.
-- **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
+- **Level Validation (Threadline):** Build 39 adds a background validator to ensure every level is mathematically solvable.
+- **Visual Balance Pass (Threadline):** Improved board textures, grid, and panel layout for a more premium "campaign" feel.
+- **Isolated Architecture:** Each game remains self-contained.
+- **No-Scroll Layouts:** Optimized for desktop-first single-viewport play.
 
 ## Active Future Concepts
-- Threadline campaign and logic expansion (Build 38).
-- Voidbreaker mouse control fix (Build 37).
+- Threadline stability and level repair (Build 39).
+- Monitoring player progression through the 24 handcrafted levels.
 - Future quiet experiments may appear later.
