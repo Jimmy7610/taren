@@ -19,6 +19,7 @@ Use:
 
 ## 4. Naming rule
 Use lowercase kebab-case for all image names, matching the exact name of the concept. Do not use spaces or Swedish characters:
+- `voidbreaker-thumbnail.webp`
 - `tetrafall-thumbnail.webp`
 - `fourfold-thumbnail.webp`
 - `pulseframe-thumbnail.webp`

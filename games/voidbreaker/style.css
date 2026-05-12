@@ -1,0 +1,122 @@
+/* Voidbreaker Styles */
+
+:root {
+    --voidbreaker-bg: #09090b;
+    --voidbreaker-border: rgba(255, 255, 255, 0.08);
+    --voidbreaker-panel-bg: rgba(24, 24, 32, 0.6);
+}
+
+.voidbreaker-module {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.hud {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    background: var(--voidbreaker-panel-bg);
+    padding: 16px 32px;
+    border-radius: 12px;
+    border: 1px solid var(--voidbreaker-border);
+    backdrop-filter: blur(10px);
+    width: 100%;
+}
+
+.hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hud-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.hud-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.canvas-container {
+    position: relative;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--voidbreaker-border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    cursor: none;
+}
+
+canvas {
+    display: block;
+    background: radial-gradient(circle at center, #0c0c14 0%, #000 100%);
+}
+
+.status-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(9, 9, 11, 0.55); /* INSTÄLLNING - pauseOverlayOpacity */
+    backdrop-filter: blur(6px);
+    color: #fff;
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    text-align: center;
+}
+
+.status-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.status-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.status-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.game-controls {
+    display: flex;
+    gap: 16px;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 600px) {
+    .hud {
+        gap: 16px;
+        padding: 12px;
+    }
+    .hud-value {
+        font-size: 1rem;
+    }
+}
