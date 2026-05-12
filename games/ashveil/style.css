@@ -18,7 +18,7 @@
 
 /* Base Layout */
 .container {
-    max-width: 1400px; /* INSTÄLLNING - Något bredare container för 3-kolumns layout. */
+    max-width: 1240px; /* INSTÄLLNING - Maxbredd för att hålla layouten samlad. */
 }
 
 .game-play-layout {
@@ -28,11 +28,13 @@
   align-items: start;
   justify-content: center;
   padding-top: var(--spacing-2);
+  margin: 0 auto;
 }
 
 @media (min-width: 1024px) {
   .game-play-layout {
-    grid-template-columns: 280px minmax(400px, 1fr) 240px; /* INSTÄLLNING - Panelbredder. */
+    grid-template-columns: 280px minmax(0, 1fr) 260px; /* INSTÄLLNING - Strikt uppdelning av kolumner. */
+    column-gap: 24px;
   }
 }
 
@@ -48,6 +50,7 @@
   backdrop-filter: blur(10px);
   position: sticky;
   top: var(--spacing-4);
+  z-index: 10;
 }
 
 .ash-header-panel h1 {
@@ -172,6 +175,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  min-width: 0; /* Förhindrar att flexbox expanderar bortom kolumnen */
+  width: 100%;
 }
 
 .ash-field-wrapper {
@@ -182,6 +187,9 @@
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
   margin: 0;
   max-width: 100%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .ash-field {
@@ -189,6 +197,12 @@
   gap: var(--tile-gap);
   user-select: none;
   margin: 0 auto;
+}
+
+.game-help-panel {
+    position: sticky;
+    top: var(--spacing-4);
+    z-index: 10;
 }
 
 /* Tiles */

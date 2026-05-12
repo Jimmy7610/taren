@@ -6,8 +6,9 @@
 
 const CONFIG = {
     tileSize: 36,        // INSTÄLLNING - Maxstorlek på rutorna.
-    minTileSize: 24,     // INSTÄLLNING - Minsta storlek på rutorna när fältet måste skalas ner.
+    minTileSize: 22,     // INSTÄLLNING - Minsta storlek på rutorna när fältet måste skalas ner.
     tileGap: 3,         // INSTÄLLNING - Avståndet mellan rutorna.
+    boardHorizontalSafetyPadding: 24, // INSTÄLLNING - Säkerhetsmarginal i sidled.
     boardMaxViewportHeight: 0.72, // INSTÄLLNING - Max höjd på brädet i % av viewporten.
     firstClickSafe: true, // INSTÄLLNING - Om första klicket alltid ska vara säkert.
     bestTimeKeyPrefix: "taren_ashveil_best_", // INSTÄLLNING - Prefix för localStorage.
@@ -134,17 +135,18 @@ class Ashveil {
     resizeBoard() {
         const config = DIFFICULTIES[this.difficulty];
         const vh = window.innerHeight;
-        const vw = window.innerWidth;
         
-        // Calculate available space
-        const maxH = vh * CONFIG.boardMaxViewportHeight;
-        const maxW = vw > 1024 ? vw - 650 : vw - 40; // 650 is estimated panels width
+        // Use the parent wrapper's width for horizontal constraint
+        // This wrapper is inside the grid column
+        const wrapper = this.fieldEl.parentElement;
+        const availableWidth = wrapper.clientWidth - CONFIG.boardHorizontalSafetyPadding;
+        const availableHeight = vh * CONFIG.boardMaxViewportHeight;
         
         // Potential tile sizes
-        const sizeByH = (maxH - (config.rows * CONFIG.tileGap)) / config.rows;
-        const sizeByW = (maxW - (config.cols * CONFIG.tileGap)) / config.cols;
+        const sizeByW = (availableWidth - (config.cols * CONFIG.tileGap)) / config.cols;
+        const sizeByH = (availableHeight - (config.rows * CONFIG.tileGap)) / config.rows;
         
-        let size = Math.min(sizeByH, sizeByW, CONFIG.tileSize);
+        let size = Math.min(sizeByW, sizeByH, CONFIG.tileSize);
         size = Math.max(size, CONFIG.minTileSize);
         
         document.documentElement.style.setProperty('--tile-size', `${size}px`);
