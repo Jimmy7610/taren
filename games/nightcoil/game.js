@@ -17,6 +17,12 @@ const CONFIG = {
     trailColor: "#8b6cff", // INSTÄLLNING - Färg på spolens svans.
     fragmentColor: "#fbbf24", // INSTÄLLNING - Färg på fragmentet.
     collectParticleCount: 12, // INSTÄLLNING - Antal partiklar när fragment samlas.
+
+    // VISUAL POLISH
+    coilGlowStrength: 22,     // INSTÄLLNING - Ändra hur starkt Nightcoil-ormen lyser.
+    fragmentGlowStrength: 30, // INSTÄLLNING - Ändra hur starkt fragmenten lyser.
+    gridAlpha: 0.05,          // INSTÄLLNING - Ändra hur tydligt rutnätet syns.
+    segmentSpacing: 2,        // INSTÄLLNING - Avståndet mellan spolens segment.
 };
 
 class Nightcoil {
@@ -212,8 +218,15 @@ class Nightcoil {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw grid (subtle)
-        this.ctx.strokeStyle = '#161619';
+        // Arena Background Polish
+        const bgGrad = this.ctx.createRadialGradient(this.canvas.width/2, this.canvas.height/2, 0, this.canvas.width/2, this.canvas.height/2, this.canvas.width/2);
+        bgGrad.addColorStop(0, '#0c0c0e');
+        bgGrad.addColorStop(1, '#050507');
+        this.ctx.fillStyle = bgGrad;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw grid (subtle & premium)
+        this.ctx.strokeStyle = `rgba(255, 255, 255, ${CONFIG.gridAlpha})`;
         this.ctx.lineWidth = 1;
         for (let i = 0; i <= CONFIG.gridCols; i++) {
             this.ctx.beginPath();
@@ -228,47 +241,61 @@ class Nightcoil {
             this.ctx.stroke();
         }
 
-        // Draw fragment
-        const fSize = CONFIG.cellSize * 0.5;
+        // Draw fragment (Luminous Artifact)
+        const fCenterX = this.fragment.x * CONFIG.cellSize + CONFIG.cellSize / 2;
+        const fCenterY = this.fragment.y * CONFIG.cellSize + CONFIG.cellSize / 2;
+        const fSize = CONFIG.cellSize * 0.45;
+        
         this.ctx.fillStyle = CONFIG.fragmentColor;
-        this.ctx.shadowBlur = 20;
+        this.ctx.shadowBlur = CONFIG.fragmentGlowStrength;
         this.ctx.shadowColor = CONFIG.fragmentColor;
+        
+        // Diamond shape artifact
         this.ctx.beginPath();
-        this.ctx.arc(
-            this.fragment.x * CONFIG.cellSize + CONFIG.cellSize / 2,
-            this.fragment.y * CONFIG.cellSize + CONFIG.cellSize / 2,
-            fSize / 2, 0, Math.PI * 2
-        );
+        this.ctx.moveTo(fCenterX, fCenterY - fSize/2);
+        this.ctx.lineTo(fCenterX + fSize/2, fCenterY);
+        this.ctx.lineTo(fCenterX, fCenterY + fSize/2);
+        this.ctx.lineTo(fCenterX - fSize/2, fCenterY);
+        this.ctx.closePath();
         this.ctx.fill();
         
-        // Internal core of fragment
-        this.ctx.fillStyle = "white";
+        // Internal pulse core
         this.ctx.shadowBlur = 0;
+        this.ctx.fillStyle = "white";
         this.ctx.beginPath();
-        this.ctx.arc(
-            this.fragment.x * CONFIG.cellSize + CONFIG.cellSize / 2,
-            this.fragment.y * CONFIG.cellSize + CONFIG.cellSize / 2,
-            fSize / 5, 0, Math.PI * 2
-        );
+        this.ctx.arc(fCenterX, fCenterY, fSize / 5, 0, Math.PI * 2);
         this.ctx.fill();
 
         // Draw coil
         this.coil.forEach((segment, i) => {
             const isHead = i === 0;
-            const size = isHead ? CONFIG.cellSize - 2 : CONFIG.cellSize - 6;
+            const size = isHead ? CONFIG.cellSize - 2 : CONFIG.cellSize - (6 + Math.min(10, i/2));
             const offset = (CONFIG.cellSize - size) / 2;
             
-            this.ctx.fillStyle = isHead ? CONFIG.coilColor : CONFIG.trailColor;
+            const color = isHead ? CONFIG.coilColor : CONFIG.trailColor;
+            this.ctx.fillStyle = color;
+            
             if (isHead) {
-                this.ctx.shadowBlur = 20;
+                this.ctx.shadowBlur = CONFIG.coilGlowStrength;
                 this.ctx.shadowColor = CONFIG.coilColor;
             } else {
-                this.ctx.shadowBlur = 8;
+                this.ctx.shadowBlur = CONFIG.coilGlowStrength * 0.4;
                 this.ctx.shadowColor = CONFIG.trailColor;
+                this.ctx.globalAlpha = Math.max(0.3, 1 - i / this.coil.length);
             }
             
-            // Rounded segments
-            const r = isHead ? 6 : 4;
+            // Rounded segments with gradients
+            const r = isHead ? 8 : 4;
+            const grad = this.ctx.createLinearGradient(
+                segment.x * CONFIG.cellSize + offset,
+                segment.y * CONFIG.cellSize + offset,
+                segment.x * CONFIG.cellSize + offset + size,
+                segment.y * CONFIG.cellSize + offset + size
+            );
+            grad.addColorStop(0, color);
+            grad.addColorStop(1, isHead ? '#fff' : 'rgba(0,0,0,0.3)');
+            this.ctx.fillStyle = grad;
+
             this.drawRoundedRect(
                 segment.x * CONFIG.cellSize + offset,
                 segment.y * CONFIG.cellSize + offset,
@@ -276,6 +303,7 @@ class Nightcoil {
             );
             
             this.ctx.shadowBlur = 0;
+            this.ctx.globalAlpha = 1.0;
         });
 
         // Draw particles

@@ -15,6 +15,12 @@ const CONFIG = {
     allowHoldToFire: true,      // INSTÄLLNING - Ändra om Space kan hållas inne för automatisk eldgivning.
     startingLives: 3,           // INSTÄLLNING - Ändra antal liv från start.
     bestScoreKey: "taren_shardrift_best_score", // INSTÄLLNING - Ändra localStorage-nyckeln för bästa poäng.
+
+    // VISUAL POLISH
+    shipGlowStrength: 18,       // INSTÄLLNING - Ändra hur starkt skeppet lyser.
+    shardEdgeGlow: 22,          // INSTÄLLNING - Ändra hur starkt kristallskärvornas kanter lyser.
+    projectileGlowStrength: 15, // INSTÄLLNING - Ändra hur starkt skotten lyser.
+    starDensity: 120,           // INSTÄLLNING - Antal stjärnor i bakgrunden.
 };
 
 class Shardrift {
@@ -339,28 +345,56 @@ class Shardrift {
     }
 
     draw() {
-        this.ctx.fillStyle = '#09090b';
+        // Deep Black-Violet Space Background
+        const bgGrad = this.ctx.createRadialGradient(this.canvas.width/2, this.canvas.height/2, 0, this.canvas.width/2, this.canvas.height/2, this.canvas.width);
+        bgGrad.addColorStop(0, '#0d0d12');
+        bgGrad.addColorStop(1, '#050507');
+        this.ctx.fillStyle = bgGrad;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Particles
-        this.particles.forEach(p => {
-            this.ctx.globalAlpha = p.life;
-            this.ctx.fillStyle = p.color;
-            this.ctx.fillRect(p.x, p.y, 2, 2);
+        // Draw Stars (Canvas noise)
+        this.ctx.fillStyle = '#fff';
+        if (!this.stars) {
+            this.stars = [];
+            for (let i = 0; i < CONFIG.starDensity; i++) {
+                this.stars.push({
+                    x: Math.random() * this.canvas.width,
+                    y: Math.random() * this.canvas.height,
+                    size: Math.random() * 1.5,
+                    opacity: 0.1 + Math.random() * 0.4
+                });
+            }
+        }
+        this.stars.forEach(star => {
+            this.ctx.globalAlpha = star.opacity;
+            this.ctx.fillRect(star.x, star.y, star.size, star.size);
         });
         this.ctx.globalAlpha = 1.0;
         
-        // Shards
-        this.ctx.strokeStyle = '#8b6cff';
-        this.ctx.lineWidth = 1.8;
+        // Particles (Spark-like)
+        this.particles.forEach(p => {
+            this.ctx.globalAlpha = p.life;
+            this.ctx.fillStyle = p.color;
+            this.ctx.shadowBlur = 4;
+            this.ctx.shadowColor = p.color;
+            this.ctx.fillRect(p.x, p.y, 1.5 + Math.random(), 1.5 + Math.random());
+        });
+        this.ctx.shadowBlur = 0;
+        this.ctx.globalAlpha = 1.0;
+        
+        // Shards - Crystalline Look
+        this.ctx.lineWidth = 2;
         this.shards.forEach(s => {
             this.ctx.save();
             this.ctx.translate(s.x, s.y);
             this.ctx.rotate(s.angle);
             
-            this.ctx.shadowBlur = 15;
-            this.ctx.shadowColor = '#8b6cff';
+            const color = '#8b6cff';
+            this.ctx.strokeStyle = color;
+            this.ctx.shadowBlur = CONFIG.shardEdgeGlow;
+            this.ctx.shadowColor = color;
             
+            // Outer Path
             this.ctx.beginPath();
             this.ctx.moveTo(s.points[0].x, s.points[0].y);
             for (let i = 1; i < s.points.length; i++) {
@@ -369,20 +403,44 @@ class Shardrift {
             this.ctx.closePath();
             this.ctx.stroke();
             
-            // Subtle inner fill
-            this.ctx.fillStyle = 'rgba(139, 108, 255, 0.05)';
+            // Crystalline Inner Fills
+            this.ctx.shadowBlur = 0;
+            const grad = this.ctx.createRadialGradient(0, 0, 0, 0, 0, s.radius);
+            grad.addColorStop(0, 'rgba(139, 108, 255, 0.2)');
+            grad.addColorStop(1, 'rgba(76, 201, 240, 0.05)');
+            this.ctx.fillStyle = grad;
             this.ctx.fill();
+            
+            // Facet Highlights
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            this.ctx.beginPath();
+            this.ctx.moveTo(s.points[0].x * 0.5, s.points[0].y * 0.5);
+            for (let i = 1; i < s.points.length; i += 2) {
+                this.ctx.lineTo(s.points[i].x * 0.3, s.points[i].y * 0.3);
+            }
+            this.ctx.stroke();
             
             this.ctx.restore();
         });
         
-        // Projectiles
-        this.ctx.fillStyle = '#4cc9f0';
+        // Projectiles - Energy Bolts
+        const pColor = '#4cc9f0';
+        this.ctx.fillStyle = pColor;
+        this.ctx.shadowBlur = CONFIG.projectileGlowStrength;
+        this.ctx.shadowColor = pColor;
         this.projectiles.forEach(p => {
             this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            this.ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
             this.ctx.fill();
+            
+            // Inner Core
+            this.ctx.fillStyle = '#fff';
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.fillStyle = pColor;
         });
+        this.ctx.shadowBlur = 0;
         
         // Ship
         if ((this.gameState === 'playing' || this.gameState === 'paused' || this.gameState === 'ready') && (this.ship.invulnerable <= 0 || Math.floor(Date.now() / 100) % 2 === 0)) {
@@ -391,23 +449,42 @@ class Shardrift {
             this.ctx.rotate(this.ship.angle);
             
             this.ctx.strokeStyle = '#fafafa';
-            this.ctx.shadowBlur = 10;
+            this.ctx.shadowBlur = CONFIG.shipGlowStrength;
             this.ctx.shadowColor = '#4cc9f0';
             this.ctx.lineWidth = 2;
             
+            // Sleek Triangular Ship
             this.ctx.beginPath();
             this.ctx.moveTo(15, 0);
             this.ctx.lineTo(-10, -10);
+            this.ctx.lineTo(-6, 0);
             this.ctx.lineTo(-10, 10);
             this.ctx.closePath();
+            
+            const shipGrad = this.ctx.createLinearGradient(-10, 0, 15, 0);
+            shipGrad.addColorStop(0, '#1a1a1e');
+            shipGrad.addColorStop(1, '#4cc9f0');
+            this.ctx.fillStyle = shipGrad;
+            this.ctx.fill();
             this.ctx.stroke();
             
-            // Thrust flame
+            // Thrust flame - Energy Trail
             if (this.keys['ArrowUp'] || this.keys['KeyW']) {
-                this.ctx.strokeStyle = '#fbbf24';
+                this.ctx.strokeStyle = '#4cc9f0';
+                this.ctx.shadowBlur = 15;
+                this.ctx.shadowColor = '#4cc9f0';
                 this.ctx.beginPath();
                 this.ctx.moveTo(-10, 0);
-                this.ctx.lineTo(-20 - Math.random() * 10, 0);
+                const flameLen = 15 + Math.random() * 15;
+                this.ctx.lineTo(-flameLen, 0);
+                this.ctx.stroke();
+                
+                // Flame core
+                this.ctx.strokeStyle = '#fff';
+                this.ctx.lineWidth = 1;
+                this.ctx.beginPath();
+                this.ctx.moveTo(-10, 0);
+                this.ctx.lineTo(-10 - flameLen * 0.5, 0);
                 this.ctx.stroke();
             }
             

@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 70 (Visual Polish Pack 1: Ashveil, Voidbreaker, Pulse Duel)
+**Current Build:** Build 71 (Visual Polish Pack 2: Nightcoil, Shardrift, Night Array)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

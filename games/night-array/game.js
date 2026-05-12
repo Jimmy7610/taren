@@ -16,6 +16,12 @@ const CONFIG = {
     enemyStepDown: 18,          // INSTÄLLNING - Ändra hur långt formationen går ned när den byter riktning.
     startingLives: 3,           // INSTÄLLNING - Ändra antal liv från start.
     bestScoreKey: "taren_night_array_best_score", // INSTÄLLNING - Ändra localStorage-nyckeln för bästa poäng.
+
+    // VISUAL POLISH
+    enemyCoreGlow: 20,          // INSTÄLLNING - Ändra hur starkt fiendernas kärnor lyser.
+    cannonGlowStrength: 25,     // INSTÄLLNING - Ändra hur starkt spelarens kanon lyser.
+    projectileTrailAlpha: 0.25, // INSTÄLLNING - Ändra hur tydlig projektilernas ljussvans är.
+    gridAlpha: 0.04,            // INSTÄLLNING - Hur tydligt rutnätet i bakgrunden är.
 };
 
 class NightArray {
@@ -100,6 +106,7 @@ class NightArray {
         this.enemies = [];
         this.enemyDir = 1;
         this.enemySpeed = 40 + (this.wave * 10);
+        this.particles = [];
         
         const spacingX = 60;
         const spacingY = 50;
@@ -146,6 +153,7 @@ class NightArray {
         this.updatePlayer(dt);
         this.updateProjectiles(dt);
         this.updateEnemies(dt);
+        this.updateParticles(dt);
         this.checkCollisions();
         
         if (this.enemies.length === 0) {
@@ -225,6 +233,32 @@ class NightArray {
         }
     }
 
+    updateParticles(dt) {
+        if (!this.particles) this.particles = [];
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.life -= dt;
+            if (p.life <= 0) this.particles.splice(i, 1);
+        }
+    }
+
+    createExplosion(x, y, color) {
+        if (!this.particles) this.particles = [];
+        for (let i = 0; i < 15; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 50 + Math.random() * 150;
+            this.particles.push({
+                x, y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 0.4 + Math.random() * 0.4,
+                color
+            });
+        }
+    }
+
     checkCollisions() {
         // Player Projectile vs Enemy
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -232,6 +266,8 @@ class NightArray {
             for (let j = this.enemies.length - 1; j >= 0; j--) {
                 const e = this.enemies[j];
                 if (p.x > e.x && p.x < e.x + e.w && p.y > e.y && p.y < e.y + e.h) {
+                    const color = e.type === 0 ? '#8b6cff' : '#fbbf24';
+                    this.createExplosion(e.x + e.w/2, e.y + e.h/2, color);
                     this.enemies.splice(j, 1);
                     this.projectiles.splice(i, 1);
                     this.score += 100;
@@ -245,6 +281,7 @@ class NightArray {
         for (let i = this.enemyProjectiles.length - 1; i >= 0; i--) {
             const p = this.enemyProjectiles[i];
             if (p.x > this.player.x && p.x < this.player.x + this.player.w && p.y > this.player.y && p.y < this.player.y + this.player.h) {
+                this.createExplosion(p.x, p.y, '#4cc9f0');
                 this.enemyProjectiles.splice(i, 1);
                 this.lives--;
                 this.updateHUD();
@@ -265,16 +302,46 @@ class NightArray {
     }
 
     draw() {
-        this.ctx.fillStyle = '#09090b';
+        // Tactical Night Arena Background
+        const bgGrad = this.ctx.createRadialGradient(this.canvas.width/2, this.canvas.height/2, 0, this.canvas.width/2, this.canvas.height/2, this.canvas.width);
+        bgGrad.addColorStop(0, '#0c0c0e');
+        bgGrad.addColorStop(1, '#050507');
+        this.ctx.fillStyle = bgGrad;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Formation
+        // Subtle Grid
+        this.ctx.strokeStyle = `rgba(255, 255, 255, ${CONFIG.gridAlpha})`;
+        this.ctx.lineWidth = 1;
+        for (let x = 0; x < this.canvas.width; x += 40) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, 0);
+            this.ctx.lineTo(x, this.canvas.height);
+            this.ctx.stroke();
+        }
+        for (let y = 0; y < this.canvas.height; y += 40) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y);
+            this.ctx.lineTo(this.canvas.width, y);
+            this.ctx.stroke();
+        }
+
+        // Particles
+        if (this.particles) {
+            this.particles.forEach(p => {
+                this.ctx.globalAlpha = p.life;
+                this.ctx.fillStyle = p.color;
+                this.ctx.fillRect(p.x, p.y, 2, 2);
+            });
+            this.ctx.globalAlpha = 1.0;
+        }
+        
+        // Enemies - Luminous Geometric Entities
         this.enemies.forEach(e => {
-            this.ctx.fillStyle = e.type === 0 ? '#8b6cff' : '#fbbf24';
-            this.ctx.shadowBlur = 15;
-            this.ctx.shadowColor = this.ctx.fillStyle;
+            const color = e.type === 0 ? '#8b6cff' : '#fbbf24';
+            this.ctx.fillStyle = color;
+            this.ctx.shadowBlur = CONFIG.enemyCoreGlow;
+            this.ctx.shadowColor = color;
             
-            // Draw abstract invader shape with more detail
             this.ctx.beginPath();
             this.ctx.moveTo(e.x + e.w * 0.2, e.y);
             this.ctx.lineTo(e.x + e.w * 0.8, e.y);
@@ -285,40 +352,56 @@ class NightArray {
             this.ctx.closePath();
             this.ctx.fill();
             
-            // Inner core
+            // Inner Core Glow
             this.ctx.shadowBlur = 0;
-            this.ctx.fillStyle = 'rgba(255,255,255,0.2)';
-            this.ctx.fillRect(e.x + e.w * 0.3, e.y + e.h * 0.3, e.w * 0.4, 2);
+            this.ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            this.ctx.fillRect(e.x + e.w * 0.35, e.y + e.h * 0.4, e.w * 0.3, 2);
         });
         
-        // Projectiles
-        this.ctx.shadowBlur = 15;
-        this.ctx.fillStyle = '#4cc9f0';
-        this.ctx.shadowColor = '#4cc9f0';
+        // Projectiles - Soft Glow & Trail
         this.projectiles.forEach(p => {
-            this.ctx.fillRect(p.x - 1, p.y, 2, 10);
-        });
-        
-        this.ctx.fillStyle = '#fbbf24';
-        this.ctx.shadowColor = '#fbbf24';
-        this.enemyProjectiles.forEach(p => {
-            this.ctx.fillRect(p.x - 1, p.y, 2, 8);
-        });
-        
-        // Player
-        if (this.gameState === 'playing' || this.gameState === 'paused' || this.gameState === 'ready') {
+            this.ctx.shadowBlur = 15;
             this.ctx.fillStyle = '#4cc9f0';
-            this.ctx.shadowBlur = 20;
             this.ctx.shadowColor = '#4cc9f0';
+            this.ctx.fillRect(p.x - 1, p.y, 2, 12);
             
-            // Draw cannon
+            // Trail
+            this.ctx.globalAlpha = CONFIG.projectileTrailAlpha;
+            this.ctx.fillRect(p.x - 1, p.y + 12, 2, 8);
+            this.ctx.globalAlpha = 1.0;
+        });
+        
+        this.enemyProjectiles.forEach(p => {
+            this.ctx.shadowBlur = 10;
+            this.ctx.fillStyle = '#fbbf24';
+            this.ctx.shadowColor = '#fbbf24';
+            this.ctx.fillRect(p.x - 1, p.y - 8, 2, 8);
+            
+            // Trail
+            this.ctx.globalAlpha = CONFIG.projectileTrailAlpha;
+            this.ctx.fillRect(p.x - 1, p.y - 14, 2, 6);
+            this.ctx.globalAlpha = 1.0;
+        });
+        
+        // Player Cannon - Luminous Defense Shape
+        if (this.gameState === 'playing' || this.gameState === 'paused' || this.gameState === 'ready') {
+            const playerColor = '#4cc9f0';
+            this.ctx.fillStyle = playerColor;
+            this.ctx.shadowBlur = CONFIG.cannonGlowStrength;
+            this.ctx.shadowColor = playerColor;
+            
+            const grad = this.ctx.createLinearGradient(this.player.x, this.player.y, this.player.x, this.player.y + this.player.h);
+            grad.addColorStop(0, '#fff');
+            grad.addColorStop(1, playerColor);
+            this.ctx.fillStyle = grad;
+
             this.ctx.beginPath();
             this.ctx.moveTo(this.player.x, this.player.y + this.player.h);
             this.ctx.lineTo(this.player.x + this.player.w, this.player.y + this.player.h);
             this.ctx.lineTo(this.player.x + this.player.w, this.player.y + 4);
-            this.ctx.lineTo(this.player.x + this.player.w / 2 + 4, this.player.y + 4);
+            this.ctx.lineTo(this.player.x + this.player.w / 2 + 5, this.player.y + 4);
             this.ctx.lineTo(this.player.x + this.player.w / 2, this.player.y);
-            this.ctx.lineTo(this.player.x + this.player.w / 2 - 4, this.player.y + 4);
+            this.ctx.lineTo(this.player.x + this.player.w / 2 - 5, this.player.y + 4);
             this.ctx.lineTo(this.player.x, this.player.y + 4);
             this.ctx.closePath();
             this.ctx.fill();
