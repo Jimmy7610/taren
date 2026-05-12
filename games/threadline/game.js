@@ -9,7 +9,7 @@ const CONFIG = {
     canvasHeight: 560, // INSTÄLLNING - Ändra grundhöjden på Threadline-spelytan.
     boardPadding: 60, // INSTÄLLNING - Ändra marginalen runt pusslet inuti spelrutan.
     nodeRadius: 14, // INSTÄLLNING - Ändra den visuella storleken på noderna.
-    nodeHitRadius: 30, // INSTÄLLNING - Ändra hur nära man måste klicka för att träffa en nod.
+    nodeHitRadius: 34, // INSTÄLLNING - Ändra hur nära man måste klicka för att träffa en nod. Högre värde gör spelet mer förlåtande.
     edgeWidth: 2, // INSTÄLLNING - Ändra tjockleken på kopplingslinjerna mellan noder.
     edgeOpacity: 0.15, // INSTÄLLNING - Ändra hur tydliga de obrukade linjerna är.
     pathWidth: 7, // INSTÄLLNING - Ändra tjockleken på den aktiva path-linjen.
@@ -140,8 +140,10 @@ function setupEventListeners() {
     canvas.addEventListener('mousedown', handleMouseDown);
     canvas.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
-        mousePos.x = e.clientX - rect.left;
-        mousePos.y = e.clientY - rect.top;
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        mousePos.x = (e.clientX - rect.left) * scaleX;
+        mousePos.y = (e.clientY - rect.top) * scaleY;
     });
 
     window.addEventListener('keydown', e => {
@@ -178,13 +180,20 @@ function loadLevel(index) {
 function handleMouseDown(e) {
     if (isLevelCleared) return;
     
+    // Recalculate precisely on click to avoid sync issues
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clickX = (e.clientX - rect.left) * scaleX;
+    const clickY = (e.clientY - rect.top) * scaleY;
+    
     const level = LEVELS[currentLevelIndex];
     let clickedNodeId = -1;
 
     for (const node of level.nodes) {
         const nx = getCanvasPos(node.x, 'width');
         const ny = getCanvasPos(node.y, 'height');
-        const dist = Math.sqrt((mousePos.x - nx)**2 + (mousePos.y - ny)**2);
+        const dist = Math.sqrt((clickX - nx)**2 + (clickY - ny)**2);
         if (dist <= CONFIG.nodeHitRadius) {
             clickedNodeId = node.id;
             break;
