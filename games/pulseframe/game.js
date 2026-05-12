@@ -52,7 +52,8 @@ const SETTINGS = {
             baseSpeed: 100, // INSTÄLLNING - Ändra basfarten för expanderande vågor.
             waveSpeedMult: 15, // INSTÄLLNING - Ändra hur mycket snabbare vågorna expanderar per nivå.
             thickness: 12, // INSTÄLLNING - Ändra hur tjock den dödliga väggen är.
-            maxRadiusMult: 1.3, // INSTÄLLNING - Ändra hur stor vågen blir jämfört med arenan innan den försvinner.
+            maxRadiusMult: 0.85, // INSTÄLLNING - Ändra hur stor vågen blir jämfört med arenan innan den försvinner.
+            fadeSpeed: 0.04, // INSTÄLLNING - Hur snabbt vågen bleknar när den nått maxstorlek.
         },
         laser: {
             chargeTime: 1.2, // INSTÄLLNING - Ändra hur länge lasern siktar/varnar innan den skjuter (sekunder). Högre värde = lättare och mer rättvist.
@@ -87,14 +88,14 @@ const ctx = canvas.getContext('2d', { alpha: false });
 const container = document.getElementById('game-container');
 
 // UI Elements
-const hud = document.getElementById('hud');
+const hud = document.getElementById('game-status');
 const scoreDisplay = document.getElementById('scoreDisplay');
 const waveDisplay = document.getElementById('waveDisplay');
-const bestScoreDisplay = document.getElementById('bestScoreDisplay');
+const bestScoreDisplay = null; // Removed as it's not in index.html
 const startScreen = document.getElementById('startScreen');
 const gameOverScreen = document.getElementById('gameOverScreen');
 const finalScore = document.getElementById('finalScore');
-const finalBest = document.getElementById('finalBest');
+const finalBest = document.getElementById('bestScore');
 
 // Game State
 let gameState = 'MENU'; // MENU, PLAYING, GAMEOVER
@@ -427,7 +428,7 @@ class PulseWave {
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(45, 212, 191, ${alpha})`;
         ctx.lineWidth = this.thickness;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 10 * alpha;
         ctx.shadowColor = 'rgba(45, 212, 191, 0.5)';
         ctx.stroke();
         ctx.shadowBlur = 0;
@@ -747,11 +748,11 @@ function killPlayer() {
         localStorage.setItem('pulseframe_best', bestScore);
     }
     
-    finalScore.innerText = Math.floor(score);
-    finalBest.innerText = bestScore;
+    if (finalScore) finalScore.innerText = Math.floor(score);
+    if (finalBest) finalBest.innerText = bestScore;
     
     setTimeout(() => {
-        gameOverScreen.classList.remove('hidden');
+        if (gameOverScreen) gameOverScreen.classList.remove('hidden');
     }, 1000);
 }
 
