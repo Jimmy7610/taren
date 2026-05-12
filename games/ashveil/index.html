@@ -18,82 +18,72 @@
     </nav>
 
     <main class="fade-in-up delay-1">
-        <div class="container">
-            <div class="game-play-layout">
-                <!-- Left Panel: Controls & Info -->
-                <aside class="game-left-panel">
-                    <header class="ash-header-panel">
-                        <span class="ash-label">Logic</span>
-                        <h1>Ashveil</h1>
-                        <p class="ash-subtitle">Clear the field without waking what lies below.</p>
-                    </header>
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Ashveil</h1>
+                    <p>Clear the field without waking what lies below.</p>
+                </div>
 
-                    <div id="status" class="ash-status-box">Read the field.</div>
+                <div id="status" class="game-status-box">Read the field.</div>
 
-                    <div class="ash-hud-grid">
-                        <div class="hud-item">
-                            <span class="hud-label">Difficulty</span>
-                            <span id="hud-diff-label" class="hud-value">Quiet</span>
-                        </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Time</span>
-                            <span id="timer" class="hud-value">0:00</span>
-                        </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Marks</span>
-                            <span id="marks-count" class="hud-value">0</span>
-                        </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Moves</span>
-                            <span id="moves-count" class="hud-value">0</span>
-                        </div>
-                        <div class="hud-item hud-full">
-                            <span class="hud-label">Best</span>
-                            <span id="best-time" class="hud-value">--</span>
-                        </div>
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Time</span>
+                        <span id="timer" class="game-stat-value">0:00</span>
                     </div>
-
-                    <div class="panel-section">
-                        <span class="section-label">Field Depth</span>
-                        <div class="ash-difficulty-buttons">
-                            <button class="btn btn-secondary btn-small" onclick="game.setDifficulty('quiet')" id="btn-quiet">Quiet</button>
-                            <button class="btn btn-secondary btn-small" onclick="game.setDifficulty('deep')" id="btn-deep">Deep</button>
-                            <button class="btn btn-secondary btn-small" onclick="game.setDifficulty('abyss')" id="btn-abyss">Abyss</button>
-                        </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Marks</span>
+                        <span id="marks-count" class="game-stat-value">0</span>
                     </div>
-
-                    <div class="panel-section">
-                        <span class="section-label">Interaction Mode</span>
-                        <div class="mode-toggle">
-                            <button id="mode-reveal" class="mode-btn active" onclick="game.setMode('reveal')">Reveal</button>
-                            <button id="mode-mark" class="mode-btn" onclick="game.setMode('mark')">Mark</button>
-                        </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Moves</span>
+                        <span id="moves-count" class="game-stat-value">0</span>
                     </div>
-
-                    <div class="panel-section mt-auto">
-                        <button class="btn btn-block" onclick="game.reset()">New Field</button>
-                    </div>
-                </aside>
-
-                <!-- Center: Game Board -->
-                <div class="game-main-column">
-                    <div class="ash-field-wrapper">
-                        <div id="field" class="ash-field"></div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Best</span>
+                        <span id="best-time" class="game-stat-value">--</span>
                     </div>
                 </div>
 
-                <!-- Right Panel: Help -->
-                <aside class="game-help-panel">
-                    <h2 class="game-help-title">How to play</h2>
-                    <ul class="game-help-list">
-                        <li>Reveal tiles to read the hidden field.</li>
-                        <li>Numbers show nearby buried <strong>embers</strong>.</li>
-                        <li><strong>Right-click</strong> or use Mark mode to tag danger.</li>
-                        <li>Clear every safe tile to win.</li>
-                        <li style="margin-top: 10px; opacity: 0.8; font-size: 0.75rem;">First reveal is always safe.</li>
-                    </ul>
-                </aside>
-            </div>
+                <div class="game-control-group">
+                    <span class="game-stat-label">Field Depth</span>
+                    <div class="game-actions" id="diff-controls">
+                        <button class="btn active" onclick="game.setDifficulty('quiet')" id="btn-quiet">Quiet</button>
+                        <button class="btn" onclick="game.setDifficulty('deep')" id="btn-deep">Deep</button>
+                        <button class="btn" onclick="game.setDifficulty('abyss')" id="btn-abyss">Abyss</button>
+                    </div>
+
+                    <span class="game-stat-label">Interaction</span>
+                    <div class="game-actions" id="mode-controls">
+                        <button id="mode-reveal" class="btn active" onclick="game.setMode('reveal')">Reveal</button>
+                        <button id="mode-mark" class="btn" onclick="game.setMode('mark')">Mark</button>
+                    </div>
+
+                    <button class="btn" onclick="game.reset()">New Field</button>
+                    <div id="hud-diff-label" style="display: none;"></div>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
+                    <div id="field" class="ash-field"></div>
+                </div>
+            </section>
+
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
+                <h2 class="game-help-title">How to play</h2>
+                <ul class="game-help-list">
+                    <li>Reveal tiles to read the field.</li>
+                    <li>Numbers show nearby buried <strong>embers</strong>.</li>
+                    <li><strong>Right-click</strong> or use Mark mode to tag danger.</li>
+                    <li>Clear every safe tile to win.</li>
+                    <li>First reveal is always safe.</li>
+                </ul>
+            </aside>
         </div>
     </main>
 

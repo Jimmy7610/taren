@@ -18,25 +18,40 @@
         </div>
     </nav>
 
-    <main class="container fade-in-up delay-1">
-        <div class="game-play-layout">
-            <div class="game-main-column">
-                <div class="linebound-layout">
-                    <!-- HUD (External to board) -->
-                    <div id="hud-external">
-                        <div class="hud-row-1">
-                            <div id="scoreDisplay">You: 0 | Computer: 0</div>
-                            <div id="turnDisplay" class="turn-player">Your Turn</div>
-                        </div>
-                        <div class="hud-row-2">
-                            <div class="board-size-selector">
-                                <span style="font-size: 0.875rem; color: var(--text-muted); margin-right: 8px;">Board</span>
-                                <button class="btn-size active" data-size="5">5x5</button>
-                                <button class="btn-size" data-size="10">10x10</button>
-                            </div>
-                        </div>
-                    </div>
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Linebound</h1>
+                    <p>Claim the space.</p>
+                </div>
 
+                <div class="game-status-box" id="turnDisplay">Your Turn</div>
+
+                <div class="game-stats-grid">
+                    <div class="game-stat-card" style="grid-column: span 2;">
+                        <span id="scoreDisplay" class="game-stat-value">You: 0 | CPU: 0</span>
+                    </div>
+                </div>
+
+                <div class="game-control-group">
+                    <span class="game-stat-label">Board Size</span>
+                    <div class="game-actions">
+                        <button class="btn-size active" data-size="5">5x5</button>
+                        <button class="btn-size" data-size="10">10x10</button>
+                    </div>
+                </div>
+
+                <div class="game-control-group">
+                    <button id="startBtn" class="btn">Start</button>
+                    <button id="retryBtn" class="btn btn-secondary hidden">Restart</button>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
                     <div id="game-container">
                         <canvas id="gameCanvas"></canvas>
 
@@ -44,7 +59,6 @@
                         <div id="startScreen" class="overlay">
                             <h1>Linebound</h1>
                             <p>Claim the space.</p>
-                            <button id="startBtn" class="btn">Start</button>
                         </div>
 
                         <!-- Game Over Screen -->
@@ -54,13 +68,13 @@
                                 <p>You: <span id="finalScorePlayer">0</span></p>
                                 <p>Computer: <span id="finalScoreAI">0</span></p>
                             </div>
-                            <button id="retryBtn" class="btn">Restart</button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <aside class="game-help-panel">
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
                     <li>Draw <strong>lines</strong> between two nearby dots.</li>

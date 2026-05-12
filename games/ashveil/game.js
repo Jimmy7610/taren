@@ -81,7 +81,7 @@ class Ashveil {
     setDifficulty(key) {
         if (!DIFFICULTIES[key]) return;
         this.difficulty = key;
-        this.diffLabelEl.textContent = DIFFICULTIES[key].label;
+        if (this.diffLabelEl) this.diffLabelEl.textContent = DIFFICULTIES[key].label;
         
         // Update UI
         document.querySelectorAll('.ash-difficulty-buttons .btn').forEach(btn => {
@@ -139,7 +139,7 @@ class Ashveil {
         // Use the parent wrapper's width for horizontal constraint
         // This wrapper is inside the grid column
         const wrapper = this.fieldEl.parentElement;
-        const availableWidth = wrapper.clientWidth - CONFIG.boardHorizontalSafetyPadding;
+        const availableWidth = (wrapper.clientWidth || 800) - CONFIG.boardHorizontalSafetyPadding;
         const availableHeight = vh * CONFIG.boardMaxViewportHeight;
         
         // Potential tile sizes

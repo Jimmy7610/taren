@@ -19,47 +19,55 @@
         </div>
     </nav>
 
-    <main class="container fade-in-up delay-1">
-        <div class="game-play-layout">
-            <div class="game-main-column">
-                <header class="mb-4 center-content" style="min-height: auto;">
-                    <h1 class="mb-2">Void Runner</h1>
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Void Runner</h1>
                     <p>Navigate the empty space between signals.</p>
-                </header>
+                </div>
 
-                <div class="void-layout">
-                    <div class="hud">
-                        <div class="stat-box">
-                            <span class="stat-label">Score</span>
-                            <span class="stat-value" id="scoreDisplay">0</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-label">Best</span>
-                            <span class="stat-value" id="bestScoreDisplay">0</span>
-                        </div>
+                <div class="game-status-box" id="game-status">In Void</div>
+
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Score</span>
+                        <span id="scoreDisplay" class="game-stat-value">0</span>
                     </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Best</span>
+                        <span id="bestScoreDisplay" class="game-stat-value">0</span>
+                    </div>
+                </div>
 
+                <div class="game-control-group">
+                    <button id="startBtn" class="btn">Start Run</button>
+                    <button id="retryBtn" class="btn btn-secondary hidden">Retry</button>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
                     <div id="game-container">
                         <canvas id="gameCanvas"></canvas>
                         
                         <div id="startScreen" class="overlay">
                             <h2 class="overlay-title">Void Runner</h2>
                             <p class="overlay-desc">Move through the void.</p>
-                            <button id="startBtn" class="btn">Start Run</button>
                         </div>
 
                         <div id="gameOverScreen" class="overlay hidden">
                             <h2 class="overlay-title">Signal Lost</h2>
                             <p id="finalScoreText">Score: 0</p>
-                            <button id="retryBtn" class="btn">Retry</button>
                         </div>
                     </div>
-                    
-                    <p class="instruction-text">Stay clear of the dark debris.</p>
                 </div>
-            </div>
+            </section>
 
-            <aside class="game-help-panel">
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
                     <li>Move through the <strong>void</strong> with mouse, touch, or keys.</li>

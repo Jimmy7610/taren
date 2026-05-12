@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voidbreaker - Taren</title>
+    <title>Night Array - Taren</title>
     <link rel="stylesheet" href="/assets/css/global.css">
     <link rel="stylesheet" href="./style.css">
     <script src="/assets/js/build.js" defer></script>
@@ -12,7 +12,7 @@
     <nav class="navbar fade-in-up">
         <div class="container nav-container">
             <a href="/" class="nav-link">Taren</a>
-            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/games/" class="nav-link">Games</a>
             <a href="/about/" class="nav-link">About</a>
         </div>
     </nav>
@@ -22,11 +22,11 @@
             <!-- LEFT: Controls & HUD -->
             <aside class="game-side-panel game-controls-panel">
                 <div class="game-title-block">
-                    <h1>Voidbreaker</h1>
-                    <p>Break the silent wall.</p>
+                    <h1>Night Array</h1>
+                    <p>Hold the line against the descending pattern.</p>
                 </div>
 
-                <div class="game-status-box" id="game-status">Active</div>
+                <div class="game-status-box" id="game-status">Standing Guard</div>
 
                 <div class="game-stats-grid">
                     <div class="game-stat-card">
@@ -38,8 +38,8 @@
                         <span id="lives" class="game-stat-value">3</span>
                     </div>
                     <div class="game-stat-card">
-                        <span class="game-stat-label">Level</span>
-                        <span id="level" class="game-stat-value">1</span>
+                        <span class="game-stat-label">Wave</span>
+                        <span id="wave" class="game-stat-value">1</span>
                     </div>
                     <div class="game-stat-card">
                         <span class="game-stat-label">Best</span>
@@ -47,11 +47,9 @@
                     </div>
                 </div>
 
-                <div id="effects-bar" class="game-control-group" style="min-height: 20px; font-size: 0.75rem; color: var(--accent);"></div>
-
                 <div class="game-control-group">
-                    <button id="new-game-btn" class="btn">New Game</button>
-                    <button id="pause-btn" class="btn btn-secondary">Pause</button>
+                    <button class="btn" onclick="game.reset()">New Run</button>
+                    <button id="pause-btn" class="btn btn-secondary" onclick="game.togglePause()">Pause</button>
                 </div>
             </aside>
 
@@ -59,10 +57,20 @@
             <section class="game-center">
                 <div class="game-board-shell">
                     <div class="game-board-wrapper">
-                        <canvas id="gameCanvas"></canvas>
-                        <div id="status-overlay" class="game-overlay">
-                            <h2 id="status-title">Ready</h2>
-                            <p id="status-subtitle">Press Space to launch</p>
+                        <canvas id="game-canvas"></canvas>
+                        <div id="game-start" class="game-overlay">
+                            <h2>Night Array</h2>
+                            <p>The array descends.</p>
+                            <button class="btn" onclick="game.start()">Begin</button>
+                        </div>
+                        <div id="game-over" class="game-overlay hidden">
+                            <h2>Line Breached</h2>
+                            <p id="final-score">Final Score: 0</p>
+                            <button class="btn" onclick="game.reset()">New Run</button>
+                        </div>
+                        <div id="game-pause" class="game-overlay hidden">
+                            <h2>Paused</h2>
+                            <button class="btn" onclick="game.togglePause()">Resume</button>
                         </div>
                     </div>
                 </div>
@@ -72,10 +80,11 @@
             <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
-                    <li>Move <strong>MOUSE</strong> or use <strong>AD / Arrows</strong> to control the paddle.</li>
-                    <li>Press <strong>SPACE</strong> to launch the pulse.</li>
-                    <li>Break all shards to clear the level.</li>
-                    <li>Catch powerups. Avoid losing all lives.</li>
+                    <li>Move along the lower line.</li>
+                    <li>Fire upward to break the descending pattern.</li>
+                    <li>Do not let the array reach you.</li>
+                    <li><strong>LEFT / RIGHT</strong> or <strong>A / D</strong> to move.</li>
+                    <li><strong>SPACE</strong> to fire. <strong>P</strong> to pause.</li>
                 </ul>
             </aside>
         </div>

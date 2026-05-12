@@ -470,55 +470,154 @@ p {
   pointer-events: none;
 }
 
-/* Game Layout & Help Panel */
+/* ==================================================
+   SHARED GAME LAYOUT (Build 58 Unified Standard)
+   ================================================== */
+
 :root {
-  --game-help-panel-width: 260px; /* INSTÄLLNING - Ändra bredden på hjälprutan i spelvyerna. */
-  --game-help-panel-gap: 32px; /* INSTÄLLNING - Avståndet mellan spelet och hjälprutan. */
+  --game-layout-max-width: 1240px; /* INSTÄLLNING - Ändra maxbredden för spelens trekolumnslayout. */
+  --game-left-panel-width: 280px; /* INSTÄLLNING - Ändra bredden på vänster kontrollpanel. */
+  --game-right-panel-width: 250px; /* INSTÄLLNING - Ändra bredden på höger How to play-panel. */
+  --game-layout-gap: 24px; /* INSTÄLLNING - Ändra avståndet mellan vänster panel, spelplan och höger panel. */
+  --game-page-top-offset: 24px; /* INSTÄLLNING - Ändra hur högt/lågt spelmodulen börjar på sidan. */
 }
 
-.game-play-layout {
-  display: flex;
-  flex-direction: column;
-  gap: var(--game-help-panel-gap);
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--game-layout-gap);
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: var(--game-layout-max-width);
+  margin: var(--game-page-top-offset) auto var(--spacing-8);
+  padding: 0 var(--spacing-3);
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
-  .game-play-layout {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
+  .game-layout {
+    grid-template-columns: var(--game-left-panel-width) minmax(0, 1fr) var(--game-right-panel-width);
   }
 }
 
-.game-main-column {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0;
-}
-
-.game-help-panel {
-  width: 100%;
-  max-width: var(--game-help-panel-width);
+.game-side-panel {
   background-color: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-3);
-  backdrop-filter: blur(10px);
-  flex-shrink: 0;
+  padding: var(--spacing-4);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  position: sticky;
+  top: var(--spacing-4);
+}
+
+.game-controls-panel {
+  text-align: left;
+}
+
+.game-help-panel {
+  text-align: left;
+}
+
+.game-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0; /* Prevent overflow issues */
+}
+
+/* Internal Components */
+.game-title-block h1 {
+  font-size: 1.75rem;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+
+.game-title-block p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.game-status-box {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  display: inline-block;
+}
+
+.game-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.game-stat-card {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.game-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.game-stat-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.game-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.game-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.game-actions .btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+}
+
+.game-board-shell {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
 }
 
 .game-help-title {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: var(--spacing-2);
+  color: var(--text);
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -526,32 +625,30 @@ p {
 
 .game-help-title::before {
   content: "";
-  display: block;
   width: 6px;
   height: 6px;
-  background-color: var(--accent);
+  background: var(--accent);
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--accent-glow);
+  box-shadow: 0 0 8px var(--accent);
 }
 
 .game-help-list {
   list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .game-help-list li {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   line-height: 1.5;
-  position: relative;
-  padding-left: 0;
 }
 
 .game-help-list li strong {
   color: var(--text);
-  font-weight: 500;
+}
+
+.hidden {
+  display: none !important;
 }

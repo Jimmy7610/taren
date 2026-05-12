@@ -1,14 +1,14 @@
 :root {
-  --coil-cyan: #4cc9f0;
-  --coil-violet: #8b6cff;
-  --coil-bg: #0c0c0e;
-  --coil-border: #1f1f23;
+  --shard-bg: #09090b;
+  --shard-ship: #fafafa;
+  --shard-ship-glow: #4cc9f0;
+  --shard-fragment: #8b6cff;
 }
 
 .game-board-wrapper {
   position: relative;
-  background: var(--coil-bg);
-  border: 1px solid var(--coil-border);
+  background: var(--shard-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -16,7 +16,7 @@
 
 #game-canvas {
   display: block;
-  image-rendering: pixelated;
+  outline: none;
 }
 
 .game-overlay {
@@ -41,10 +41,10 @@
 }
 
 .game-overlay h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 8px;
-  color: var(--coil-violet);
-  text-shadow: 0 0 20px rgba(139, 108, 255, 0.4);
+  color: var(--shard-ship-glow);
+  text-shadow: 0 0 20px rgba(76, 201, 240, 0.4);
 }
 
 .game-overlay p {
@@ -53,12 +53,9 @@
 }
 
 
-@media (max-width: 768px) {
-  .game-hud {
-    padding: 8px 12px;
-    gap: var(--spacing-2);
-  }
-  .hud-value {
-    font-size: 1rem;
+@media (max-width: 800px) {
+  #game-canvas {
+    width: 100%;
+    height: auto;
   }
 }

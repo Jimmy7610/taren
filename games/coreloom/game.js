@@ -9,7 +9,8 @@ const CONFIG = {
     startingTiles: 2,          // INSTÄLLNING - Hur många brickor som finns från start.
     newTileChanceForFour: 0.1,  // INSTÄLLNING - Chansen (0.0 - 1.0) att en ny bricka blir 4 istället för 2.
     winValue: 2048,            // INSTÄLLNING - Värdet som räknas som stor milstolpe.
-    animationDuration: 130,    // INSTÄLLNING - Hur snabbt (ms) brickanimationerna spelas.
+    animationDuration: 140,    // INSTÄLLNING - Hur snabbt (ms) brickanimationerna spelas.
+    mergePulseDuration: 180,   // INSTÄLLNING - Hur länge (ms) merge-effekten i Coreloom syns.
     bestScoreKey: "taren_coreloom_best_score", // INSTÄLLNING - localStorage-nyckel för bästa poäng.
 };
 
@@ -136,10 +137,11 @@ class Coreloom {
     }
 
     move(direction) {
-        const prevState = JSON.stringify(this.grid);
+        if (!this.gameActive) return;
         this.saveHistory();
         
         let moved = false;
+        let mergedPositions = [];
         
         const rotate = (times) => {
             for (let t = 0; t < times; t++) {
@@ -161,34 +163,59 @@ class Coreloom {
         // Actual logic (move left)
         for (let r = 0; r < CONFIG.gridSize; r++) {
             let row = this.grid[r].filter(v => v !== 0);
-            for (let i = 0; i < row.length - 1; i++) {
-                if (row[i] === row[i + 1]) {
-                    row[i] *= 2;
-                    this.score += row[i];
-                    if (row[i] > this.peak) this.peak = row[i];
-                    row.splice(i + 1, 1);
+            let newRow = [];
+            
+            for (let i = 0; i < row.length; i++) {
+                if (i < row.length - 1 && row[i] === row[i + 1]) {
+                    const newVal = row[i] * 2;
+                    newRow.push(newVal);
+                    this.score += newVal;
+                    if (newVal > this.peak) this.peak = newVal;
+                    mergedPositions.push({ r, c: newRow.length - 1 });
+                    i++;
                     moved = true;
+                } else {
+                    newRow.push(row[i]);
                 }
             }
-            const newRow = row.concat(Array(CONFIG.gridSize - row.length).fill(0));
+            
+            while (newRow.length < CONFIG.gridSize) newRow.push(0);
             if (JSON.stringify(this.grid[r]) !== JSON.stringify(newRow)) moved = true;
             this.grid[r] = newRow;
         }
 
         // Restore alignment
-        if (direction === 'up') rotate(1);
-        if (direction === 'right') rotate(2);
-        if (direction === 'down') rotate(3);
+        const restoreRotate = (times, mergeArr) => {
+            for (let t = 0; t < times; t++) {
+                const newGrid = Array(CONFIG.gridSize).fill().map(() => Array(CONFIG.gridSize).fill(0));
+                mergeArr.forEach(pos => {
+                    const newR = pos.c;
+                    const newC = CONFIG.gridSize - 1 - pos.r;
+                    pos.r = newR;
+                    pos.c = newC;
+                });
+                for (let r = 0; r < CONFIG.gridSize; r++) {
+                    for (let c = 0; c < CONFIG.gridSize; c++) {
+                        newGrid[c][CONFIG.gridSize - 1 - r] = this.grid[r][c];
+                    }
+                }
+                this.grid = newGrid;
+            }
+        };
+
+        if (direction === 'up') restoreRotate(1, mergedPositions);
+        if (direction === 'right') restoreRotate(2, mergedPositions);
+        if (direction === 'down') restoreRotate(3, mergedPositions);
 
         if (moved) {
             this.moves++;
             this.addRandomTile();
-            this.updateUI();
+            this.updateUI(mergedPositions);
             if (this.isGameOver()) {
                 this.gameOver();
             }
         } else {
-            this.history.pop(); // Remove the saved state if nothing changed
+            this.history.pop();
         }
     }
 
@@ -213,13 +240,12 @@ class Coreloom {
         document.getElementById('game-over').classList.remove('hidden');
     }
 
-    updateUI() {
+    updateUI(mergedPositions = []) {
         this.scoreEl.textContent = this.score;
         this.bestScoreEl.textContent = this.bestScore;
         this.movesEl.textContent = this.moves;
         this.peakEl.textContent = this.peak;
         
-        // Render tiles
         // Remove old tiles
         const tiles = this.gridContainer.querySelectorAll('.tile');
         tiles.forEach(t => t.remove());
@@ -229,15 +255,13 @@ class Coreloom {
                 if (this.grid[r][c] !== 0) {
                     const tile = document.createElement('div');
                     const val = this.grid[r][c];
-                    tile.className = `tile tile-${val}`;
+                    const isMerged = mergedPositions.some(p => p.r === r && p.c === c);
+                    
+                    tile.className = `tile tile-${val} ${isMerged ? 'tile-merge' : ''}`;
                     tile.textContent = val;
                     
-                    // Positioning
-                    const top = r * (80 + 12) + 12; // Values from CSS variables or calculated
-                    const left = c * (80 + 12) + 12;
-                    // Handle mobile scaling if needed, but here I'll use CSS to find offsets
-                    tile.style.top = `calc(${r} * (var(--tile-size) + var(--tile-gap)) + var(--tile-gap))`;
-                    tile.style.left = `calc(${c} * (var(--tile-size) + var(--tile-gap)) + var(--tile-gap))`;
+                    tile.style.top = `calc(${r} * (var(--tile-size) + var(--tile-gap)))`;
+                    tile.style.left = `calc(${c} * (var(--tile-size) + var(--tile-gap)))`;
                     
                     this.gridContainer.appendChild(tile);
                 }

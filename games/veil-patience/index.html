@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veil Patience - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/assets/js/build.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Veil Patience</h1>
+                    <p>Arrange the quiet deck beneath the veil.</p>
+                </div>
+
+                <div class="game-status-box" id="game-status">Playing</div>
+
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Time</span>
+                        <span id="timer" class="game-stat-value">00:00</span>
+                    </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Moves</span>
+                        <span id="moves" class="game-stat-value">0</span>
+                    </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Stock</span>
+                        <span id="stock-count" class="game-stat-value">24</span>
+                    </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Best</span>
+                        <span id="best-time" class="game-stat-value">--:--</span>
+                    </div>
+                </div>
+
+                <div class="game-control-group">
+                    <div class="game-actions">
+                        <button class="btn" onclick="game.initGame()">New Deal</button>
+                        <button class="btn" onclick="game.undo()">Undo</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
+                    <div id="game-container" class="solitaire-board">
+                        <!-- Game columns and piles will be rendered here via JS -->
+                    </div>
+
+                    <div id="game-over" class="game-overlay hidden">
+                        <h2>The Veil Lifts</h2>
+                        <p>The deck is arranged in silence.</p>
+                        <p id="final-stats">Time: 00:00 | Moves: 0</p>
+                        <button class="btn" onclick="game.initGame()">New Deal</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
+                <h2 class="game-help-title">How to play</h2>
+                <ul class="game-help-list">
+                    <li>Build Foundations from Ace to King by suit.</li>
+                    <li>Stacks must alternate colors and be in descending order.</li>
+                    <li>Empty columns can only hold a King.</li>
+                    <li>Click the Stock to draw a card.</li>
+                    <li>Click a card to select, click a pile to move.</li>
+                    <li><strong>R</strong> to Reset. <strong>U</strong> to Undo.</li>
+                </ul>
+            </aside>
+        </div>
+    </main>
+
+    <script src="./game.js"></script>
+</body>
+</html>

@@ -1,12 +1,15 @@
 # Taren
 
-Taren is a collection of 16 small, quiet, and atmospheric games.
+Taren is a collection of 22 small, quiet, and atmospheric games.
 
-### Playable Games (16)
+### Playable Games (22)
 - **Ashveil**: Logic / Minesweeper-style.
 - **Nightcoil**: Arcade / Snake-style classic.
 - **Coreloom**: Puzzle / 2048-style merge classic.
 - **Pulse Duel**: Duel / Pong-style classic.
+- **Veil Patience**: Cards / Patience-style classic.
+- **Lumen Sequence**: Memory / sequence classic.
+- **Crosshush**: Timing / crossing classic.
 - **Voidbreaker**: Arcade / breaker game.
 - **Fourfold**: Strategy / connect-four style.
 - **Tetrafall**: Puzzle / falling block.
@@ -19,16 +22,11 @@ Taren is a collection of 16 small, quiet, and atmospheric games.
 - **Night Signal**: Timing / reaction.
 - **Echo Veil**: Memory / reveal-and-match.
 - **Hollow Path**: Exploration / path-finding.
+- **Echo Hollow**: Maze / signal gathering.
+- **Shardrift**: Arcade / fragment breaking.
+- **Night Array**: Defense / pattern hold.
 
-### Upcoming Classics (6)
-- **Echo Hollow** — Maze / signal gathering.
-- **Shardrift** — Arcade / fragment breaking.
-- **Night Array** — Defense / pattern hold.
-- **Veil Patience** — Cards / quiet arrangement.
-- **Lumen Sequence** — Memory / pattern recall.
-- **Crosshush** — Timing / lane crossing.
-
-## Site Structure
+### Site Structure
 - `/` — Homepage / Landing
 - `/games/` — Game gallery and selection
 - `/about/` — Project information and philosophy

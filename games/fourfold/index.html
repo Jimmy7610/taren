@@ -17,63 +17,61 @@
         </div>
     </nav>
 
-    <main class="container py-8">
-        <div class="game-play-layout fade-in-up delay-1">
-            <div class="game-main-column">
-                <header class="text-center mb-8">
-                    <h1 class="mb-2">Fourfold</h1>
-                    <p class="subtitle">Drop pieces. Connect four.</p>
-                </header>
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Fourfold</h1>
+                    <p>Drop pieces. Connect four.</p>
+                </div>
 
-                <div class="game-module">
-                    <div class="hud">
-                        <div class="hud-section turn-section">
-                            <span class="hud-label">Turn</span>
-                            <span id="turnDisplay" class="hud-value">You</span>
-                        </div>
-                        
-                        <div class="hud-section difficulty-section">
-                            <span class="hud-label">Difficulty</span>
-                            <div class="difficulty-toggle">
-                                <button class="diff-btn" data-value="easy">Easy</button>
-                                <button class="diff-btn active" data-value="normal">Normal</button>
-                                <button class="diff-btn" data-value="hard">Hard</button>
-                            </div>
-                        </div>
+                <div class="game-status-box" id="turnDisplay">Your Turn</div>
 
-                        <div class="hud-section score-section">
-                            <div class="score-item">
-                                <span class="hud-label">You</span>
-                                <span id="playerScore" class="hud-value">0</span>
-                            </div>
-                            <div class="score-divider"></div>
-                            <div class="score-item">
-                                <span class="hud-label">Computer</span>
-                                <span id="computerScore" class="hud-value">0</span>
-                            </div>
-                            <div class="score-divider"></div>
-                            <div class="score-item">
-                                <span class="hud-label">Draws</span>
-                                <span id="drawScore" class="hud-value">0</span>
-                            </div>
-                        </div>
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">You</span>
+                        <span id="playerScore" class="game-stat-value">0</span>
                     </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">CPU</span>
+                        <span id="computerScore" class="game-stat-value">0</span>
+                    </div>
+                    <div class="game-stat-card" style="grid-column: span 2;">
+                        <span class="game-stat-label">Draws</span>
+                        <span id="drawScore" class="game-stat-value">0</span>
+                    </div>
+                </div>
 
+                <div class="game-control-group">
+                    <span class="game-stat-label">Difficulty</span>
+                    <div class="game-actions">
+                        <button class="diff-btn" data-value="easy">Easy</button>
+                        <button class="diff-btn active" data-value="normal">Normal</button>
+                        <button class="diff-btn" data-value="hard">Hard</button>
+                    </div>
+                </div>
+
+                <div class="game-control-group">
+                    <button id="newRoundBtn" class="btn">New Round</button>
+                    <button id="resetScoreBtn" class="btn btn-secondary">Reset Score</button>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
                     <div class="board-area">
-                        <div id="statusOverlay" class="status-overlay"></div>
+                        <div id="statusOverlay" class="game-overlay hidden"></div>
                         <div id="board" class="board">
                             <!-- Board cells generated via JS -->
                         </div>
                     </div>
-
-                    <div class="action-bar">
-                        <button id="newRoundBtn" class="btn btn-primary">New Round</button>
-                        <button id="resetScoreBtn" class="btn btn-ghost">Reset Score</button>
-                    </div>
                 </div>
-            </div>
+            </section>
 
-            <aside class="game-help-panel">
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
                     <li>Drop a piece into any open column.</li>

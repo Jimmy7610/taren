@@ -16,6 +16,7 @@ const CONFIG = {
     coilColor: "#4cc9f0", // INSTÄLLNING - Färg på spolens huvud.
     trailColor: "#8b6cff", // INSTÄLLNING - Färg på spolens svans.
     fragmentColor: "#fbbf24", // INSTÄLLNING - Färg på fragmentet.
+    collectParticleCount: 12, // INSTÄLLNING - Antal partiklar när fragment samlas.
 };
 
 class Nightcoil {
@@ -29,10 +30,11 @@ class Nightcoil {
         this.paused = false;
         this.running = false;
         
-        this.coil = []; // Array of {x, y}
+        this.coil = []; 
         this.direction = { x: 1, y: 0 };
         this.nextDirection = { x: 1, y: 0 };
         this.fragment = { x: 0, y: 0 };
+        this.particles = [];
         
         this.lastUpdateTime = 0;
         
@@ -120,8 +122,11 @@ class Nightcoil {
         document.getElementById('pause-btn').textContent = this.paused ? "Resume" : "Pause";
     }
 
-    update() {
-        if (!this.running || this.paused) return;
+    update(dt) {
+        if (!this.running || this.paused) {
+            this.updateParticles(dt);
+            return;
+        }
 
         this.direction = this.nextDirection;
         const head = { x: this.coil[0].x + this.direction.x, y: this.coil[0].y + this.direction.y };
@@ -143,6 +148,7 @@ class Nightcoil {
         // Fragment collect
         if (head.x === this.fragment.x && head.y === this.fragment.y) {
             this.score += CONFIG.fragmentScore;
+            this.createParticles(this.fragment.x, this.fragment.y);
             this.spawnFragment();
             
             // Speed increase
@@ -154,6 +160,35 @@ class Nightcoil {
             this.updateHUD();
         } else {
             this.coil.pop();
+        }
+
+        this.updateParticles(dt);
+    }
+
+    createParticles(x, y) {
+        const centerX = x * CONFIG.cellSize + CONFIG.cellSize / 2;
+        const centerY = y * CONFIG.cellSize + CONFIG.cellSize / 2;
+        for (let i = 0; i < CONFIG.collectParticleCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 1 + Math.random() * 3;
+            this.particles.push({
+                x: centerX,
+                y: centerY,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1.0,
+                color: CONFIG.fragmentColor
+            });
+        }
+    }
+
+    updateParticles(dt) {
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= 0.02;
+            if (p.life <= 0) this.particles.splice(i, 1);
         }
     }
 
@@ -194,8 +229,7 @@ class Nightcoil {
         }
 
         // Draw fragment
-        const fSize = CONFIG.cellSize * 0.6;
-        const fOffset = (CONFIG.cellSize - fSize) / 2;
+        const fSize = CONFIG.cellSize * 0.5;
         this.ctx.fillStyle = CONFIG.fragmentColor;
         this.ctx.shadowBlur = 15;
         this.ctx.shadowColor = CONFIG.fragmentColor;
@@ -211,12 +245,12 @@ class Nightcoil {
         // Draw coil
         this.coil.forEach((segment, i) => {
             const isHead = i === 0;
-            const size = isHead ? CONFIG.cellSize - 4 : CONFIG.cellSize - 8;
+            const size = isHead ? CONFIG.cellSize - 2 : CONFIG.cellSize - 6;
             const offset = (CONFIG.cellSize - size) / 2;
             
             this.ctx.fillStyle = isHead ? CONFIG.coilColor : CONFIG.trailColor;
             if (isHead) {
-                this.ctx.shadowBlur = 10;
+                this.ctx.shadowBlur = 12;
                 this.ctx.shadowColor = CONFIG.coilColor;
             }
             
@@ -227,6 +261,16 @@ class Nightcoil {
             );
             this.ctx.shadowBlur = 0;
         });
+
+        // Draw particles
+        this.particles.forEach(p => {
+            this.ctx.globalAlpha = p.life;
+            this.ctx.fillStyle = p.color;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+        this.ctx.globalAlpha = 1.0;
     }
 
     loop(timestamp) {

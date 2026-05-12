@@ -1,0 +1,87 @@
+:root {
+  --lumen-bg: #09090b;
+  --lumen-pad: #18181b;
+  --lumen-violet: #8b6cff;
+  --lumen-cyan: #4cc9f0;
+  --lumen-gold: #fbbf24;
+  --lumen-white: #fafafa;
+  --lumen-teal: #2dd4bf;
+}
+
+.game-board-wrapper {
+  position: relative;
+  background: var(--lumen-bg);
+  border: 1px solid var(--border);
+  border-radius: 50%; /* Circular container for circular pads */
+  width: 480px;
+  height: 480px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lumen-pads {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.lumen-pad {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: var(--lumen-pad);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.1);
+  font-weight: 700;
+}
+
+.lumen-pad:hover {
+  border-color: rgba(255,255,255,0.2);
+}
+
+.lumen-pad.active {
+  transform: scale(1.1);
+}
+
+/* Specific Pad Colors (Glows) */
+.pad-0.active { border-color: var(--lumen-violet); box-shadow: 0 0 30px var(--lumen-violet); background: rgba(139, 108, 255, 0.2); }
+.pad-1.active { border-color: var(--lumen-cyan); box-shadow: 0 0 30px var(--lumen-cyan); background: rgba(76, 201, 240, 0.2); }
+.pad-2.active { border-color: var(--lumen-gold); box-shadow: 0 0 30px var(--lumen-gold); background: rgba(251, 191, 36, 0.2); }
+.pad-3.active { border-color: var(--lumen-teal); box-shadow: 0 0 30px var(--lumen-teal); background: rgba(45, 212, 191, 0.2); }
+.pad-4.active { border-color: var(--lumen-white); box-shadow: 0 0 30px var(--lumen-white); background: rgba(250, 250, 250, 0.2); }
+
+.game-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(12, 12, 14, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.game-overlay.hidden {
+  display: none;
+}
+
+.btn.active {
+  border-color: var(--accent);
+  color: var(--text);
+  box-shadow: 0 0 10px var(--accent-glow);
+}

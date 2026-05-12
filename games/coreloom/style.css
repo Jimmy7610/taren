@@ -2,57 +2,14 @@
   --core-bg: #0c0c0e;
   --core-empty: #1a1a1d;
   --core-border: #27272a;
-  --tile-size: 80px;
-  --tile-gap: 12px;
+  --tile-size: 100px;
+  --tile-gap: 14px;
+  --tile-radius: 8px;
 }
 
-.game-main-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.game-header {
-  text-align: center;
-  margin-bottom: var(--spacing-4);
-}
-
-.game-subtitle {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-.game-hud {
-  display: flex;
-  gap: var(--spacing-4);
-  background: rgba(24, 24, 27, 0.4);
-  padding: 12px 24px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--core-border);
-  margin-bottom: var(--spacing-4);
-  width: 100%;
-  justify-content: center;
-}
-
-.hud-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 60px;
-}
-
-.hud-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-}
-
-.hud-value {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text-main);
-  font-variant-numeric: tabular-nums;
+/* Reset for Coreloom board components */
+.grid-container, .grid-cell, .tile {
+  box-sizing: border-box;
 }
 
 .game-board-wrapper {
@@ -60,8 +17,8 @@
   background: var(--core-border);
   padding: var(--tile-gap);
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  margin-bottom: var(--spacing-4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  user-select: none;
 }
 
 .grid-container {
@@ -76,22 +33,32 @@
   width: var(--tile-size);
   height: var(--tile-size);
   background: var(--core-empty);
-  border-radius: 6px;
+  border-radius: var(--tile-radius);
 }
 
 .tile {
   position: absolute;
   width: var(--tile-size);
   height: var(--tile-size);
-  border-radius: 6px;
+  border-radius: var(--tile-radius);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.5rem;
-  transition: all 0.13s ease-in-out;
+  font-size: 1.8rem;
+  transition: all 0.14s ease-in-out;
   z-index: 2;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.tile-merge {
+  animation: merge-pulse 0.18s ease-out;
+}
+
+@keyframes merge-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
 }
 
 /* Core Visuals */
@@ -133,10 +100,6 @@
   color: var(--coil-violet);
 }
 
-.game-actions {
-  display: flex;
-  gap: var(--spacing-3);
-}
 
 @media (max-width: 480px) {
   :root {

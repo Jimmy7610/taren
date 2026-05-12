@@ -19,57 +19,66 @@
         </div>
     </nav>
 
-    <main class="container fade-in-up delay-1">
-        <div class="game-play-layout">
-            <div class="game-main-column">
-                <header class="mb-4 center-content" style="min-height: auto;">
-                    <h1 class="mb-2">Hollow Path</h1>
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Hollow Path</h1>
                     <p>Find the quiet way through the dark.</p>
-                </header>
+                </div>
 
-                <div class="path-layout">
-                    <div class="hud">
-                        <div class="stat-box">
-                            <span class="stat-label">Level</span>
-                            <span class="stat-value" id="levelDisplay">1</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-label">Moves</span>
-                            <span class="stat-value" id="moveDisplay">20</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-label">Best</span>
-                            <span class="stat-value" id="bestLevelDisplay">0</span>
-                        </div>
+                <div class="game-status-box" id="game-status">Path Open</div>
+
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Level</span>
+                        <span id="levelDisplay" class="game-stat-value">1</span>
                     </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Moves</span>
+                        <span id="moveDisplay" class="game-stat-value">20</span>
+                    </div>
+                    <div class="game-stat-card" style="grid-column: span 2;">
+                        <span class="game-stat-label">Best Level</span>
+                        <span id="bestLevelDisplay" class="game-stat-value">0</span>
+                    </div>
+                </div>
 
+                <div class="game-control-group">
+                    <button id="startBtn" class="btn">Enter Path</button>
+                    <button id="nextBtn" class="btn hidden">Deeper</button>
+                    <button id="retryBtn" class="btn btn-secondary hidden">Return</button>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
                     <div id="game-container">
                         <div id="grid-container"></div>
                         
+                        <!-- Overlays -->
                         <div id="startScreen" class="overlay">
                             <h2 class="overlay-title">Hollow Path</h2>
                             <p class="overlay-desc">Enter the path.</p>
-                            <button id="startBtn" class="btn">Enter Path</button>
                         </div>
 
                         <div id="winScreen" class="overlay hidden">
                             <h2 class="overlay-title">Path Cleared</h2>
                             <p id="winMessage">The light is reached.</p>
-                            <button id="nextBtn" class="btn">Deeper</button>
                         </div>
 
                         <div id="gameOverScreen" class="overlay hidden">
                             <h2 class="overlay-title">Path Collapsed</h2>
                             <p id="failMessage">The darkness closed in.</p>
-                            <button id="retryBtn" class="btn">Return</button>
                         </div>
                     </div>
-                    
-                    <p class="instruction-text">Every step matters.</p>
                 </div>
-            </div>
+            </section>
 
-            <aside class="game-help-panel">
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
                     <li>Move from <strong>node to node</strong> through the dark path.</li>

@@ -19,32 +19,42 @@
         </div>
     </nav>
 
-    <main class="container fade-in-up delay-1">
-        <div class="game-play-layout">
-            <div class="game-main-column">
-                <header class="mb-4 center-content" style="min-height: auto;">
-                    <h1 class="mb-2">Static Bloom</h1>
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Static Bloom</h1>
                     <p>Bloom the grid before the signal fades.</p>
-                </header>
+                </div>
 
-                <div class="bloom-layout">
-                    <!-- HUD -->
-                    <div class="hud">
-                        <div class="stat-box">
-                            <span class="stat-label">Level</span>
-                            <span class="stat-value" id="levelDisplay">1</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-label">Pulses</span>
-                            <span class="stat-value" id="pulseDisplay">8</span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-label">Blooms</span>
-                            <span class="stat-value" id="bloomCountDisplay">0 / 12</span>
-                        </div>
+                <div class="game-status-box" id="statusText">Ready</div>
+
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Level</span>
+                        <span id="levelDisplay" class="game-stat-value">1</span>
                     </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Pulses</span>
+                        <span id="pulseDisplay" class="game-stat-value">8</span>
+                    </div>
+                    <div class="game-stat-card" style="grid-column: span 2;">
+                        <span class="game-stat-label">Blooms</span>
+                        <span id="bloomCountDisplay" class="game-stat-value">0 / 12</span>
+                    </div>
+                </div>
 
-                    <!-- Game Container -->
+                <div class="game-control-group">
+                    <button id="startBtn" class="btn">Start Run</button>
+                    <button id="nextBtn" class="btn hidden">Next Signal</button>
+                    <button id="retryBtn" class="btn btn-secondary hidden">Try Again</button>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
                     <div id="game-container">
                         <div id="grid-container"></div>
                         
@@ -52,30 +62,23 @@
                         <div id="startScreen" class="overlay">
                             <h2 class="overlay-title">Static Bloom</h2>
                             <p class="overlay-desc">Click nodes to add energy. Reach the bloom target.</p>
-                            <button id="startBtn" class="btn">Start Run</button>
                         </div>
 
                         <div id="winScreen" class="overlay hidden">
                             <h2 class="overlay-title">Bloom Stable</h2>
                             <p id="winMessage">Level 1 Complete</p>
-                            <button id="nextBtn" class="btn">Next Signal</button>
                         </div>
 
                         <div id="gameOverScreen" class="overlay hidden">
                             <h2 class="overlay-title">Signal Lost</h2>
                             <p id="failMessage">The grid remained dark.</p>
-                            <button id="retryBtn" class="btn">Try Again</button>
                         </div>
                     </div>
-                    
-                    <!-- Status/Instruction -->
-                    <div class="status-panel">
-                        <div id="statusText" class="status-text">Ready</div>
-                    </div>
                 </div>
-            </div>
+            </section>
 
-            <aside class="game-help-panel">
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
                     <li>Click <strong>dormant nodes</strong> to add energy.</li>

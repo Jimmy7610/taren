@@ -8,47 +8,16 @@
     padding-top: var(--void-page-top-offset);
 }
 
-.void-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--void-section-gap);
-    width: 100%;
-}
-
-.hud {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 12px 24px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-}
-
-.stat-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
-.stat-value { font-size: 1.5rem; font-weight: 700; font-family: var(--font-mono); }
-
 #game-container {
     position: relative;
-    width: 100%;
-    max-height: var(--void-canvas-max-height);
-    aspect-ratio: 16 / 9;
+    width: 640px;
+    height: 360px;
     background-color: #050507;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: inset 0 0 40px rgba(0,0,0,1);
 }
-
-#gameCanvas { width: 100%; height: 100%; display: block; }
-.instruction-text { font-size: 0.875rem; color: var(--text-muted); text-align: center; }
 
 .overlay {
     position: absolute;

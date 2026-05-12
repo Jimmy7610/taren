@@ -18,39 +18,63 @@
         </div>
     </nav>
 
-    <main class="container fade-in-up delay-1">
-        <div class="game-play-layout">
-            <div class="game-main-column">
-                <div id="game-container">
-                    <canvas id="gameCanvas"></canvas>
-                    
-                    <!-- HUD -->
-                    <div id="hud" class="hidden">
-                        <div id="scoreDisplay">Score: 0</div>
-                        <div id="waveDisplay">Wave 1</div>
-                        <div id="nearMissIndicator" class="hidden">Near Miss +15</div>
-                    </div>
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Pulseframe</h1>
+                    <p>Move through the signal.</p>
+                </div>
 
-                    <!-- Start Screen -->
-                    <div id="startScreen" class="overlay">
-                        <h1>Pulseframe</h1>
-                        <p>Move through the signal.</p>
-                        <button id="startBtn" class="btn">Start</button>
-                    </div>
+                <div class="game-status-box" id="game-status">Operational</div>
 
-                    <!-- Game Over Screen -->
-                    <div id="gameOverScreen" class="overlay hidden">
-                        <h1>System Failure</h1>
-                        <div class="score-board">
-                            <p>Score: <span id="finalScore">0</span></p>
-                            <p>Best: <span id="bestScore">0</span></p>
-                        </div>
-                        <button id="retryBtn" class="btn">Restart</button>
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Score</span>
+                        <span id="scoreDisplay" class="game-stat-value">0</span>
+                    </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Wave</span>
+                        <span id="waveDisplay" class="game-stat-value">1</span>
+                    </div>
+                    <div class="game-stat-card" style="grid-column: span 2;">
+                        <span id="nearMissIndicator" class="game-stat-label hidden" style="color: var(--accent);">Near Miss +15</span>
                     </div>
                 </div>
-            </div>
 
-            <aside class="game-help-panel">
+                <div class="game-control-group">
+                    <button id="startBtn" class="btn">Start</button>
+                    <button id="retryBtn" class="btn btn-secondary hidden">Restart</button>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
+                    <div id="game-container">
+                        <canvas id="gameCanvas"></canvas>
+                        
+                        <!-- Start Screen -->
+                        <div id="startScreen" class="overlay">
+                            <h1>Pulseframe</h1>
+                            <p>Move through the signal.</p>
+                        </div>
+
+                        <!-- Game Over Screen -->
+                        <div id="gameOverScreen" class="overlay hidden">
+                            <h1>System Failure</h1>
+                            <div class="score-board">
+                                <p>Score: <span id="finalScore">0</span></p>
+                                <p>Best: <span id="bestScore">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
                 <ul class="game-help-list">
                     <li>Move the <strong>orb</strong> with your mouse or touch.</li>
