@@ -7,6 +7,7 @@
   --vp-red: #f43f5e;
   --vp-white: #fafafa;
   --deck-back-glow: rgba(139, 108, 255, 0.15); /* INSTÄLLNING - Ändra hur starkt kortlekens baksida glöder. */
+  --card-back-pattern-opacity: 0.55; /* INSTÄLLNING - Ändra hur tydligt mönstret på nedvända kort syns. */
 }
 
 .solitaire-board {
@@ -69,12 +70,27 @@
   box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
-.card.hidden {
-  background: linear-gradient(135deg, #1a1a1d, #0c0c0e);
-  background-image: radial-gradient(circle at 50% 50%, rgba(139, 108, 255, 0.1) 0%, transparent 80%),
-                    repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 4px);
-  border-color: rgba(139, 108, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 0 15px var(--deck-back-glow);
+.card.face-down {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(139, 108, 255, 0.20), transparent 45%),
+    linear-gradient(135deg, rgba(22, 22, 32, 0.96), rgba(8, 8, 14, 0.98));
+  border: 1px solid rgba(139, 108, 255, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 22px rgba(139, 108, 255, 0.10),
+    0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.card.face-down::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(45deg, rgba(139, 108, 255, 0.10) 25%, transparent 25%, transparent 50%, rgba(139, 108, 255, 0.10) 50%, rgba(139, 108, 255, 0.10) 75%, transparent 75%);
+  background-size: 12px 12px;
+  opacity: var(--card-back-pattern-opacity);
 }
 
 .card-slot.empty-stock {

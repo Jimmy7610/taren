@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 74 (Veil Patience: Improved deck visuals, Ace auto-move, and drag-and-drop)
+**Current Build:** Build 75 (Fix: Veil Patience face-down card backs in tableau)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

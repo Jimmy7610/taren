@@ -483,7 +483,7 @@ class VeilPatience {
         el.dataset.pileIndex = pileIndex;
         el.dataset.cardIndex = cardIndex;
 
-        if (!card.faceUp) el.classList.add('hidden');
+        if (!card.faceUp) el.classList.add('face-down');
         if (this.selected && this.selected.type === type && this.selected.pileIndex === pileIndex && this.selected.cardIndex === cardIndex) {
             el.classList.add('selected');
         }
