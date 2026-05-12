@@ -1,3 +1,4 @@
+:root {
   --lumen-teal: #2dd4bf;
   --lumen-pad-active-glow: 0.35; /* INSTÄLLNING - Ändra basstyrkan på knapparnas aktiva glow. */
 }
@@ -11,12 +12,13 @@
               #050507;
   border: 1px solid rgba(255,255,255,0.05);
   border-radius: 50%;
-  width: min(100%, var(--lumen-board-size));
+  width: min(100%, var(--lumen-board-size, 460px));
   aspect-ratio: 1 / 1;
   margin-inline: auto; /* Centering */
   box-shadow: inset 0 0 40px rgba(0,0,0,0.8),
               0 24px 60px rgba(0,0,0,0.5);
   display: block;
+  position: relative;
   overflow: visible;
 }
 
@@ -31,8 +33,8 @@
 
 .lumen-pad {
   position: absolute;
-  width: var(--lumen-node-size);
-  height: var(--lumen-node-size);
+  width: var(--lumen-node-size, 84px);
+  height: var(--lumen-node-size, 84px);
   background: linear-gradient(135deg, #18181b, #0c0c0e);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 50%;
