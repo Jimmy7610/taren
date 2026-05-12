@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 80 (Fix: Lumen Sequence CSS syntax error and visibility)
+**Current Build:** Build 81 (Clarified Fourfold selected difficulty visual state)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.
