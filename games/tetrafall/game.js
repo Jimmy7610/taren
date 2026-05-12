@@ -19,6 +19,8 @@ const CONFIG = {
     pieceGlowStrength: 0.9, // INSTÄLLNING - Ändra hur starkt blocken lyser.
     ghostOpacity: 0.24, // INSTÄLLNING - Ändra hur tydlig ghost piece/landningsförhandsvisningen är.
     boardGlowStrength: 0.55, // INSTÄLLNING - Ändra hur starkt spelbrädet glöder.
+    previewCellSize: 14, // INSTÄLLNING - Ändra storleken på blocken i Hold/Next-förhandsvisningen.
+    previewGlowStrength: 0.8, // INSTÄLLNING - Ändra hur starkt Hold/Next-blocken lyser.
     bestScoreKey: 'taren_tetrafall_best_score', // INSTÄLLNING - Ändra localStorage-nyckeln för bästa poäng.
 };
 
@@ -365,20 +367,28 @@ function renderPreview(containerId, type) {
     if (type === '') return;
     
     const matrix = SHAPES[type];
+    const size = matrix.length;
+    
+    // Center the piece in the 4x4 grid
+    const offsetX = Math.floor((4 - size) / 2);
+    const offsetY = Math.floor((4 - size) / 2);
+
     for (let r = 0; r < 4; r++) {
         for (let c = 0; c < 4; c++) {
             const cell = document.createElement('div');
-            cell.style.width = '14px';
-            cell.style.height = '14px';
+            cell.style.width = `${CONFIG.previewCellSize}px`;
+            cell.style.height = `${CONFIG.previewCellSize}px`;
+            cell.style.position = 'relative';
             cell.style.background = 'transparent';
-            cell.style.borderRadius = '2px';
             
-            if (matrix[r] && matrix[r][c]) {
+            const pieceR = r - offsetY;
+            const pieceC = c - offsetX;
+
+            if (pieceR >= 0 && pieceR < size && pieceC >= 0 && pieceC < size && matrix[pieceR][pieceC]) {
                 const block = document.createElement('div');
-                block.style.width = '100%';
-                block.style.height = '100%';
-                block.style.borderRadius = '2px';
-                block.classList.add('block', COLORS[type]);
+                block.classList.add('block');
+                block.classList.add(COLORS[type]);
+                block.style.setProperty('--piece-glow', CONFIG.previewGlowStrength);
                 cell.appendChild(block);
             }
             container.appendChild(cell);

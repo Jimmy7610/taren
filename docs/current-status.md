@@ -1,10 +1,10 @@
 # Taren Current Status
 
-**Current Build:** Build 33
+**Current Build:** Build 34
 
 ## Playable Games
-1.  **Tetrafall** — Falling-block puzzle. A classic atmospheric puzzle game in Taren style.
-2.  **Fourfold** — Strategy / board game. Taren's premium version of Connect Four with three AI difficulties.
+1.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug where the full shape was not rendered.
+2.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass with segmented controls, unified game module, and refined board aesthetics.
 3.  **Pulseframe** — Reflex-based survival action.
 4.  **Linebound** — Tactical dots-and-boxes strategy.
 5.  **Memory Drift** — Atmospheric pattern-recall ritual.
@@ -24,5 +24,5 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- Tetrafall has been added as the 11th playable game.
+- Tetrafall Hold preview fixed (Build 34).
 - Future quiet experiments may appear later.

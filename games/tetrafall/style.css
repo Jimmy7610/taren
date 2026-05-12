@@ -104,7 +104,7 @@
     inset: 0;
     border-radius: 2px;
     box-shadow: 0 0 8px currentColor;
-    opacity: 0.8; /* INSTÄLLNING - pieceGlowStrength */
+    opacity: var(--piece-glow, 0.8); /* INSTÄLLNING - pieceGlowStrength */
 }
 
 /* Piece Colors */
