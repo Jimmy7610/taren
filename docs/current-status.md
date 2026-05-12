@@ -1,18 +1,19 @@
 # Taren Current Status
 
-**Current Build:** Build 32
+**Current Build:** Build 33
 
 ## Playable Games
-1.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass with segmented controls, unified game module, and refined board aesthetics.
-2.  **Pulseframe** — Reflex-based survival action.
-3.  **Linebound** — Tactical dots-and-boxes strategy.
-4.  **Memory Drift** — Atmospheric pattern-recall ritual.
-5.  **Static Bloom** — Puzzle-based chain reaction strategy.
-6.  **Void Runner** — Arcade survival in the void.
-7.  **Signal Lost** — Frequency tuning mystery.
-8.  **Night Signal** — Timing-based signal recognition.
-9.  **Echo Veil** — Spatial memory exploration.
-10. **Hollow Path** — Minimal maze exploration.
+1.  **Tetrafall** — Falling-block puzzle. A classic atmospheric puzzle game in Taren style.
+2.  **Fourfold** — Strategy / board game. Taren's premium version of Connect Four with three AI difficulties.
+3.  **Pulseframe** — Reflex-based survival action.
+4.  **Linebound** — Tactical dots-and-boxes strategy.
+5.  **Memory Drift** — Atmospheric pattern-recall ritual.
+6.  **Static Bloom** — Puzzle-based chain reaction strategy.
+7.  **Void Runner** — Arcade survival in the void.
+8.  **Signal Lost** — Frequency tuning mystery.
+9.  **Night Signal** — Timing-based signal recognition.
+10. **Echo Veil** — Spatial memory exploration.
+11. **Hollow Path** — Minimal maze exploration.
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.
@@ -23,5 +24,5 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- Fourfold visual design pass complete (Build 32).
+- Tetrafall has been added as the 11th playable game.
 - Future quiet experiments may appear later.
