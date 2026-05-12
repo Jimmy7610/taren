@@ -20,50 +20,56 @@
     <main class="container py-8">
         <div class="game-play-layout fade-in-up delay-1">
             <div class="game-main-column">
-                <header class="text-center mb-6">
+                <header class="text-center mb-8">
                     <h1 class="mb-2">Fourfold</h1>
-                    <p>Drop pieces. Connect four.</p>
+                    <p class="subtitle">Drop pieces. Connect four.</p>
                 </header>
 
-                <div class="hud mb-6">
-                    <div class="hud-item">
-                        <span class="hud-label">Turn</span>
-                        <span id="turnDisplay" class="hud-value">You</span>
-                    </div>
-                    <div class="hud-item">
-                        <span class="hud-label">Difficulty</span>
-                        <select id="difficultySelect" class="hud-select">
-                            <option value="easy">Easy</option>
-                            <option value="normal" selected>Normal</option>
-                            <option value="hard">Hard</option>
-                        </select>
-                    </div>
-                    <div class="hud-group">
-                        <div class="hud-item">
-                            <span class="hud-label">You</span>
-                            <span id="playerScore" class="hud-value">0</span>
+                <div class="game-module">
+                    <div class="hud">
+                        <div class="hud-section turn-section">
+                            <span class="hud-label">Turn</span>
+                            <span id="turnDisplay" class="hud-value">You</span>
                         </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Computer</span>
-                            <span id="computerScore" class="hud-value">0</span>
+                        
+                        <div class="hud-section difficulty-section">
+                            <span class="hud-label">Difficulty</span>
+                            <div class="difficulty-toggle">
+                                <button class="diff-btn" data-value="easy">Easy</button>
+                                <button class="diff-btn active" data-value="normal">Normal</button>
+                                <button class="diff-btn" data-value="hard">Hard</button>
+                            </div>
                         </div>
-                        <div class="hud-item">
-                            <span class="hud-label">Draws</span>
-                            <span id="drawScore" class="hud-value">0</span>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="board-container">
-                    <div id="statusOverlay" class="status-overlay"></div>
-                    <div id="board" class="board">
-                        <!-- Board cells will be generated here -->
+                        <div class="hud-section score-section">
+                            <div class="score-item">
+                                <span class="hud-label">You</span>
+                                <span id="playerScore" class="hud-value">0</span>
+                            </div>
+                            <div class="score-divider"></div>
+                            <div class="score-item">
+                                <span class="hud-label">Computer</span>
+                                <span id="computerScore" class="hud-value">0</span>
+                            </div>
+                            <div class="score-divider"></div>
+                            <div class="score-item">
+                                <span class="hud-label">Draws</span>
+                                <span id="drawScore" class="hud-value">0</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="controls mt-6">
-                    <button id="newRoundBtn" class="btn">New Round</button>
-                    <button id="resetScoreBtn" class="btn btn-secondary">Reset Score</button>
+                    <div class="board-area">
+                        <div id="statusOverlay" class="status-overlay"></div>
+                        <div id="board" class="board">
+                            <!-- Board cells generated via JS -->
+                        </div>
+                    </div>
+
+                    <div class="action-bar">
+                        <button id="newRoundBtn" class="btn btn-primary">New Round</button>
+                        <button id="resetScoreBtn" class="btn btn-ghost">Reset Score</button>
+                    </div>
                 </div>
             </div>
 

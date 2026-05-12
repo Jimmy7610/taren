@@ -1,113 +1,169 @@
-/* Fourfold Styles */
+/* 
+    FOURFOLD - Visual Polish Pass (Build 32)
+    A premium, restrained, and tactical board game UI.
+*/
 
-.hud {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 24px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 16px 24px;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+:root {
+    --fourfold-board-bg: #131722; /* INSTÄLLNING - boardBg */
+    --fourfold-slot-bg: #0b0f18; /* INSTÄLLNING - slotColor */
+    --fourfold-panel-bg: rgba(24, 24, 32, 0.7);
+    --fourfold-border: rgba(255, 255, 255, 0.08);
+    --fourfold-accent-soft: rgba(139, 108, 255, 0.1);
+    --fourfold-board-radius: 20px;
+    --fourfold-gap: 32px;
+    --fourfold-piece-glow: 15px;
+    --fourfold-win-pulse: 1.25;
 }
 
-.hud-item {
+/* Page Layout Refinement */
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+.game-module {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 520px;
+    background: var(--fourfold-panel-bg);
+    border: 1px solid var(--fourfold-border);
+    border-radius: var(--fourfold-board-radius);
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
 }
 
-.hud-group {
+/* Unified HUD */
+.hud {
     display: flex;
-    gap: 24px;
-    padding-left: 24px;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--fourfold-border);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.hud-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .hud-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
-    margin-bottom: 4px;
 }
 
 .hud-value {
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text);
 }
 
-.hud-select {
-    background: #1a1a24;
-    color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    cursor: pointer;
-    outline: none;
-}
-
-.hud-select:focus {
-    border-color: var(--accent);
-}
-
-/* Board */
-.board-container {
-    position: relative;
-    padding: 20px;
-    background: #1a1a24;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.05);
+/* Segmented Difficulty Toggle */
+.difficulty-toggle {
+    display: flex;
+    background: #09090b;
+    padding: 3px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.diff-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s var(--hover-ease);
+}
+
+.diff-btn:hover {
+    color: var(--text);
+}
+
+.diff-btn.active {
+    background: #1c1c24;
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Score Section */
+.score-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 40px;
+}
+
+.score-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Board Area */
+.board-area {
+    position: relative;
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .board {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 12px;
-    background: #131722; /* INSTÄLLNING - boardBg */
-    padding: 12px;
-    border-radius: 12px;
-}
-
-.column {
-    display: contents;
+    background: var(--fourfold-board-bg);
+    padding: 16px;
+    border-radius: 14px;
+    box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .cell {
-    width: 60px;
-    height: 60px;
-    background: #0b0f18; /* INSTÄLLNING - slotColor */
+    aspect-ratio: 1 / 1;
+    background: var(--fourfold-slot-bg);
     border-radius: 50%;
     position: relative;
-    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.8);
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.3s var(--hover-ease);
 }
 
-@media (max-width: 600px) {
-    .cell {
-        width: 40px;
-        height: 40px;
-    }
-    .board {
-        gap: 8px;
-        padding: 8px;
-    }
+.cell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .column-hover .cell {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
 }
 
+/* Pieces */
 .piece {
     position: absolute;
-    inset: 4px;
+    inset: 6px;
     border-radius: 50%;
-    transform: translateY(-500px);
-    transition: transform 0.26s cubic-bezier(0.45, 0, 0.55, 1); /* INSTÄLLNING - dropAnimationDuration */
+    transform: translateY(-600px);
+    transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .piece.dropped {
@@ -115,57 +171,84 @@
 }
 
 .piece.player {
-    background: radial-gradient(circle at 30% 30%, #a890ff, #8b6cff); /* INSTÄLLNING - playerColor */
-    box-shadow: 0 0 15px rgba(139, 108, 255, 0.6);
+    background: radial-gradient(circle at 35% 35%, #b19bff, #8b6cff);
+    box-shadow: 0 0 var(--fourfold-piece-glow) rgba(139, 108, 255, 0.5);
 }
 
 .piece.computer {
-    background: radial-gradient(circle at 30% 30%, #7ce2ff, #4cc9f0); /* INSTÄLLNING - computerColor */
-    box-shadow: 0 0 15px rgba(76, 201, 240, 0.6);
+    background: radial-gradient(circle at 35% 35%, #8ae8ff, #4cc9f0);
+    box-shadow: 0 0 var(--fourfold-piece-glow) rgba(76, 201, 240, 0.5);
 }
 
 .piece.win-highlight {
-    animation: winPulse 1.2s infinite alternate;
+    animation: winPulse 1s infinite alternate cubic-bezier(0.45, 0, 0.55, 1);
+    z-index: 5;
 }
 
 @keyframes winPulse {
     0% { transform: scale(1); box-shadow: 0 0 15px currentColor; }
-    100% { transform: scale(1.1); box-shadow: 0 0 30px currentColor; }
+    100% { transform: scale(1.15); box-shadow: 0 0 40px currentColor; }
 }
 
+/* Status Overlay */
 .status-overlay {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
+    background: rgba(9, 9, 11, 0.5);
+    backdrop-filter: blur(6px);
     color: #fff;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
-    z-index: 10;
+    z-index: 20;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.5s var(--hover-ease);
 }
 
 .status-overlay.visible {
     opacity: 1;
 }
 
-.controls {
+/* Action Bar */
+.action-bar {
+    padding: 20px 24px;
     display: flex;
-    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--fourfold-border);
+    background: rgba(0, 0, 0, 0.1);
 }
 
-.btn-secondary {
+.btn-primary {
+    padding: 10px 28px;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(139, 108, 255, 0.2);
+}
+
+.btn-ghost {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+    border: 1px solid transparent;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    font-weight: 500;
 }
 
-.btn-secondary:hover {
+.btn-ghost:hover {
+    color: var(--text);
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: none;
+    transform: none;
+}
+
+/* Responsive Scaling */
+@media (max-width: 600px) {
+    .board-area { padding: 16px; }
+    .board { gap: 8px; padding: 12px; }
+    .hud { padding: 16px; flex-direction: column; gap: 16px; align-items: stretch; }
+    .hud-section { align-items: center; }
+    .action-bar { padding: 16px; }
+    .btn-primary { width: 100%; }
 }

@@ -1,9 +1,9 @@
 # Taren Current Status
 
-**Current Build:** Build 31
+**Current Build:** Build 32
 
 ## Playable Games
-1.  **Fourfold** — Strategy / board game. Taren's premium version of Connect Four with three AI difficulties.
+1.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass with segmented controls, unified game module, and refined board aesthetics.
 2.  **Pulseframe** — Reflex-based survival action.
 3.  **Linebound** — Tactical dots-and-boxes strategy.
 4.  **Memory Drift** — Atmospheric pattern-recall ritual.
@@ -23,5 +23,5 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- Fourfold has been added as the 10th playable game.
+- Fourfold visual design pass complete (Build 32).
 - Future quiet experiments may appear later.

@@ -7,7 +7,7 @@
 const CONFIG = {
     columns: 7, // INSTÄLLNING - Ändra antal kolumner på spelbrädet.
     rows: 6, // INSTÄLLNING - Ändra antal rader på spelbrädet.
-    dropAnimationDuration: 260, // INSTÄLLNING - Ändra hur snabbt brickorna faller ner i kolumnen (ms).
+    dropAnimationDuration: 280, // INSTÄLLNING - Ändra hur snabbt brickorna faller ner i kolumnen (ms).
     computerTurnDelay: 600, // INSTÄLLNING - Ändra hur länge Computer väntar innan sitt drag (ms).
     pieceGlowStrength: 0.9, // INSTÄLLNING - Ändra hur starkt spelbrickorna lyser.
     hoverGlowStrength: 0.55, // INSTÄLLNING - Ändra hur tydligt en vald kolumn markeras vid hover.
@@ -20,6 +20,7 @@ const CONFIG = {
     boardBg: '#131722', // INSTÄLLNING - Ändra grundfärgen på spelbrädet.
     slotColor: '#0b0f18', // INSTÄLLNING - Ändra färgen på de tomma hålen/cellerna.
     scoreStorageKey: 'taren_fourfold_scores', // INSTÄLLNING - Ändra localStorage-nyckeln om du vill spara poäng separat.
+    difficultyStorageKey: 'taren_fourfold_difficulty', // INSTÄLLNING - Ändra var svårighetsgrad sparas.
 };
 
 const EMPTY = 0;
@@ -30,14 +31,16 @@ let board = [];
 let isGameOver = false;
 let currentTurn = PLAYER;
 let scores = { player: 0, computer: 0, draws: 0 };
+let currentDifficulty = 'normal';
 let isAnimating = false;
 
 // Initialize
 function init() {
-    loadScores();
+    loadGameState();
     createBoard();
     setupEventListeners();
     updateHUD();
+    updateDifficultyUI();
 }
 
 function createBoard() {
@@ -65,7 +68,31 @@ function createBoard() {
 function setupEventListeners() {
     document.getElementById('newRoundBtn').addEventListener('click', resetRound);
     document.getElementById('resetScoreBtn').addEventListener('click', resetScores);
-    document.getElementById('difficultySelect').addEventListener('change', resetRound);
+    
+    // Difficulty toggle logic
+    const diffBtns = document.querySelectorAll('.diff-btn');
+    diffBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (isAnimating || (currentTurn === COMPUTER && !isGameOver)) return;
+            const diff = btn.dataset.value;
+            setDifficulty(diff);
+        });
+    });
+}
+
+function setDifficulty(diff) {
+    currentDifficulty = diff;
+    localStorage.setItem(CONFIG.difficultyStorageKey, diff);
+    updateDifficultyUI();
+    resetRound();
+}
+
+function updateDifficultyUI() {
+    const diffBtns = document.querySelectorAll('.diff-btn');
+    diffBtns.forEach(btn => {
+        if (btn.dataset.value === currentDifficulty) btn.classList.add('active');
+        else btn.classList.remove('active');
+    });
 }
 
 function highlightColumn(col, active) {
@@ -135,7 +162,7 @@ function handleWin(winner, line) {
     if (winner === PLAYER) scores.player++;
     else scores.computer++;
     
-    saveScores();
+    saveGameState();
     updateHUD();
     
     // Highlight winning line
@@ -152,7 +179,7 @@ function handleWin(winner, line) {
 function handleDraw() {
     isGameOver = true;
     scores.draws++;
-    saveScores();
+    saveGameState();
     updateHUD();
     showStatus('Draw.');
 }
@@ -174,7 +201,7 @@ function resetRound() {
 
 function resetScores() {
     scores = { player: 0, computer: 0, draws: 0 };
-    saveScores();
+    saveGameState();
     resetRound();
 }
 
@@ -190,12 +217,10 @@ function updateHUD() {
 function handleComputerMove() {
     if (isGameOver) return;
     
-    const difficulty = document.getElementById('difficultySelect').value;
     let col;
-
-    if (difficulty === 'easy') {
+    if (currentDifficulty === 'easy') {
         col = getEasyMove();
-    } else if (difficulty === 'normal') {
+    } else if (currentDifficulty === 'normal') {
         col = getNormalMove();
     } else {
         col = getHardMove();
@@ -315,8 +340,6 @@ function minimax(tempBoard, depth, alpha, beta, maximizingPlayer) {
 
 function evaluateBoard(b) {
     let score = 0;
-
-    // Center column bias
     const centerCol = Math.floor(CONFIG.columns / 2);
     let centerCount = 0;
     for (let r = 0; r < CONFIG.rows; r++) {
@@ -324,32 +347,26 @@ function evaluateBoard(b) {
     }
     score += centerCount * 3;
 
-    // Horizontal
     for (let r = 0; r < CONFIG.rows; r++) {
         for (let c = 0; c < CONFIG.columns - 3; c++) {
             score += evaluateWindow([b[r][c], b[r][c+1], b[r][c+2], b[r][c+3]]);
         }
     }
-
-    // Vertical
     for (let c = 0; c < CONFIG.columns; c++) {
         for (let r = 0; r < CONFIG.rows - 3; r++) {
             score += evaluateWindow([b[r][c], b[r+1][c], b[r+2][c], b[r+3][c]]);
         }
     }
-
-    // Diagonals
     for (let r = 0; r < CONFIG.rows - 3; r++) {
         for (let c = 0; c < CONFIG.columns - 3; c++) {
             score += evaluateWindow([b[r][c], b[r+1][c+1], b[r+2][c+2], b[r+3][c+3]]);
         }
     }
-    for (let r = 0; r < CONFIG.rows - 3; r++) {
-        for (let c = 3; c < CONFIG.columns; c++) {
-            score += evaluateWindow([b[r][c], b[r+1][c-1], b[r+2][c-2], b[r+3][c-3]]);
+    for (let r = 3; r < CONFIG.rows; r++) {
+        for (let c = 0; c < CONFIG.columns - 3; c++) {
+            score += evaluateWindow([b[r][c], b[r-1][c+1], b[r-2][c+2], b[r-3][c+3]]);
         }
     }
-
     return score;
 }
 
@@ -368,7 +385,6 @@ function evaluateWindow(window) {
     return score;
 }
 
-// Helpers
 function getValidMoves(b = board) {
     const moves = [];
     for (let c = 0; c < CONFIG.columns; c++) {
@@ -389,7 +405,6 @@ function copyBoard(b) {
 }
 
 function checkWinner(b, p) {
-    // Horizontal
     for (let r = 0; r < CONFIG.rows; r++) {
         for (let c = 0; c < CONFIG.columns - 3; c++) {
             if (b[r][c] === p && b[r][c+1] === p && b[r][c+2] === p && b[r][c+3] === p) {
@@ -397,7 +412,6 @@ function checkWinner(b, p) {
             }
         }
     }
-    // Vertical
     for (let c = 0; c < CONFIG.columns; c++) {
         for (let r = 0; r < CONFIG.rows - 3; r++) {
             if (b[r][c] === p && b[r+1][c] === p && b[r+2][c] === p && b[r+3][c] === p) {
@@ -405,7 +419,6 @@ function checkWinner(b, p) {
             }
         }
     }
-    // Diagonal \
     for (let r = 0; r < CONFIG.rows - 3; r++) {
         for (let c = 0; c < CONFIG.columns - 3; c++) {
             if (b[r][c] === p && b[r+1][c+1] === p && b[r+2][c+2] === p && b[r+3][c+3] === p) {
@@ -413,7 +426,6 @@ function checkWinner(b, p) {
             }
         }
     }
-    // Diagonal /
     for (let r = 3; r < CONFIG.rows; r++) {
         for (let c = 0; c < CONFIG.columns - 3; c++) {
             if (b[r][c] === p && b[r-1][c+1] === p && b[r-2][c+2] === p && b[r-3][c+3] === p) {
@@ -424,23 +436,20 @@ function checkWinner(b, p) {
     return null;
 }
 
-function checkDraw(b) {
-    return getValidMoves(b).length === 0;
-}
+function checkDraw(b) { return getValidMoves(b).length === 0; }
 
-function saveScores() {
+function saveGameState() {
     localStorage.setItem(CONFIG.scoreStorageKey, JSON.stringify(scores));
+    localStorage.setItem(CONFIG.difficultyStorageKey, currentDifficulty);
 }
 
-function loadScores() {
-    const saved = localStorage.getItem(CONFIG.scoreStorageKey);
-    if (saved) {
-        try {
-            scores = JSON.parse(saved);
-        } catch (e) {
-            console.error("Could not load scores", e);
-        }
+function loadGameState() {
+    const savedScores = localStorage.getItem(CONFIG.scoreStorageKey);
+    if (savedScores) {
+        try { scores = JSON.parse(savedScores); } catch (e) { console.error("Could not load scores", e); }
     }
+    const savedDiff = localStorage.getItem(CONFIG.difficultyStorageKey);
+    if (savedDiff) currentDifficulty = savedDiff;
 }
 
 document.addEventListener('DOMContentLoaded', init);
