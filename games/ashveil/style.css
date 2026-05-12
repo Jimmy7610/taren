@@ -1,0 +1,213 @@
+:root {
+  --ash-bg: #0c0c0e;
+  --ash-tile: #1a1a1d;
+  --ash-tile-hover: #232328;
+  --ash-tile-revealed: #111114;
+  --ash-border: #27272a;
+  --ash-text: #fafafa;
+  --ash-muted: #a1a1aa;
+  
+  --ash-accent-violet: #8b6cff;
+  --ash-accent-cyan: #4cc9f0;
+  --ash-accent-amber: #fbbf24;
+  --ash-accent-danger: #ef4444;
+
+  --tile-size: 36px; /* INSTÄLLNING - Grundstorlek för rutor. Kan skalas i JS. */
+  --tile-gap: 3px;   /* INSTÄLLNING - Avstånd mellan rutor. */
+}
+
+/* Base Layout */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: var(--spacing-4);
+}
+
+.ash-header {
+  text-align: center;
+  margin-bottom: var(--spacing-4);
+}
+
+.ash-subtitle {
+  font-size: 1rem;
+  color: var(--ash-muted);
+  margin-top: 4px;
+}
+
+/* HUD Styling */
+.ash-hud {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-4);
+  background: rgba(24, 24, 27, 0.4);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--ash-border);
+  margin-bottom: var(--spacing-4);
+  width: 100%;
+  max-width: 600px;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hud-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ash-muted);
+}
+
+.hud-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ash-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Controls */
+.ash-controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+/* Game Board */
+.ash-field-wrapper {
+  background: var(--ash-bg);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--ash-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  margin-bottom: var(--spacing-4);
+  overflow: auto;
+  max-width: 100%;
+}
+
+.ash-field {
+  display: grid;
+  gap: var(--tile-gap);
+  user-select: none;
+  margin: 0 auto;
+}
+
+/* Tiles */
+.ash-tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  background: var(--ash-tile);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.ash-tile:hover:not(.revealed) {
+  background: var(--ash-tile-hover);
+  transform: translateY(-1px);
+}
+
+.ash-tile.revealed {
+  background: var(--ash-tile-revealed);
+  cursor: default;
+  box-shadow: none;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+
+.ash-tile.marked::after {
+  content: "◆";
+  color: var(--ash-accent-amber);
+  font-size: 0.8rem;
+  text-shadow: 0 0 8px var(--ash-accent-amber);
+}
+
+.ash-tile.ember {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.ash-tile.ember-revealed {
+  background: var(--ash-accent-danger);
+  box-shadow: 0 0 20px var(--ash-accent-danger);
+  z-index: 2;
+}
+
+/* Neighbor Numbers */
+.n-1 { color: #60a5fa; }
+.n-2 { color: #4ade80; }
+.n-3 { color: #f87171; }
+.n-4 { color: #818cf8; }
+.n-5 { color: #f472b6; }
+.n-6 { color: #2dd4bf; }
+.n-7 { color: #fbbf24; }
+.n-8 { color: #a78bfa; }
+
+/* Status Bar */
+.ash-status {
+  height: 24px;
+  font-size: 0.9rem;
+  color: var(--ash-muted);
+  margin-bottom: var(--spacing-4);
+  font-style: italic;
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex;
+  background: var(--ash-tile);
+  border-radius: 20px;
+  padding: 4px;
+  border: 1px solid var(--ash-border);
+  margin-bottom: var(--spacing-3);
+}
+
+.mode-btn {
+  padding: 6px 16px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--ash-muted);
+  border: none;
+  background: transparent;
+}
+
+.mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Responsive Scaling */
+@media (max-width: 768px) {
+  :root {
+    --tile-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --tile-size: 28px;
+    --tile-gap: 2px;
+  }
+  .ash-hud {
+    padding: 8px 12px;
+    gap: var(--spacing-2);
+  }
+  .hud-value {
+    font-size: 1rem;
+  }
+}

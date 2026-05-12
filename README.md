@@ -3,6 +3,7 @@
 Taren is a quiet collection of small browser games built with vanilla HTML/CSS/JS. It prioritizes a dark, minimal, atmospheric, and premium experience.
 
 ## Current Playable Games
+- **Ashveil** — Logic / Minesweeper-style gameplay.
 - **Voidbreaker** — Arcade / breaker gameplay.
 - **Tetrafall** — Puzzle / falling-block gameplay.
 - **Fourfold** — Strategy / board gameplay.
@@ -17,7 +18,6 @@ Taren is a quiet collection of small browser games built with vanilla HTML/CSS/J
 - **Hollow Path** — Minimal maze / path exploration.
 
 ## Upcoming Classics (Planned)
-- **Ashveil** — Logic / hidden field puzzle.
 - **Nightcoil** — Arcade / growth puzzle.
 - **Echo Hollow** — Maze / signal gathering.
 - **Shardrift** — Arcade / fragment breaking.
@@ -32,6 +32,7 @@ Taren is a quiet collection of small browser games built with vanilla HTML/CSS/J
 - `/` — Homepage / Landing
 - `/games/` — Game gallery and selection
 - `/about/` — Project information and philosophy
+- `/games/ashveil/`
 - `/games/pulseframe/`
 - `/games/linebound/`
 - `/games/memory-drift/`
