@@ -77,19 +77,6 @@
     40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
-.overlay {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(5, 5, 7, 0.85);
-    backdrop-filter: blur(8px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    transition: opacity 0.3s ease;
-}
-
-.overlay.hidden { opacity: 0; pointer-events: none; }
+/* Memory Drift Overlay specific overrides */
 .overlay-title { font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-4); }
 #finalScoreDisplay { font-size: 1.125rem; color: var(--text-muted); margin-bottom: var(--spacing-5); }

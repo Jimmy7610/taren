@@ -59,18 +59,24 @@
                     <div class="game-board-wrapper">
                         <canvas id="game-canvas"></canvas>
                         <div id="game-start" class="game-overlay">
-                            <h2>Shardrift</h2>
-                            <p>Drifting into the void.</p>
-                            <button class="btn" onclick="game.start()">Begin</button>
+                            <div>
+                                <h2>Shardrift</h2>
+                                <p>Drifting into the void.</p>
+                                <button class="btn" onclick="game.start()">Begin</button>
+                            </div>
                         </div>
                         <div id="game-over" class="game-overlay hidden">
-                            <h2>Hull Severed</h2>
-                            <p id="final-score">Final Score: 0</p>
-                            <button class="btn" onclick="game.reset()">New Run</button>
+                            <div>
+                                <h2>Hull Severed</h2>
+                                <p id="final-score">Final Score: 0</p>
+                                <button class="btn" onclick="game.reset()">New Run</button>
+                            </div>
                         </div>
                         <div id="game-pause" class="game-overlay hidden">
-                            <h2>Paused</h2>
-                            <button class="btn" onclick="game.togglePause()">Resume</button>
+                            <div>
+                                <h2>Paused</h2>
+                                <button class="btn" onclick="game.togglePause()">Resume</button>
+                            </div>
                         </div>
                     </div>
                 </div>

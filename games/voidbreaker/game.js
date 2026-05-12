@@ -524,19 +524,19 @@ function render() {
     // Render bricks
     bricks.forEach(b => {
         ctx.fillStyle = COLORS['brick' + b.durability];
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 15;
         ctx.shadowColor = COLORS['brick' + b.durability];
+        
+        // Rounded bricks
         ctx.beginPath();
-        ctx.rect(b.x, b.y, b.width, b.height);
+        ctx.roundRect(b.x, b.y, b.width, b.height, 4);
         ctx.fill();
-        if (b.durability < b.maxDurability) {
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(b.x + 5, b.y + 5);
-            ctx.lineTo(b.x + b.width - 5, b.y + b.height - 5);
-            ctx.stroke();
-        }
+        
+        // Subtle inner shine
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(b.x + 2, b.y + 2, b.width - 4, 1);
     });
     ctx.shadowBlur = 0;
 

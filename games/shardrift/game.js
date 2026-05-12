@@ -352,11 +352,15 @@ class Shardrift {
         
         // Shards
         this.ctx.strokeStyle = '#8b6cff';
-        this.ctx.lineWidth = 1.5;
+        this.ctx.lineWidth = 1.8;
         this.shards.forEach(s => {
             this.ctx.save();
             this.ctx.translate(s.x, s.y);
             this.ctx.rotate(s.angle);
+            
+            this.ctx.shadowBlur = 15;
+            this.ctx.shadowColor = '#8b6cff';
+            
             this.ctx.beginPath();
             this.ctx.moveTo(s.points[0].x, s.points[0].y);
             for (let i = 1; i < s.points.length; i++) {
@@ -364,6 +368,11 @@ class Shardrift {
             }
             this.ctx.closePath();
             this.ctx.stroke();
+            
+            // Subtle inner fill
+            this.ctx.fillStyle = 'rgba(139, 108, 255, 0.05)';
+            this.ctx.fill();
+            
             this.ctx.restore();
         });
         

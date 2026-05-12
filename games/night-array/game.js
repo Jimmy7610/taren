@@ -271,23 +271,24 @@ class NightArray {
         // Formation
         this.enemies.forEach(e => {
             this.ctx.fillStyle = e.type === 0 ? '#8b6cff' : '#fbbf24';
-            this.ctx.shadowBlur = 10;
+            this.ctx.shadowBlur = 15;
             this.ctx.shadowColor = this.ctx.fillStyle;
             
-            // Draw abstract invader shape
+            // Draw abstract invader shape with more detail
             this.ctx.beginPath();
             this.ctx.moveTo(e.x + e.w * 0.2, e.y);
             this.ctx.lineTo(e.x + e.w * 0.8, e.y);
-            this.ctx.lineTo(e.x + e.w, e.y + e.h * 0.5);
-            this.ctx.lineTo(e.x + e.w * 0.8, e.y + e.h);
-            this.ctx.lineTo(e.x + e.w * 0.2, e.y + e.h);
-            this.ctx.lineTo(e.x, e.y + e.h * 0.5);
+            this.ctx.lineTo(e.x + e.w, e.y + e.h * 0.4);
+            this.ctx.lineTo(e.x + e.w * 0.7, e.y + e.h);
+            this.ctx.lineTo(e.x + e.w * 0.3, e.y + e.h);
+            this.ctx.lineTo(e.x, e.y + e.h * 0.4);
             this.ctx.closePath();
             this.ctx.fill();
             
-            this.ctx.fillStyle = '#000';
-            this.ctx.fillRect(e.x + e.w * 0.25, e.y + e.h * 0.3, 4, 4);
-            this.ctx.fillRect(e.x + e.w * 0.6, e.y + e.h * 0.3, 4, 4);
+            // Inner core
+            this.ctx.shadowBlur = 0;
+            this.ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            this.ctx.fillRect(e.x + e.w * 0.3, e.y + e.h * 0.3, e.w * 0.4, 2);
         });
         
         // Projectiles

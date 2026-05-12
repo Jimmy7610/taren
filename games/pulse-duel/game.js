@@ -307,14 +307,14 @@ class PulseDuel {
 
         // Player Paddle
         this.ctx.fillStyle = '#4cc9f0';
-        this.ctx.shadowBlur = 15;
+        this.ctx.shadowBlur = 25;
         this.ctx.shadowColor = '#4cc9f0';
-        this.ctx.fillRect(CONFIG.paddleMargin, this.playerY, CONFIG.paddleWidth, CONFIG.paddleHeight);
+        this.drawRoundedRect(CONFIG.paddleMargin, this.playerY, CONFIG.paddleWidth, CONFIG.paddleHeight, 4);
         
         // AI Paddle
         this.ctx.fillStyle = '#8b6cff';
         this.ctx.shadowColor = '#8b6cff';
-        this.ctx.fillRect(this.canvas.width - CONFIG.paddleMargin - CONFIG.paddleWidth, this.aiY, CONFIG.paddleWidth, CONFIG.paddleHeight);
+        this.drawRoundedRect(this.canvas.width - CONFIG.paddleMargin - CONFIG.paddleWidth, this.aiY, CONFIG.paddleWidth, CONFIG.paddleHeight, 4);
         
         // Ball & Trail
         if (this.roundActive || this.running) {
@@ -331,10 +331,17 @@ class PulseDuel {
 
             // Ball
             this.ctx.fillStyle = 'white';
-            this.ctx.shadowBlur = 20;
+            this.ctx.shadowBlur = 30;
             this.ctx.shadowColor = 'white';
             this.ctx.beginPath();
             this.ctx.arc(this.ball.x, this.ball.y, CONFIG.ballRadius, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // Core
+            this.ctx.shadowBlur = 0;
+            this.ctx.fillStyle = 'white';
+            this.ctx.beginPath();
+            this.ctx.arc(this.ball.x, this.ball.y, CONFIG.ballRadius * 0.4, 0, Math.PI * 2);
             this.ctx.fill();
         }
         
@@ -347,6 +354,21 @@ class PulseDuel {
         }
 
         this.ctx.shadowBlur = 0;
+    }
+
+    drawRoundedRect(x, y, w, h, r) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x + r, y);
+        this.ctx.lineTo(x + w - r, y);
+        this.ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        this.ctx.lineTo(x + w, y + h - r);
+        this.ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        this.ctx.lineTo(x + r, y + h);
+        this.ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        this.ctx.lineTo(x, y + r);
+        this.ctx.quadraticCurveTo(x, y, x + r, y);
+        this.ctx.closePath();
+        this.ctx.fill();
     }
 
     loop(timestamp) {

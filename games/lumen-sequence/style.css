@@ -59,25 +59,9 @@
 .pad-3.active { border-color: var(--lumen-teal); box-shadow: 0 0 30px var(--lumen-teal); background: rgba(45, 212, 191, 0.2); }
 .pad-4.active { border-color: var(--lumen-white); box-shadow: 0 0 30px var(--lumen-white); background: rgba(250, 250, 250, 0.2); }
 
-.game-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(12, 12, 14, 0.85);
-  backdrop-filter: blur(8px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  border-radius: 50%;
-  text-align: center;
-}
-
-.game-overlay.hidden {
-  display: none;
+/* Lumen Sequence Overlay specific overrides */
+.difficulty-group {
+  margin-top: 4px;
 }
 
 .btn.active {

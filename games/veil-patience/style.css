@@ -100,6 +100,20 @@
   color: var(--vp-white);
 }
 
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Empty slots aesthetic */
+.card-slot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent);
+  pointer-events: none;
+}
+
 /* Overlay */
 .game-overlay {
   position: absolute;

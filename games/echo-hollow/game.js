@@ -440,23 +440,35 @@ class EchoHollow {
         for (let y = 0; y < this.maze.length; y++) {
             for (let x = 0; x < this.maze[y].length; x++) {
                 if (this.maze[y][x] === 1) {
-                    this.ctx.fillStyle = '#1a1528';
+                    this.ctx.fillStyle = '#100e18';
                     this.ctx.fillRect(x * CONFIG.tileSize + 2, y * CONFIG.tileSize + 2, CONFIG.tileSize - 4, CONFIG.tileSize - 4);
+                    
                     this.ctx.strokeStyle = '#2d2442';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeRect(x * CONFIG.tileSize + 4, y * CONFIG.tileSize + 4, CONFIG.tileSize - 8, CONFIG.tileSize - 8);
+                    
+                    // Outer glow for walls
+                    this.ctx.shadowBlur = 15;
+                    this.ctx.shadowColor = 'rgba(139, 108, 255, 0.2)';
+                    this.ctx.strokeStyle = '#1a1528';
                     this.ctx.strokeRect(x * CONFIG.tileSize + 2, y * CONFIG.tileSize + 2, CONFIG.tileSize - 4, CONFIG.tileSize - 4);
+                    this.ctx.shadowBlur = 0;
                 } else if (this.maze[y][x] === 2) {
                     // Fragment
                     this.ctx.fillStyle = '#4cc9f0';
+                    this.ctx.shadowBlur = 10;
+                    this.ctx.shadowColor = '#4cc9f0';
                     this.ctx.beginPath();
-                    this.ctx.arc(x * CONFIG.tileSize + CONFIG.tileSize / 2, y * CONFIG.tileSize + CONFIG.tileSize / 2, 2, 0, Math.PI * 2);
+                    this.ctx.arc(x * CONFIG.tileSize + CONFIG.tileSize / 2, y * CONFIG.tileSize + CONFIG.tileSize / 2, 2.5, 0, Math.PI * 2);
                     this.ctx.fill();
+                    this.ctx.shadowBlur = 0;
                 } else if (this.maze[y][x] === 3) {
                     // Echo Node
                     this.ctx.fillStyle = '#fbbf24';
-                    this.ctx.shadowBlur = 10;
+                    this.ctx.shadowBlur = 20;
                     this.ctx.shadowColor = '#fbbf24';
                     this.ctx.beginPath();
-                    this.ctx.arc(x * CONFIG.tileSize + CONFIG.tileSize / 2, y * CONFIG.tileSize + CONFIG.tileSize / 2, 5, 0, Math.PI * 2);
+                    this.ctx.arc(x * CONFIG.tileSize + CONFIG.tileSize / 2, y * CONFIG.tileSize + CONFIG.tileSize / 2, 6, 0, Math.PI * 2);
                     this.ctx.fill();
                     this.ctx.shadowBlur = 0;
                 }

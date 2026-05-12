@@ -66,18 +66,24 @@
                     <div class="game-board-wrapper">
                         <canvas id="game-canvas"></canvas>
                         <div id="game-start" class="game-overlay">
-                            <h2>Pulse Duel</h2>
-                            <p>Ready to duel?</p>
-                            <button class="btn" onclick="game.reset()">Launch Pulse</button>
+                            <div>
+                                <h2>Pulse Duel</h2>
+                                <p>Ready to duel?</p>
+                                <button class="btn" onclick="game.reset()">Launch Pulse</button>
+                            </div>
                         </div>
                         <div id="game-over" class="game-overlay hidden">
-                            <h2 id="result-title">Victory</h2>
-                            <p id="final-result">Final Score: 7 - 2</p>
-                            <button class="btn" onclick="game.reset()">New Match</button>
+                            <div>
+                                <h2 id="result-title">Victory</h2>
+                                <p id="final-result">Final Score: 7 - 2</p>
+                                <button class="btn" onclick="game.reset()">New Match</button>
+                            </div>
                         </div>
                         <div id="game-pause" class="game-overlay hidden">
-                            <h2>Paused</h2>
-                            <button class="btn" onclick="game.togglePause()">Resume</button>
+                            <div>
+                                <h2>Paused</h2>
+                                <button class="btn" onclick="game.togglePause()">Resume</button>
+                            </div>
                         </div>
                     </div>
                 </div>

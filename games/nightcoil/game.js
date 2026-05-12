@@ -231,7 +231,7 @@ class Nightcoil {
         // Draw fragment
         const fSize = CONFIG.cellSize * 0.5;
         this.ctx.fillStyle = CONFIG.fragmentColor;
-        this.ctx.shadowBlur = 15;
+        this.ctx.shadowBlur = 20;
         this.ctx.shadowColor = CONFIG.fragmentColor;
         this.ctx.beginPath();
         this.ctx.arc(
@@ -240,7 +240,17 @@ class Nightcoil {
             fSize / 2, 0, Math.PI * 2
         );
         this.ctx.fill();
+        
+        // Internal core of fragment
+        this.ctx.fillStyle = "white";
         this.ctx.shadowBlur = 0;
+        this.ctx.beginPath();
+        this.ctx.arc(
+            this.fragment.x * CONFIG.cellSize + CONFIG.cellSize / 2,
+            this.fragment.y * CONFIG.cellSize + CONFIG.cellSize / 2,
+            fSize / 5, 0, Math.PI * 2
+        );
+        this.ctx.fill();
 
         // Draw coil
         this.coil.forEach((segment, i) => {
@@ -250,15 +260,21 @@ class Nightcoil {
             
             this.ctx.fillStyle = isHead ? CONFIG.coilColor : CONFIG.trailColor;
             if (isHead) {
-                this.ctx.shadowBlur = 12;
+                this.ctx.shadowBlur = 20;
                 this.ctx.shadowColor = CONFIG.coilColor;
+            } else {
+                this.ctx.shadowBlur = 8;
+                this.ctx.shadowColor = CONFIG.trailColor;
             }
             
-            this.ctx.fillRect(
+            // Rounded segments
+            const r = isHead ? 6 : 4;
+            this.drawRoundedRect(
                 segment.x * CONFIG.cellSize + offset,
                 segment.y * CONFIG.cellSize + offset,
-                size, size
+                size, size, r
             );
+            
             this.ctx.shadowBlur = 0;
         });
 
@@ -271,6 +287,21 @@ class Nightcoil {
             this.ctx.fill();
         });
         this.ctx.globalAlpha = 1.0;
+    }
+
+    drawRoundedRect(x, y, w, h, r) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(x + r, y);
+        this.ctx.lineTo(x + w - r, y);
+        this.ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        this.ctx.lineTo(x + w, y + h - r);
+        this.ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        this.ctx.lineTo(x + r, y + h);
+        this.ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        this.ctx.lineTo(x, y + r);
+        this.ctx.quadraticCurveTo(x, y, x + r, y);
+        this.ctx.closePath();
+        this.ctx.fill();
     }
 
     loop(timestamp) {

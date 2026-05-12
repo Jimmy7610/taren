@@ -21,26 +21,7 @@
   outline: none;
 }
 
-.game-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(12, 12, 14, 0.85);
-  backdrop-filter: blur(4px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  text-align: center;
-}
-
-.game-overlay.hidden {
-  display: none;
-}
-
+/* Crosshush Overlay specific overrides */
 .game-overlay h2 {
   font-size: 2.5rem;
   margin-bottom: 8px;

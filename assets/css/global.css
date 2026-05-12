@@ -44,6 +44,13 @@
   --concept-thumbnail-opacity: 0.9; /* INSTÄLLNING - Ändra hur tydliga konceptbildernas CSS-effekter ska vara. */
   --featured-card-border-opacity: 0.55; /* INSTÄLLNING - Ändra hur tydlig Pulseframe-kortets markerade kant ska vara. */
   --game-card-glow-strength: 0.28; /* INSTÄLLNING - Ändra hur stark glow-effekten på spelkorten ska vara. */
+
+  /* Game Theme Polish Variables */
+  --game-panel-bg: rgba(24, 24, 27, 0.7); /* INSTÄLLNING - Bakgrunden på spelpaneler. */
+  --game-panel-border: rgba(255, 255, 255, 0.08); /* INSTÄLLNING - Kantlinjen på spelpaneler. */
+  --game-board-glow: rgba(139, 108, 255, 0.12); /* INSTÄLLNING - Yttre glow för spelplanen. */
+  --game-board-inner-glow: rgba(139, 108, 255, 0.05); /* INSTÄLLNING - Inre ljus för spelplanen. */
+  --game-overlay-bg: rgba(9, 9, 11, 0.92); /* INSTÄLLNING - Bakgrund för overlays. */
 }
 
 * {
@@ -163,44 +170,110 @@ p {
   text-shadow: 0 0 10px var(--accent-glow);
 }
 
-/* Buttons */
-.btn {
+/* Buttons & Controls */
+.btn, 
+.game-layout button {
+  appearance: none;
+  -webkit-appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--accent);
-  color: #fff;
-  padding: var(--spacing-2) var(--spacing-5);
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.125rem;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.96);
   cursor: pointer;
+  transition: transform 0.16s var(--hover-ease), 
+              background 0.16s var(--hover-ease), 
+              border-color 0.16s var(--hover-ease), 
+              box-shadow 0.16s var(--hover-ease);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, #8b6cff, #7153e6);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  line-height: 1;
 }
 
-.btn:hover {
+.btn:hover,
+.game-layout button:hover {
   transform: translateY(-2px);
-  background-color: #9d82ff;
-  box-shadow: 0 10px 20px -10px var(--accent);
+  background: linear-gradient(180deg, #9d82ff, #7d5fff);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4),
+              0 0 15px rgba(139, 108, 255, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-.btn-disabled {
-  background-color: transparent;
+.btn:active,
+.game-layout button:active {
+  transform: translateY(0);
+  background: #7153e6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary,
+.game-layout .btn-secondary,
+.game-layout .game-difficulty-row button,
+.game-layout .game-actions .btn-secondary,
+.game-layout #diff-controls button,
+.game-layout #mode-controls button,
+.game-layout .mode-controls button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-muted);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  cursor: default;
-  font-size: 0.75rem;
-  padding: 6px 14px;
-  border-radius: 20px;
-  opacity: 0.6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.btn-disabled:hover {
-  transform: none;
-  background-color: transparent;
-  box-shadow: none;
+.btn-secondary:hover,
+.game-layout .btn-secondary:hover,
+.game-layout .game-difficulty-row button:hover,
+.game-layout #diff-controls button:hover,
+.game-layout #mode-controls button:hover,
+.game-layout .mode-controls button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary.active,
+.btn-secondary.is-active,
+.btn-secondary.selected,
+.btn.active,
+.game-layout .game-difficulty-row button.active,
+.game-layout .game-difficulty-row button.selected,
+.game-layout #diff-controls button.active,
+.game-layout #mode-controls button.active,
+.game-layout .mode-controls button.active {
+  background: linear-gradient(180deg, #8b6cff, #7153e6);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(139, 108, 255, 0.4);
+}
+
+/* Specific overrides for secondary buttons to keep them distinct from primary */
+.btn-secondary {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.btn:disabled,
+button:disabled,
+.btn-disabled {
+  opacity: 0.4;
+  cursor: default;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-muted) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+button:focus-visible,
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 108, 255, 0.3);
 }
 
 /* Layout utilities */
@@ -457,15 +530,6 @@ p {
   top: var(--build-badge-top);
   right: var(--build-badge-right);
   background-color: rgba(5, 5, 7, 0.6);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(139, 108, 255, 0.3);
-  box-shadow: 0 0 10px rgba(139, 108, 255, 0.1);
-  color: var(--text-muted);
-  font-size: 0.7rem;
-  font-weight: 500;
-  padding: 4px 8px;
-  border-radius: 6px;
-  z-index: 9999;
   opacity: var(--build-badge-opacity);
   pointer-events: none;
 }
@@ -500,16 +564,17 @@ p {
 }
 
 .game-side-panel {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border);
+  background-color: var(--game-panel-bg);
+  border: 1px solid var(--game-panel-border);
   border-radius: var(--radius-lg);
   padding: var(--spacing-4);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
   position: sticky;
   top: var(--spacing-4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
 .game-controls-panel {
@@ -561,27 +626,34 @@ p {
 }
 
 .game-stat-card {
-  padding: 10px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   gap: 2px;
+  transition: border-color 0.3s ease;
+}
+
+.game-stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .game-stat-label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   text-transform: uppercase;
   color: var(--text-muted);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-weight: 500;
 }
 
 .game-stat-value {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: var(--text);
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 .game-control-group {
@@ -609,8 +681,22 @@ p {
   display: flex;
   justify-content: center;
   position: relative;
-  min-width: 0; /* Contain overflow */
+  min-width: 0;
   overflow: visible;
+  padding: 10px 0;
+}
+
+.game-board-frame {
+  position: relative;
+  background: radial-gradient(circle at 50% 20%, rgba(139,108,255,0.08), transparent 45%),
+              linear-gradient(180deg, rgba(255,255,255,0.02), transparent),
+              #050507;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 40px rgba(139,108,255,0.04),
+              0 24px 60px rgba(0,0,0,0.45);
+  overflow: hidden;
+  max-width: 100%;
 }
 
 canvas {
@@ -655,6 +741,92 @@ canvas {
 
 .game-help-list li strong {
   color: var(--text);
+}
+
+/* ==================================================
+   GAME OVERLAYS & MESSAGES
+   ================================================== */
+
+.game-board-shell,
+.game-board-frame,
+.game-board-wrapper,
+.game-canvas-wrap,
+.game-stage,
+.canvas-wrap,
+.solitaire-board,
+.ash-field {
+  position: relative;
+}
+
+.game-overlay,
+.status-overlay,
+.board-overlay,
+.ready-overlay,
+.end-overlay,
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  pointer-events: none;
+  background: rgba(9, 9, 11, 0.4);
+  backdrop-filter: blur(2px);
+  border-radius: inherit;
+}
+
+.game-overlay.hidden,
+.status-overlay.hidden,
+.board-overlay.hidden,
+.ready-overlay.hidden,
+.end-overlay.hidden,
+.overlay.hidden,
+.hidden {
+  display: none !important;
+}
+
+/* The card/panel inside the overlay */
+.game-overlay > *,
+.status-overlay > *,
+.board-overlay > *,
+.ready-overlay > *,
+.end-overlay > *,
+.overlay > * {
+  pointer-events: auto;
+  max-width: min(340px, 90%);
+  width: 100%;
+  padding: var(--spacing-4) var(--spacing-5);
+  background: 
+    radial-gradient(circle at 50% 0%, rgba(139, 108, 255, 0.15), transparent 70%),
+    rgba(12, 12, 18, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(139, 108, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-overlay h2,
+.status-overlay h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.game-overlay p,
+.status-overlay p {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .hidden {
