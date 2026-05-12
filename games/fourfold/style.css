@@ -35,9 +35,9 @@
 }
 
 .diff-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
+    background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.018));
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(235, 235, 245, 0.6); /* Muted inactive text */
     padding: 8px 12px;
     font-size: 0.8rem;
     font-weight: 600;
@@ -48,11 +48,14 @@
     align-items: center;
     justify-content: center;
     min-width: 0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06),
+                0 8px 18px rgba(0,0,0,0.24);
 }
 
-.diff-btn:hover {
-    color: var(--text);
-    background: rgba(255, 255, 255, 0.03);
+.diff-btn:not(.active):hover {
+    background: linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.028));
+    border-color: rgba(255,255,255,0.18);
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* INSTÄLLNING - Ändra hur tydligt vald svårighetsnivå lyser. */
@@ -60,16 +63,19 @@
   --fourfold-active-difficulty-glow: 0.35;
 }
 
-.diff-btn.active {
-    background: linear-gradient(180deg, rgba(145, 114, 255, 0.96), rgba(102, 75, 218, 0.92));
+.diff-btn.active,
+.diff-btn[aria-pressed="true"] {
+    background: 
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.20), transparent 58%),
+        linear-gradient(180deg, rgba(139,108,255,0.98), rgba(105,76,225,0.94));
     color: #fff;
-    border: 1px solid rgba(190, 174, 255, 0.58);
+    border: 1px solid rgba(198,184,255,0.72);
     box-shadow: 
-        0 0 0 1px rgba(139, 108, 255, 0.22),
-        0 8px 22px rgba(139, 108, 255, 0.20),
-        inset 0 1px 0 rgba(255, 255, 255, 0.20),
-        inset 0 -10px 22px rgba(30, 20, 80, 0.18);
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
+        0 0 0 1px rgba(139,108,255,0.30),
+        0 10px 26px rgba(139,108,255,0.24),
+        inset 0 1px 0 rgba(255,255,255,0.22);
+    text-shadow: 0 0 12px rgba(255,255,255,0.18);
+    opacity: 1;
 }
 
 /* Score Section */

@@ -96,8 +96,9 @@ function setDifficulty(diff) {
 function updateDifficultyUI() {
     const diffBtns = document.querySelectorAll('.diff-btn');
     diffBtns.forEach(btn => {
-        if (btn.dataset.value === currentDifficulty) btn.classList.add('active');
-        else btn.classList.remove('active');
+        const isActive = btn.dataset.value === currentDifficulty;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive);
     });
 }
 
