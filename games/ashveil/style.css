@@ -25,6 +25,8 @@
   border-radius: var(--radius-lg);
   border: 1px solid var(--ash-border);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Tiles */

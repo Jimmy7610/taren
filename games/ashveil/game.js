@@ -8,8 +8,8 @@ const CONFIG = {
     tileSize: 36,        // INSTÄLLNING - Maxstorlek på rutorna.
     minTileSize: 22,     // INSTÄLLNING - Minsta storlek på rutorna när fältet måste skalas ner.
     tileGap: 3,         // INSTÄLLNING - Avståndet mellan rutorna.
-    boardHorizontalSafetyPadding: 24, // INSTÄLLNING - Säkerhetsmarginal i sidled.
-    boardMaxViewportHeight: 0.72, // INSTÄLLNING - Max höjd på brädet i % av viewporten.
+    boardHorizontalSafetyPadding: 48, // INSTÄLLNING - Säkerhetsmarginal i sidled för att inte slå i kanterna.
+    boardMaxViewportHeight: 0.68, // INSTÄLLNING - Max höjd på brädet i % av viewporten.
     firstClickSafe: true, // INSTÄLLNING - Om första klicket alltid ska vara säkert.
     bestTimeKeyPrefix: "taren_ashveil_best_", // INSTÄLLNING - Prefix för localStorage.
 };
@@ -133,24 +133,28 @@ class Ashveil {
     }
 
     resizeBoard() {
+        if (!this.fieldEl || !this.fieldEl.parentElement) return;
+        
         const config = DIFFICULTIES[this.difficulty];
         const vh = window.innerHeight;
         
         // Use the parent wrapper's width for horizontal constraint
-        // This wrapper is inside the grid column
         const wrapper = this.fieldEl.parentElement;
-        const availableWidth = (wrapper.clientWidth || 800) - CONFIG.boardHorizontalSafetyPadding;
+        // Ensure we have a valid width, fallback to a safe desktop default if not yet rendered
+        const availableWidth = (wrapper.clientWidth || 600) - CONFIG.boardHorizontalSafetyPadding;
         const availableHeight = vh * CONFIG.boardMaxViewportHeight;
         
-        // Potential tile sizes
-        const sizeByW = (availableWidth - (config.cols * CONFIG.tileGap)) / config.cols;
-        const sizeByH = (availableHeight - (config.rows * CONFIG.tileGap)) / config.rows;
+        // Potential tile sizes - accounting for gaps and the 24px total padding on the field (12px each side)
+        const fieldPadding = 24;
+        const sizeByW = (availableWidth - fieldPadding - ((config.cols - 1) * CONFIG.tileGap)) / config.cols;
+        const sizeByH = (availableHeight - fieldPadding - ((config.rows - 1) * CONFIG.tileGap)) / config.rows;
         
         let size = Math.min(sizeByW, sizeByH, CONFIG.tileSize);
         size = Math.max(size, CONFIG.minTileSize);
         
         document.documentElement.style.setProperty('--tile-size', `${size}px`);
-        this.fieldEl.style.width = `calc(${config.cols} * (${size}px + ${CONFIG.tileGap}px) - ${CONFIG.tileGap}px)`;
+        // Width must include the field's own padding
+        this.fieldEl.style.width = `calc(${config.cols} * ${size}px + ${config.cols - 1} * ${CONFIG.tileGap}px + ${fieldPadding}px)`;
     }
 
     // Place embers AFTER first click to guarantee safety

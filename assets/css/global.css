@@ -609,6 +609,14 @@ p {
   display: flex;
   justify-content: center;
   position: relative;
+  min-width: 0; /* Contain overflow */
+  overflow: visible;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 .game-help-title {

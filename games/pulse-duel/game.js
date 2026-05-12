@@ -93,7 +93,8 @@ class PulseDuel {
         
         this.canvas.addEventListener('mousemove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
-            this.playerY = e.clientY - rect.top - CONFIG.paddleHeight / 2;
+            const scaleY = this.canvas.height / rect.height;
+            this.playerY = (e.clientY - rect.top) * scaleY - CONFIG.paddleHeight / 2;
         });
 
         this.setDifficulty(this.difficulty);
