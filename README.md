@@ -3,7 +3,6 @@
 Taren is a quiet collection of small browser games built with vanilla HTML/CSS/JS. It prioritizes a dark, minimal, atmospheric, and premium experience.
 
 ## Current Playable Games
-- **The Lantern Below** — Adventure / exploration gameplay.
 - **Pulseframe** — Reflex / survival gameplay.
 - **Linebound** — Strategic grid-based gameplay.
 - **Memory Drift** — Calm memory and pattern recall.
@@ -18,7 +17,6 @@ Taren is a quiet collection of small browser games built with vanilla HTML/CSS/J
 - `/` — Homepage / Landing
 - `/games/` — Game gallery and selection
 - `/about/` — Project information and philosophy
-- `/games/the-lantern-below/`
 - `/games/pulseframe/`
 - `/games/linebound/`
 - `/games/memory-drift/`

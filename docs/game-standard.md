@@ -22,14 +22,6 @@ This document outlines the rules and guidelines for developing and adding new ga
 - **Performance:** Use `requestAnimationFrame` for game loops to ensure smooth performance.
 - **Data Persistence:** Store per-game `localStorage` keys with the specific game name included (e.g., `taren_memory_drift_best`).
 
-## Adventure Standard (Build 23+)
-
-For larger adventure-style games (like *The Lantern Below*), these additional standards apply:
-- **Multi-Room System:** Use a clear data-driven room structure.
-- **Interaction Key:** Use **E** as the standardized interaction key for runes, machines, and gates.
-- **Status Overlay:** Use a non-intrusive bottom-center status message for immediate interaction feedback.
-- **Transition Padding:** Ensure the player is placed far enough from a transition point in the new room to prevent accidental re-entry loops.
-
 ## Tweakable Parameters
 
 Any tweakable game parameter (in CSS or JS) must have a comment starting exactly with:
@@ -48,7 +40,6 @@ Every playable game must have a thumbnail image in `/assets/images/games/` follo
 
 ## Reference Games
 
-- **The Lantern Below:** Reference for multi-room adventure, interaction patterns, and lighting systems.
 - **Pulseframe:** Reference for high-polish reflex and survival feel.
 - **Linebound:** Reference for tactical, grid-based strategy and Computer turn logic.
 - **Memory Drift:** Reference for calm, atmospheric pattern recall.

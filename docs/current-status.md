@@ -1,18 +1,17 @@
 # Taren Current Status
 
-**Current Build:** Build 29
+**Current Build:** Build 30
 
 ## Playable Games
-1.  **The Lantern Below** — Adventure / exploration. Build 29 adds an "Illustrated Scene" art pass with detailed stone tiles, cloaked traveler silhouette, and high-fidelity ancient objects.
-2.  **Pulseframe** — Reflex-based survival action.
-3.  **Linebound** — Tactical dots-and-boxes strategy.
-4.  **Memory Drift** — Atmospheric pattern-recall ritual.
-5.  **Static Bloom** — Puzzle-based chain reaction strategy.
-6.  **Void Runner** — Arcade survival in the void.
-7.  **Signal Lost** — Frequency tuning mystery.
-8.  **Night Signal** — Timing-based signal recognition.
-9.  **Echo Veil** — Spatial memory exploration.
-10. **Hollow Path** — Minimal maze exploration.
+1.  **Pulseframe** — Reflex-based survival action.
+2.  **Linebound** — Tactical dots-and-boxes strategy.
+3.  **Memory Drift** — Atmospheric pattern-recall ritual.
+4.  **Static Bloom** — Puzzle-based chain reaction strategy.
+5.  **Void Runner** — Arcade survival in the void.
+6.  **Signal Lost** — Frequency tuning mystery.
+7.  **Night Signal** — Timing-based signal recognition.
+8.  **Echo Veil** — Spatial memory exploration.
+9.  **Hollow Path** — Minimal maze exploration.
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.
@@ -23,5 +22,5 @@
 - **INSTÄLLNING Tweak System:** Standardized comments for easy customization.
 
 ## Active Future Concepts
-- **The Lantern Below:** Illustrated art pass complete. The world now feels like an ancient stone chamber with detailed tiles, rubble, and ritual markings. Player is a hooded traveler.
+- The Lantern Below has been removed from the public playable lineup.
 - Future quiet experiments may appear later.
