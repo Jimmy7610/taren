@@ -21,6 +21,7 @@ const CONFIG = {
     shardEdgeGlow: 22,          // INSTÄLLNING - Ändra hur starkt kristallskärvornas kanter lyser.
     projectileGlowStrength: 15, // INSTÄLLNING - Ändra hur starkt skotten lyser.
     starDensity: 120,           // INSTÄLLNING - Antal stjärnor i bakgrunden.
+    projectileDespawnMargin: 24, // INSTÄLLNING - Hur långt utanför spelplanen skott får gå innan de tas bort.
 };
 
 class Shardrift {
@@ -244,13 +245,13 @@ class Shardrift {
             p.y += p.vy * dt;
             p.life -= dt;
             
-            // Wrap
-            if (p.x < 0) p.x = this.canvas.width;
-            if (p.x > this.canvas.width) p.x = 0;
-            if (p.y < 0) p.y = this.canvas.height;
-            if (p.y > this.canvas.height) p.y = 0;
-            
-            if (p.life <= 0) this.projectiles.splice(i, 1);
+            // Projectiles expire when they leave bounds (No wrap)
+            const margin = CONFIG.projectileDespawnMargin;
+            if (p.x < -margin || p.x > this.canvas.width + margin || 
+                p.y < -margin || p.y > this.canvas.height + margin ||
+                p.life <= 0) {
+                this.projectiles.splice(i, 1);
+            }
         }
     }
 

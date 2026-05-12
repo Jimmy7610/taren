@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 71 (Visual Polish Pack 2: Nightcoil, Shardrift, Night Array)
+**Current Build:** Build 72 (Fix: Shardrift player projectiles expire at bounds)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.
