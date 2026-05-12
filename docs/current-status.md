@@ -1,24 +1,34 @@
 # Taren Current Status
 
-**Current Build:** Build 47
+**Current Build:** Build 48
 
 ## Playable Games
-1.  **Ashveil** — Logic / Minesweeper-style puzzle. Build 47 fixes the 3-column layout to prevent the board from overlapping the right panel, ensuring a clean fit between controls and help.
-2.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control.
-3.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass.
-4.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug.
-5.  **Pulseframe** — Reflex-based survival action.
-6.  **Linebound** — Tactical dots-and-boxes strategy.
-7.  **Memory Drift** — Atmospheric pattern-recall ritual.
-8.  **Static Bloom** — Puzzle-based chain reaction strategy.
-9.  **Void Runner** — Arcade survival in the void.
-10. **Signal Lost** — Frequency tuning mystery.
-11. **Night Signal** — Timing-based signal recognition.
-12. **Echo Veil** — Spatial memory exploration.
-13. **Hollow Path** — Minimal maze exploration.
+1.  **Ashveil** — Logic / Minesweeper-style puzzle.
+2.  **Nightcoil** — Arcade / Snake-style classic. Build 48 adds this as a playable game.
+3.  **Coreloom** — Puzzle / 2048-style merge classic. Build 48 adds this as a playable game.
+4.  **Pulse Duel** — Duel / Pong-style classic. Build 48 adds this as a playable game.
+5.  **Voidbreaker** — Arcade / breaker game.
+6.  **Fourfold** — Strategy / board game.
+7.  **Tetrafall** — Falling-block puzzle.
+8.  **Pulseframe** — Reflex / avoidance game.
+9.  **Linebound** — Strategic dots and boxes.
+10. **Memory Drift** — Minimal memory sequence game.
+11. **Static Bloom** — Chain-reaction logic game.
+12. **Void Runner** — Endless survival movement.
+13. **Signal Lost** — Frequency tuning mystery.
+14. **Night Signal** — Visual timing experiment.
+15. **Echo Veil** — Audio-visual memory game.
+16. **Hollow Path** — Atmospheric maze exploration.
 
 ## Upcoming Classics
-- The Games gallery now features an **Upcoming Classics** section with 9 planned titles (Nightcoil, Echo Hollow, etc.). These are currently non-playable placeholders with handcrafted CSS fallback visuals.
+There are currently **6** upcoming classic games in the pipeline:
+- Echo Hollow
+- Shardrift
+- Night Array
+- Veil Patience
+- Lumen Sequence
+- Crosshush
+handcrafted CSS fallback visuals.
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.

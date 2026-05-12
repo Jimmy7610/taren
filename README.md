@@ -1,29 +1,29 @@
 # Taren
 
-Taren is a quiet collection of small browser games built with vanilla HTML/CSS/JS. It prioritizes a dark, minimal, atmospheric, and premium experience.
+Taren is a collection of 16 small, quiet, and atmospheric games.
 
-## Current Playable Games
-- **Ashveil** — Logic / Minesweeper-style gameplay.
-- **Voidbreaker** — Arcade / breaker gameplay.
-- **Tetrafall** — Puzzle / falling-block gameplay.
-- **Fourfold** — Strategy / board gameplay.
-- **Pulseframe** — Reflex / survival gameplay.
-- **Linebound** — Strategic grid-based gameplay.
-- **Memory Drift** — Calm memory and pattern recall.
-- **Static Bloom** — Puzzle / chain reaction strategy.
-- **Void Runner** — Arcade / survival movement.
-- **Signal Lost** — Tuning / mystery puzzle.
-- **Night Signal** — Timing / signal recognition.
-- **Echo Veil** — Spatial memory / mystery.
-- **Hollow Path** — Minimal maze / path exploration.
+### Playable Games (16)
+- **Ashveil**: Logic / Minesweeper-style.
+- **Nightcoil**: Arcade / Snake-style classic.
+- **Coreloom**: Puzzle / 2048-style merge classic.
+- **Pulse Duel**: Duel / Pong-style classic.
+- **Voidbreaker**: Arcade / breaker game.
+- **Fourfold**: Strategy / connect-four style.
+- **Tetrafall**: Puzzle / falling block.
+- **Pulseframe**: Reflex / avoid-and-collect.
+- **Linebound**: Strategy / dots-and-boxes.
+- **Memory Drift**: Memory / sequence recall.
+- **Static Bloom**: Puzzle / chain reaction.
+- **Void Runner**: Arcade / side-scroller.
+- **Signal Lost**: Mystery / exploration.
+- **Night Signal**: Timing / reaction.
+- **Echo Veil**: Memory / reveal-and-match.
+- **Hollow Path**: Exploration / path-finding.
 
-## Upcoming Classics (Planned)
-- **Nightcoil** — Arcade / growth puzzle.
+### Upcoming Classics (6)
 - **Echo Hollow** — Maze / signal gathering.
 - **Shardrift** — Arcade / fragment breaking.
-- **Pulse Duel** — Duel / survival reflex.
 - **Night Array** — Defense / pattern hold.
-- **Coreloom** — Puzzle / core merging.
 - **Veil Patience** — Cards / quiet arrangement.
 - **Lumen Sequence** — Memory / pattern recall.
 - **Crosshush** — Timing / lane crossing.
