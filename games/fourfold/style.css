@@ -26,28 +26,33 @@
 /* Segmented Difficulty Toggle */
 .difficulty-toggle {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Ensure 3-column layout */
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* Balanced columns */
     background: #09090b;
-    padding: 3px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    gap: 2px;
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    gap: 4px;
 }
 
 .diff-btn {
     background: transparent;
     border: none;
     color: var(--text-muted);
-    padding: 6px 12px;
+    padding: 8px 12px;
     font-size: 0.8rem;
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: 7px;
     cursor: pointer;
-    transition: all 0.3s var(--hover-ease);
+    transition: all 0.25s var(--hover-ease);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
 }
 
 .diff-btn:hover {
     color: var(--text);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 /* INSTÄLLNING - Ändra hur tydligt vald svårighetsnivå lyser. */
@@ -56,28 +61,15 @@
 }
 
 .diff-btn.active {
-    background: 
-        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.15), transparent 70%),
-        linear-gradient(180deg, rgba(139,108,255,0.9), rgba(113,83,230,0.8));
+    background: linear-gradient(180deg, rgba(145, 114, 255, 0.96), rgba(102, 75, 218, 0.92));
     color: #fff;
-    border: 1px solid rgba(190,174,255,0.4);
+    border: 1px solid rgba(190, 174, 255, 0.58);
     box-shadow: 
-        0 4px 12px rgba(139,108,255,0.3),
-        inset 0 1px 1px rgba(255,255,255,0.2);
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.diff-btn.active::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #fff;
+        0 0 0 1px rgba(139, 108, 255, 0.22),
+        0 8px 22px rgba(139, 108, 255, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        inset 0 -10px 22px rgba(30, 20, 80, 0.18);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
 }
 
 /* Score Section */

@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 81 (Clarified Fourfold selected difficulty visual state)
+**Current Build:** Build 82 (Refined Fourfold selected difficulty visual styling)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.
