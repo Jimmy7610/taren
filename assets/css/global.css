@@ -309,7 +309,6 @@ p {
   pointer-events: none;
 }
 
-.concept-threadline { background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%), radial-gradient(circle at 30% 30%, rgba(139, 108, 255, 0.2) 0%, transparent 50%); }
 .concept-voidbreaker { background: linear-gradient(135deg, #09090b 0%, #1a1a2e 100%), radial-gradient(circle at 50% 80%, rgba(76, 201, 240, 0.3) 0%, transparent 50%); }
 .concept-tetrafall { background: linear-gradient(135deg, rgba(76, 201, 240, 0.2) 0%, rgba(139, 108, 255, 0.2) 100%), repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 20px), #0b0f18; }
 .concept-fourfold { background: radial-gradient(circle at 30% 30%, rgba(139, 108, 255, 0.4) 0%, rgba(76, 201, 240, 0.4) 100%), #0b0f18; }
