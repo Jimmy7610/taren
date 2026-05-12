@@ -17,12 +17,210 @@
         </div>
     </nav>
 
-    <main class="pb-8">
-        <div class="container pt-8" style="max-width: 700px; text-align: center; margin-top: 15vh;">
-            <h1 class="mb-6 fade-in-up delay-1" style="font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -0.04em;">About Taren</h1>
-            <p class="mb-4 fade-in-up delay-2" style="font-size: 1.25rem; line-height: 1.8; color: var(--text-muted);">Taren is a quiet digital space, built slowly and carefully. It is an exploration of mechanics, mood, and atmosphere.</p>
-            <p class="fade-in-up delay-3" style="font-size: 1.25rem; line-height: 1.8; color: var(--text-muted);">For now, it begins as a gallery of small, isolated browser experiences. More will appear in time.</p>
+    <main class="about-shell">
+        <div class="about-glow"></div>
+        
+        <div class="container about-container">
+            <section class="about-hero fade-in-up delay-1">
+                <p class="about-kicker">About the project</p>
+                <h1 class="about-title">About Taren</h1>
+                
+                <div class="about-description-box">
+                    <p class="about-description">
+                        Taren is a personal test project by <strong>Jimmy Eliasson</strong> — a small digital space for browser games, experiments and playful ideas. 
+                    </p>
+                    <p class="about-description">
+                        It is vibe-coded step by step: tested, adjusted, broken, fixed and shaped as it grows. 
+                        The current collection started with lightweight browser games, but Taren is not locked to one specific technology forever.
+                    </p>
+                    <p class="about-description">
+                        This is not meant to be a finished commercial platform. It is a living lab where ideas can start small, become playable and slowly improve over time.
+                    </p>
+                </div>
+
+                <div class="about-actions">
+                    <a href="/games/" class="btn">Explore Games</a>
+                </div>
+
+                <div class="about-meta-grid">
+                    <div class="about-mini-card">
+                        <span class="mini-card-label">Creator</span>
+                        <strong>Jimmy Eliasson</strong>
+                    </div>
+                    <div class="about-mini-card">
+                        <span class="mini-card-label">Method</span>
+                        <strong>Vibe-coded</strong>
+                    </div>
+                    <div class="about-mini-card">
+                        <span class="mini-card-label">Content</span>
+                        <strong>22 playable games</strong>
+                    </div>
+                    <div class="about-mini-card">
+                        <span class="mini-card-label">Nature</span>
+                        <strong>Living lab</strong>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="about-footer-note fade-in-up delay-2">
+                <p>More games, sketches, experiments and strange little systems will appear gradually.</p>
+            </aside>
         </div>
     </main>
+
+    <style>
+        /* ABOUT PAGE SPECIFIC STYLES - Build 93 */
+        :root {
+            --about-glow: rgba(139, 108, 255, 0.08);
+        }
+
+        .about-shell {
+            height: calc(100svh - 80px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .about-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, var(--about-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+            filter: blur(60px);
+        }
+
+        .about-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(1.5rem, 4vh, 3rem);
+            height: 100%;
+        }
+
+        .about-hero {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+        }
+
+        .about-kicker {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .about-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.04em;
+        }
+
+        .about-description-box {
+            max-width: 640px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .about-description {
+            font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin: 0 !important;
+        }
+
+        .about-description strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .about-actions {
+            margin-bottom: 2rem;
+        }
+
+        .about-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        @media (min-width: 600px) {
+            .about-meta-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .about-mini-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            backdrop-filter: blur(10px);
+        }
+
+        .mini-card-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .about-mini-card strong {
+            font-size: 0.8rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .about-footer-note {
+            opacity: 0.6;
+            text-align: center;
+        }
+
+        .about-footer-note p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 0 !important;
+        }
+
+        /* Mobile specific adjustments to ensure no scroll */
+        @media (max-height: 800px) {
+            .about-container { gap: 1.5rem; }
+            .about-title { margin-bottom: 1rem; }
+            .about-description-box { gap: 0.75rem; margin-bottom: 1.5rem; }
+            .about-meta-grid { display: none; }
+        }
+
+        @media (max-height: 600px) {
+            .about-actions { display: none; }
+        }
+
+        /* No scrollbar rule */
+        body {
+            overflow: hidden;
+        }
+    </style>
 </body>
 </html>
