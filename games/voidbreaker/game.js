@@ -37,6 +37,8 @@ const CONFIG = {
     powerupGlowStrength: 15, // INSTÄLLNING - Ändra hur starkt powerups glöder.
     powerupPickupFlashDuration: 300, // INSTÄLLNING - Ändra hur länge paddeln blinkar vid upplockning.
     
+    mouseControlPadding: 180, // INSTÄLLNING - Ändra hur långt utanför spelrutan musen fortfarande får styra paddeln.
+    hideCursorDuringPlay: true, // INSTÄLLNING - Ändra om muspekaren ska döljas över spelområdet under spel.
     bestScoreKey: 'taren_voidbreaker_best_score', // INSTÄLLNING - Ändra localStorage-nyckeln för bästa poäng.
 };
 
@@ -126,18 +128,33 @@ function setupEventListeners() {
     });
     window.addEventListener('keyup', e => keys[e.key] = false);
     
-    canvas.addEventListener('mousemove', e => {
+    window.addEventListener('mousemove', e => {
         if (isPaused || isGameOver || isVictory) return;
+        
         const rect = canvas.getBoundingClientRect();
         const root = document.documentElement;
+        
+        // Calculate mouse X relative to canvas
         const mouseX = e.clientX - rect.left - root.scrollLeft;
-        paddle.x = mouseX - paddle.width / 2;
-        keepPaddleInBounds();
-        if (isReady) {
-            balls.forEach(ball => {
-                ball.x = paddle.x + paddle.width / 2;
-            });
+        const mouseY = e.clientY - rect.top - root.scrollTop;
+
+        // Check if mouse is within vertical range and horizontal padding
+        const isWithinVertical = mouseY > -CONFIG.mouseControlPadding && mouseY < canvas.height + CONFIG.mouseControlPadding;
+        const isWithinHorizontal = mouseX > -CONFIG.mouseControlPadding && mouseX < canvas.width + CONFIG.mouseControlPadding;
+
+        if (isWithinVertical && isWithinHorizontal) {
+            paddle.x = mouseX - paddle.width / 2;
+            keepPaddleInBounds();
+            if (isReady) {
+                balls.forEach(ball => {
+                    ball.x = paddle.x + paddle.width / 2;
+                });
+            }
         }
+    });
+
+    canvas.addEventListener('mousedown', () => {
+        if (isReady && !isPaused && !isGameOver && !isVictory) launchBall();
     });
 
     document.getElementById('new-game-btn').addEventListener('click', resetGame);
@@ -475,6 +492,16 @@ function togglePause() {
     }
 }
 
+function updateCursor() {
+    if (!CONFIG.hideCursorDuringPlay) return;
+    const container = canvas.parentElement;
+    if (!isReady && !isPaused && !isGameOver && !isVictory) {
+        container.classList.add('cursor-hidden');
+    } else {
+        container.classList.remove('cursor-hidden');
+    }
+}
+
 function gameLoop(time) {
     const dt = 1/60; 
     
@@ -486,6 +513,7 @@ function gameLoop(time) {
         updateParticles(dt);
     }
 
+    updateCursor();
     render();
     requestAnimationFrame(gameLoop);
 }
