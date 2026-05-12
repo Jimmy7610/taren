@@ -16,11 +16,11 @@ const CONFIG = {
     linesPerLevel: 10, // INSTÄLLNING - Ändra hur många rader som krävs för att gå upp en level.
     lineClearFlashDuration: 260, // INSTÄLLNING - Ändra hur länge radrensnings-effekten syns (ms).
     lockDelay: 200, // INSTÄLLNING - Ändra liten fördröjning innan en bit låses efter landning (ms).
-    pieceGlowStrength: 0.9, // INSTÄLLNING - Ändra hur starkt blocken lyser.
-    ghostOpacity: 0.24, // INSTÄLLNING - Ändra hur tydlig ghost piece/landningsförhandsvisningen är.
-    boardGlowStrength: 0.55, // INSTÄLLNING - Ändra hur starkt spelbrädet glöder.
+    pieceGlowStrength: 0.24, // INSTÄLLNING - Ändra hur starkt Tetrafall-blocken lyser.
+    ghostOpacity: 0.22, // INSTÄLLNING - Ändra hur tydlig ghost piece ska vara.
+    boardGlowStrength: 0.45, // INSTÄLLNING - Ändra hur starkt spelbrädet glöder.
     previewCellSize: 14, // INSTÄLLNING - Ändra storleken på blocken i Hold/Next-förhandsvisningen.
-    previewGlowStrength: 0.8, // INSTÄLLNING - Ändra hur starkt Hold/Next-blocken lyser.
+    previewGlowStrength: 0.24, // INSTÄLLNING - Ändra hur starkt Hold/Next-blocken lyser.
     bestScoreKey: 'taren_tetrafall_best_score', // INSTÄLLNING - Ändra localStorage-nyckeln för bästa poäng.
 };
 

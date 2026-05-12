@@ -2,6 +2,8 @@
     --bloom-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
     --bloom-section-gap: 20px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och status. */
     --bloom-panel-size: min(480px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+    --node-glow-strength: 0.30; /* INSTÄLLNING - bloomGlowStrength */
+    --node-idle-opacity: 0.78; /* INSTÄLLNING - nodeIdleOpacity */
 }
 
 .fade-in-up.delay-1 {
@@ -12,10 +14,12 @@
     position: relative;
     width: 480px;
     height: 480px;
-    background-color: #08080a;
-    border: 1px solid var(--border);
+    background: radial-gradient(circle at center, #0a0a0f, #050507);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
-    box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        inset 0 12px 40px rgba(0, 0, 0, 0.9),
+        0 20px 60px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -30,25 +34,27 @@
 }
 
 .node {
-    background-color: #121216;
+    background: linear-gradient(135deg, #121218, #0a0a0e);
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     cursor: default;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: var(--node-idle-opacity);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
 }
 
 .node::after {
     content: "";
     position: absolute;
-    inset: 20%;
+    inset: 22%;
     border-radius: 50%;
     background-color: transparent;
-    transition: all 0.3s ease;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1);
 }
 
 .node.charge-1::after { background-color: rgba(139, 108, 255, 0.2); }
@@ -59,15 +65,23 @@
 .node.interactive:active { transform: scale(0.9); }
 
 .node.bloomed {
-    background-color: #fafafa;
+    background-color: #fff;
     border-color: #fff;
-    box-shadow: 0 0 25px #fff, 0 0 50px var(--accent-glow);
-    transform: scale(1.1);
+    box-shadow: 
+        0 0 20px #fff, 
+        0 0 40px var(--accent-glow);
+    transform: scale(1.15);
     z-index: 2;
+    opacity: 1;
 }
 
 .node.bloomed::after { display: none; }
-.node.reaction { background-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+.node.reaction { 
+    background-color: var(--accent); 
+    box-shadow: 0 0 30px var(--accent-glow);
+    transform: scale(1.2);
+    opacity: 1;
+}
 
 .overlay {
     position: absolute;

@@ -2,6 +2,7 @@
     --memory-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
     --memory-section-gap: 16px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och status. */
     --memory-panel-size: min(420px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+    --memory-tile-glow-alpha: 0.26; /* INSTÄLLNING - memoryPadGlowStrength */
 }
 
 .fade-in-up.delay-1 {
@@ -12,10 +13,12 @@
     position: relative;
     width: 420px;
     height: 420px;
-    background-color: #08080a;
-    border: 1px solid var(--border);
+    background: radial-gradient(circle at center, #0a0a0e, #050507);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
-    box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        inset 0 12px 40px rgba(0, 0, 0, 0.9),
+        0 20px 60px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -34,39 +37,49 @@
 }
 
 .tile {
-    background-color: #121216;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.02);
+    background: linear-gradient(135deg, #121216, #0e0e12);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
     cursor: default;
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
     overflow: hidden;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
 }
 
 .tile.interactive { cursor: pointer; }
-.tile.interactive:hover { background-color: #18181d; border-color: rgba(255, 255, 255, 0.05); }
-.tile.interactive:active { transform: scale(0.95); }
+.tile.interactive:hover { 
+    background: linear-gradient(135deg, #18181d, #141419);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+.tile.interactive:active { transform: scale(0.96); opacity: 0.8; }
 
 .tile.glow-show {
     background-color: var(--accent-glow);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 20px var(--accent-glow), inset 0 0 15px rgba(255, 255, 255, 0.2);
-    transform: scale(1.02);
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 
+        0 0 25px var(--accent-glow), 
+        inset 0 0 15px rgba(255, 255, 255, 0.25);
+    transform: scale(1.03);
     z-index: 2;
 }
 
 .tile.glow-input {
     background-color: var(--accent-glow);
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 25px var(--accent-glow), inset 0 0 20px rgba(255, 255, 255, 0.4);
-    transform: scale(0.95);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 
+        0 0 30px var(--accent-glow), 
+        inset 0 0 20px rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
     z-index: 2;
 }
 
 .tile.glow-error {
-    background-color: #4a1515;
-    border-color: #ff4c4c;
-    box-shadow: 0 0 20px rgba(255, 76, 76, 0.5);
+    background-color: #ff4c4c;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 35px #ff4c4c;
+    transform: scale(1.08);
+    z-index: 3;
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 

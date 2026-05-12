@@ -17,6 +17,10 @@ const SETTINGS = {
     playerColor: '#8b6cff', // INSTÄLLNING - Färg för spelarens handlingar.
     accentColor: '#4cc9f0', // INSTÄLLNING - Accentfärg för kedjereaktioner.
     
+    bloomGlowStrength: 0.30, // INSTÄLLNING - Ändra hur starkt Static Bloom-noderna lyser.
+    chainPulseStrength: 0.44, // INSTÄLLNING - Ändra hur tydlig kedjereaktionen är visuellt.
+    nodeIdleOpacity: 0.78, // INSTÄLLNING - Ändra hur synliga inaktiva noder är.
+    
     masterVolume: 0.22, // INSTÄLLNING - Ändra total ljudvolym för Static Bloom.
     clickVolume: 0.12, // INSTÄLLNING - Ljudvolym när en nod klickas.
     bloomVolume: 0.18, // INSTÄLLNING - Ljudvolym när en nod blommar.

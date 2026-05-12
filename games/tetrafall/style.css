@@ -1,11 +1,12 @@
 /* Tetrafall Styles */
 
 :root {
-    --tetrafall-board-bg: #131722; /* INSTÄLLNING - boardBg */
-    --tetrafall-slot-bg: #0b0f18; /* INSTÄLLNING - slotColor */
-    --tetrafall-border: rgba(255, 255, 255, 0.08);
+    --tetrafall-board-bg: #090b10; /* Darker board */
+    --tetrafall-slot-bg: #05070a; /* Darker slots */
+    --tetrafall-border: rgba(255, 255, 255, 0.06);
     --tetrafall-cell-size: 24px; /* INSTÄLLNING - cellSize */
-    --tetrafall-panel-bg: rgba(24, 24, 32, 0.6);
+    --tetrafall-panel-bg: rgba(18, 18, 24, 0.7);
+    --grid-line-alpha: 0.08; /* INSTÄLLNING - gridLineAlpha */
 }
 
 .preview-box {
@@ -53,10 +54,15 @@
     grid-template-columns: repeat(10, var(--tetrafall-cell-size));
     grid-template-rows: repeat(20, var(--tetrafall-cell-size));
     gap: 2px;
-    background: var(--tetrafall-board-bg);
+    background: 
+        linear-gradient(90deg, rgba(255,255,255,var(--grid-line-alpha)) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,var(--grid-line-alpha)) 1px, transparent 1px),
+        var(--tetrafall-board-bg);
+    background-size: var(--tetrafall-cell-size) var(--tetrafall-cell-size);
     padding: 4px;
     border-radius: 8px;
-    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .cell {
@@ -71,28 +77,33 @@
 .block {
     position: absolute;
     inset: 1px;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.25),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
 }
 
 .block::before {
     content: "";
     position: absolute;
-    inset: 0;
-    border-radius: 2px;
-    box-shadow: 0 0 8px currentColor;
-    opacity: var(--piece-glow, 0.8); /* INSTÄLLNING - pieceGlowStrength */
+    inset: -1px;
+    border-radius: 5px;
+    box-shadow: 0 0 12px currentColor;
+    opacity: var(--piece-glow, 0.24); /* INSTÄLLNING - blockGlowStrength */
+    z-index: -1;
 }
 
-/* Piece Colors */
-.color-i { color: #4cc9f0; background: #4cc9f0; }
-.color-j { color: #4361ee; background: #4361ee; }
-.color-l { color: #f72585; background: #f72585; }
-.color-o { color: #fee440; background: #fee440; }
-.color-s { color: #06d6a0; background: #06d6a0; }
-.color-t { color: #8b6cff; background: #8b6cff; }
-.color-z { color: #ff4d4d; background: #ff4d4d; }
+/* Piece Colors - Using slightly more curated, professional colors */
+.color-i { color: #4cc9f0; background: linear-gradient(180deg, #4cc9f0, #3ca8c9); }
+.color-j { color: #4361ee; background: linear-gradient(180deg, #4361ee, #3649c0); }
+.color-l { color: #f72585; background: linear-gradient(180deg, #f72585, #c51e6a); }
+.color-o { color: #fee440; background: linear-gradient(180deg, #fee440, #ccb633); }
+.color-s { color: #06d6a0; background: linear-gradient(180deg, #06d6a0, #05ab80); }
+.color-t { color: #8b6cff; background: linear-gradient(180deg, #8b6cff, #6f53cc); }
+.color-z { color: #ff4d4d; background: linear-gradient(180deg, #ff4d4d, #cc3d3d); }
 
 .ghost {
     opacity: 0.24; /* INSTÄLLNING - ghostOpacity */

@@ -18,6 +18,10 @@ const SETTINGS = {
     playerColor: '#8b6cff', // INSTÄLLNING - Ändra huvudfärgen för spelarens glow.
     accentColor: '#4cc9f0', // INSTÄLLNING - Ändra accentfärgen för extra glow och highlights.
     
+    memoryPadGlowStrength: 0.26, // INSTÄLLNING - Ändra hur starkt Memory Drift-rutorna lyser.
+    memoryActivePulse: 0.42, // INSTÄLLNING - Ändra hur tydlig aktiv sekvenspuls är.
+    memoryFailureGlow: 0.32, // INSTÄLLNING - Ändra hur tydlig misslyckad inmatning visas.
+    
     masterVolume: 0.22, // INSTÄLLNING - Ändra total ljudvolym för Memory Drift.
     showToneVolume: 0.16, // INSTÄLLNING - Ändra ljudvolym när spelet visar sekvensen.
     inputToneVolume: 0.18, // INSTÄLLNING - Ändra ljudvolym när spelaren klickar.
