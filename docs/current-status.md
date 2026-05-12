@@ -1,10 +1,10 @@
 # Taren Current Status
 
-**Current Build:** Build 39
+**Current Build:** Build 40
 
 ## Playable Games
-1.  **Threadline** — Logic / path puzzle. Build 39 stabilizes the game with a comprehensive level validation system, 24 repaired Hamiltonian levels, and a significant visual balance pass.
-2.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control by tracking the pointer outside the canvas.
+1.  **Threadline** — Logic / path puzzle. Build 40 implements fixed starting nodes for every level, improving gameplay clarity. The game now begins automatically from the start node, and reset/undo logic has been adjusted to preserve the initial state.
+2.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control.
 3.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug.
 4.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass.
 5.  **Pulseframe** — Reflex-based survival action.
@@ -19,12 +19,12 @@
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.
-- **Level Validation (Threadline):** Build 39 adds a background validator to ensure every level is mathematically solvable.
-- **Visual Balance Pass (Threadline):** Improved board textures, grid, and panel layout for a more premium "campaign" feel.
+- **Level Validation (Threadline):** Build 39+ ensures every level is mathematically solvable. Build 40 enforces required fixed starts.
+- **Visual Balance Pass (Threadline):** Optimized for a premium "campaign" feel.
 - **Isolated Architecture:** Each game remains self-contained.
 - **No-Scroll Layouts:** Optimized for desktop-first single-viewport play.
 
 ## Active Future Concepts
-- Threadline stability and level repair (Build 39).
-- Monitoring player progression through the 24 handcrafted levels.
+- Threadline fixed starts and gameplay refinement (Build 40).
+- Monitoring level difficulty curves.
 - Future quiet experiments may appear later.

@@ -24,37 +24,35 @@ const CONFIG = {
     bestLevelKey: 'taren_threadline_best_level', // INSTÄLLNING - Ändra localStorage-nyckeln för högsta upplåsta nivå.
 };
 
-// Handcrafted 24 Solvable Levels
+// Handcrafted 24 Solvable Levels with Fixed Starts
 const LEVELS = [
     // 1-4: INTRODUCTION
-    { id: 1, title: 'First Thread', diff: 'Easy', nodes: [{id:0,x:0.25,y:0.5},{id:1,x:0.5,y:0.5},{id:2,x:0.75,y:0.5}], edges: [[0,1],[1,2]], solution: [0,1,2] },
-    { id: 2, title: 'Corner', diff: 'Easy', nodes: [{id:0,x:0.3,y:0.35},{id:1,x:0.7,y:0.35},{id:2,x:0.7,y:0.65}], edges: [[0,1],[1,2]], solution: [0,1,2] },
-    { id: 3, title: 'The Arc', diff: 'Easy', nodes: [{id:0,x:0.2,y:0.6},{id:1,x:0.5,y:0.3},{id:2,x:0.8,y:0.6}], edges: [[0,1],[1,2]], solution: [0,1,2] },
-    { id: 4, title: 'Square Path', diff: 'Easy', nodes: [{id:0,x:0.35,y:0.35},{id:1,x:0.65,y:0.35},{id:2,x:0.65,y:0.65},{id:3,x:0.35,y:0.65}], edges: [[0,1],[1,2],[2,3],[3,0]], solution: [0,1,2,3] },
+    { id: 1, title: 'First Thread', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.25,y:0.5},{id:1,x:0.5,y:0.5},{id:2,x:0.75,y:0.5}], edges: [[0,1],[1,2]], solution: [0,1,2] },
+    { id: 2, title: 'Corner', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.35},{id:1,x:0.7,y:0.35},{id:2,x:0.7,y:0.65}], edges: [[0,1],[1,2]], solution: [0,1,2] },
+    { id: 3, title: 'The Arc', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.6},{id:1,x:0.5,y:0.3},{id:2,x:0.8,y:0.6}], edges: [[0,1],[1,2]], solution: [0,1,2] },
+    { id: 4, title: 'Square Path', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.35,y:0.35},{id:1,x:0.65,y:0.35},{id:2,x:0.65,y:0.65},{id:3,x:0.35,y:0.65}], edges: [[0,1],[1,2],[2,3],[3,0]], solution: [0,1,2,3] },
     // 5-8: BRANCHING
-    { id: 5, title: 'The Loop', diff: 'Normal', nodes: [{id:0,x:0.5,y:0.25},{id:1,x:0.75,y:0.5},{id:2,x:0.5,y:0.75},{id:3,x:0.25,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0]], solution: [0,1,2,3] },
-    { id: 6, title: 'Diamond Fold', diff: 'Normal', nodes: [{id:0,x:0.5,y:0.2},{id:1,x:0.8,y:0.5},{id:2,x:0.5,y:0.8},{id:3,x:0.2,y:0.5},{id:4,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0],[0,4]], solution: [1,2,3,0,4] },
-    { id: 7, title: 'Snake I', diff: 'Normal', nodes: [{id:0,x:0.2,y:0.3},{id:1,x:0.4,y:0.3},{id:2,x:0.6,y:0.3},{id:3,x:0.8,y:0.3},{id:4,x:0.8,y:0.7},{id:5,x:0.6,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5]], solution: [0,1,2,3,4,5] },
-    { id: 8, title: 'Zig Zag', diff: 'Normal', nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.5,y:0.5},{id:3,x:0.8,y:0.5},{id:4,x:0.8,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4]], solution: [0,1,2,3,4] },
+    { id: 5, title: 'The Loop', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.5,y:0.25},{id:1,x:0.75,y:0.5},{id:2,x:0.5,y:0.75},{id:3,x:0.25,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0]], solution: [0,1,2,3] },
+    { id: 6, title: 'Diamond Fold', diff: 'Normal', requiredStart: 1, nodes: [{id:0,x:0.5,y:0.2},{id:1,x:0.8,y:0.5},{id:2,x:0.5,y:0.8},{id:3,x:0.2,y:0.5},{id:4,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0],[0,4]], solution: [1,2,3,0,4] },
+    { id: 7, title: 'Snake I', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.3},{id:1,x:0.4,y:0.3},{id:2,x:0.6,y:0.3},{id:3,x:0.8,y:0.3},{id:4,x:0.8,y:0.7},{id:5,x:0.6,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5]], solution: [0,1,2,3,4,5] },
+    { id: 8, title: 'Zig Zag', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.5,y:0.5},{id:3,x:0.8,y:0.5},{id:4,x:0.8,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4]], solution: [0,1,2,3,4] },
     // 9-16: MEDIUM
-    { id: 9, title: 'The Ladder', diff: 'Normal', nodes: [{id:0,x:0.3,y:0.25},{id:1,x:0.7,y:0.25},{id:2,x:0.3,y:0.75},{id:3,x:0.7,y:0.75}], edges: [[0,1],[1,3],[3,2],[2,0]], solution: [0,1,3,2] },
-    { id: 10, title: 'Asymmetry', diff: 'Normal', nodes: [{id:0,x:0.2,y:0.5},{id:1,x:0.4,y:0.3},{id:2,x:0.6,y:0.3},{id:3,x:0.8,y:0.5},{id:4,x:0.5,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,0]], solution: [1,2,3,4,0] },
-    { id: 11, title: 'Double Star', diff: 'Hard', nodes: [{id:0,x:0.5,y:0.15},{id:1,x:0.85,y:0.4},{id:2,x:0.7,y:0.85},{id:3,x:0.3,y:0.85},{id:4,x:0.15,y:0.4},{id:5,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,0],[0,5],[1,5],[2,5],[3,5],[4,5]], solution: [0,4,3,2,1,5] },
-    { id: 12, title: 'Grid Path', diff: 'Hard', nodes: [{id:0,x:0.3,y:0.3},{id:1,x:0.5,y:0.3},{id:2,x:0.7,y:0.3},{id:3,x:0.7,y:0.7},{id:4,x:0.5,y:0.7},{id:5,x:0.3,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]], solution: [0,1,2,3,4,5] },
-    { id: 13, title: 'The Core', diff: 'Hard', nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.8,y:0.2},{id:2,x:0.8,y:0.8},{id:3,x:0.2,y:0.8},{id:4,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0],[4,0],[4,1],[4,2],[4,3]], solution: [1,2,3,0,4] },
-    { id: 14, title: 'Hourglass', diff: 'Hard', nodes: [{id:0,x:0.3,y:0.2},{id:1,x:0.7,y:0.2},{id:2,x:0.5,y:0.5},{id:3,x:0.3,y:0.8},{id:4,x:0.7,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4],[4,2],[2,0]], solution: [0,1,2,3,4] },
-    { id: 15, title: 'Butterfly', diff: 'Hard', nodes: [{id:0,x:0.2,y:0.25},{id:1,x:0.2,y:0.75},{id:2,x:0.5,y:0.5},{id:3,x:0.8,y:0.25},{id:4,x:0.8,y:0.75}], edges: [[0,1],[0,2],[1,2],[2,3],[2,4],[3,4]], solution: [0,1,2,3,4] },
-    { id: 16, title: 'The Bridge', diff: 'Hard', nodes: [{id:0,x:0.1,y:0.5},{id:1,x:0.3,y:0.5},{id:2,x:0.5,y:0.3},{id:3,x:0.5,y:0.7},{id:4,x:0.7,y:0.5},{id:5,x:0.9,y:0.5}], edges: [[0,1],[1,2],[1,3],[2,4],[3,4],[4,5]], solution: [0,1,2,4,3,1] }, // REPEATED 1. Correcting:
-    { id: 16, title: 'The Weaver', diff: 'Hard', nodes: [{id:0,x:0.2,y:0.5},{id:1,x:0.4,y:0.2},{id:2,x:0.6,y:0.2},{id:3,x:0.8,y:0.5},{id:4,x:0.6,y:0.8},{id:5,x:0.4,y:0.8},{id:6,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,6],[3,6]], solution: [1,2,3,4,5,0,6] },
+    { id: 9, title: 'The Ladder', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.25},{id:1,x:0.7,y:0.25},{id:2,x:0.3,y:0.75},{id:3,x:0.7,y:0.75}], edges: [[0,1],[1,3],[3,2],[2,0]], solution: [0,1,3,2] },
+    { id: 10, title: 'Asymmetry', diff: 'Normal', requiredStart: 1, nodes: [{id:0,x:0.2,y:0.5},{id:1,x:0.4,y:0.3},{id:2,x:0.6,y:0.3},{id:3,x:0.8,y:0.5},{id:4,x:0.5,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,0]], solution: [1,2,3,4,0] },
+    { id: 11, title: 'Double Star', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.5,y:0.15},{id:1,x:0.85,y:0.4},{id:2,x:0.7,y:0.85},{id:3,x:0.3,y:0.85},{id:4,x:0.15,y:0.4},{id:5,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,0],[0,5],[1,5],[2,5],[3,5],[4,5]], solution: [0,4,3,2,1,5] },
+    { id: 12, title: 'Grid Path', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.3},{id:1,x:0.5,y:0.3},{id:2,x:0.7,y:0.3},{id:3,x:0.7,y:0.7},{id:4,x:0.5,y:0.7},{id:5,x:0.3,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]], solution: [0,1,2,3,4,5] },
+    { id: 13, title: 'The Core', diff: 'Hard', requiredStart: 1, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.8,y:0.2},{id:2,x:0.8,y:0.8},{id:3,x:0.2,y:0.8},{id:4,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0],[4,0],[4,1],[4,2],[4,3]], solution: [1,2,3,0,4] },
+    { id: 14, title: 'Hourglass', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.2},{id:1,x:0.7,y:0.2},{id:2,x:0.5,y:0.5},{id:3,x:0.3,y:0.8},{id:4,x:0.7,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4],[4,2],[2,0]], solution: [0,1,2,3,4] },
+    { id: 15, title: 'Butterfly', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.25},{id:1,x:0.2,y:0.75},{id:2,x:0.5,y:0.5},{id:3,x:0.8,y:0.25},{id:4,x:0.8,y:0.75}], edges: [[0,1],[0,2],[1,2],[2,3],[2,4],[3,4]], solution: [0,1,2,3,4] },
+    { id: 16, title: 'The Weaver', diff: 'Hard', requiredStart: 1, nodes: [{id:0,x:0.2,y:0.5},{id:1,x:0.4,y:0.2},{id:2,x:0.6,y:0.2},{id:3,x:0.8,y:0.5},{id:4,x:0.6,y:0.8},{id:5,x:0.4,y:0.8},{id:6,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,6],[3,6]], solution: [1,2,3,4,5,0,6] },
     // 17-24: EXPERT
-    { id: 17, title: 'Web Spin', diff: 'Expert', nodes: [{id:0,x:0.5,y:0.15},{id:1,x:0.9,y:0.5},{id:2,x:0.5,y:0.85},{id:3,x:0.1,y:0.5},{id:4,x:0.35,y:0.35},{id:5,x:0.65,y:0.35},{id:6,x:0.65,y:0.65},{id:7,x:0.35,y:0.65}], edges: [[0,4],[4,1],[1,5],[5,0],[2,6],[6,3],[3,7],[7,2],[4,7],[5,6]], solution: [0,4,1,5,0] }, // WRONG. Correcting to Hamiltonian:
-    { id: 17, title: 'Spider', diff: 'Expert', nodes: [{id:0,x:0.5,y:0.2},{id:1,x:0.8,y:0.5},{id:2,x:0.5,y:0.8},{id:3,x:0.2,y:0.5},{id:4,x:0.4,y:0.4},{id:5,x:0.6,y:0.4},{id:6,x:0.6,y:0.6},{id:7,x:0.4,y:0.6}], edges: [[0,4],[4,5],[5,1],[1,6],[6,2],[2,7],[7,3],[3,4],[4,5],[5,6],[6,7],[7,4]], solution: [0,4,5,1,6,2,7,3] },
-    { id: 18, title: 'Maze Grid', diff: 'Expert', nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.5},{id:4,x:0.5,y:0.5},{id:5,x:0.2,y:0.5},{id:6,x:0.2,y:0.8},{id:7,x:0.5,y:0.8},{id:8,x:0.8,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[5,6],[6,7],[7,8],[8,3]], solution: [0,1,2,3,8,7,6,5,4] },
+    { id: 17, title: 'Spider', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.5,y:0.2},{id:1,x:0.8,y:0.5},{id:2,x:0.5,y:0.8},{id:3,x:0.2,y:0.5},{id:4,x:0.4,y:0.4},{id:5,x:0.6,y:0.4},{id:6,x:0.6,y:0.6},{id:7,x:0.4,y:0.6}], edges: [[0,4],[4,5],[5,1],[1,6],[6,2],[2,7],[7,3],[3,4],[4,5],[5,6],[6,7],[7,4]], solution: [0,4,5,1,6,2,7,3] },
+    { id: 18, title: 'Maze Grid', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.5},{id:4,x:0.5,y:0.5},{id:5,x:0.2,y:0.5},{id:6,x:0.2,y:0.8},{id:7,x:0.5,y:0.8},{id:8,x:0.8,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[5,6],[6,7],[7,8],[8,3]], solution: [0,1,2,3,8,7,6,5,4] },
     { id: 19, title: 'The Hook', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.8},{id:4,x:0.5,y:0.8},{id:5,x:0.5,y:0.5},{id:6,x:0.2,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]], solution: [0,1,2,3,4,5,6] },
-    { id: 20, title: 'Symmetry', diff: 'Expert', nodes: [{id:0,x:0.3,y:0.3},{id:1,x:0.7,y:0.3},{id:2,x:0.5,y:0.5},{id:3,x:0.3,y:0.7},{id:4,x:0.7,y:0.7},{id:5,x:0.1,y:0.5},{id:6,x:0.9,y:0.5}], edges: [[0,1],[1,6],[6,4],[4,3],[3,5],[5,0],[0,2],[1,2],[3,2],[4,2]], solution: [5,0,1,6,4,3,2] },
-    { id: 21, title: 'Void Walk', diff: 'Expert', nodes: [{id:0,x:0.2,y:0.3},{id:1,x:0.5,y:0.3},{id:2,x:0.8,y:0.3},{id:3,x:0.2,y:0.7},{id:4,x:0.5,y:0.7},{id:5,x:0.8,y:0.7}], edges: [[0,1],[1,4],[4,3],[3,0],[1,2],[2,5],[5,4]], solution: [0,3,4,1,2,5] },
-    { id: 22, title: 'Fractured', diff: 'Expert', nodes: [{id:0,x:0.2,y:0.1},{id:1,x:0.5,y:0.1},{id:2,x:0.8,y:0.1},{id:3,x:0.8,y:0.4},{id:4,x:0.5,y:0.4},{id:5,x:0.2,y:0.4},{id:6,x:0.2,y:0.7},{id:7,x:0.5,y:0.7},{id:8,x:0.8,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[5,6],[6,7],[7,4],[4,8],[8,3]], solution: [0,1,2,3,8,4,7,6,5] },
-    { id: 23, title: 'Threaded', diff: 'Expert', nodes: [{id:0,x:0.5,y:0.5},{id:1,x:0.2,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.8},{id:4,x:0.2,y:0.8},{id:5,x:0.5,y:0.2},{id:6,x:0.8,y:0.5},{id:7,x:0.5,y:0.8},{id:8,x:0.2,y:0.5}], edges: [[1,5],[5,2],[2,6],[6,3],[3,7],[7,4],[4,8],[8,1],[1,0],[2,0],[3,0],[4,0]], solution: [5,1,8,4,7,3,6,2,0] },
+    { id: 20, title: 'Symmetry', diff: 'Expert', requiredStart: 5, nodes: [{id:0,x:0.3,y:0.3},{id:1,x:0.7,y:0.3},{id:2,x:0.5,y:0.5},{id:3,x:0.3,y:0.7},{id:4,x:0.7,y:0.7},{id:5,x:0.1,y:0.5},{id:6,x:0.9,y:0.5}], edges: [[0,1],[1,6],[6,4],[4,3],[3,5],[5,0],[0,2],[1,2],[3,2],[4,2]], solution: [5,0,1,6,4,3,2] },
+    { id: 21, title: 'Void Walk', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.3},{id:1,x:0.5,y:0.3},{id:2,x:0.8,y:0.3},{id:3,x:0.2,y:0.7},{id:4,x:0.5,y:0.7},{id:5,x:0.8,y:0.7}], edges: [[0,1],[1,4],[4,3],[3,0],[1,2],[2,5],[5,4]], solution: [0,3,4,1,2,5] },
+    { id: 22, title: 'Fractured', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.1},{id:1,x:0.5,y:0.1},{id:2,x:0.8,y:0.1},{id:3,x:0.8,y:0.4},{id:4,x:0.5,y:0.4},{id:5,x:0.2,y:0.4},{id:6,x:0.2,y:0.7},{id:7,x:0.5,y:0.7},{id:8,x:0.8,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[5,6],[6,7],[7,4],[4,8],[8,3]], solution: [0,1,2,3,8,4,7,6,5] },
+    { id: 23, title: 'Threaded', diff: 'Expert', requiredStart: 5, nodes: [{id:0,x:0.5,y:0.5},{id:1,x:0.2,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.8},{id:4,x:0.2,y:0.8},{id:5,x:0.5,y:0.2},{id:6,x:0.8,y:0.5},{id:7,x:0.5,y:0.8},{id:8,x:0.2,y:0.5}], edges: [[1,5],[5,2],[2,6],[6,3],[3,7],[7,4],[4,8],[8,1],[1,0],[2,0],[3,0],[4,0]], solution: [5,1,8,4,7,3,6,2,0] },
     { id: 24, title: 'The Final Knot', diff: 'Master', requiredStart: 0, requiredEnd: 12, nodes: [
         {id:0,x:0.1,y:0.1},{id:1,x:0.5,y:0.1},{id:2,x:0.9,y:0.1},
         {id:3,x:0.9,y:0.5},{id:4,x:0.9,y:0.9},{id:5,x:0.5,y:0.9},
@@ -65,10 +63,8 @@ const LEVELS = [
         [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],
         [0,8],[2,9],[4,10],[6,11],[8,9],[9,10],[10,11],[11,8],
         [1,12],[3,12],[5,12],[7,12]
-    ], solution: [0,7,6,11,10,4,3,2,9,8,1,12,5] } // Adjusted to end at 5 since requiredEnd: 12 is tricky. Let's fix solution to end at 12.
+    ], solution: [0,7,6,11,8,9,2,3,4,10,5,1,12] }
 ];
-// Fix 24 solution to end at 12: 0-7-6-11-8-9-2-3-4-10-5-1-12.
-LEVELS[23].solution = [0,7,6,11,8,9,2,3,4,10,5,1,12];
 
 let canvas, ctx;
 let currentLevelIndex = 0;
@@ -128,9 +124,12 @@ function validateLevels() {
             }
         }
 
-        if (level.requiredStart !== undefined && level.requiredStart !== level.solution[0]) {
+        if (level.requiredStart === undefined) {
+            console.warn(`Level ${index + 1}: Missing requiredStart.`);
+        } else if (level.requiredStart !== level.solution[0]) {
             console.warn(`Level ${index + 1}: requiredStart does not match solution[0].`);
         }
+        
         if (level.requiredEnd !== undefined && level.requiredEnd !== level.solution[level.solution.length - 1]) {
             console.warn(`Level ${index + 1}: requiredEnd does not match solution last element.`);
         }
@@ -160,7 +159,10 @@ function setupEventListeners() {
 
 function loadLevel(index) {
     currentLevelIndex = index;
-    path = [];
+    const level = LEVELS[currentLevelIndex];
+    
+    // Auto-start at requiredStart
+    path = [level.requiredStart];
     isLevelCleared = false;
     invalidPulseNodeId = null;
     hintPulseNodeId = null;
@@ -170,7 +172,7 @@ function loadLevel(index) {
     
     updateHUD();
     updateLevelButtons();
-    setStatus("Choose a starting node.");
+    setStatus("Continue the thread.");
 }
 
 function handleMouseDown(e) {
@@ -190,29 +192,13 @@ function handleMouseDown(e) {
     }
 
     if (clickedNodeId !== -1) {
-        if (path.length === 0) {
-            startPath(clickedNodeId);
-        } else {
-            tryAddNode(clickedNodeId);
-        }
+        tryAddNode(clickedNodeId);
     }
 }
 
 function getCanvasPos(ratio, dimension) {
     const size = dimension === 'width' ? canvas.width : canvas.height;
     return CONFIG.boardPadding + ratio * (size - CONFIG.boardPadding * 2);
-}
-
-function startPath(nodeId) {
-    const level = LEVELS[currentLevelIndex];
-    if (level.requiredStart !== undefined && nodeId !== level.requiredStart) {
-        triggerInvalid(nodeId);
-        setStatus("Required start node must be used.");
-        return;
-    }
-    path = [nodeId];
-    setStatus("Continue the thread.");
-    updateHUD();
 }
 
 function tryAddNode(nodeId) {
@@ -239,17 +225,20 @@ function isConnected(id1, id2) {
 }
 
 function undoMove() {
-    if (isLevelCleared || path.length === 0) return;
+    if (isLevelCleared || path.length <= 1) {
+        if (path.length === 1) setStatus("Start point remains fixed.");
+        return;
+    }
     path.pop();
-    if (path.length === 0) setStatus("Choose a starting node.");
-    else setStatus("Last move undone.");
+    setStatus("Last move undone.");
     updateHUD();
 }
 
 function resetLevel() {
     if (isLevelCleared) return;
-    path = [];
-    setStatus("Path reset.");
+    const level = LEVELS[currentLevelIndex];
+    path = [level.requiredStart];
+    setStatus("Thread reset.");
     updateHUD();
 }
 
@@ -484,11 +473,11 @@ function render() {
         }
 
         // Markers for Required Start/End
-        if (level.requiredStart === node.id && !isVisited) {
+        if (level.requiredStart === node.id) {
             ctx.beginPath();
             ctx.arc(nx, ny, CONFIG.nodeRadius * 1.4, 0, Math.PI * 2);
             ctx.strokeStyle = "#fee440";
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 2;
             ctx.stroke();
         }
         if (level.requiredEnd === node.id) {
