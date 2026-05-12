@@ -58,16 +58,10 @@ const SETTINGS = {
             chargeTime: 1.2, // INSTÄLLNING - Ändra hur länge lasern siktar/varnar innan den skjuter (sekunder). Högre värde = lättare och mer rättvist.
             fireTime: 0.4, // INSTÄLLNING - Ändra hur länge lasern är aktiv/dödlig efter skottet (sekunder).
             collisionPadding: 10, // INSTÄLLNING - Ändra hur bred laserträffen är. Lägre värde = mer förlåtande.
-            chargeTrackingSpeed: 8, // INSTÄLLNING - Hur snabbt lasern följer spelaren under laddning.
-        },
+            chargeTrackingSpeed: 2.5, // INSTÄLLNING - Ändra hur snabbt lasern följer efter spelaren under siktandet.
+        }
     },
-    
-    pulseGlowStrength: 0.34, // INSTÄLLNING - Ändra hur starkt Pulseframe-spelaren/pulsen lyser.
-    pulseTrailAlpha: 0.18, // INSTÄLLNING - Ändra hur tydlig rörelsesvansen är.
-    hazardGlowStrength: 0.24, // INSTÄLLNING - Ändra hur tydligt hinder glöder.
-    arenaGlowStrength: 0.20, // INSTÄLLNING - Ändra hur starkt arenans bakgrundsglow syns.
-    
-    audio: {
+    pickups: {
         spawnChance: 0.05, // INSTÄLLNING - Ändra chansen (per spawn-tick) att en pickup dyker upp.
         maxOnScreen: 2, // INSTÄLLNING - Ändra hur många pickups som max får finnas samtidigt.
         scoreValue: 50, // INSTÄLLNING - Ändra hur många poäng en pickup ger.
@@ -78,15 +72,13 @@ const SETTINGS = {
     },
     particles: {
         ambientCount: 30, // INSTÄLLNING - Ändra hur många ambient-partiklar som rör sig i bakgrunden.
-        deathCount: 40, // INSTÄLLNING - Ändra hur många partiklar som sprängs ut vid död.
-        pickupCount: 8, // INSTÄLLNING - Ändra hur många partiklar som flyger ut vid pickup.
+        pickupCount: 15, // INSTÄLLNING - Ändra hur många partiklar som bildas när man tar en pickup.
+        deathCount: 40, // INSTÄLLNING - Ändra hur många partiklar som bildas när man dör.
     },
     audio: {
-        droneVolume: 0.08, // INSTÄLLNING - Ändra volymen på bakgrundsbrummet.
-        masterRampTime: 0.1, // INSTÄLLNING - Ändra hur mjukt ljudet startar.
-    },
-    ui: {
-        deathOverlayDelay: 280, // INSTÄLLNING - Ändra hur snabbt Game Over-rutan visas efter död. Lägre värde = snabbare restart-känsla.
+        masterVolume: 0.3, // INSTÄLLNING - Ändra total ljudvolym.
+        droneVolume: 0.04, // INSTÄLLNING - Ändra volym på bakgrundsljudet.
+        masterRampTime: 0.5, // INSTÄLLNING - Ändra hur mjukt ljudet tonas in (i sekunder).
     }
 };
 
@@ -95,14 +87,14 @@ const ctx = canvas.getContext('2d', { alpha: false });
 const container = document.getElementById('game-container');
 
 // UI Elements
-const hud = document.querySelector('.game-stats-grid');
-const startScreen = document.getElementById('startScreen');
-const gameOverScreen = document.getElementById('gameOverScreen');
+const hud = document.getElementById('hud');
 const scoreDisplay = document.getElementById('scoreDisplay');
 const waveDisplay = document.getElementById('waveDisplay');
-const finalScoreEl = document.getElementById('finalScore');
-const bestScoreEl = document.getElementById('bestScore');
-const nearMissIndicator = document.getElementById('nearMissIndicator');
+const bestScoreDisplay = document.getElementById('bestScoreDisplay');
+const startScreen = document.getElementById('startScreen');
+const gameOverScreen = document.getElementById('gameOverScreen');
+const finalScore = document.getElementById('finalScore');
+const finalBest = document.getElementById('finalBest');
 
 // Game State
 let gameState = 'MENU'; // MENU, PLAYING, GAMEOVER
@@ -337,40 +329,21 @@ class Player {
             for (let i = 1; i < this.trail.length; i++) {
                 ctx.lineTo(this.trail[i].x, this.trail[i].y);
             }
-            const speedFactor = Math.min(1, this.speed / 1000);
-            ctx.strokeStyle = `rgba(139, 108, 255, ${SETTINGS.pulseTrailAlpha + speedFactor * 0.2})`;
-            ctx.lineWidth = this.radius * 1.5;
+            const glowStrength = Math.min(1, this.speed / 1000);
+            ctx.strokeStyle = `rgba(139, 108, 255, ${0.3 + glowStrength * 0.3})`;
+            ctx.lineWidth = this.radius * 1.4;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
-            
-            // Core trail
-            ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + speedFactor * 0.1})`;
-            ctx.lineWidth = this.radius * 0.5;
-            ctx.stroke();
         }
-
-        // Pulse energy ring
-        const pulseRatio = (Math.sin(this.time * 10) + 1) / 2;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius + 4 + pulseRatio * 6, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(139, 108, 255, ${0.1 + pulseRatio * 0.2})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
 
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
-        ctx.shadowBlur = 20 * SETTINGS.pulseGlowStrength + Math.min(30, this.speed / SETTINGS.player.glowIntensityMult);
+        ctx.shadowBlur = 15 + Math.min(20, this.speed / SETTINGS.player.glowIntensityMult);
         ctx.shadowColor = '#8b6cff';
         ctx.fill();
         ctx.shadowBlur = 0;
-        
-        // Inner core shine
-        ctx.beginPath();
-        ctx.arc(this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.2, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.fill();
     }
 }
 
@@ -414,14 +387,8 @@ class EnemyOrb {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#f87171';
-        ctx.shadowBlur = 20 * SETTINGS.hazardGlowStrength;
-        ctx.shadowColor = '#f87171';
-        ctx.fill();
-        
-        // Threat core
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'rgba(248, 113, 113, 0.6)';
         ctx.fill();
         ctx.shadowBlur = 0;
     }
@@ -460,17 +427,9 @@ class PulseWave {
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(45, 212, 191, ${alpha})`;
         ctx.lineWidth = this.thickness;
-        ctx.shadowBlur = 25 * SETTINGS.hazardGlowStrength * alpha;
-        ctx.shadowColor = '#2dd4bf';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(45, 212, 191, 0.5)';
         ctx.stroke();
-        
-        // Inner edge highlight
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius - this.thickness/2, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.2})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        
         ctx.shadowBlur = 0;
     }
 }
@@ -495,7 +454,7 @@ class LaserSweep {
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
             
-            const trackingSpeed = Math.max(0.5, this.chargeTime * SETTINGS.threats.laser.chargeTrackingSpeed);
+            const trackingSpeed = Math.max(0.5, this.chargeTime * 8);
             this.angle += diff * trackingSpeed * dt;
 
             if (Math.random() < 0.4) {
@@ -642,20 +601,49 @@ class Particle {
     update(dt) {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
-        this.vx *= 0.95;
-        this.vy *= 0.95;
-        
-        this.life -= dt * this.decay;
+        this.life -= this.decay * dt;
         if (this.life <= 0) this.markedForDeletion = true;
     }
 
     draw(ctx) {
+        ctx.globalAlpha = this.life;
         ctx.fillStyle = this.color;
-        ctx.globalAlpha = Math.max(0, this.life);
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(this.x - 1, this.y - 1, 2, 2);
         ctx.globalAlpha = 1;
+    }
+}
+
+class AmbientParticle {
+    constructor() {
+        this.reset();
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+    }
+
+    reset() {
+        const angle = Math.random() * Math.PI * 2;
+        this.x = centerX + Math.cos(angle) * arenaRadius * 1.5;
+        this.y = centerY + Math.sin(angle) * arenaRadius * 1.5;
+        const speed = 20 + Math.random() * 40;
+        const targetAngle = Math.atan2(centerY - this.y, centerX - this.x) + (Math.random() - 0.5);
+        this.vx = Math.cos(targetAngle) * speed;
+        this.vy = Math.sin(targetAngle) * speed;
+        this.size = 1 + Math.random() * 2;
+        this.alpha = 0.1 + Math.random() * 0.2;
+    }
+
+    update(dt) {
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        
+        if (dist(this.x, this.y, centerX, centerY) > arenaRadius * 2) {
+            this.reset();
+        }
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = `rgba(139, 108, 255, ${this.alpha})`;
+        ctx.fillRect(this.x, this.y, this.size, this.size);
     }
 }
 
@@ -663,75 +651,44 @@ class MicroParticle {
     constructor(x, y, angle) {
         this.x = x;
         this.y = y;
-        const spread = (Math.random() - 0.5) * 0.5;
-        const speed = 20 + Math.random() * 50;
-        this.vx = Math.cos(angle + spread) * speed;
-        this.vy = Math.sin(angle + spread) * speed;
+        const speed = 50 + Math.random() * 100;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
         this.life = 0.5 + Math.random() * 0.5;
         this.markedForDeletion = false;
     }
+
     update(dt) {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
-        this.life -= dt * 2;
+        this.life -= dt;
         if (this.life <= 0) this.markedForDeletion = true;
     }
+
     draw(ctx) {
-        ctx.fillStyle = `rgba(139, 108, 255, ${this.life})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.life * 0.5})`;
+        ctx.fillRect(this.x, this.y, 1, 1);
     }
 }
 
-class AmbientParticle {
-    constructor() {
-        this.reset(true);
+// Logic Utils
+function spawnThreats() {
+    const chance = Math.random();
+    if (chance < 0.6) {
+        enemies.push(new EnemyOrb());
+    } else if (chance < 0.85) {
+        enemies.push(new PulseWave());
+    } else {
+        enemies.push(new LaserSweep());
     }
-    reset(randomizeParams = false) {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        if (randomizeParams) {
-            this.size = 2 + Math.random() * 6;
-            this.vx = (Math.random() - 0.5) * 10;
-            this.vy = -10 - Math.random() * 20;
-            this.opacity = 0.02 + Math.random() * 0.05;
-        }
-    }
-    update(dt) {
-        this.x += this.vx * dt;
-        this.y += this.vy * dt;
-        if (this.y < -10 || this.x < -10 || this.x > canvas.width + 10) {
-            this.reset();
-            this.y = canvas.height + 10;
-        }
-    }
-    draw(ctx) {
-        ctx.fillStyle = `rgba(139, 108, 255, ${this.opacity})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
 
-// Systems
-function initAmbient() {
-    ambientParticles = [];
-    for (let i = 0; i < SETTINGS.particles.ambientCount; i++) {
-        ambientParticles.push(new AmbientParticle());
-    }
-}
-
-function createParticles(x, y, color, count, maxSpeed = 300) {
-    for (let i = 0; i < count; i++) {
-        particles.push(new Particle(x, y, color, maxSpeed));
+    if (Math.random() < SETTINGS.pickups.spawnChance && pickups.length < SETTINGS.pickups.maxOnScreen) {
+        pickups.push(new Pickup());
     }
 }
 
 function checkCollision(ex, ey, er) {
-    if (gameState !== 'PLAYING') return;
     const d = dist(player.x, player.y, ex, ey);
-    
     if (d < player.radius + er) {
         killPlayer();
     } else if (d < player.radius + er + SETTINGS.nearMiss.distancePadding) {
@@ -740,100 +697,68 @@ function checkCollision(ex, ey, er) {
 }
 
 function triggerNearMiss() {
-    if (nearMissCooldown <= 0 && gameState === 'PLAYING') {
-        addScore(SETTINGS.nearMiss.bonus);
-        playSound('nearmiss');
-        nearMissCooldown = SETTINGS.nearMiss.cooldown;
-        
-        enemyTimeScale = SETTINGS.nearMiss.timeDilationScale;
-        arenaPulseScale = SETTINGS.nearMiss.arenaPulseScale;
-        
-        nearMissIndicator.classList.remove('hidden');
-        nearMissIndicator.classList.remove('near-miss-anim');
-        void nearMissIndicator.offsetWidth; 
-        
-        const rect = canvas.getBoundingClientRect();
-        const screenX = rect.left + player.x;
-        const screenY = rect.top + player.y - 30; 
-        
-        nearMissIndicator.style.left = `${screenX}px`;
-        nearMissIndicator.style.top = `${screenY}px`;
-        nearMissIndicator.classList.add('near-miss-anim');
-        
-        setTimeout(() => {
-            if (nearMissIndicator.classList.contains('near-miss-anim')) {
-                nearMissIndicator.classList.add('hidden');
-                nearMissIndicator.classList.remove('near-miss-anim');
-            }
-        }, SETTINGS.nearMiss.popupLifetime);
-    }
+    if (nearMissCooldown > 0) return;
+    
+    addScore(SETTINGS.nearMiss.bonus);
+    playSound('nearmiss');
+    nearMissCooldown = SETTINGS.nearMiss.cooldown;
+    
+    // Time Dilation
+    enemyTimeScale = SETTINGS.nearMiss.timeDilationScale;
+    arenaPulseScale = SETTINGS.nearMiss.arenaPulseScale;
+    
+    // Popup
+    const indicator = document.getElementById('nearMissIndicator');
+    indicator.style.left = `${player.x}px`;
+    indicator.style.top = `${player.y}px`;
+    indicator.classList.remove('hidden');
+    indicator.classList.remove('near-miss-anim');
+    void indicator.offsetWidth;
+    indicator.classList.add('near-miss-anim');
+    
+    setTimeout(() => indicator.classList.add('hidden'), SETTINGS.nearMiss.popupLifetime);
 }
 
 function triggerArenaFlash(intensity, x, y) {
-    arenaFlashIntensity = Math.max(arenaFlashIntensity, intensity);
+    arenaFlashIntensity = Math.min(1, arenaFlashIntensity + intensity);
+    createParticles(x, y, '#8b6cff', 5, 100);
 }
 
-function addScore(amount) {
-    score += amount;
-    displayScore = Math.floor(score);
-    scoreDisplay.innerText = `Score: ${displayScore}`;
-    
-    scoreDisplay.classList.remove('score-pulse');
-    void scoreDisplay.offsetWidth;
-    scoreDisplay.classList.add('score-pulse');
-    setTimeout(() => scoreDisplay.classList.remove('score-pulse'), 150);
+function createParticles(x, y, color, count, speed) {
+    for (let i = 0; i < count; i++) {
+        particles.push(new Particle(x, y, color, speed));
+    }
+}
+
+function addScore(amt) {
+    score += amt;
 }
 
 function killPlayer() {
+    if (gameState !== 'PLAYING') return;
+    
     gameState = 'GAME_OVER';
     playSound('death');
     stopDrone();
+    createParticles(player.x, player.y, '#ffffff', SETTINGS.particles.deathCount, 400);
     
-    player.trail = [];
-    
-    createParticles(player.x, player.y, '#fff', SETTINGS.particles.deathCount, 500);
-    createParticles(player.x, player.y, '#8b6cff', SETTINGS.particles.deathCount, 400);
-    
-    arenaFlashIntensity = 1.0;
-    hud.classList.add('hidden');
-    
-    if (score > bestScore) {
+    if (Math.floor(score) > bestScore) {
         bestScore = Math.floor(score);
         localStorage.setItem('pulseframe_best', bestScore);
     }
     
-    finalScoreEl.innerText = Math.floor(score);
-    bestScoreEl.innerText = bestScore;
+    finalScore.innerText = Math.floor(score);
+    finalBest.innerText = bestScore;
     
     setTimeout(() => {
         gameOverScreen.classList.remove('hidden');
-    }, SETTINGS.ui.deathOverlayDelay);
+    }, 1000);
 }
 
-function spawnThreats() {
-    let enemyCount = enemies.length;
-    let maxEnemies = Math.floor(2 + wave * 1.5);
-    
-    if (enemyCount < maxEnemies) {
-        const rand = Math.random();
-        if (wave === 1) {
-            enemies.push(new EnemyOrb());
-        } else if (wave === 2) {
-            if (rand < 0.25) enemies.push(new PulseWave());
-            else enemies.push(new EnemyOrb());
-        } else if (wave === 3) {
-            if (rand < 0.2) enemies.push(new LaserSweep());
-            else if (rand < 0.3) enemies.push(new PulseWave());
-            else enemies.push(new EnemyOrb());
-        } else {
-            if (rand < 0.25) enemies.push(new LaserSweep());
-            else if (rand < 0.35) enemies.push(new PulseWave());
-            else enemies.push(new EnemyOrb());
-        }
-    }
-
-    if (Math.random() < SETTINGS.pickups.spawnChance && pickups.length < SETTINGS.pickups.maxOnScreen) {
-        pickups.push(new Pickup());
+function initAmbient() {
+    ambientParticles = [];
+    for (let i = 0; i < SETTINGS.particles.ambientCount; i++) {
+        ambientParticles.push(new AmbientParticle());
     }
 }
 
@@ -940,34 +865,18 @@ function draw() {
     
     const baseAlpha = gameState === 'GAME_OVER' ? 0.05 : SETTINGS.arena.baseAlpha;
     const pulseAlpha = Math.sin(Date.now() / SETTINGS.arena.pulseSpeed) * SETTINGS.arena.pulseAlpha;
-    const currentAlpha = (baseAlpha + pulseAlpha + arenaFlashIntensity) * (SETTINGS.arenaGlowStrength * 5);
+    const currentAlpha = baseAlpha + pulseAlpha + arenaFlashIntensity;
     
     ctx.strokeStyle = `rgba(139, 108, 255, ${Math.min(1, currentAlpha)})`;
-    ctx.lineWidth = 2 + arenaFlashIntensity * 8;
+    ctx.lineWidth = 2 + arenaFlashIntensity * 5;
     
-    ctx.shadowBlur = 15 * currentAlpha + (arenaFlashIntensity * 30);
-    ctx.shadowColor = '#8b6cff';
+    if (arenaFlashIntensity > 0) {
+        ctx.shadowBlur = 20 * arenaFlashIntensity;
+        ctx.shadowColor = '#8b6cff';
+    }
     
     ctx.stroke();
     ctx.shadowBlur = 0;
-    
-    // Background Pulse Grid
-    if (gameState === 'PLAYING') {
-        const gridPulse = (Math.sin(Date.now() / 2000) + 1) / 2;
-        ctx.strokeStyle = `rgba(139, 108, 255, ${gridPulse * 0.03})`;
-        ctx.lineWidth = 1;
-        const gridSize = 50;
-        ctx.beginPath();
-        for (let x = centerX - arenaRadius; x <= centerX + arenaRadius; x += gridSize) {
-            ctx.moveTo(x, centerY - arenaRadius);
-            ctx.lineTo(x, centerY + arenaRadius);
-        }
-        for (let y = centerY - arenaRadius; y <= centerY + arenaRadius; y += gridSize) {
-            ctx.moveTo(centerX - arenaRadius, y);
-            ctx.lineTo(centerX + arenaRadius, y);
-        }
-        ctx.stroke();
-    }
     
     if (gameState === 'PLAYING') {
         pickups.forEach(p => p.draw(ctx));

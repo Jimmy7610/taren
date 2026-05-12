@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 90 (Pulseframe: Focused final visual polish and atmospheric enhancements)
+**Current Build:** Build 91 (Pulseframe: Gameplay restored after Build 90 visual polish regression)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.
