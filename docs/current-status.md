@@ -1,9 +1,9 @@
 # Taren Current Status
 
-**Current Build:** Build 45
+**Current Build:** Build 46
 
 ## Playable Games
-1.  **Ashveil** — Logic / Minesweeper-style puzzle. Build 45 adds this as a playable game.
+1.  **Ashveil** — Logic / Minesweeper-style puzzle. Build 46 improves the desktop layout to a 3-column shell (no-scroll) and adds dynamic tile scaling.
 2.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control.
 3.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass.
 4.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug.

@@ -5,41 +5,42 @@
 // ==================================================
 
 const CONFIG = {
-    tileSize: 36,        // INSTÄLLNING - Ändra grundstorleken på varje ruta (används i CSS men kan styras här).
+    tileSize: 36,        // INSTÄLLNING - Maxstorlek på rutorna.
+    minTileSize: 24,     // INSTÄLLNING - Minsta storlek på rutorna när fältet måste skalas ner.
     tileGap: 3,         // INSTÄLLNING - Avståndet mellan rutorna.
+    boardMaxViewportHeight: 0.72, // INSTÄLLNING - Max höjd på brädet i % av viewporten.
     firstClickSafe: true, // INSTÄLLNING - Om första klicket alltid ska vara säkert.
-    longPressDelay: 400, // INSTÄLLNING - Hur länge man håller (ms) på mobil för att markera (om touch-stöd används).
     bestTimeKeyPrefix: "taren_ashveil_best_", // INSTÄLLNING - Prefix för localStorage.
 };
 
 const DIFFICULTIES = {
     quiet: {
         label: "Quiet",
-        cols: 9,      // INSTÄLLNING - Kolumner för Quiet.
-        rows: 9,      // INSTÄLLNING - Rader för Quiet.
-        embers: 10    // INSTÄLLNING - Antal farliga rutor för Quiet.
+        cols: 9,
+        rows: 9,
+        embers: 10
     },
     deep: {
         label: "Deep",
-        cols: 16,     // INSTÄLLNING - Kolumner för Deep.
-        rows: 12,     // INSTÄLLNING - Rader för Deep.
-        embers: 28    // INSTÄLLNING - Antal farliga rutor för Deep.
+        cols: 16,
+        rows: 12,
+        embers: 28
     },
     abyss: {
         label: "Abyss",
-        cols: 20,     // INSTÄLLNING - Kolumner för Abyss.
-        rows: 14,     // INSTÄLLNING - Rader för Abyss.
-        embers: 48    // INSTÄLLNING - Antal farliga rutor för Abyss.
+        cols: 20,
+        rows: 14,
+        embers: 48
     }
 };
 
 class Ashveil {
     constructor() {
         this.difficulty = 'quiet';
-        this.board = []; // Array of cell objects: { isEmber, isRevealed, isMarked, neighborCount }
+        this.board = [];
         this.gameActive = false;
         this.isFirstClick = true;
-        this.mode = 'reveal'; // 'reveal' or 'mark'
+        this.mode = 'reveal';
         
         this.timer = 0;
         this.timerInterval = null;
@@ -53,6 +54,7 @@ class Ashveil {
         this.movesEl = document.getElementById('moves-count');
         this.bestEl = document.getElementById('best-time');
         this.statusEl = document.getElementById('status');
+        this.diffLabelEl = document.getElementById('hud-diff-label');
 
         this.init();
     }
@@ -70,15 +72,21 @@ class Ashveil {
             if (e.key === '2') this.setDifficulty('deep');
             if (e.key === '3') this.setDifficulty('abyss');
         });
+
+        // Resize listener for responsive board
+        window.addEventListener('resize', () => this.resizeBoard());
     }
 
     setDifficulty(key) {
         if (!DIFFICULTIES[key]) return;
         this.difficulty = key;
+        this.diffLabelEl.textContent = DIFFICULTIES[key].label;
         
         // Update UI
-        document.querySelectorAll('.ash-controls .btn').forEach(btn => btn.classList.remove('btn-primary'));
-        document.querySelectorAll('.ash-controls .btn').forEach(btn => btn.classList.add('btn-secondary'));
+        document.querySelectorAll('.ash-difficulty-buttons .btn').forEach(btn => {
+            btn.classList.remove('btn-primary');
+            btn.classList.add('btn-secondary');
+        });
         document.getElementById(`btn-${key}`).classList.remove('btn-secondary');
         document.getElementById(`btn-${key}`).classList.add('btn-primary');
         
@@ -120,7 +128,27 @@ class Ashveil {
         }
         
         this.fieldEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-        this.fieldEl.style.width = `calc(${cols} * (var(--tile-size) + var(--tile-gap)))`;
+        this.resizeBoard();
+    }
+
+    resizeBoard() {
+        const config = DIFFICULTIES[this.difficulty];
+        const vh = window.innerHeight;
+        const vw = window.innerWidth;
+        
+        // Calculate available space
+        const maxH = vh * CONFIG.boardMaxViewportHeight;
+        const maxW = vw > 1024 ? vw - 650 : vw - 40; // 650 is estimated panels width
+        
+        // Potential tile sizes
+        const sizeByH = (maxH - (config.rows * CONFIG.tileGap)) / config.rows;
+        const sizeByW = (maxW - (config.cols * CONFIG.tileGap)) / config.cols;
+        
+        let size = Math.min(sizeByH, sizeByW, CONFIG.tileSize);
+        size = Math.max(size, CONFIG.minTileSize);
+        
+        document.documentElement.style.setProperty('--tile-size', `${size}px`);
+        this.fieldEl.style.width = `calc(${config.cols} * (${size}px + ${CONFIG.tileGap}px) - ${CONFIG.tileGap}px)`;
     }
 
     // Place embers AFTER first click to guarantee safety

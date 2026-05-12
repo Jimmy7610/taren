@@ -20,13 +20,21 @@
     <main class="fade-in-up delay-1">
         <div class="container">
             <div class="game-play-layout">
-                <div class="game-main-column">
-                    <header class="ash-header">
+                <!-- Left Panel: Controls & Info -->
+                <aside class="game-left-panel">
+                    <header class="ash-header-panel">
+                        <span class="ash-label">Logic</span>
                         <h1>Ashveil</h1>
                         <p class="ash-subtitle">Clear the field without waking what lies below.</p>
                     </header>
 
-                    <div class="ash-hud">
+                    <div id="status" class="ash-status-box">Read the field.</div>
+
+                    <div class="ash-hud-grid">
+                        <div class="hud-item">
+                            <span class="hud-label">Difficulty</span>
+                            <span id="hud-diff-label" class="hud-value">Quiet</span>
+                        </div>
                         <div class="hud-item">
                             <span class="hud-label">Time</span>
                             <span id="timer" class="hud-value">0:00</span>
@@ -39,34 +47,42 @@
                             <span class="hud-label">Moves</span>
                             <span id="moves-count" class="hud-value">0</span>
                         </div>
-                        <div class="hud-item">
+                        <div class="hud-item hud-full">
                             <span class="hud-label">Best</span>
                             <span id="best-time" class="hud-value">--</span>
                         </div>
                     </div>
 
-                    <div class="ash-controls">
-                        <button class="btn btn-secondary" onclick="game.setDifficulty('quiet')" id="btn-quiet">Quiet</button>
-                        <button class="btn btn-secondary" onclick="game.setDifficulty('deep')" id="btn-deep">Deep</button>
-                        <button class="btn btn-secondary" onclick="game.setDifficulty('abyss')" id="btn-abyss">Abyss</button>
+                    <div class="panel-section">
+                        <span class="section-label">Field Depth</span>
+                        <div class="ash-difficulty-buttons">
+                            <button class="btn btn-secondary btn-small" onclick="game.setDifficulty('quiet')" id="btn-quiet">Quiet</button>
+                            <button class="btn btn-secondary btn-small" onclick="game.setDifficulty('deep')" id="btn-deep">Deep</button>
+                            <button class="btn btn-secondary btn-small" onclick="game.setDifficulty('abyss')" id="btn-abyss">Abyss</button>
+                        </div>
                     </div>
 
-                    <div class="mode-toggle">
-                        <button id="mode-reveal" class="mode-btn active" onclick="game.setMode('reveal')">Reveal</button>
-                        <button id="mode-mark" class="mode-btn" onclick="game.setMode('mark')">Mark</button>
+                    <div class="panel-section">
+                        <span class="section-label">Interaction Mode</span>
+                        <div class="mode-toggle">
+                            <button id="mode-reveal" class="mode-btn active" onclick="game.setMode('reveal')">Reveal</button>
+                            <button id="mode-mark" class="mode-btn" onclick="game.setMode('mark')">Mark</button>
+                        </div>
                     </div>
 
-                    <div id="status" class="ash-status">Read the field.</div>
+                    <div class="panel-section mt-auto">
+                        <button class="btn btn-block" onclick="game.reset()">New Field</button>
+                    </div>
+                </aside>
 
+                <!-- Center: Game Board -->
+                <div class="game-main-column">
                     <div class="ash-field-wrapper">
                         <div id="field" class="ash-field"></div>
                     </div>
-
-                    <div class="mt-4">
-                        <button class="btn" onclick="game.reset()">New Field</button>
-                    </div>
                 </div>
 
+                <!-- Right Panel: Help -->
                 <aside class="game-help-panel">
                     <h2 class="game-help-title">How to play</h2>
                     <ul class="game-help-list">
