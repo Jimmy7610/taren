@@ -4,15 +4,15 @@
 */
 
 :root {
-    --fourfold-board-bg: #131722; /* INSTÄLLNING - boardBg */
-    --fourfold-slot-bg: #0b0f18; /* INSTÄLLNING - slotColor */
+    --fourfold-board-bg: #111114;
+    --fourfold-slot-bg: #050507;
     --fourfold-panel-bg: rgba(24, 24, 32, 0.7);
-    --fourfold-border: rgba(255, 255, 255, 0.08);
-    --fourfold-accent-soft: rgba(139, 108, 255, 0.1);
-    --fourfold-board-radius: 20px;
+    --fourfold-border: rgba(255, 255, 255, 0.05);
+    --fourfold-accent-soft: rgba(139, 108, 255, 0.08);
+    --fourfold-board-radius: 4px;
     --fourfold-gap: 32px;
-    --fourfold-piece-glow: 15px;
-    --fourfold-win-pulse: 1.25;
+    --fourfold-piece-glow: 20px;
+    --fourfold-win-pulse: 1.15;
 }
 
 .board-area {
@@ -81,12 +81,13 @@
 /* Board Layout */
 .board {
     display: grid;
-    gap: 12px; /* INSTÄLLNING - gap */
-    background: var(--fourfold-board-bg);
-    padding: 16px;
+    gap: 12px;
+    background: radial-gradient(circle at 50% 50%, #16161a, #0b0b0e);
+    padding: 24px;
     border-radius: 12px;
-    border: 1px solid var(--fourfold-border);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.6),
+                0 20px 50px rgba(0,0,0,0.5);
     margin: 0 auto;
     max-width: 520px;
 }
@@ -99,7 +100,8 @@
     cursor: pointer;
     position: relative;
     transition: background 0.3s var(--hover-ease);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.8),
+                0 1px 0 rgba(255,255,255,0.05);
 }
 
 .cell.column-hover {
@@ -123,13 +125,17 @@
 }
 
 .piece.player {
-    background: #8b6cff; /* INSTÄLLNING - playerColor */
-    box-shadow: 0 0 15px rgba(139, 108, 255, 0.5);
+    background: radial-gradient(circle at 35% 35%, #8b6cff, #4c1d95);
+    box-shadow: 0 0 20px rgba(139, 108, 255, 0.4),
+                inset 0 -2px 5px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .piece.computer {
-    background: #4cc9f0; /* INSTÄLLNING - computerColor */
-    box-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
+    background: radial-gradient(circle at 35% 35%, #4cc9f0, #0369a1);
+    box-shadow: 0 0 20px rgba(76, 201, 240, 0.4),
+                inset 0 -2px 5px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .piece.win-highlight {

@@ -12,6 +12,11 @@ const CONFIG = {
     betweenFlashDelay: 180,     // INSTÄLLNING - Ändra pausen mellan ljusblinkningar.
     speedIncreasePerRound: 12,  // INSTÄLLNING - Ändra hur mycket snabbare spelet blir per runda.
     bestRoundKey: "taren_lumen_sequence_best_round", // INSTÄLLNING - Ändra localStorage-nyckeln för bästa runda.
+
+    // VISUAL POLISH
+    padGlowStrength: 0.26,      // INSTÄLLNING - Ändra hur starkt Lumen-knapparna lyser.
+    activePulseStrength: 0.44,  // INSTÄLLNING - Ändra hur tydlig aktiv sekvenspuls är.
+    failureGlowStrength: 0.34,  // INSTÄLLNING - Ändra hur tydlig misslyckad knapptryckning visas.
 };
 
 const FREQUENCIES = [261.63, 329.63, 392.00, 523.25, 659.25]; // C4, E4, G4, C5, E5

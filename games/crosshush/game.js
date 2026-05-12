@@ -14,6 +14,11 @@ const CONFIG = {
     stepScore: 10,             // INSTÄLLNING - Ändra poäng per säkert steg.
     levelClearScore: 500,      // INSTÄLLNING - Ändra poängbonus när en level klaras.
     bestScoreKey: "taren_crosshush_best_score", // INSTÄLLNING - Ändra localStorage-nyckeln för bästa poäng.
+
+    // VISUAL POLISH
+    laneGlowStrength: 0.16,     // INSTÄLLNING - Ändra hur starkt banornas glow syns.
+    travelerGlowStrength: 0.30, // INSTÄLLNING - Ändra hur starkt spelaren lyser.
+    hazardGlowStrength: 0.24,   // INSTÄLLNING - Ändra hur tydligt hinder glöder.
 };
 
 class Crosshush {
@@ -216,50 +221,81 @@ class Crosshush {
     }
 
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // Deep Atmospheric Background
+        const bgGrad = this.ctx.createRadialGradient(this.canvas.width/2, this.canvas.height/2, 0, this.canvas.width/2, this.canvas.height/2, this.canvas.width);
+        bgGrad.addColorStop(0, '#0c0c0e');
+        bgGrad.addColorStop(1, '#050507');
+        this.ctx.fillStyle = bgGrad;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Draw Lanes
         this.lanes.forEach((lane, r) => {
+            // Lane Surface
             this.ctx.fillStyle = lane.color;
             this.ctx.fillRect(0, lane.y, this.canvas.width, CONFIG.cellSize);
             
-            // Draw separators
-            this.ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            // Lane Depth/Separators
+            this.ctx.strokeStyle = `rgba(139, 108, 255, ${CONFIG.laneGlowStrength * 0.5})`;
+            this.ctx.lineWidth = 1;
             this.ctx.beginPath();
             this.ctx.moveTo(0, lane.y);
             this.ctx.lineTo(this.canvas.width, lane.y);
             this.ctx.stroke();
 
-            // Draw Hazards
+            // Goal Visual
+            if (r === 0) {
+                const goalPulse = Math.sin(Date.now() / 400) * 0.05 + 0.1;
+                this.ctx.fillStyle = `rgba(76, 201, 240, ${goalPulse})`;
+                this.ctx.fillRect(0, 0, this.canvas.width, CONFIG.cellSize);
+                
+                // Signal line
+                this.ctx.strokeStyle = `rgba(76, 201, 240, ${goalPulse * 2})`;
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeRect(4, 4, this.canvas.width - 8, CONFIG.cellSize - 8);
+            }
+
+            // Draw Hazards: Quiet Drifting Hazards
             if (lane.type === 'hazard') {
-                this.ctx.fillStyle = '#8b6cff';
-                this.ctx.shadowBlur = 10;
+                this.ctx.shadowBlur = 15;
                 this.ctx.shadowColor = '#8b6cff';
                 lane.hazards.forEach(h => {
-                    this.ctx.fillRect(h.x, lane.y + 10, h.w, CONFIG.cellSize - 20);
+                    // Crystalline/Metallic hazard
+                    const hazGrad = this.ctx.createLinearGradient(h.x, lane.y, h.x, lane.y + CONFIG.cellSize);
+                    hazGrad.addColorStop(0, '#8b6cff');
+                    hazGrad.addColorStop(0.5, '#5b21b6');
+                    hazGrad.addColorStop(1, '#441d8b');
+                    
+                    this.ctx.fillStyle = hazGrad;
+                    this.ctx.fillRect(h.x + 4, lane.y + 10, h.w - 8, CONFIG.cellSize - 20);
+                    
+                    // Luminous edge
+                    this.ctx.strokeStyle = `rgba(255, 255, 255, ${CONFIG.hazardGlowStrength})`;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.strokeRect(h.x + 6, lane.y + 12, h.w - 12, CONFIG.cellSize - 24);
                 });
                 this.ctx.shadowBlur = 0;
             }
-
-            // Goal visual
-            if (r === 0) {
-                this.ctx.fillStyle = 'rgba(76, 201, 240, 0.1)';
-                this.ctx.fillRect(0, 0, this.canvas.width, CONFIG.cellSize);
-            }
         });
 
-        // Draw Player
+        // Draw Player: Luminous Traveler
         if (this.gameState === 'playing' || this.gameState === 'paused' || this.gameState === 'ready') {
             const px = this.player.x * CONFIG.cellSize + CONFIG.cellSize * 0.5;
             const py = this.player.y * CONFIG.cellSize + CONFIG.cellSize * 0.5;
+            const pulse = Math.sin(Date.now() / 200) * 5;
             
-            this.ctx.fillStyle = '#4cc9f0';
-            this.ctx.shadowBlur = 15;
+            this.ctx.fillStyle = '#fafafa';
+            this.ctx.shadowBlur = 20 + pulse;
             this.ctx.shadowColor = '#4cc9f0';
             this.ctx.beginPath();
-            this.ctx.arc(px, py, CONFIG.cellSize * 0.3, 0, Math.PI * 2);
+            this.ctx.arc(px, py, CONFIG.cellSize * 0.28, 0, Math.PI * 2);
             this.ctx.fill();
+            
+            // Core
+            this.ctx.fillStyle = '#4cc9f0';
             this.ctx.shadowBlur = 0;
+            this.ctx.beginPath();
+            this.ctx.arc(px, py, CONFIG.cellSize * 0.15, 0, Math.PI * 2);
+            this.ctx.fill();
         }
     }
 

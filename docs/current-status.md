@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 75 (Fix: Veil Patience face-down card backs in tableau)
+**Current Build:** Build 76 (Visual Polish Pack 4: Lumen Sequence, Crosshush, Fourfold)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

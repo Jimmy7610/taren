@@ -12,6 +12,12 @@ const CONFIG = {
     pieceGlowStrength: 0.9, // INSTÄLLNING - Ändra hur starkt spelbrickorna lyser.
     hoverGlowStrength: 0.55, // INSTÄLLNING - Ändra hur tydligt en vald kolumn markeras vid hover.
     winPulseStrength: 1.15, // INSTÄLLNING - Ändra hur tydligt en vinnande rad pulserar.
+
+    // VISUAL POLISH
+    tokenGlowStrength: 0.28,    // INSTÄLLNING - Ändra hur starkt spelmarkerna lyser.
+    boardSlotDepth: 0.20,       // INSTÄLLNING - Ändra hur djupa hålen i Fourfold-brädet upplevs.
+    winGlowStrength: 0.42,      // INSTÄLLNING - Ändra hur tydlig vinstmarkeringen är.
+
     easyRandomness: 0.7, // INSTÄLLNING - Ändra hur slumpmässigt Easy spelar. Högre värde = svagare motstånd.
     normalCenterBias: 1.2, // INSTÄLLNING - Ändra hur mycket Normal prioriterar mittenkolumner.
     hardSearchDepth: 4, // INSTÄLLNING - Ändra hur djupt Hard analyserar framtida drag (Minimax depth).
