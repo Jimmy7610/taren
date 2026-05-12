@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threadline - Taren</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/assets/js/build.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="container py-8">
+        <div class="game-play-layout fade-in-up delay-1">
+            <div class="game-main-column">
+                <header class="text-center mb-4">
+                    <h1 class="mb-2">Threadline</h1>
+                    <p>Visit every node in one unbroken path.</p>
+                </header>
+
+                <div class="threadline-module">
+                    <div class="hud mb-4">
+                        <div class="hud-item">
+                            <span class="hud-label">Level</span>
+                            <span id="level-display" class="hud-value">1</span>
+                        </div>
+                        <div class="hud-item">
+                            <span class="hud-label">Visited</span>
+                            <span id="visited-display" class="hud-value">0 / 0</span>
+                        </div>
+                        <div class="hud-item">
+                            <span class="hud-label">Best</span>
+                            <span id="best-display" class="hud-value">1</span>
+                        </div>
+                    </div>
+
+                    <div class="canvas-container">
+                        <canvas id="gameCanvas"></canvas>
+                        <div id="status-display" class="status-display">Choose a starting node</div>
+                    </div>
+
+                    <div class="game-controls mt-6">
+                        <button id="undo-btn" class="btn btn-ghost">Undo</button>
+                        <button id="restart-btn" class="btn btn-ghost">Restart</button>
+                        <button id="next-btn" class="btn btn-primary" style="display: none;">Next Level</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="game-help-panel">
+                <h2 class="game-help-title">How to play</h2>
+                <ul class="game-help-list">
+                    <li>Start on any glowing node.</li>
+                    <li>Move only to connected unvisited nodes.</li>
+                    <li>Visit every playable node exactly once.</li>
+                </ul>
+            </aside>
+        </div>
+    </main>
+
+    <script src="./game.js"></script>
+</body>
+</html>

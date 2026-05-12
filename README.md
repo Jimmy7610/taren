@@ -3,6 +3,7 @@
 Taren is a quiet collection of small browser games built with vanilla HTML/CSS/JS. It prioritizes a dark, minimal, atmospheric, and premium experience.
 
 ## Current Playable Games
+- **Threadline** — Logic / path puzzle gameplay.
 - **Voidbreaker** — Arcade / breaker gameplay.
 - **Tetrafall** — Puzzle / falling-block gameplay.
 - **Fourfold** — Strategy / board gameplay.
