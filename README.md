@@ -16,6 +16,18 @@ Taren is a quiet collection of small browser games built with vanilla HTML/CSS/J
 - **Echo Veil** — Spatial memory / mystery.
 - **Hollow Path** — Minimal maze / path exploration.
 
+## Upcoming Classics (Planned)
+- **Ashveil** — Logic / hidden field puzzle.
+- **Nightcoil** — Arcade / growth puzzle.
+- **Echo Hollow** — Maze / signal gathering.
+- **Shardrift** — Arcade / fragment breaking.
+- **Pulse Duel** — Duel / survival reflex.
+- **Night Array** — Defense / pattern hold.
+- **Coreloom** — Puzzle / core merging.
+- **Veil Patience** — Cards / quiet arrangement.
+- **Lumen Sequence** — Memory / pattern recall.
+- **Crosshush** — Timing / lane crossing.
+
 ## Site Structure
 - `/` — Homepage / Landing
 - `/games/` — Game gallery and selection

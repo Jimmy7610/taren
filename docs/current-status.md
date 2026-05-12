@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 43
+**Current Build:** Build 44
 
 ## Playable Games
 1.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control.
@@ -15,6 +15,9 @@
 10. **Night Signal** — Timing-based signal recognition.
 11. **Echo Veil** — Spatial memory exploration.
 12. **Hollow Path** — Minimal maze exploration.
+
+## Upcoming Classics
+- The Games gallery now features an **Upcoming Classics** section with 10 planned titles (Ashveil, Nightcoil, Echo Hollow, etc.). These are currently non-playable placeholders with handcrafted CSS fallback visuals.
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.

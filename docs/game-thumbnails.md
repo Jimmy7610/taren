@@ -31,6 +31,16 @@ Use lowercase kebab-case for all image names, matching the exact name of the con
 - `night-signal-thumbnail.webp`
 - `echo-veil-thumbnail.webp`
 - `hollow-path-thumbnail.webp`
+- `ashveil-thumbnail.webp`
+- `nightcoil-thumbnail.webp`
+- `echo-hollow-thumbnail.webp`
+- `shardrift-thumbnail.webp`
+- `pulse-duel-thumbnail.webp`
+- `night-array-thumbnail.webp`
+- `coreloom-thumbnail.webp`
+- `veil-patience-thumbnail.webp`
+- `lumen-sequence-thumbnail.webp`
+- `crosshush-thumbnail.webp`
 
 ## 5. How to replace an image
 To add or replace a game card image, follow these steps:
