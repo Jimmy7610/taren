@@ -40,6 +40,12 @@ const CONFIG = {
     mouseControlPadding: 180, // INSTÄLLNING - Ändra hur långt utanför spelrutan musen fortfarande får styra paddeln.
     hideCursorDuringPlay: true, // INSTÄLLNING - Ändra om muspekaren ska döljas över spelområdet under spel.
     bestScoreKey: 'taren_voidbreaker_best_score', // INSTÄLLNING - Ändra localStorage-nyckeln för bästa poäng.
+
+    // VISUAL POLISH
+    brickCornerRadius: 6, // INSTÄLLNING - Ändra hur rundade blockens hörn är.
+    ballTrailAlpha: 0.15, // INSTÄLLNING - Ändra hur tydligt bollens ljussvans syns.
+    paddleGlowStrength: 25, // INSTÄLLNING - Ändra hur starkt paddeln lyser.
+    brickGlowStrength: 12, // INSTÄLLNING - Ändra hur starkt blocken lyser.
 };
 
 const LEVELS = [
@@ -106,6 +112,7 @@ let activeEffects = {
     wide: 0,
     slow: 0
 };
+let ballTrail = []; // [{x, y, alpha}]
 let paddleFlash = 0;
 
 function init() {
@@ -265,6 +272,10 @@ function updateBalls(dt) {
 
         ball.x += ball.dx * dt;
         ball.y += ball.dy * dt;
+
+        // Trail update
+        ballTrail.unshift({ x: ball.x, y: ball.y, alpha: 1.0 });
+        if (ballTrail.length > 12) ballTrail.pop();
 
         // Wall collisions
         if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
@@ -522,20 +533,35 @@ function render() {
 
     // Render bricks
     bricks.forEach(b => {
-        ctx.fillStyle = COLORS['brick' + b.durability];
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = COLORS['brick' + b.durability];
+        const baseColor = COLORS['brick' + b.maxDurability];
+        const currentColor = COLORS['brick' + b.durability];
         
-        // Rounded bricks
+        ctx.fillStyle = currentColor;
+        ctx.shadowBlur = CONFIG.brickGlowStrength;
+        ctx.shadowColor = currentColor;
+        
+        // Crystalline Rounded bricks
         ctx.beginPath();
-        ctx.roundRect(b.x, b.y, b.width, b.height, 4);
+        ctx.roundRect(b.x, b.y, b.width, b.height, CONFIG.brickCornerRadius);
         ctx.fill();
         
-        // Subtle inner shine
+        // Glass highlight (top-left)
         ctx.shadowBlur = 0;
-        ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(b.x + 2, b.y + 2, b.width - 4, 1);
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(b.x + 6, b.y + b.height - 4);
+        ctx.lineTo(b.x + 4, b.y + 4);
+        ctx.lineTo(b.x + b.width - 6, b.y + 4);
+        ctx.stroke();
+        
+        // Subtle inner shine (bottom-right)
+        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+        ctx.beginPath();
+        ctx.moveTo(b.x + 6, b.y + b.height - 4);
+        ctx.lineTo(b.x + b.width - 4, b.y + b.height - 4);
+        ctx.lineTo(b.x + b.width - 4, b.y + 6);
+        ctx.stroke();
     });
     ctx.shadowBlur = 0;
 
@@ -559,21 +585,58 @@ function render() {
     ctx.shadowBlur = 0;
 
     // Render paddle
-    ctx.fillStyle = paddleFlash > 0 ? '#fff' : (activeEffects.wide > 0 ? COLORS.paddleWide : COLORS.paddle);
-    ctx.shadowBlur = paddleFlash > 0 ? 30 : 15;
-    ctx.shadowColor = ctx.fillStyle;
+    const paddleColor = paddleFlash > 0 ? '#fff' : (activeEffects.wide > 0 ? COLORS.paddleWide : COLORS.paddle);
+    ctx.fillStyle = paddleColor;
+    ctx.shadowBlur = paddleFlash > 0 ? 40 : CONFIG.paddleGlowStrength;
+    ctx.shadowColor = paddleColor;
+    
+    // Gradient paddle
+    const grad = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x, paddle.y + paddle.height);
+    grad.addColorStop(0, paddleColor);
+    grad.addColorStop(1, 'rgba(0,0,0,0.3)');
+    ctx.fillStyle = grad;
+
     ctx.beginPath();
     ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 4);
     ctx.fill();
+    
+    // Top highlight
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(paddle.x + 5, paddle.y + 2);
+    ctx.lineTo(paddle.x + paddle.width - 5, paddle.y + 2);
+    ctx.stroke();
+    
     ctx.shadowBlur = 0;
 
     // Render balls
     balls.forEach(ball => {
-        ctx.fillStyle = activeEffects.slow > 0 ? '#4cc9f0' : COLORS.ball;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = ctx.fillStyle;
+        const ballColor = activeEffects.slow > 0 ? '#4cc9f0' : COLORS.ball;
+        
+        // Render trail
+        ballTrail.forEach((t, i) => {
+            const trailAlpha = (1 - i / ballTrail.length) * CONFIG.ballTrailAlpha;
+            ctx.globalAlpha = trailAlpha;
+            ctx.fillStyle = ballColor;
+            ctx.beginPath();
+            ctx.arc(t.x, t.y, ball.radius * (1 - i / ballTrail.length), 0, Math.PI * 2);
+            ctx.fill();
+        });
+        ctx.globalAlpha = 1.0;
+
+        ctx.fillStyle = ballColor;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = ballColor;
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Inner pulse
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius * 0.4, 0, Math.PI * 2);
         ctx.fill();
     });
     ctx.shadowBlur = 0;
@@ -583,8 +646,16 @@ function render() {
         ctx.globalAlpha = p.life / CONFIG.particleLifetime;
         ctx.fillStyle = p.color;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, 1.5 + Math.random(), 0, Math.PI * 2);
         ctx.fill();
+        
+        // Add a tiny spark glow
+        if (Math.random() > 0.8) {
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = p.color;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
     });
     ctx.globalAlpha = 1.0;
 }

@@ -16,9 +16,14 @@ const CONFIG = {
     speedIncrease: 1.05,      // INSTÄLLNING - Hastighetsökning vid varje paddelträff.
     ballRadius: 9,            // INSTÄLLNING - Storleken på pulsen (bollen).
     paddleMargin: 20,         // INSTÄLLNING - Avstånd från vägg till paddel.
-    pulseTrailLength: 10,     // INSTÄLLNING - Längd på eftersläpande glöd.
+    pulseTrailLength: 12,     // INSTÄLLNING - Längd på eftersläpande glöd.
     readyMessageOpacity: 0.8, // INSTÄLLNING - Tydlighet för startmeddelandet.
     bestScoreKey: "taren_pulse_duel_best_result", // INSTÄLLNING - localStorage-nyckel för bästa resultat.
+
+    // VISUAL POLISH
+    arenaGlowStrength: 20,    // INSTÄLLNING - Ändra hur starkt arenans glow syns.
+    impactRippleAlpha: 0.25,  // INSTÄLLNING - Ändra hur tydliga träffringarna är.
+    paddleCornerRadius: 6,    // INSTÄLLNING - Ändra hur rundade paddlarna är.
 };
 
 const DIFFICULTIES = {
@@ -286,18 +291,33 @@ class PulseDuel {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Center line
-        this.ctx.setLineDash([5, 15]);
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        // Arena Background Polish
+        const bgGrad = this.ctx.createRadialGradient(this.canvas.width/2, this.canvas.height/2, 0, this.canvas.width/2, this.canvas.height/2, this.canvas.width/2);
+        bgGrad.addColorStop(0, 'rgba(139, 108, 255, 0.02)');
+        bgGrad.addColorStop(1, 'transparent');
+        this.ctx.fillStyle = bgGrad;
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Center line - Elegant Dash
+        this.ctx.setLineDash([8, 20]);
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        this.ctx.lineWidth = 2;
         this.ctx.beginPath();
         this.ctx.moveTo(this.canvas.width / 2, 0);
         this.ctx.lineTo(this.canvas.width / 2, this.canvas.height);
         this.ctx.stroke();
         this.ctx.setLineDash([]);
 
-        // Impacts
+        // Impacts - Ripple Effect
         this.impacts.forEach(imp => {
-            this.ctx.globalAlpha = imp.life * 0.5;
+            this.ctx.globalAlpha = imp.life * CONFIG.impactRippleAlpha;
+            this.ctx.strokeStyle = imp.color;
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(imp.x, imp.y, (1 - imp.life) * 120, 0, Math.PI * 2);
+            this.ctx.stroke();
+            
+            this.ctx.globalAlpha = imp.life * 0.1;
             this.ctx.fillStyle = imp.color;
             this.ctx.beginPath();
             this.ctx.arc(imp.x, imp.y, (1 - imp.life) * 60, 0, Math.PI * 2);
@@ -305,44 +325,61 @@ class PulseDuel {
         });
         this.ctx.globalAlpha = 1.0;
 
-        // Player Paddle
-        this.ctx.fillStyle = '#4cc9f0';
-        this.ctx.shadowBlur = 25;
-        this.ctx.shadowColor = '#4cc9f0';
-        this.drawRoundedRect(CONFIG.paddleMargin, this.playerY, CONFIG.paddleWidth, CONFIG.paddleHeight, 4);
+        // Player Paddle - Gradient & Glow
+        const playerColor = '#4cc9f0';
+        const pGrad = this.ctx.createLinearGradient(CONFIG.paddleMargin, this.playerY, CONFIG.paddleMargin + CONFIG.paddleWidth, this.playerY);
+        pGrad.addColorStop(0, playerColor);
+        pGrad.addColorStop(1, 'rgba(255,255,255,0.4)');
         
-        // AI Paddle
-        this.ctx.fillStyle = '#8b6cff';
-        this.ctx.shadowColor = '#8b6cff';
-        this.drawRoundedRect(this.canvas.width - CONFIG.paddleMargin - CONFIG.paddleWidth, this.aiY, CONFIG.paddleWidth, CONFIG.paddleHeight, 4);
+        this.ctx.fillStyle = pGrad;
+        this.ctx.shadowBlur = CONFIG.arenaGlowStrength;
+        this.ctx.shadowColor = playerColor;
+        this.drawRoundedRect(CONFIG.paddleMargin, this.playerY, CONFIG.paddleWidth, CONFIG.paddleHeight, CONFIG.paddleCornerRadius);
         
-        // Ball & Trail
+        // AI Paddle - Gradient & Glow
+        const aiColor = '#8b6cff';
+        const aiGrad = this.ctx.createLinearGradient(this.canvas.width - CONFIG.paddleMargin - CONFIG.paddleWidth, this.aiY, this.canvas.width - CONFIG.paddleMargin, this.aiY);
+        aiGrad.addColorStop(0, 'rgba(255,255,255,0.4)');
+        aiGrad.addColorStop(1, aiColor);
+
+        this.ctx.fillStyle = aiGrad;
+        this.ctx.shadowColor = aiColor;
+        this.drawRoundedRect(this.canvas.width - CONFIG.paddleMargin - CONFIG.paddleWidth, this.aiY, CONFIG.paddleWidth, CONFIG.paddleHeight, CONFIG.paddleCornerRadius);
+        
+        // Ball & Trail - Kinetic Energy Feel
         if (this.roundActive || this.running) {
             // Trail
             this.trail.forEach((t, i) => {
-                const alpha = (1 - i / CONFIG.pulseTrailLength) * 0.3;
+                const alpha = (1 - i / CONFIG.pulseTrailLength) * 0.25;
                 this.ctx.globalAlpha = alpha;
-                this.ctx.fillStyle = 'white';
+                this.ctx.fillStyle = '#fff';
                 this.ctx.beginPath();
                 this.ctx.arc(t.x, t.y, CONFIG.ballRadius * (1 - i / CONFIG.pulseTrailLength), 0, Math.PI * 2);
                 this.ctx.fill();
             });
             this.ctx.globalAlpha = 1.0;
 
-            // Ball
-            this.ctx.fillStyle = 'white';
-            this.ctx.shadowBlur = 30;
-            this.ctx.shadowColor = 'white';
+            // Ball Outer Glow
+            this.ctx.fillStyle = '#fff';
+            this.ctx.shadowBlur = 25;
+            this.ctx.shadowColor = '#fff';
             this.ctx.beginPath();
             this.ctx.arc(this.ball.x, this.ball.y, CONFIG.ballRadius, 0, Math.PI * 2);
             this.ctx.fill();
             
-            // Core
+            // Core Pulse
             this.ctx.shadowBlur = 0;
-            this.ctx.fillStyle = 'white';
+            this.ctx.fillStyle = '#fff';
             this.ctx.beginPath();
             this.ctx.arc(this.ball.x, this.ball.y, CONFIG.ballRadius * 0.4, 0, Math.PI * 2);
             this.ctx.fill();
+            
+            // Kinetic highlight
+            this.ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.arc(this.ball.x, this.ball.y, CONFIG.ballRadius * 0.7, 0, Math.PI * 2);
+            this.ctx.stroke();
         }
         
         // Ready Message
