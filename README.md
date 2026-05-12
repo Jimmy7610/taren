@@ -3,6 +3,7 @@
 Taren is a quiet collection of small browser games built with vanilla HTML/CSS/JS. It prioritizes a dark, minimal, atmospheric, and premium experience.
 
 ## Current Playable Games
+- **Fourfold** — Strategy / board gameplay.
 - **Pulseframe** — Reflex / survival gameplay.
 - **Linebound** — Strategic grid-based gameplay.
 - **Memory Drift** — Calm memory and pattern recall.
