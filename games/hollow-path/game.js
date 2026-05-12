@@ -11,6 +11,11 @@ const SETTINGS = {
     visibilityRadius: 2, // INSTÄLLNING - Hur långt man ser (antal noder).
     playerColor: '#8b6cff', // INSTÄLLNING - Spelarens färg.
     exitColor: '#ffffff', // INSTÄLLNING - Utgångens färg.
+    
+    pathGlowStrength: 0.28, // INSTÄLLNING - Ändra hur starkt Hollow Path-rutorna lyser.
+    visitedTileOpacity: 0.78, // INSTÄLLNING - Ändra hur tydligt besökta rutor syns.
+    failPulseStrength: 0.34, // INSTÄLLNING - Ändra hur tydlig felmarkering är.
+    
     bestLevelKey: 'taren_hollow_path_best_level' // INSTÄLLNING - LocalStorage nyckel.
 };
 

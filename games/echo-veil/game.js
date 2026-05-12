@@ -10,6 +10,11 @@ const SETTINGS = {
     revealDuration: 1200, // INSTÄLLNING - Hur länge ekona syns (ms).
     clickTolerance: 30, // INSTÄLLNING - Hur nära man måste klicka (px).
     pulseDelay: 500, // INSTÄLLNING - Fördröjning innan pulsen startar (ms).
+    
+    echoGlowStrength: 0.30, // INSTÄLLNING - Ändra hur starkt Echo Veil-ekon lyser.
+    veilOpacity: 0.72, // INSTÄLLNING - Ändra hur mörk/sluten slöjan känns.
+    revealPulseStrength: 0.36, // INSTÄLLNING - Ändra hur tydlig reveal-pulsen är.
+    
     bestRoundKey: 'taren_echo_veil_best_round' // INSTÄLLNING - LocalStorage nyckel.
 };
 

@@ -2,6 +2,9 @@
     --path-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
     --path-section-gap: 16px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och instruktion. */
     --path-panel-size: min(450px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+    --path-glow: 0.28; /* INSTÄLLNING - pathGlowStrength */
+    --visited-opacity: 0.78; /* INSTÄLLNING - visitedTileOpacity */
+    --fail-pulse: 0.34; /* INSTÄLLNING - failPulseStrength */
 }
 
 .fade-in-up.delay-1 {

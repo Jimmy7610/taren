@@ -2,6 +2,9 @@
     --echo-page-top-offset: 40px; /* INSTÄLLNING - Avståndet från toppen för hela layouten. */
     --echo-section-gap: 16px; /* INSTÄLLNING - Avståndet mellan HUD, spelplan och instruktion. */
     --echo-panel-size: min(450px, calc(100vh - 350px)); /* INSTÄLLNING - Storlek på spelpanelen. */
+    --echo-veil-opacity: 0.72; /* INSTÄLLNING - veilOpacity */
+    --echo-glow: 0.30; /* INSTÄLLNING - echoGlowStrength */
+    --reveal-pulse: 0.36; /* INSTÄLLNING - revealPulseStrength */
 }
 
 .fade-in-up.delay-1 {
@@ -12,12 +15,14 @@
     position: relative;
     width: 450px;
     height: 450px;
-    background-color: #08080a;
-    border: 1px solid var(--border);
+    background: radial-gradient(circle at center, #0a0a0f, #050507);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
     cursor: crosshair;
     overflow: hidden;
-    box-shadow: inset 0 0 50px rgba(0,0,0,1);
+    box-shadow: 
+        inset 0 12px 60px rgba(0, 0, 0, 1),
+        0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .instruction-text { font-size: 0.875rem; color: var(--text-muted); }
@@ -26,25 +31,33 @@
 #veil {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent 20%, #050507 80%);
-    opacity: 0.8;
+    background: radial-gradient(circle, transparent 25%, #050507 85%);
+    opacity: var(--echo-veil-opacity, 0.72); /* INSTÄLLNING - veilOpacity */
     pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
 .echo-point {
     position: absolute;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background-color: #8b6cff;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 15px #8b6cff;
+    box-shadow: 0 0 20px rgba(139, 108, 255, var(--echo-glow, 0.30)); /* INSTÄLLNING - echoGlowStrength */
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.echo-point.revealed { opacity: 1; }
-.echo-point.found { background-color: #4cc9f0; box-shadow: 0 0 20px #4cc9f0; opacity: 1; }
+.echo-point.revealed { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+.echo-point.found { 
+    background-color: #4cc9f0; 
+    box-shadow: 0 0 25px rgba(76, 201, 240, 0.5); 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1.2); 
+    border-color: rgba(255, 255, 255, 0.3);
+}
 
 #pulse-ring {
     position: absolute;
@@ -52,10 +65,11 @@
     left: 50%;
     width: 0;
     height: 0;
-    border: 2px solid rgba(139, 108, 255, 0.4);
+    border: 2px solid rgba(139, 108, 255, var(--reveal-pulse, 0.36)); /* INSTÄLLNING - revealPulseStrength */
     border-radius: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
+    box-shadow: 0 0 15px rgba(139, 108, 255, 0.2);
 }
 
 .pulse-animation {

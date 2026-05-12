@@ -29,7 +29,11 @@ const SETTINGS = {
         masterVolume: 0.25, // INSTÄLLNING - Ändra total ljudvolym för Linebound.
         lineSoundVolume: 0.18, // INSTÄLLNING - Ändra ljudvolym när en linje dras.
         boxSoundVolume: 0.24, // INSTÄLLNING - Ändra ljudvolym när en ruta fångas.
-    }
+    },
+    
+    lineGlowStrength: 0.28, // INSTÄLLNING - Ändra hur starkt linjerna i Linebound lyser.
+    dotGlowStrength: 0.22, // INSTÄLLNING - Ändra hur tydligt punkterna lyser.
+    boxFillOpacity: 0.18, // INSTÄLLNING - Ändra hur tydligt färdiga rutor fylls.
 };
 
 const canvas = document.getElementById('gameCanvas');
@@ -465,16 +469,25 @@ function draw() {
     const lineThick = SETTINGS.smallBoardLineThickness - tRatio * (SETTINGS.smallBoardLineThickness - SETTINGS.largeBoardLineThickness);
     const boxOpacity = SETTINGS.smallBoardBoxOpacity - tRatio * (SETTINGS.smallBoardBoxOpacity - SETTINGS.largeBoardBoxOpacity);
     
-    // Draw filled boxes
+    // Draw filled boxes (Glass panels)
     for (let y = 0; y < s; y++) {
         for (let x = 0; x < s; x++) {
             if (boxes[y][x] !== 0) {
                 const px = offsetX + x * spacing;
                 const py = offsetY + y * spacing;
                 
-                ctx.fillStyle = (boxes[y][x] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
-                ctx.globalAlpha = boxOpacity;
-                ctx.fillRect(px, py, spacing, spacing);
+                const color = (boxes[y][x] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
+                
+                ctx.fillStyle = color;
+                ctx.globalAlpha = SETTINGS.boxFillOpacity;
+                ctx.fillRect(px + 4, py + 4, spacing - 8, spacing - 8);
+                
+                // Subtile inner border
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.globalAlpha = 0.1;
+                ctx.strokeRect(px + 6, py + 6, spacing - 12, spacing - 12);
+                
                 ctx.globalAlpha = 1.0;
             }
         }
@@ -487,33 +500,36 @@ function draw() {
             const py = offsetY + y * spacing;
             
             if (hLines[y][x] !== 0) {
-                ctx.strokeStyle = (hLines[y][x] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
+                const color = (hLines[y][x] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
+                ctx.strokeStyle = color;
                 ctx.lineWidth = lineThick;
                 
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = ctx.strokeStyle;
+                ctx.shadowBlur = 15 * SETTINGS.lineGlowStrength;
+                ctx.shadowColor = color;
                 
                 ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(px + spacing, py);
+                ctx.moveTo(px + 2, py);
+                ctx.lineTo(px + spacing - 2, py);
                 ctx.stroke();
                 ctx.shadowBlur = 0;
             } else if (hoveredLine && hoveredLine.type === 'h' && hoveredLine.x === x && hoveredLine.y === y) {
                 ctx.strokeStyle = SETTINGS.colors.player;
                 ctx.lineWidth = lineThick;
-                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = 0.4;
                 ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(px + spacing, py);
+                ctx.moveTo(px + 2, py);
+                ctx.lineTo(px + spacing - 2, py);
                 ctx.stroke();
                 ctx.globalAlpha = 1.0;
             } else {
                 ctx.strokeStyle = SETTINGS.colors.neutral;
                 ctx.lineWidth = 1;
+                ctx.globalAlpha = 0.3;
                 ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(px + spacing, py);
+                ctx.moveTo(px + 4, py);
+                ctx.lineTo(px + spacing - 4, py);
                 ctx.stroke();
+                ctx.globalAlpha = 1.0;
             }
         }
     }
@@ -525,47 +541,59 @@ function draw() {
             const py = offsetY + y * spacing;
             
             if (vLines[x][y] !== 0) {
-                ctx.strokeStyle = (vLines[x][y] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
+                const color = (vLines[x][y] === 1) ? SETTINGS.colors.player : SETTINGS.colors.ai;
+                ctx.strokeStyle = color;
                 ctx.lineWidth = lineThick;
                 
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = ctx.strokeStyle;
+                ctx.shadowBlur = 15 * SETTINGS.lineGlowStrength;
+                ctx.shadowColor = color;
                 
                 ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(px, py + spacing);
+                ctx.moveTo(px, py + 2);
+                ctx.lineTo(px, py + spacing - 2);
                 ctx.stroke();
                 ctx.shadowBlur = 0;
             } else if (hoveredLine && hoveredLine.type === 'v' && hoveredLine.x === x && hoveredLine.y === y) {
                 ctx.strokeStyle = SETTINGS.colors.player;
                 ctx.lineWidth = lineThick;
-                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = 0.4;
                 ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(px, py + spacing);
+                ctx.moveTo(px, py + 2);
+                ctx.lineTo(px, py + spacing - 2);
                 ctx.stroke();
                 ctx.globalAlpha = 1.0;
             } else {
                 ctx.strokeStyle = SETTINGS.colors.neutral;
                 ctx.lineWidth = 1;
+                ctx.globalAlpha = 0.3;
                 ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(px, py + spacing);
+                ctx.moveTo(px, py + 4);
+                ctx.lineTo(px, py + spacing - 4);
                 ctx.stroke();
+                ctx.globalAlpha = 1.0;
             }
         }
     }
     
-    // Draw dots
-    ctx.fillStyle = SETTINGS.colors.dot;
+    // Draw dots (Luminous strategic points)
     for (let y = 0; y <= s; y++) {
         for (let x = 0; x <= s; x++) {
             const px = offsetX + x * spacing;
             const py = offsetY + y * spacing;
             
+            ctx.shadowBlur = 8 * SETTINGS.dotGlowStrength;
+            ctx.shadowColor = SETTINGS.colors.dot;
+            ctx.fillStyle = SETTINGS.colors.dot;
             ctx.beginPath();
             ctx.arc(px, py, dotRad, 0, Math.PI * 2);
             ctx.fill();
+            
+            // Tiny core
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(px, py, dotRad * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
         }
     }
 }
