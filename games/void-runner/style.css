@@ -10,8 +10,9 @@
 
 #game-container {
     position: relative;
-    width: 640px;
-    height: 360px;
+    width: 100%;
+    max-width: 640px;
+    height: var(--void-canvas-max-height);
     background: radial-gradient(circle at center, #0a0a0f, #050507);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--radius-lg);
@@ -19,6 +20,13 @@
     box-shadow: 
         inset 0 12px 60px rgba(0, 0, 0, 1),
         0 20px 60px rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 /* Void Runner Overlay specific overrides */

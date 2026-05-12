@@ -67,9 +67,14 @@ function init() {
 }
 
 function resize() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    player.y = canvas.height / 2;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    
+    // Update player position if in IDLE to keep it centered
+    if (gameState === 'IDLE') {
+        player.y = canvas.height / 2;
+    }
 }
 
 function handleInput(e) {
@@ -83,6 +88,7 @@ function handleInput(e) {
 }
 
 function startGame() {
+    resize();
     score = 0;
     hazards = [];
     fragments = [];
