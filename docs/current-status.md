@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 89 (Hollow Path: Exit placement now varies between valid positions)
+**Current Build:** Build 90 (Pulseframe: Focused final visual polish and atmospheric enhancements)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

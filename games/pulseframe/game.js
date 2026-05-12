@@ -58,10 +58,16 @@ const SETTINGS = {
             chargeTime: 1.2, // INSTÄLLNING - Ändra hur länge lasern siktar/varnar innan den skjuter (sekunder). Högre värde = lättare och mer rättvist.
             fireTime: 0.4, // INSTÄLLNING - Ändra hur länge lasern är aktiv/dödlig efter skottet (sekunder).
             collisionPadding: 10, // INSTÄLLNING - Ändra hur bred laserträffen är. Lägre värde = mer förlåtande.
-            chargeTrackingSpeed: 2.5, // INSTÄLLNING - Ändra hur snabbt lasern följer efter spelaren under siktandet.
-        }
+            chargeTrackingSpeed: 8, // INSTÄLLNING - Hur snabbt lasern följer spelaren under laddning.
+        },
     },
-    pickups: {
+    
+    pulseGlowStrength: 0.34, // INSTÄLLNING - Ändra hur starkt Pulseframe-spelaren/pulsen lyser.
+    pulseTrailAlpha: 0.18, // INSTÄLLNING - Ändra hur tydlig rörelsesvansen är.
+    hazardGlowStrength: 0.24, // INSTÄLLNING - Ändra hur tydligt hinder glöder.
+    arenaGlowStrength: 0.20, // INSTÄLLNING - Ändra hur starkt arenans bakgrundsglow syns.
+    
+    audio: {
         spawnChance: 0.05, // INSTÄLLNING - Ändra chansen (per spawn-tick) att en pickup dyker upp.
         maxOnScreen: 2, // INSTÄLLNING - Ändra hur många pickups som max får finnas samtidigt.
         scoreValue: 50, // INSTÄLLNING - Ändra hur många poäng en pickup ger.
@@ -331,21 +337,40 @@ class Player {
             for (let i = 1; i < this.trail.length; i++) {
                 ctx.lineTo(this.trail[i].x, this.trail[i].y);
             }
-            const glowStrength = Math.min(1, this.speed / 1000);
-            ctx.strokeStyle = `rgba(139, 108, 255, ${0.3 + glowStrength * 0.3})`;
-            ctx.lineWidth = this.radius * 1.4;
+            const speedFactor = Math.min(1, this.speed / 1000);
+            ctx.strokeStyle = `rgba(139, 108, 255, ${SETTINGS.pulseTrailAlpha + speedFactor * 0.2})`;
+            ctx.lineWidth = this.radius * 1.5;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             ctx.stroke();
+            
+            // Core trail
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + speedFactor * 0.1})`;
+            ctx.lineWidth = this.radius * 0.5;
+            ctx.stroke();
         }
+
+        // Pulse energy ring
+        const pulseRatio = (Math.sin(this.time * 10) + 1) / 2;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius + 4 + pulseRatio * 6, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(139, 108, 255, ${0.1 + pulseRatio * 0.2})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
-        ctx.shadowBlur = 15 + Math.min(20, this.speed / SETTINGS.player.glowIntensityMult);
+        ctx.shadowBlur = 20 * SETTINGS.pulseGlowStrength + Math.min(30, this.speed / SETTINGS.player.glowIntensityMult);
         ctx.shadowColor = '#8b6cff';
         ctx.fill();
         ctx.shadowBlur = 0;
+        
+        // Inner core shine
+        ctx.beginPath();
+        ctx.arc(this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fill();
     }
 }
 
@@ -389,8 +414,14 @@ class EnemyOrb {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = '#f87171';
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = 'rgba(248, 113, 113, 0.6)';
+        ctx.shadowBlur = 20 * SETTINGS.hazardGlowStrength;
+        ctx.shadowColor = '#f87171';
+        ctx.fill();
+        
+        // Threat core
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.fill();
         ctx.shadowBlur = 0;
     }
@@ -429,9 +460,17 @@ class PulseWave {
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(45, 212, 191, ${alpha})`;
         ctx.lineWidth = this.thickness;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(45, 212, 191, 0.5)';
+        ctx.shadowBlur = 25 * SETTINGS.hazardGlowStrength * alpha;
+        ctx.shadowColor = '#2dd4bf';
         ctx.stroke();
+        
+        // Inner edge highlight
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius - this.thickness/2, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 0.2})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        
         ctx.shadowBlur = 0;
     }
 }
@@ -901,18 +940,34 @@ function draw() {
     
     const baseAlpha = gameState === 'GAME_OVER' ? 0.05 : SETTINGS.arena.baseAlpha;
     const pulseAlpha = Math.sin(Date.now() / SETTINGS.arena.pulseSpeed) * SETTINGS.arena.pulseAlpha;
-    const currentAlpha = baseAlpha + pulseAlpha + arenaFlashIntensity;
+    const currentAlpha = (baseAlpha + pulseAlpha + arenaFlashIntensity) * (SETTINGS.arenaGlowStrength * 5);
     
     ctx.strokeStyle = `rgba(139, 108, 255, ${Math.min(1, currentAlpha)})`;
-    ctx.lineWidth = 2 + arenaFlashIntensity * 5;
+    ctx.lineWidth = 2 + arenaFlashIntensity * 8;
     
-    if (arenaFlashIntensity > 0) {
-        ctx.shadowBlur = 20 * arenaFlashIntensity;
-        ctx.shadowColor = '#8b6cff';
-    }
+    ctx.shadowBlur = 15 * currentAlpha + (arenaFlashIntensity * 30);
+    ctx.shadowColor = '#8b6cff';
     
     ctx.stroke();
     ctx.shadowBlur = 0;
+    
+    // Background Pulse Grid
+    if (gameState === 'PLAYING') {
+        const gridPulse = (Math.sin(Date.now() / 2000) + 1) / 2;
+        ctx.strokeStyle = `rgba(139, 108, 255, ${gridPulse * 0.03})`;
+        ctx.lineWidth = 1;
+        const gridSize = 50;
+        ctx.beginPath();
+        for (let x = centerX - arenaRadius; x <= centerX + arenaRadius; x += gridSize) {
+            ctx.moveTo(x, centerY - arenaRadius);
+            ctx.lineTo(x, centerY + arenaRadius);
+        }
+        for (let y = centerY - arenaRadius; y <= centerY + arenaRadius; y += gridSize) {
+            ctx.moveTo(centerX - arenaRadius, y);
+            ctx.lineTo(centerX + arenaRadius, y);
+        }
+        ctx.stroke();
+    }
     
     if (gameState === 'PLAYING') {
         pickups.forEach(p => p.draw(ctx));
