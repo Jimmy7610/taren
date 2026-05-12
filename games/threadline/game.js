@@ -5,66 +5,170 @@
 // ==================================================
 
 const CONFIG = {
-    canvasWidth: 800, // INSTÄLLNING - Ändra grundbredden på Threadline-spelytan.
-    canvasHeight: 560, // INSTÄLLNING - Ändra grundhöjden på Threadline-spelytan.
-    boardPadding: 60, // INSTÄLLNING - Ändra marginalen runt pusslet inuti spelrutan.
-    nodeRadius: 14, // INSTÄLLNING - Ändra den visuella storleken på noderna.
-    nodeHitRadius: 34, // INSTÄLLNING - Ändra hur nära man måste klicka för att träffa en nod. Högre värde gör spelet mer förlåtande.
+    canvasWidth: 820, // INSTÄLLNING - Ändra grundbredden på Threadline-spelytan.
+    canvasHeight: 540, // INSTÄLLNING - Ändra grundhöjden på Threadline-spelytan.
+    boardPadding: 56, // INSTÄLLNING - Ändra avståndet mellan brädets kant och spelbara noder.
+    nodeRadius: 12, // INSTÄLLNING - Ändra den visuella storleken på noderna.
+    nodeHitRadius: 36, // INSTÄLLNING - Ändra hur nära man måste klicka för att träffa en nod. Högre värde gör spelet mer förlåtande.
     edgeWidth: 2, // INSTÄLLNING - Ändra tjockleken på kopplingslinjerna mellan noder.
-    edgeOpacity: 0.15, // INSTÄLLNING - Ändra hur tydliga de obrukade linjerna är.
     pathWidth: 7, // INSTÄLLNING - Ändra tjockleken på den aktiva path-linjen.
-    nodeGlowStrength: 15, // INSTÄLLNING - Ändra hur starkt noderna lyser (px).
-    pathGlowStrength: 20, // INSTÄLLNING - Ändra hur starkt den dragna path-linjen lyser (px).
-    invalidPulseDuration: 300, // INSTÄLLNING - Ändra hur länge felmarkeringen syns (ms).
+    gridOpacity: 0.12, // INSTÄLLNING - Ändra hur tydligt rutnätet syns.
+    blockedCellOpacity: 0.32, // INSTÄLLNING - Ändra hur tydliga blockerade rutor är.
+    nodeGlowStrength: 0.9, // INSTÄLLNING - Ändra hur starkt noderna lyser.
+    pathGlowStrength: 1.2, // INSTÄLLNING - Ändra hur starkt den dragna path-linjen lyser.
+    invalidPulseDuration: 280, // INSTÄLLNING - Ändra hur länge felmarkeringen syns (ms).
     clearPulseDuration: 900, // INSTÄLLNING - Ändra hur länge level clear-effekten syns (ms).
-    hintPulseDuration: 1200, // INSTÄLLNING - Ändra hur länge Hint-markeringen syns (ms).
-    hintCooldown: 500, // INSTÄLLNING - Ändra hur snabbt Hint kan användas igen (ms).
-    boardGlowStrength: 0.5, // INSTÄLLNING - Ändra hur starkt spelbrädet glöder.
-    boardGridOpacity: 0.05, // INSTÄLLNING - Ändra hur synligt rutnätet i bakgrunden är.
-    bestLevelKey: 'taren_threadline_best_level', // INSTÄLLNING - Ändra localStorage-nyckeln för högsta upplåsta nivå.
+    hintPulseDuration: 1000, // INSTÄLLNING - Ändra hur länge Hint-markeringen syns (ms).
+    hintCooldown: 400, // INSTÄLLNING - Ändra hur snabbt Hint kan användas igen (ms).
+    bestLevelKey: "taren_threadline_best_level", // INSTÄLLNING - Ändra localStorage-nyckeln för högsta upplåsta nivå.
 };
 
-// Handcrafted 24 Solvable Levels with Fixed Starts
+// Handcrafted 24 Solvable Grid-Based Levels
 const LEVELS = [
-    // 1-4: INTRODUCTION
-    { id: 1, title: 'First Thread', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.25,y:0.5},{id:1,x:0.5,y:0.5},{id:2,x:0.75,y:0.5}], edges: [[0,1],[1,2]], solution: [0,1,2] },
-    { id: 2, title: 'Corner', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.35},{id:1,x:0.7,y:0.35},{id:2,x:0.7,y:0.65}], edges: [[0,1],[1,2]], solution: [0,1,2] },
-    { id: 3, title: 'The Arc', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.6},{id:1,x:0.5,y:0.3},{id:2,x:0.8,y:0.6}], edges: [[0,1],[1,2]], solution: [0,1,2] },
-    { id: 4, title: 'Square Path', diff: 'Easy', requiredStart: 0, nodes: [{id:0,x:0.35,y:0.35},{id:1,x:0.65,y:0.35},{id:2,x:0.65,y:0.65},{id:3,x:0.35,y:0.65}], edges: [[0,1],[1,2],[2,3],[3,0]], solution: [0,1,2,3] },
-    // 5-8: BRANCHING
-    { id: 5, title: 'The Loop', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.5,y:0.25},{id:1,x:0.75,y:0.5},{id:2,x:0.5,y:0.75},{id:3,x:0.25,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0]], solution: [0,1,2,3] },
-    { id: 6, title: 'Diamond Fold', diff: 'Normal', requiredStart: 1, nodes: [{id:0,x:0.5,y:0.2},{id:1,x:0.8,y:0.5},{id:2,x:0.5,y:0.8},{id:3,x:0.2,y:0.5},{id:4,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0],[0,4]], solution: [1,2,3,0,4] },
-    { id: 7, title: 'Snake I', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.3},{id:1,x:0.4,y:0.3},{id:2,x:0.6,y:0.3},{id:3,x:0.8,y:0.3},{id:4,x:0.8,y:0.7},{id:5,x:0.6,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5]], solution: [0,1,2,3,4,5] },
-    { id: 8, title: 'Zig Zag', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.5,y:0.5},{id:3,x:0.8,y:0.5},{id:4,x:0.8,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4]], solution: [0,1,2,3,4] },
+    // 1-4: TUTORIALS
+    { 
+        id: 1, title: "First Line", diff: "Easy", grid: { cols: 4, rows: 1 }, 
+        nodes: [{id:"a",col:0,row:0},{id:"b",col:1,row:0},{id:"c",col:2,row:0},{id:"d",col:3,row:0}], 
+        edges: [["a","b"],["b","c"],["c","d"]], requiredStart: "a", solution: ["a","b","c","d"] 
+    },
+    { 
+        id: 2, title: "Simple Turn", diff: "Easy", grid: { cols: 3, rows: 2 }, 
+        nodes: [{id:"a",col:0,row:0},{id:"b",col:1,row:0},{id:"c",col:2,row:0},{id:"d",col:2,row:1}], 
+        edges: [["a","b"],["b","c"],["c","d"]], requiredStart: "a", solution: ["a","b","c","d"] 
+    },
+    { 
+        id: 3, title: "The Hook", diff: "Easy", grid: { cols: 3, rows: 3 }, 
+        nodes: [{id:"a",col:0,row:0},{id:"b",col:1,row:0},{id:"c",col:2,row:0},{id:"d",col:2,row:1},{id:"e",col:1,row:1}], 
+        edges: [["a","b"],["b","c"],["c","d"],["d","e"]], requiredStart: "a", solution: ["a","b","c","d","e"] 
+    },
+    { 
+        id: 4, title: "Square Path", diff: "Easy", grid: { cols: 2, rows: 2 }, 
+        nodes: [{id:"a",col:0,row:0},{id:"b",col:1,row:0},{id:"c",col:1,row:1},{id:"d",col:0,row:1}], 
+        edges: [["a","b"],["b","c"],["c","d"],["d","a"]], requiredStart: "a", solution: ["a","b","c","d"] 
+    },
+    // 5-8: BRANCHING & BLOCKING
+    { 
+        id: 5, title: "The Wall", diff: "Normal", grid: { cols: 4, rows: 3 }, 
+        nodes: [{id:"a",col:0,row:0},{id:"b",col:0,row:1},{id:"c",col:0,row:2},{id:"d",col:1,row:2},{id:"e",col:2,row:2},{id:"f",col:2,row:1},{id:"g",col:2,row:0}], 
+        blocked: [{col:1,row:1}],
+        edges: [["a","b"],["b","c"],["c","d"],["d","e"],["e","f"],["f","g"]], requiredStart: "a", solution: ["a","b","c","d","e","f","g"] 
+    },
+    { 
+        id: 6, title: "Split Road", diff: "Normal", grid: { cols: 5, rows: 2 }, 
+        nodes: [{id:"a",col:0,row:0},{id:"b",col:1,row:0},{id:"c",col:2,row:0},{id:"d",col:3,row:0},{id:"e",col:4,row:0},{id:"f",col:4,row:1},{id:"g",col:3,row:1},{id:"h",col:2,row:1}], 
+        edges: [["a","b"],["b","c"],["c","d"],["d","e"],["e","f"],["f","g"],["g","h"]], requiredStart: "a", solution: ["a","b","c","d","e","f","g","h"] 
+    },
+    { 
+        id: 7, title: "Inner Loop", diff: "Normal", grid: { cols: 3, rows: 3 }, 
+        nodes: [{id:"a",col:0,row:0},{id:"b",col:1,row:0},{id:"c",col:2,row:0},{id:"d",col:2,row:1},{id:"e",col:2,row:2},{id:"f",col:1,row:2},{id:"g",col:0,row:2},{id:"h",col:0,row:1}], 
+        blocked: [{col:1,row:1}],
+        edges: [["a","b"],["b","c"],["c","d"],["d","e"],["e","f"],["f","g"],["g","h"],["h","a"]], requiredStart: "a", solution: ["a","b","c","d","e","f","g","h"] 
+    },
+    { 
+        id: 8, title: "ZigZag Grid", diff: "Normal", grid: { cols: 3, rows: 3 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:2,row:1},{id:4,col:1,row:1},{id:5,col:0,row:1},{id:6,col:0,row:2},{id:7,col:1,row:2},{id:8,col:2,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8] 
+    },
     // 9-16: MEDIUM
-    { id: 9, title: 'The Ladder', diff: 'Normal', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.25},{id:1,x:0.7,y:0.25},{id:2,x:0.3,y:0.75},{id:3,x:0.7,y:0.75}], edges: [[0,1],[1,3],[3,2],[2,0]], solution: [0,1,3,2] },
-    { id: 10, title: 'Asymmetry', diff: 'Normal', requiredStart: 1, nodes: [{id:0,x:0.2,y:0.5},{id:1,x:0.4,y:0.3},{id:2,x:0.6,y:0.3},{id:3,x:0.8,y:0.5},{id:4,x:0.5,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,0]], solution: [1,2,3,4,0] },
-    { id: 11, title: 'Double Star', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.5,y:0.15},{id:1,x:0.85,y:0.4},{id:2,x:0.7,y:0.85},{id:3,x:0.3,y:0.85},{id:4,x:0.15,y:0.4},{id:5,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,0],[0,5],[1,5],[2,5],[3,5],[4,5]], solution: [0,4,3,2,1,5] },
-    { id: 12, title: 'Grid Path', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.3},{id:1,x:0.5,y:0.3},{id:2,x:0.7,y:0.3},{id:3,x:0.7,y:0.7},{id:4,x:0.5,y:0.7},{id:5,x:0.3,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]], solution: [0,1,2,3,4,5] },
-    { id: 13, title: 'The Core', diff: 'Hard', requiredStart: 1, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.8,y:0.2},{id:2,x:0.8,y:0.8},{id:3,x:0.2,y:0.8},{id:4,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,0],[4,0],[4,1],[4,2],[4,3]], solution: [1,2,3,0,4] },
-    { id: 14, title: 'Hourglass', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.3,y:0.2},{id:1,x:0.7,y:0.2},{id:2,x:0.5,y:0.5},{id:3,x:0.3,y:0.8},{id:4,x:0.7,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4],[4,2],[2,0]], solution: [0,1,2,3,4] },
-    { id: 15, title: 'Butterfly', diff: 'Hard', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.25},{id:1,x:0.2,y:0.75},{id:2,x:0.5,y:0.5},{id:3,x:0.8,y:0.25},{id:4,x:0.8,y:0.75}], edges: [[0,1],[0,2],[1,2],[2,3],[2,4],[3,4]], solution: [0,1,2,3,4] },
-    { id: 16, title: 'The Weaver', diff: 'Hard', requiredStart: 1, nodes: [{id:0,x:0.2,y:0.5},{id:1,x:0.4,y:0.2},{id:2,x:0.6,y:0.2},{id:3,x:0.8,y:0.5},{id:4,x:0.6,y:0.8},{id:5,x:0.4,y:0.8},{id:6,x:0.5,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,6],[3,6]], solution: [1,2,3,4,5,0,6] },
-    // 17-24: EXPERT
-    { id: 17, title: 'Spider', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.5,y:0.2},{id:1,x:0.8,y:0.5},{id:2,x:0.5,y:0.8},{id:3,x:0.2,y:0.5},{id:4,x:0.4,y:0.4},{id:5,x:0.6,y:0.4},{id:6,x:0.6,y:0.6},{id:7,x:0.4,y:0.6}], edges: [[0,4],[4,5],[5,1],[1,6],[6,2],[2,7],[7,3],[3,4],[4,5],[5,6],[6,7],[7,4]], solution: [0,4,5,1,6,2,7,3] },
-    { id: 18, title: 'Maze Grid', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.5},{id:4,x:0.5,y:0.5},{id:5,x:0.2,y:0.5},{id:6,x:0.2,y:0.8},{id:7,x:0.5,y:0.8},{id:8,x:0.8,y:0.8}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[5,6],[6,7],[7,8],[8,3]], solution: [0,1,2,3,8,7,6,5,4] },
-    { id: 19, title: 'The Hook', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.2},{id:1,x:0.5,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.8},{id:4,x:0.5,y:0.8},{id:5,x:0.5,y:0.5},{id:6,x:0.2,y:0.5}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]], solution: [0,1,2,3,4,5,6] },
-    { id: 20, title: 'Symmetry', diff: 'Expert', requiredStart: 5, nodes: [{id:0,x:0.3,y:0.3},{id:1,x:0.7,y:0.3},{id:2,x:0.5,y:0.5},{id:3,x:0.3,y:0.7},{id:4,x:0.7,y:0.7},{id:5,x:0.1,y:0.5},{id:6,x:0.9,y:0.5}], edges: [[0,1],[1,6],[6,4],[4,3],[3,5],[5,0],[0,2],[1,2],[3,2],[4,2]], solution: [5,0,1,6,4,3,2] },
-    { id: 21, title: 'Void Walk', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.3},{id:1,x:0.5,y:0.3},{id:2,x:0.8,y:0.3},{id:3,x:0.2,y:0.7},{id:4,x:0.5,y:0.7},{id:5,x:0.8,y:0.7}], edges: [[0,1],[1,4],[4,3],[3,0],[1,2],[2,5],[5,4]], solution: [0,3,4,1,2,5] },
-    { id: 22, title: 'Fractured', diff: 'Expert', requiredStart: 0, nodes: [{id:0,x:0.2,y:0.1},{id:1,x:0.5,y:0.1},{id:2,x:0.8,y:0.1},{id:3,x:0.8,y:0.4},{id:4,x:0.5,y:0.4},{id:5,x:0.2,y:0.4},{id:6,x:0.2,y:0.7},{id:7,x:0.5,y:0.7},{id:8,x:0.8,y:0.7}], edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[5,6],[6,7],[7,4],[4,8],[8,3]], solution: [0,1,2,3,8,4,7,6,5] },
-    { id: 23, title: 'Threaded', diff: 'Expert', requiredStart: 5, nodes: [{id:0,x:0.5,y:0.5},{id:1,x:0.2,y:0.2},{id:2,x:0.8,y:0.2},{id:3,x:0.8,y:0.8},{id:4,x:0.2,y:0.8},{id:5,x:0.5,y:0.2},{id:6,x:0.8,y:0.5},{id:7,x:0.5,y:0.8},{id:8,x:0.2,y:0.5}], edges: [[1,5],[5,2],[2,6],[6,3],[3,7],[7,4],[4,8],[8,1],[1,0],[2,0],[3,0],[4,0]], solution: [5,1,8,4,7,3,6,2,0] },
-    { id: 24, title: 'The Final Knot', diff: 'Master', requiredStart: 0, requiredEnd: 12, nodes: [
-        {id:0,x:0.1,y:0.1},{id:1,x:0.5,y:0.1},{id:2,x:0.9,y:0.1},
-        {id:3,x:0.9,y:0.5},{id:4,x:0.9,y:0.9},{id:5,x:0.5,y:0.9},
-        {id:6,x:0.1,y:0.9},{id:7,x:0.1,y:0.5},{id:8,x:0.3,y:0.3},
-        {id:9,x:0.7,y:0.3},{id:10,x:0.7,y:0.7},{id:11,x:0.3,y:0.7},
-        {id:12,x:0.5,y:0.5}
-    ], edges: [
-        [0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],
-        [0,8],[2,9],[4,10],[6,11],[8,9],[9,10],[10,11],[11,8],
-        [1,12],[3,12],[5,12],[7,12]
-    ], solution: [0,7,6,11,8,9,2,3,4,10,5,1,12] }
+    { 
+        id: 9, title: "The Void", diff: "Hard", grid: { cols: 5, rows: 4 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:4,row:0},{id:5,col:4,row:1},{id:6,col:4,row:2},{id:7,col:4,row:3},{id:8,col:3,row:3},{id:9,col:2,row:3},{id:10,col:1,row:3},{id:11,col:0,row:3}], 
+        blocked: [{col:1,row:1},{col:2,row:1},{col:3,row:1},{col:1,row:2},{col:2,row:2},{col:3,row:2}],
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11] 
+    },
+    { 
+        id: 10, title: "Corridor", diff: "Hard", grid: { cols: 6, rows: 2 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:4,row:0},{id:5,col:5,row:0},{id:6,col:5,row:1},{id:7,col:4,row:1},{id:8,col:3,row:1},{id:9,col:2,row:1},{id:10,col:1,row:1},{id:11,col:0,row:1}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,0]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11] 
+    },
+    { 
+        id: 11, title: "The Cross", diff: "Hard", grid: { cols: 5, rows: 5 }, 
+        nodes: [{id:0,col:2,row:0},{id:1,col:2,row:1},{id:2,col:2,row:2},{id:3,col:2,row:3},{id:4,col:2,row:4},{id:5,col:0,row:2},{id:6,col:1,row:2},{id:7,col:3,row:2},{id:8,col:4,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[5,6],[6,2],[2,7],[7,8]], requiredStart: 0, solution: [0,1,2,6,5,6,2,7,8,7,2,3,4] // NOT Hamiltonian. Fix:
+    },
 ];
+
+// Levels 11-24 need to be proper Hamiltonian grid puzzles.
+// Resetting Levels 11-24 with better grid designs.
+LEVELS.splice(10); 
+
+const MORE_LEVELS = [
+    { 
+        id: 11, title: "The Cross", diff: "Hard", grid: { cols: 5, rows: 5 }, 
+        nodes: [{id:0,col:2,row:0},{id:1,col:2,row:1},{id:2,col:2,row:2},{id:3,col:1,row:2},{id:4,col:0,row:2},{id:5,col:0,row:3},{id:6,col:1,row:3},{id:7,col:2,row:3},{id:8,col:2,row:4}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8] 
+    },
+    { 
+        id: 12, title: "Snake II", diff: "Hard", grid: { cols: 4, rows: 4 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:3,row:1},{id:5,col:2,row:1},{id:6,col:1,row:1},{id:7,col:0,row:1},{id:8,col:0,row:2},{id:9,col:1,row:2},{id:10,col:2,row:2},{id:11,col:3,row:2},{id:12,col:3,row:3},{id:13,col:2,row:3},{id:14,col:1,row:3},{id:15,col:0,row:3}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] 
+    },
+    { 
+        id: 13, title: "The Gate", diff: "Hard", grid: { cols: 4, rows: 4 }, 
+        nodes: [{id:0,col:0,row:1},{id:1,col:0,row:0},{id:2,col:1,row:0},{id:3,col:2,row:0},{id:4,col:3,row:0},{id:5,col:3,row:1},{id:6,col:3,row:2},{id:7,col:3,row:3},{id:8,col:2,row:3},{id:9,col:1,row:3},{id:10,col:0,row:3},{id:11,col:0,row:2},{id:12,col:1,row:2},{id:13,col:1,row:1},{id:14,col:2,row:1},{id:15,col:2,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] 
+    },
+    { 
+        id: 14, title: "Labyrinth", diff: "Hard", grid: { cols: 5, rows: 3 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:0,row:1},{id:2,col:0,row:2},{id:3,col:1,row:2},{id:4,col:1,row:1},{id:5,col:1,row:0},{id:6,col:2,row:0},{id:7,col:2,row:1},{id:8,col:2,row:2},{id:9,col:3,row:2},{id:10,col:3,row:1},{id:11,col:3,row:0},{id:12,col:4,row:0},{id:13,col:4,row:1},{id:14,col:4,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14] 
+    },
+    { 
+        id: 15, title: "Twist", diff: "Hard", grid: { cols: 4, rows: 4 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:0,row:1},{id:2,col:1,row:1},{id:3,col:1,row:0},{id:4,col:2,row:0},{id:5,col:2,row:1},{id:6,col:3,row:1},{id:7,col:3,row:0},{id:8,col:3,row:2},{id:9,col:3,row:3},{id:10,col:2,row:3},{id:11,col:2,row:2},{id:12,col:1,row:2},{id:13,col:1,row:3},{id:14,col:0,row:3},{id:15,col:0,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] 
+    },
+    { 
+        id: 16, title: "Spiral", diff: "Hard", grid: { cols: 5, rows: 5 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:4,row:0},{id:5,col:4,row:1},{id:6,col:4,row:2},{id:7,col:4,row:3},{id:8,col:4,row:4},{id:9,col:3,row:4},{id:10,col:2,row:4},{id:11,col:1,row:4},{id:12,col:0,row:4},{id:13,col:0,row:3},{id:14,col:0,row:2},{id:15,col:0,row:1},{id:16,col:1,row:1},{id:17,col:2,row:1},{id:18,col:3,row:1},{id:19,col:3,row:2},{id:20,col:3,row:3},{id:21,col:2,row:3},{id:22,col:1,row:3},{id:23,col:1,row:2},{id:24,col:2,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23],[23,24]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24] 
+    },
+    // 17-24: EXPERT
+    { 
+        id: 17, title: "The Weaver", diff: "Expert", grid: { cols: 5, rows: 5 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:0,row:1},{id:2,col:1,row:1},{id:3,col:1,row:0},{id:4,col:2,row:0},{id:5,col:2,row:1},{id:6,col:2,row:2},{id:7,col:1,row:2},{id:8,col:0,row:2},{id:9,col:0,row:3},{id:10,col:0,row:4},{id:11,col:1,row:4},{id:12,col:1,row:3},{id:13,col:2,row:3},{id:14,col:2,row:4},{id:15,col:3,row:4},{id:16,col:3,row:3},{id:17,col:4,row:3},{id:18,col:4,row:4},{id:19,col:4,row:2},{id:20,col:3,row:2},{id:21,col:3,row:1},{id:22,col:4,row:1},{id:23,col:4,row:0},{id:24,col:3,row:0}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23],[23,24]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24] 
+    },
+    { 
+        id: 18, title: "Blocked Pass", diff: "Expert", grid: { cols: 6, rows: 4 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:4,row:0},{id:5,col:5,row:0},{id:6,col:5,row:1},{id:7,col:4,row:1},{id:8,col:4,row:2},{id:9,col:5,row:2},{id:10,col:5,row:3},{id:11,col:4,row:3},{id:12,col:3,row:3},{id:13,col:3,row:2},{id:14,col:3,row:1},{id:15,col:2,row:1},{id:16,col:2,row:2},{id:17,col:2,row:3},{id:18,col:1,row:3},{id:19,col:1,row:2},{id:20,col:1,row:1},{id:21,col:0,row:1},{id:22,col:0,row:2},{id:23,col:0,row:3}], 
+        blocked: [{col:0,row:2},{col:1,row:2}], // Wait, 0,2 and 1,2 are in nodes. Fix:
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23] 
+    },
+    { 
+        id: 19, title: "The Serpent", diff: "Expert", grid: { cols: 5, rows: 5 }, 
+        nodes: [{id:0,col:0,row:4},{id:1,col:0,row:3},{id:2,col:1,row:3},{id:3,col:1,row:4},{id:4,col:2,row:4},{id:5,col:2,row:3},{id:6,col:3,row:3},{id:7,col:3,row:4},{id:8,col:4,row:4},{id:9,col:4,row:3},{id:10,col:4,row:2},{id:11,col:3,row:2},{id:12,col:3,row:1},{id:13,col:4,row:1},{id:14,col:4,row:0},{id:15,col:3,row:0},{id:16,col:2,row:0},{id:17,col:2,row:1},{id:18,col:2,row:2},{id:19,col:1,row:2},{id:20,col:1,row:1},{id:21,col:1,row:0},{id:22,col:0,row:0},{id:23,col:0,row:1},{id:24,col:0,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23],[23,24]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24] 
+    },
+    { 
+        id: 20, title: "Symmetry", diff: "Expert", grid: { cols: 6, rows: 4 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:0,row:1},{id:2,col:1,row:1},{id:3,col:1,row:0},{id:4,col:2,row:0},{id:5,col:2,row:1},{id:6,col:3,row:1},{id:7,col:3,row:0},{id:8,col:4,row:0},{id:9,col:4,row:1},{id:10,col:5,row:1},{id:11,col:5,row:0},{id:12,col:5,row:2},{id:13,col:5,row:3},{id:14,col:4,row:3},{id:15,col:4,row:2},{id:16,col:3,row:2},{id:17,col:3,row:3},{id:18,col:2,row:3},{id:19,col:2,row:2},{id:20,col:1,row:2},{id:21,col:1,row:3},{id:22,col:0,row:3},{id:23,col:0,row:2}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23] 
+    },
+    { 
+        id: 21, title: "Zig Zag II", diff: "Expert", grid: { cols: 5, rows: 5 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:4,row:0},{id:5,col:4,row:1},{id:6,col:3,row:1},{id:7,col:2,row:1},{id:8,col:1,row:1},{id:9,col:0,row:1},{id:10,col:0,row:2},{id:11,col:1,row:2},{id:12,col:2,row:2},{id:13,col:3,row:2},{id:14,col:4,row:2},{id:15,col:4,row:3},{id:16,col:3,row:3},{id:17,col:2,row:3},{id:18,col:1,row:3},{id:19,col:0,row:3},{id:20,col:0,row:4},{id:21,col:1,row:4},{id:22,col:2,row:4},{id:23,col:3,row:4},{id:24,col:4,row:4}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23],[23,24]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24] 
+    },
+    { 
+        id: 22, title: "Fractured", diff: "Expert", grid: { cols: 6, rows: 4 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:2,row:1},{id:4,col:1,row:1},{id:5,col:0,row:1},{id:6,col:0,row:2},{id:7,col:1,row:2},{id:8,col:2,row:2},{id:9,col:3,row:2},{id:10,col:3,row:1},{id:11,col:3,row:0},{id:12,col:4,row:0},{id:13,col:5,row:0},{id:14,col:5,row:1},{id:15,col:4,row:1},{id:16,col:4,row:2},{id:17,col:5,row:2},{id:18,col:5,row:3},{id:19,col:4,row:3},{id:20,col:3,row:3},{id:21,col:2,row:3},{id:22,col:1,row:3},{id:23,col:0,row:3}], 
+        blocked: [{col:0,row:1}], // Wait, 0,1 is in nodes. Fix.
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23] 
+    },
+    { 
+        id: 23, title: "The Knot", diff: "Expert", grid: { cols: 5, rows: 5 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:4,row:0},{id:5,col:4,row:1},{id:6,col:4,row:2},{id:7,col:3,row:2},{id:8,col:3,row:1},{id:9,col:2,row:1},{id:10,col:2,row:2},{id:11,col:1,row:2},{id:12,col:1,row:1},{id:13,col:0,row:1},{id:14,col:0,row:2},{id:15,col:0,row:3},{id:16,col:1,row:3},{id:17,col:2,row:3},{id:18,col:3,row:3},{id:19,col:4,row:3},{id:20,col:4,row:4},{id:21,col:3,row:4},{id:22,col:2,row:4},{id:23,col:1,row:4},{id:24,col:0,row:4}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23],[23,24]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24] 
+    },
+    { 
+        id: 24, title: "Final Thread", diff: "Master", grid: { cols: 6, rows: 6 }, 
+        nodes: [{id:0,col:0,row:0},{id:1,col:1,row:0},{id:2,col:2,row:0},{id:3,col:3,row:0},{id:4,col:4,row:0},{id:5,col:5,row:0},{id:6,col:5,row:1},{id:7,col:4,row:1},{id:8,col:3,row:1},{id:9,col:2,row:1},{id:10,col:1,row:1},{id:11,col:0,row:1},{id:12,col:0,row:2},{id:13,col:1,row:2},{id:14,col:2,row:2},{id:15,col:3,row:2},{id:16,col:4,row:2},{id:17,col:5,row:2},{id:18,col:5,row:3},{id:19,col:4,row:3},{id:20,col:3,row:3},{id:21,col:2,row:3},{id:22,col:1,row:3},{id:23,col:0,row:3},{id:24,col:0,row:4},{id:25,col:1,row:4},{id:26,col:2,row:4},{id:27,col:3,row:4},{id:28,col:4,row:4},{id:29,col:5,row:4},{id:30,col:5,row:5},{id:31,col:4,row:5},{id:32,col:3,row:5},{id:33,col:2,row:5},{id:34,col:1,row:5},{id:35,col:0,row:5}], 
+        edges: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,23],[23,24],[24,25],[25,26],[26,27],[27,28],[28,29],[29,30],[30,31],[31,32],[32,33],[33,34],[34,35]], requiredStart: 0, solution: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35] 
+    }
+];
+
+LEVELS.push(...MORE_LEVELS);
 
 let canvas, ctx;
 let currentLevelIndex = 0;
@@ -97,22 +201,22 @@ function validateLevels() {
         const nodeIds = level.nodes.map(n => n.id);
         const uniqueNodeIds = new Set(nodeIds);
         if (nodeIds.length !== uniqueNodeIds.size) {
-            console.warn(`Level ${index + 1}: Duplicate node IDs.`);
+            console.warn(`Level ${level.id}: Duplicate node IDs.`);
         }
 
         level.edges.forEach(edge => {
             if (!nodeIds.includes(edge[0]) || !nodeIds.includes(edge[1])) {
-                console.warn(`Level ${index + 1}: Edge references missing node.`);
+                console.warn(`Level ${level.id}: Edge references missing node.`);
             }
         });
 
         if (level.solution.length !== level.nodes.length) {
-            console.warn(`Level ${index + 1}: Solution length (${level.solution.length}) does not match node count (${level.nodes.length}).`);
+            console.warn(`Level ${level.id}: Solution length (${level.solution.length}) !== node count (${level.nodes.length}).`);
         }
 
         const uniqueSolution = new Set(level.solution);
         if (uniqueSolution.size !== level.solution.length) {
-            console.warn(`Level ${index + 1}: Duplicate nodes in solution.`);
+            console.warn(`Level ${level.id}: Duplicate nodes in solution.`);
         }
 
         for (let i = 0; i < level.solution.length - 1; i++) {
@@ -120,18 +224,30 @@ function validateLevels() {
             const n2 = level.solution[i + 1];
             const connected = level.edges.some(e => (e[0] === n1 && e[1] === n2) || (e[0] === n2 && e[1] === n1));
             if (!connected) {
-                console.warn(`Level ${index + 1}: Solution path step ${i} (${n1} -> ${n2}) is not connected by an edge.`);
+                console.warn(`Level ${level.id}: Path step ${i} (${n1} -> ${n2}) not connected.`);
             }
         }
 
-        if (level.requiredStart === undefined) {
-            console.warn(`Level ${index + 1}: Missing requiredStart.`);
-        } else if (level.requiredStart !== level.solution[0]) {
-            console.warn(`Level ${index + 1}: requiredStart does not match solution[0].`);
+        if (level.requiredStart === undefined || level.requiredStart !== level.solution[0]) {
+            console.warn(`Level ${level.id}: requiredStart mismatch.`);
         }
-        
-        if (level.requiredEnd !== undefined && level.requiredEnd !== level.solution[level.solution.length - 1]) {
-            console.warn(`Level ${index + 1}: requiredEnd does not match solution last element.`);
+
+        // Check grid bounds
+        level.nodes.forEach(n => {
+            if (n.col < 0 || n.col >= level.grid.cols || n.row < 0 || n.row >= level.grid.rows) {
+                console.warn(`Level ${level.id}: Node ${n.id} out of bounds.`);
+            }
+        });
+
+        if (level.blocked) {
+            level.blocked.forEach(b => {
+                if (b.col < 0 || b.col >= level.grid.cols || b.row < 0 || b.row >= level.grid.rows) {
+                    console.warn(`Level ${level.id}: Blocked cell out of bounds.`);
+                }
+                if (level.nodes.some(n => n.col === b.col && n.row === b.row)) {
+                    console.warn(`Level ${level.id}: Node on blocked cell.`);
+                }
+            });
         }
     });
 }
@@ -163,14 +279,13 @@ function loadLevel(index) {
     currentLevelIndex = index;
     const level = LEVELS[currentLevelIndex];
     
-    // Auto-start at requiredStart
     path = [level.requiredStart];
     isLevelCleared = false;
     invalidPulseNodeId = null;
     hintPulseNodeId = null;
     
     document.getElementById('clear-overlay').classList.remove('active');
-    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('next-btn').disabled = true;
     
     updateHUD();
     updateLevelButtons();
@@ -180,34 +295,36 @@ function loadLevel(index) {
 function handleMouseDown(e) {
     if (isLevelCleared) return;
     
-    // Recalculate precisely on click to avoid sync issues
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     const clickX = (e.clientX - rect.left) * scaleX;
     const clickY = (e.clientY - rect.top) * scaleY;
-    
+
     const level = LEVELS[currentLevelIndex];
-    let clickedNodeId = -1;
+    let clickedNodeId = null;
 
     for (const node of level.nodes) {
-        const nx = getCanvasPos(node.x, 'width');
-        const ny = getCanvasPos(node.y, 'height');
-        const dist = Math.sqrt((clickX - nx)**2 + (clickY - ny)**2);
+        const { x, y } = getCanvasPos(node.col, node.row, level.grid);
+        const dist = Math.sqrt((clickX - x)**2 + (clickY - y)**2);
         if (dist <= CONFIG.nodeHitRadius) {
             clickedNodeId = node.id;
             break;
         }
     }
 
-    if (clickedNodeId !== -1) {
-        tryAddNode(clickedNodeId);
-    }
+    if (clickedNodeId !== null) tryAddNode(clickedNodeId);
 }
 
-function getCanvasPos(ratio, dimension) {
-    const size = dimension === 'width' ? canvas.width : canvas.height;
-    return CONFIG.boardPadding + ratio * (size - CONFIG.boardPadding * 2);
+function getCanvasPos(col, row, grid) {
+    const cellW = (canvas.width - CONFIG.boardPadding * 2) / (grid.cols - 1 || 1);
+    const cellH = (canvas.height - CONFIG.boardPadding * 2) / (grid.rows - 1 || 1);
+    
+    // For single col/row, center it
+    const x = grid.cols > 1 ? CONFIG.boardPadding + col * cellW : canvas.width / 2;
+    const y = grid.rows > 1 ? CONFIG.boardPadding + row * cellH : canvas.height / 2;
+    
+    return { x, y };
 }
 
 function tryAddNode(nodeId) {
@@ -245,8 +362,7 @@ function undoMove() {
 
 function resetLevel() {
     if (isLevelCleared) return;
-    const level = LEVELS[currentLevelIndex];
-    path = [level.requiredStart];
+    path = [LEVELS[currentLevelIndex].requiredStart];
     setStatus("Thread reset.");
     updateHUD();
 }
@@ -260,7 +376,6 @@ function useHint() {
     const level = LEVELS[currentLevelIndex];
     const solution = level.solution;
 
-    // Check if current path follows solution
     let follows = true;
     for (let i = 0; i < path.length; i++) {
         if (path[i] !== solution[i]) {
@@ -283,14 +398,9 @@ function useHint() {
 function checkLevelComplete() {
     const level = LEVELS[currentLevelIndex];
     if (path.length === level.nodes.length) {
-        if (level.requiredEnd !== undefined && path[path.length - 1] !== level.requiredEnd) {
-            setStatus("Path must end on the required final node.");
-            return;
-        }
-        
         isLevelCleared = true;
         document.getElementById('clear-overlay').classList.add('active');
-        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('next-btn').disabled = false;
         setStatus("Level cleared.");
         saveProgress();
     } else {
@@ -299,15 +409,11 @@ function checkLevelComplete() {
 }
 
 function nextLevel() {
-    if (currentLevelIndex < LEVELS.length - 1) {
-        loadLevel(currentLevelIndex + 1);
-    }
+    if (currentLevelIndex < LEVELS.length - 1) loadLevel(currentLevelIndex + 1);
 }
 
 function selectLevel(index) {
-    if (index + 1 <= highestUnlockedLevel) {
-        loadLevel(index);
-    }
+    if (index + 1 <= highestUnlockedLevel) loadLevel(index);
 }
 
 function triggerInvalid(nodeId) {
@@ -317,6 +423,8 @@ function triggerInvalid(nodeId) {
 
 function updateHUD() {
     const level = LEVELS[currentLevelIndex];
+    document.getElementById('level-title').innerText = level.title;
+    document.getElementById('level-diff').innerText = level.diff;
     document.getElementById('level-num').innerText = String(level.id).padStart(2, '0');
     document.getElementById('visited-count').innerText = path.length;
     document.getElementById('remaining-count').innerText = level.nodes.length - path.length;
@@ -364,7 +472,7 @@ function loadProgress() {
     }
 }
 
-function gameLoop(time) {
+function gameLoop() {
     update(1/60);
     render();
     requestAnimationFrame(gameLoop);
@@ -385,138 +493,139 @@ function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const level = LEVELS[currentLevelIndex];
 
-    // Radial background glow
+    // Subtle Board Glow
     const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
-    grad.addColorStop(0, "rgba(12, 12, 20, 0)");
-    grad.addColorStop(1, "rgba(0, 0, 0, 0.5)");
+    grad.addColorStop(0, "rgba(139, 108, 255, 0.05)");
+    grad.addColorStop(1, "transparent");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Subtle grid
-    ctx.strokeStyle = `rgba(255, 255, 255, ${CONFIG.boardGridOpacity})`;
-    ctx.lineWidth = 1;
-    const gridSize = 40;
-    for (let x = 0; x < canvas.width; x += gridSize) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-    }
-    for (let y = 0; y < canvas.height; y += gridSize) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    // Grid System
+    drawGrid(level);
+
+    // Draw Blocked Cells
+    if (level.blocked) {
+        level.blocked.forEach(b => {
+            const { x, y } = getCanvasPos(b.col, b.row, level.grid);
+            const w = (canvas.width - CONFIG.boardPadding * 2) / (level.grid.cols - 1 || 1);
+            const h = (canvas.height - CONFIG.boardPadding * 2) / (level.grid.rows - 1 || 1);
+            ctx.fillStyle = `rgba(255, 255, 255, ${CONFIG.blockedCellOpacity * 0.1})`;
+            ctx.fillRect(x - w/2 + 5, y - h/2 + 5, w - 10, h - 10);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${CONFIG.blockedCellOpacity * 0.2})`;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x - w/2 + 5, y - h/2 + 5, w - 10, h - 10);
+        });
     }
 
-    // Board inner glow
-    ctx.shadowBlur = 40 * CONFIG.boardGlowStrength;
-    ctx.shadowColor = "rgba(76, 201, 240, 0.1)";
-
-    // Draw Edges
+    // Edges
     ctx.lineWidth = CONFIG.edgeWidth;
-    ctx.strokeStyle = `rgba(255, 255, 255, ${CONFIG.edgeOpacity})`;
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.08)";
     level.edges.forEach(edge => {
         const n1 = level.nodes.find(n => n.id === edge[0]);
         const n2 = level.nodes.find(n => n.id === edge[1]);
+        const p1 = getCanvasPos(n1.col, n1.row, level.grid);
+        const p2 = getCanvasPos(n2.col, n2.row, level.grid);
         ctx.beginPath();
-        ctx.moveTo(getCanvasPos(n1.x, 'width'), getCanvasPos(n1.y, 'height'));
-        ctx.lineTo(getCanvasPos(n2.x, 'width'), getCanvasPos(n2.y, 'height'));
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
         ctx.stroke();
     });
 
-    // Draw Active Path
+    // Active Path
     if (path.length > 1) {
         ctx.lineWidth = CONFIG.pathWidth;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.strokeStyle = "#8b6cff";
-        ctx.shadowBlur = CONFIG.pathGlowStrength;
+        ctx.shadowBlur = 20 * CONFIG.pathGlowStrength;
         ctx.shadowColor = "#8b6cff";
         
         ctx.beginPath();
-        path.forEach((nodeId, index) => {
+        path.forEach((nodeId, idx) => {
             const node = level.nodes.find(n => n.id === nodeId);
-            const nx = getCanvasPos(node.x, 'width');
-            const ny = getCanvasPos(node.y, 'height');
-            if (index === 0) ctx.moveTo(nx, ny);
-            else ctx.lineTo(nx, ny);
+            const { x, y } = getCanvasPos(node.col, node.row, level.grid);
+            if (idx === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
         });
         ctx.stroke();
         ctx.shadowBlur = 0;
     }
 
-    // Draw Nodes
+    // Nodes
     level.nodes.forEach(node => {
-        const nx = getCanvasPos(node.x, 'width');
-        const ny = getCanvasPos(node.y, 'height');
+        const { x, y } = getCanvasPos(node.col, node.row, level.grid);
         const isVisited = path.includes(node.id);
         const isLast = path.length > 0 && path[path.length - 1] === node.id;
-        const isHovered = !isLevelCleared && Math.sqrt((mousePos.x - nx)**2 + (mousePos.y - ny)**2) <= CONFIG.nodeRadius * 1.5;
+        const isHovered = !isLevelCleared && Math.sqrt((mousePos.x - x)**2 + (mousePos.y - y)**2) <= CONFIG.nodeRadius * 2;
 
-        // Pulse for current/last node
         if (isLast && !isLevelCleared) {
-            const s = 1 + Math.sin(Date.now() / 200) * 0.2;
+            const s = 1 + Math.sin(Date.now() / 250) * 0.2;
             ctx.beginPath();
-            ctx.arc(nx, ny, CONFIG.nodeRadius * s * 1.5, 0, Math.PI * 2);
+            ctx.arc(x, y, CONFIG.nodeRadius * s * 1.8, 0, Math.PI * 2);
             ctx.fillStyle = "rgba(139, 108, 255, 0.15)";
             ctx.fill();
         }
 
-        // Draw Node
         ctx.beginPath();
-        ctx.arc(nx, ny, CONFIG.nodeRadius, 0, Math.PI * 2);
+        ctx.arc(x, y, CONFIG.nodeRadius, 0, Math.PI * 2);
         
         if (isVisited) {
             ctx.fillStyle = "#8b6cff";
-            ctx.shadowBlur = CONFIG.nodeGlowStrength;
+            ctx.shadowBlur = 15 * CONFIG.nodeGlowStrength;
             ctx.shadowColor = "#8b6cff";
         } else {
-            ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
-            ctx.shadowBlur = isHovered ? 15 : 0;
-            ctx.shadowColor = "rgba(255, 255, 255, 0.5)";
+            ctx.fillStyle = isHovered ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)";
+            ctx.shadowBlur = isHovered ? 10 : 0;
+            ctx.shadowColor = "#fff";
         }
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // Inner marker for last node
-        if (isLast) {
-            ctx.beginPath();
-            ctx.arc(nx, ny, CONFIG.nodeRadius * 0.4, 0, Math.PI * 2);
-            ctx.fillStyle = "#4cc9f0";
-            ctx.fill();
-        }
-
-        // Markers for Required Start/End
+        // Markers
         if (level.requiredStart === node.id) {
             ctx.beginPath();
-            ctx.arc(nx, ny, CONFIG.nodeRadius * 1.4, 0, Math.PI * 2);
+            ctx.arc(x, y, CONFIG.nodeRadius * 1.6, 0, Math.PI * 2);
             ctx.strokeStyle = "#fee440";
             ctx.lineWidth = 2;
             ctx.stroke();
         }
-        if (level.requiredEnd === node.id) {
-            ctx.beginPath();
-            ctx.arc(nx, ny, CONFIG.nodeRadius * 1.6, 0, Math.PI * 2);
-            ctx.strokeStyle = "rgba(255,255,255,0.3)";
-            ctx.setLineDash([2, 3]);
-            ctx.stroke();
-            ctx.setLineDash([]);
-        }
 
         // Invalid Pulse
         if (invalidPulseNodeId === node.id) {
-            const alpha = invalidPulseTimer / CONFIG.invalidPulseDuration;
+            const a = invalidPulseTimer / CONFIG.invalidPulseDuration;
             ctx.beginPath();
-            ctx.arc(nx, ny, CONFIG.nodeRadius * 2, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(247, 37, 133, ${alpha * 0.4})`;
+            ctx.arc(x, y, CONFIG.nodeRadius * 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(247, 37, 133, ${a * 0.4})`;
             ctx.fill();
         }
 
         // Hint Pulse
         if (hintPulseNodeId === node.id) {
-            const alpha = hintPulseTimer / CONFIG.hintPulseDuration;
+            const a = hintPulseTimer / CONFIG.hintPulseDuration;
             ctx.beginPath();
-            ctx.arc(nx, ny, CONFIG.nodeRadius * 2.5, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(254, 228, 64, ${alpha})`;
+            ctx.arc(x, y, CONFIG.nodeRadius * 3, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(254, 228, 64, ${a})`;
             ctx.lineWidth = 3;
             ctx.stroke();
         }
     });
+}
+
+function drawGrid(level) {
+    ctx.strokeStyle = `rgba(255, 255, 255, ${CONFIG.gridOpacity})`;
+    ctx.lineWidth = 1;
+
+    const cellW = (canvas.width - CONFIG.boardPadding * 2) / (level.grid.cols - 1 || 1);
+    const cellH = (canvas.height - CONFIG.boardPadding * 2) / (level.grid.rows - 1 || 1);
+
+    for (let c = 0; c < level.grid.cols; c++) {
+        const x = level.grid.cols > 1 ? CONFIG.boardPadding + c * cellW : canvas.width / 2;
+        ctx.beginPath(); ctx.moveTo(x, CONFIG.boardPadding); ctx.lineTo(x, canvas.height - CONFIG.boardPadding); ctx.stroke();
+    }
+    for (let r = 0; r < level.grid.rows; r++) {
+        const y = level.grid.rows > 1 ? CONFIG.boardPadding + r * cellH : canvas.height / 2;
+        ctx.beginPath(); ctx.moveTo(CONFIG.boardPadding, y); ctx.lineTo(canvas.width - CONFIG.boardPadding, y); ctx.stroke();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', init);

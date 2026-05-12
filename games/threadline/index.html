@@ -18,17 +18,18 @@
     </nav>
 
     <main class="threadline-page container py-4">
-        <header class="threadline-header text-center mb-6 fade-in-up delay-1">
-            <h1 class="mb-1">Threadline</h1>
+        <header class="threadline-header text-center fade-in-up delay-1">
+            <h1>Threadline</h1>
             <p class="subtitle">Visit every node in one unbroken path.</p>
         </header>
 
         <section class="threadline-shell fade-in-up delay-2">
-            <!-- LEFT PANEL: Campaign / Level Select -->
+            <!-- LEFT PANEL: Campaign -->
             <aside class="threadline-panel threadline-campaign">
-                <div class="panel-header">
-                    <h2>Campaign</h2>
-                    <p>Path Puzzle</p>
+                <div class="campaign-label">Campaign</div>
+                <div class="level-title-wrap">
+                    <h2 id="level-title">First Line</h2>
+                    <div id="level-diff" class="level-diff">Easy</div>
                 </div>
                 
                 <div class="stats-grid">
@@ -38,7 +39,7 @@
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Visited</span>
-                        <span id="visited-count" class="stat-value">0</span>
+                        <span id="visited-count" class="stat-value">1</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Remaining</span>
@@ -47,25 +48,25 @@
                 </div>
 
                 <div id="status-text" class="status-box">
-                    Choose a starting node.
+                    Continue the thread.
                 </div>
 
                 <div class="action-buttons">
-                    <button id="undo-btn" class="btn btn-panel" title="Undo (U)">Undo</button>
-                    <button id="reset-btn" class="btn btn-panel" title="Reset (R)">Reset</button>
-                    <button id="hint-btn" class="btn btn-panel btn-hint" title="Hint (H)">Hint</button>
-                    <button id="next-btn" class="btn btn-primary" style="display: none;">Next</button>
+                    <button id="undo-btn" class="btn-panel" title="Undo (U)">Undo</button>
+                    <button id="reset-btn" class="btn-panel" title="Reset (R)">Reset</button>
+                    <button id="hint-btn" class="btn-panel btn-hint" title="Hint (H)">Hint</button>
+                    <button id="next-btn" class="btn-panel btn-primary" disabled>Next</button>
                 </div>
 
                 <div class="level-select-wrap">
                     <h3>Level Select</h3>
                     <div id="level-grid" class="level-grid">
-                        <!-- Levels 1-24 will be generated here -->
+                        <!-- Levels 1-24 -->
                     </div>
                 </div>
             </aside>
 
-            <!-- CENTER: Puzzle Board -->
+            <!-- CENTER: Board -->
             <section class="threadline-board-wrap">
                 <div class="canvas-container">
                     <canvas id="gameCanvas"></canvas>
@@ -76,7 +77,7 @@
                 </div>
             </section>
 
-            <!-- RIGHT PANEL: Help / Rules -->
+            <!-- RIGHT PANEL: Help -->
             <aside class="threadline-panel threadline-help">
                 <div class="panel-section">
                     <h3>How to play</h3>

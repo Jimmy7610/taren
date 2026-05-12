@@ -1,9 +1,9 @@
 # Taren Current Status
 
-**Current Build:** Build 41
+**Current Build:** Build 42
 
 ## Playable Games
-1.  **Threadline** — Logic / path puzzle. Build 41 fixes a critical input bug where nodes were not clickable due to coordinate scaling mismatches. Hit detection has been made more forgiving, and the game is now fully playable with its fixed starting node mechanic.
+1.  **Threadline** — Logic / path puzzle. Build 42 is a major rework into a structured grid-based campaign puzzle. Features a 24-level progression with handcrafted boards, blocked cells, and a premium campaign interface.
 2.  **Voidbreaker** — Arcade / breaker game. Build 37 fixes mouse control.
 3.  **Tetrafall** — Falling-block puzzle. Build 34 fixes the Hold preview bug.
 4.  **Fourfold** — Strategy / board game. Build 32 adds a premium visual polish pass.
@@ -19,12 +19,11 @@
 
 ## Core Systems
 - **Global Build Badge:** Displays versioning in real-time.
-- **Level Validation (Threadline):** Build 39+ ensures every level is mathematically solvable. Build 40 enforces required fixed starts.
-- **Visual Balance Pass (Threadline):** Optimized for a premium "campaign" feel.
+- **Grid Puzzle Engine (Threadline):** Build 42 implements a rigid grid system for board design, with support for blocked cells and campaign stats.
+- **Visual Balance Pass:** Optimized for a premium "campaign" feel.
 - **Isolated Architecture:** Each game remains self-contained.
 - **No-Scroll Layouts:** Optimized for desktop-first single-viewport play.
 
 ## Active Future Concepts
-- Threadline input fix and gameplay stability (Build 41).
-- Monitoring level difficulty curves.
+- Threadline campaign progression monitoring.
 - Future quiet experiments may appear later.
