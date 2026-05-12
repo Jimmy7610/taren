@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 85 (Polish Pack 5: Tetrafall, Memory Drift, and Static Bloom visual improvements)
+**Current Build:** Build 86 (Polish Pack 6: Void Runner, Signal Lost, and Night Signal visual improvements)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

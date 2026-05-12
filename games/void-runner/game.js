@@ -17,6 +17,11 @@ const SETTINGS = {
     playerColor: '#8b6cff', // INSTÄLLNING - Färg på spelaren.
     hazardColor: '#2a2a35', // INSTÄLLNING - Färg på hazards.
     fragmentColor: '#4cc9f0', // INSTÄLLNING - Färg på fragments.
+    
+    runnerGlowStrength: 0.32, // INSTÄLLNING - Ändra hur starkt Void Runner-spelaren lyser.
+    voidTrailAlpha: 0.18, // INSTÄLLNING - Ändra hur tydlig rörelsesvansen är.
+    hazardGlowStrength: 0.24, // INSTÄLLNING - Ändra hur tydligt hinder glöder.
+    
     bestScoreKey: 'taren_void_runner_best_score' // INSTÄLLNING - LocalStorage nyckel.
 };
 
@@ -141,12 +146,14 @@ function update() {
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Persistent trail effect
+    ctx.fillStyle = `rgba(5, 5, 7, ${1 - SETTINGS.voidTrailAlpha})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw Background Lines (static feel)
-    ctx.strokeStyle = 'rgba(255,255,255,0.02)';
+    // Draw Background Lines (cinematic scanner feel)
+    ctx.strokeStyle = 'rgba(255,255,255,0.015)';
     ctx.lineWidth = 1;
-    for (let i = 0; i < canvas.height; i += 20) {
+    for (let i = 0; i < canvas.height; i += 24) {
         ctx.beginPath();
         ctx.moveTo(0, i);
         ctx.lineTo(canvas.width, i);
@@ -154,30 +161,48 @@ function draw() {
     }
 
     if (gameState === 'PLAYING') {
-        // Player
-        ctx.shadowBlur = 15;
+        // Player (Luminous energy core)
+        ctx.shadowBlur = 20 * SETTINGS.runnerGlowStrength;
         ctx.shadowColor = SETTINGS.playerColor;
         ctx.fillStyle = SETTINGS.playerColor;
         ctx.beginPath();
         ctx.arc(player.x, player.y, SETTINGS.playerRadius, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Inner core
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, SETTINGS.playerRadius * 0.4, 0, Math.PI * 2);
+        ctx.fill();
         ctx.shadowBlur = 0;
 
-        // Hazards
-        ctx.fillStyle = SETTINGS.hazardColor;
+        // Hazards (Void matter)
         hazards.forEach(h => {
+            ctx.shadowBlur = 10 * SETTINGS.hazardGlowStrength;
+            ctx.shadowColor = 'rgba(255,255,255,0.05)';
+            ctx.fillStyle = SETTINGS.hazardColor;
             ctx.beginPath();
             ctx.arc(h.x, h.y, h.radius, 0, Math.PI * 2);
             ctx.fill();
+            
+            // Rim light
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
         });
 
-        // Fragments
-        ctx.shadowBlur = 10;
+        // Fragments (Signal shards)
+        ctx.shadowBlur = 15 * SETTINGS.runnerGlowStrength;
         ctx.shadowColor = SETTINGS.fragmentColor;
         ctx.fillStyle = SETTINGS.fragmentColor;
         fragments.forEach(f => {
             ctx.beginPath();
-            ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+            // Diamond shape for shards
+            ctx.moveTo(f.x, f.y - f.radius);
+            ctx.lineTo(f.x + f.radius, f.y);
+            ctx.lineTo(f.x, f.y + f.radius);
+            ctx.lineTo(f.x - f.radius, f.y);
+            ctx.closePath();
             ctx.fill();
         });
         ctx.shadowBlur = 0;

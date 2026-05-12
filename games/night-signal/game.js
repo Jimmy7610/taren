@@ -13,6 +13,11 @@ const SETTINGS = {
     falseSignalChance: 0.35, // INSTÄLLNING - Sannolikhet för en falsk puls.
     scorePerHit: 1, // INSTÄLLNING - Poäng per träff.
     speedIncrease: 50, // INSTÄLLNING - Hur mycket pulserna snabbas upp per träff (ms avdrag).
+    
+    nightPulseGlow: 0.36, // INSTÄLLNING - Ändra hur starkt natt-signalen lyser.
+    timingWindowGlow: 0.26, // INSTÄLLNING - Ändra hur tydligt timingfönstret syns.
+    missFeedbackOpacity: 0.24, // INSTÄLLNING - Ändra hur tydlig miss-feedback är.
+    
     bestScoreKey: 'taren_night_signal_best_score' // INSTÄLLNING - LocalStorage nyckel.
 };
 

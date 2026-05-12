@@ -12,6 +12,11 @@ const SETTINGS = {
     lockTimeRequired: 1.5, // INSTÄLLNING - Sekunder man måste hålla sig inom toleransen för att låsa.
     signalColor: '#8b6cff', // INSTÄLLNING - Färgen på signalvågen.
     lockColor: '#4cc9f0', // INSTÄLLNING - Färgen när man är nära.
+    
+    signalGlowStrength: 0.34, // INSTÄLLNING - Ändra hur starkt signalen lyser.
+    noiseOpacity: 0.12, // INSTÄLLNING - Ändra hur tydlig störningen/statiken är.
+    targetZoneGlow: 0.28, // INSTÄLLNING - Ändra hur tydligt målområdet markeras.
+    
     bestRoundKey: 'taren_signal_lost_best_round' // INSTÄLLNING - LocalStorage nyckel.
 };
 
