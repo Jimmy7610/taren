@@ -14,6 +14,11 @@ const CONFIG = {
     hiddenCardOffset: 14,      // INSTÄLLNING - Ändra avståndet mellan dolda kort i en kolumn.
     drawCount: 1,              // INSTÄLLNING - Ändra om stocken drar 1 eller 3 kort.
     bestTimeKey: "taren_veil_patience_best_time", // INSTÄLLNING - Ändra localStorage-nyckeln för bästa tid.
+
+    // VISUAL POLISH
+    cardGlowStrength: 0.15,      // INSTÄLLNING - Ändra hur starkt kortens kantglow syns.
+    selectedCardGlow: 0.35,     // INSTÄLLNING - Ändra hur tydligt valt kort markeras.
+    slotGlowStrength: 0.12,      // INSTÄLLNING - Ändra hur starkt tomma kortplatser glöder.
 };
 
 const SUITS = ['hearts', 'diamonds', 'spades', 'clubs'];

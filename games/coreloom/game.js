@@ -12,6 +12,11 @@ const CONFIG = {
     animationDuration: 140,    // INSTÄLLNING - Hur snabbt (ms) brickanimationerna spelas.
     mergePulseDuration: 180,   // INSTÄLLNING - Hur länge (ms) merge-effekten i Coreloom syns.
     bestScoreKey: "taren_coreloom_best_score", // INSTÄLLNING - localStorage-nyckel för bästa poäng.
+
+    // VISUAL POLISH
+    tileGlowStrength: 0.15,      // INSTÄLLNING - Ändra hur starkt Coreloom-brickorna lyser.
+    highValueGlowStrength: 0.4, // INSTÄLLNING - Ändra hur mycket höga värden ska framhävas.
+    boardInnerGlow: 0.12,      // INSTÄLLNING - Ändra hur starkt brädets inre glow syns.
 };
 
 class Coreloom {

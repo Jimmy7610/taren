@@ -31,6 +31,12 @@ const CONFIG = {
     startingLives: 3,           // INSTÄLLNING - Ändra antal liv från start.
     lifeResetDelay: 900,        // INSTÄLLNING - Ändra pausen efter att spelaren förlorat ett liv.
     bestScoreKeyPrefix: "taren_echo_hollow_best_score_", // INSTÄLLNING - Prefix för bästa poäng per svårighet.
+
+    // VISUAL POLISH
+    mazeGlowStrength: 0.12,     // INSTÄLLNING - Ändra hur starkt labyrintens väggar glöder.
+    fragmentGlowStrength: 12,   // INSTÄLLNING - Ändra hur starkt fragmenten lyser.
+    shadowOpacity: 0.85,        // INSTÄLLNING - Ändra hur tydliga skuggorna är.
+    echoNodeGlow: 25,           // INSTÄLLNING - Ändra hur starkt echo nodes (beacons) lyser.
 };
 
 // Maze Layout: 1 = Wall, 0 = Path, 2 = Fragment, 3 = Echo Node, 4 = Player Start, 5 = Shadow Start
@@ -431,81 +437,118 @@ class EchoHollow {
     }
 
     draw() {
-        this.ctx.fillStyle = '#09090b';
+        // Atmospheric Labyrinth Background
+        const bgGrad = this.ctx.createRadialGradient(this.canvas.width/2, this.canvas.height/2, 0, this.canvas.width/2, this.canvas.height/2, this.canvas.width);
+        bgGrad.addColorStop(0, '#0c0c0e');
+        bgGrad.addColorStop(1, '#050507');
+        this.ctx.fillStyle = bgGrad;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Draw Walls
-        this.ctx.strokeStyle = '#1a1528';
-        this.ctx.lineWidth = 2;
+        // Draw Labyrinth Structure
         for (let y = 0; y < this.maze.length; y++) {
             for (let x = 0; x < this.maze[y].length; x++) {
-                if (this.maze[y][x] === 1) {
-                    this.ctx.fillStyle = '#100e18';
-                    this.ctx.fillRect(x * CONFIG.tileSize + 2, y * CONFIG.tileSize + 2, CONFIG.tileSize - 4, CONFIG.tileSize - 4);
+                const val = this.maze[y][x];
+                const px = x * CONFIG.tileSize;
+                const py = y * CONFIG.tileSize;
+                const ts = CONFIG.tileSize;
+
+                if (val === 1) {
+                    // Wall rendering: Multi-layered obsidian style
+                    this.ctx.fillStyle = '#0f0e16';
+                    this.ctx.fillRect(px + 1, py + 1, ts - 2, ts - 2);
                     
-                    this.ctx.strokeStyle = '#2d2442';
+                    // Subtle wall edge glow
+                    this.ctx.strokeStyle = `rgba(139, 108, 255, ${CONFIG.mazeGlowStrength})`;
                     this.ctx.lineWidth = 1;
-                    this.ctx.strokeRect(x * CONFIG.tileSize + 4, y * CONFIG.tileSize + 4, CONFIG.tileSize - 8, CONFIG.tileSize - 8);
+                    this.ctx.strokeRect(px + 3, py + 3, ts - 6, ts - 6);
                     
-                    // Outer glow for walls
-                    this.ctx.shadowBlur = 15;
-                    this.ctx.shadowColor = 'rgba(139, 108, 255, 0.2)';
-                    this.ctx.strokeStyle = '#1a1528';
-                    this.ctx.strokeRect(x * CONFIG.tileSize + 2, y * CONFIG.tileSize + 2, CONFIG.tileSize - 4, CONFIG.tileSize - 4);
-                    this.ctx.shadowBlur = 0;
-                } else if (this.maze[y][x] === 2) {
-                    // Fragment
+                    // Inner accent
+                    this.ctx.fillStyle = '#1a1628';
+                    this.ctx.fillRect(px + ts/4, py + ts/4, ts/2, ts/2);
+                } else if (val === 2) {
+                    // Fragment: Lost Signals
+                    const pulse = Math.sin(Date.now() / 300) * 0.2 + 0.8;
                     this.ctx.fillStyle = '#4cc9f0';
-                    this.ctx.shadowBlur = 10;
+                    this.ctx.shadowBlur = CONFIG.fragmentGlowStrength * pulse;
                     this.ctx.shadowColor = '#4cc9f0';
                     this.ctx.beginPath();
-                    this.ctx.arc(x * CONFIG.tileSize + CONFIG.tileSize / 2, y * CONFIG.tileSize + CONFIG.tileSize / 2, 2.5, 0, Math.PI * 2);
+                    this.ctx.arc(px + ts / 2, py + ts / 2, 2.2, 0, Math.PI * 2);
                     this.ctx.fill();
                     this.ctx.shadowBlur = 0;
-                } else if (this.maze[y][x] === 3) {
-                    // Echo Node
+                    
+                    // Subtle core
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.globalAlpha = 0.4;
+                    this.ctx.fillRect(px + ts/2 - 0.5, py + ts/2 - 0.5, 1, 1);
+                    this.ctx.globalAlpha = 1.0;
+                } else if (val === 3) {
+                    // Echo Node: Quiet Signal Beacons
+                    const pulse = Math.sin(Date.now() / 400) * 0.3 + 0.7;
                     this.ctx.fillStyle = '#fbbf24';
-                    this.ctx.shadowBlur = 20;
+                    this.ctx.shadowBlur = CONFIG.echoNodeGlow * pulse;
                     this.ctx.shadowColor = '#fbbf24';
+                    
                     this.ctx.beginPath();
-                    this.ctx.arc(x * CONFIG.tileSize + CONFIG.tileSize / 2, y * CONFIG.tileSize + CONFIG.tileSize / 2, 6, 0, Math.PI * 2);
+                    this.ctx.arc(px + ts / 2, py + ts / 2, 5, 0, Math.PI * 2);
                     this.ctx.fill();
+                    
+                    // Signal ring
                     this.ctx.shadowBlur = 0;
+                    this.ctx.strokeStyle = `rgba(251, 191, 36, ${0.4 * (1-pulse)})`;
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.arc(px + ts/2, py + ts/2, 8 + (1-pulse)*4, 0, Math.PI*2);
+                    this.ctx.stroke();
                 }
             }
         }
         
-        // Player
+        // Player: Luminous Being
         this.ctx.fillStyle = '#fafafa';
-        this.ctx.shadowBlur = 15;
+        this.ctx.shadowBlur = 20;
         this.ctx.shadowColor = '#fff';
+        if (this.powerActive) {
+            this.ctx.shadowColor = '#fbbf24';
+            this.ctx.fillStyle = '#fbbf24';
+        }
         this.ctx.beginPath();
-        this.ctx.arc(this.player.x, this.player.y, CONFIG.tileSize * 0.35, 0, Math.PI * 2);
+        this.ctx.arc(this.player.x, this.player.y, CONFIG.tileSize * 0.38, 0, Math.PI * 2);
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
         
-        // Shadows
+        // Shadows: Ominous Signals
         this.shadows.forEach(s => {
-            this.ctx.fillStyle = s.frightened ? '#4cc9f0' : '#8b6cff';
+            this.ctx.globalAlpha = CONFIG.shadowOpacity;
+            const color = s.frightened ? '#4cc9f0' : '#8b6cff';
+            this.ctx.fillStyle = color;
+            
             if (s.frightened && this.powerTimer < 2000 && Math.floor(Date.now() / 200) % 2 === 0) {
                 this.ctx.fillStyle = '#fafafa';
             }
-            this.ctx.shadowBlur = 10;
+            
+            this.ctx.shadowBlur = 15;
             this.ctx.shadowColor = this.ctx.fillStyle;
             
-            // Draw a soft ghost-like shape
+            // Ghostly tactical shape
             this.ctx.beginPath();
-            this.ctx.arc(s.x, s.y - 2, CONFIG.tileSize * 0.35, Math.PI, 0);
-            this.ctx.lineTo(s.x + CONFIG.tileSize * 0.35, s.y + CONFIG.tileSize * 0.35);
-            this.ctx.lineTo(s.x - CONFIG.tileSize * 0.35, s.y + CONFIG.tileSize * 0.35);
+            this.ctx.arc(s.x, s.y - 1, CONFIG.tileSize * 0.35, Math.PI, 0);
+            this.ctx.lineTo(s.x + CONFIG.tileSize * 0.35, s.y + CONFIG.tileSize * 0.4);
+            // Jagged bottom
+            for(let i = 0; i < 3; i++) {
+                this.ctx.lineTo(s.x + CONFIG.tileSize * (0.35 - i*0.35), s.y + CONFIG.tileSize * (i%2 ? 0.3 : 0.45));
+            }
+            this.ctx.lineTo(s.x - CONFIG.tileSize * 0.35, s.y + CONFIG.tileSize * 0.4);
+            this.ctx.closePath();
             this.ctx.fill();
             
-            // Eyes
+            // Eerie Eyes
             this.ctx.fillStyle = '#000';
+            this.ctx.shadowBlur = 0;
             this.ctx.beginPath();
-            this.ctx.arc(s.x - 3, s.y - 4, 2, 0, Math.PI * 2);
-            this.ctx.arc(s.x + 3, s.y - 4, 2, 0, Math.PI * 2);
+            this.ctx.arc(s.x - 3, s.y - 3, 2.2, 0, Math.PI * 2);
+            this.ctx.arc(s.x + 3, s.y - 3, 2.2, 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.globalAlpha = 1.0;
         });
         this.ctx.shadowBlur = 0;
     }

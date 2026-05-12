@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 72 (Fix: Shardrift player projectiles expire at bounds)
+**Current Build:** Build 73 (Visual Polish Pack 3: Echo Hollow, Coreloom, Veil Patience)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.
