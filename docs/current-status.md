@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 88 (Polish Pack 7: Echo Veil, Hollow Path, and Linebound visual improvements)
+**Current Build:** Build 89 (Hollow Path: Exit placement now varies between valid positions)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

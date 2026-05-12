@@ -16,6 +16,8 @@ const SETTINGS = {
     visitedTileOpacity: 0.78, // INSTÄLLNING - Ändra hur tydligt besökta rutor syns.
     failPulseStrength: 0.34, // INSTÄLLNING - Ändra hur tydlig felmarkering är.
     
+    minExitDistance: 5, // INSTÄLLNING - Ändra minsta avstånd mellan start och mål i Hollow Path.
+    
     bestLevelKey: 'taren_hollow_path_best_level' // INSTÄLLNING - LocalStorage nyckel.
 };
 
@@ -63,7 +65,26 @@ function startLevel() {
     moves = SETTINGS.startingMoves + (level - 1) * SETTINGS.movesIncrease;
     collapsed = new Set();
     playerPos = { x: 0, y: 0 };
-    exitPos = { x: SETTINGS.gridSize - 1, y: SETTINGS.gridSize - 1 };
+    
+    // Choose a random exit candidate far enough from start
+    const candidates = [];
+    for (let y = 0; y < SETTINGS.gridSize; y++) {
+        for (let x = 0; x < SETTINGS.gridSize; x++) {
+            const dist = x + y; // Distance from (0,0)
+            const isEdge = x === 0 || y === 0 || x === SETTINGS.gridSize - 1 || y === SETTINGS.gridSize - 1;
+            
+            if (dist >= SETTINGS.minExitDistance && isEdge && !(x === 0 && y === 0)) {
+                candidates.push({ x, y });
+            }
+        }
+    }
+    
+    // Fallback if no edge candidates found (shouldn't happen with default settings)
+    if (candidates.length === 0) {
+        exitPos = { x: SETTINGS.gridSize - 1, y: SETTINGS.gridSize - 1 };
+    } else {
+        exitPos = candidates[Math.floor(Math.random() * candidates.length)];
+    }
     
     gameState = 'PLAYING';
     updateHUD();
