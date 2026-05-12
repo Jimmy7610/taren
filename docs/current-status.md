@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 73 (Visual Polish Pack 3: Echo Hollow, Coreloom, Veil Patience)
+**Current Build:** Build 74 (Veil Patience: Improved deck visuals, Ace auto-move, and drag-and-drop)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.

@@ -15,6 +15,10 @@ const CONFIG = {
     drawCount: 1,              // INSTÄLLNING - Ändra om stocken drar 1 eller 3 kort.
     bestTimeKey: "taren_veil_patience_best_time", // INSTÄLLNING - Ändra localStorage-nyckeln för bästa tid.
 
+    // INTERACTION
+    dragStartThreshold: 4,      // INSTÄLLNING - Ändra hur många pixlar musen måste röra sig innan ett klick räknas som drag.
+    cardDragStackOffset: 26,    // INSTÄLLNING - Ändra avståndet mellan kort i en dragen stapel.
+
     // VISUAL POLISH
     cardGlowStrength: 0.15,      // INSTÄLLNING - Ändra hur starkt kortens kantglow syns.
     selectedCardGlow: 0.35,     // INSTÄLLNING - Ändra hur tydligt valt kort markeras.
@@ -54,6 +58,19 @@ class VeilPatience {
             this.bestTimeEl.textContent = this.formatTime(parseInt(this.bestTime));
         }
 
+        this.dragState = {
+            active: false,
+            source: null, // { type, pileIndex, cardIndex }
+            cards: [],
+            startX: 0,
+            startY: 0,
+            currentX: 0,
+            currentY: 0,
+            offsetX: 0,
+            offsetY: 0,
+            didMove: false
+        };
+
         this.initEventListeners();
         this.resizeBoard();
         this.initGame();
@@ -65,6 +82,12 @@ class VeilPatience {
             if (e.key.toLowerCase() === 'u') this.undo();
         });
         window.addEventListener('resize', () => this.resizeBoard());
+
+        // Pointer events for dragging
+        this.board.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
+        window.addEventListener('pointermove', (e) => this.handlePointerMove(e));
+        window.addEventListener('pointerup', (e) => this.handlePointerUp(e));
+        window.addEventListener('pointercancel', (e) => this.handlePointerUp(e));
     }
 
     resizeBoard() {
@@ -206,6 +229,13 @@ class VeilPatience {
         const currentPile = this.getPile(type, pileIndex);
         const card = currentPile[cardIndex];
 
+        // Ace Auto-Move logic
+        if (card && card.faceUp && card.value === 'A' && !this.selected) {
+            if (this.tryAutoMoveToFoundation(type, pileIndex, cardIndex)) {
+                return;
+            }
+        }
+
         // If something is already selected, try to move
         if (this.selected) {
             // Check if clicking same card to deselect
@@ -248,6 +278,32 @@ class VeilPatience {
         }
         
         this.render();
+    }
+
+    tryAutoMoveToFoundation(type, pileIndex, cardIndex) {
+        const pile = this.getPile(type, pileIndex);
+        const card = pile[cardIndex];
+        
+        // Only allow moving the top card of a stack or waste
+        if (cardIndex !== pile.length - 1) return false;
+
+        // Find empty foundation
+        for (let i = 0; i < 4; i++) {
+            const fPile = this.foundations[i];
+            if (fPile.length === 0) {
+                if (card.value === 'A') {
+                    this.selected = { type, pileIndex, cardIndex };
+                    this.executeMove('foundation', i);
+                    this.selected = null;
+                    this.moves++;
+                    this.movesEl.textContent = this.moves;
+                    this.checkWin();
+                    this.render();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     getPile(type, index) {
@@ -359,9 +415,11 @@ class VeilPatience {
         // Waste
         const wasteSlot = this.createSlot('waste', 0);
         if (this.waste.length > 0) {
-            // Show only top card for simplicity in this implementation
-            const cardEl = this.createCardEl(this.waste[this.waste.length - 1], 'waste', 0, this.waste.length - 1);
-            wasteSlot.appendChild(cardEl);
+            // If dragging from waste, hide it
+            if (!(this.dragState.active && this.dragState.source.type === 'waste')) {
+                const cardEl = this.createCardEl(this.waste[this.waste.length - 1], 'waste', 0, this.waste.length - 1);
+                wasteSlot.appendChild(cardEl);
+            }
         }
         topRow.appendChild(wasteSlot);
 
@@ -389,6 +447,13 @@ class VeilPatience {
         for (let i = 0; i < 7; i++) {
             const slot = this.createSlot('tableau', i);
             this.tableau[i].forEach((card, j) => {
+                // If dragging this card or stack, hide it in the original position
+                if (this.dragState.active && 
+                    this.dragState.source.type === 'tableau' && 
+                    this.dragState.source.pileIndex === i && 
+                    j >= this.dragState.source.cardIndex) {
+                    return;
+                }
                 const cardEl = this.createCardEl(card, 'tableau', i, j);
                 const offset = card.faceUp ? CONFIG.cardStackOffset : CONFIG.hiddenCardOffset;
                 cardEl.style.top = `${j * offset}px`;
@@ -405,16 +470,19 @@ class VeilPatience {
     createSlot(type, index) {
         const slot = document.createElement('div');
         slot.className = 'card-slot';
-        slot.onclick = (e) => {
-            // Ensure we handle clicks on children of the slot as well
-            this.handleCardClick(type, index, -1);
-        };
+        slot.dataset.type = type;
+        slot.dataset.pileIndex = index;
+        slot.dataset.cardIndex = -1;
         return slot;
     }
 
     createCardEl(card, type, pileIndex, cardIndex) {
         const el = document.createElement('div');
         el.className = `card suit-${card.suit}`;
+        el.dataset.type = type;
+        el.dataset.pileIndex = pileIndex;
+        el.dataset.cardIndex = cardIndex;
+
         if (!card.faceUp) el.classList.add('hidden');
         if (this.selected && this.selected.type === type && this.selected.pileIndex === pileIndex && this.selected.cardIndex === cardIndex) {
             el.classList.add('selected');
@@ -430,12 +498,137 @@ class VeilPatience {
             `;
         }
 
-        el.onclick = (e) => {
-            e.stopPropagation();
-            this.handleCardClick(type, pileIndex, cardIndex);
-        };
-
+        // Removed el.onclick to use pointer events for dragging
         return el;
+    }
+
+    // Pointer Event Handlers
+    handlePointerDown(e) {
+        const cardEl = e.target.closest('.card');
+        const slotEl = e.target.closest('.card-slot');
+        
+        if (!cardEl && !slotEl) return;
+
+        const type = cardEl ? cardEl.dataset.type : slotEl.dataset.type;
+        const pileIndex = parseInt(cardEl ? cardEl.dataset.pileIndex : slotEl.dataset.pileIndex);
+        const cardIndex = parseInt(cardEl ? cardEl.dataset.cardIndex : slotEl.dataset.cardIndex);
+
+        if (type === 'stock') {
+            this.handleCardClick(type, pileIndex, cardIndex);
+            return;
+        }
+
+        if (cardEl) {
+            const pile = this.getPile(type, pileIndex);
+            const card = pile[cardIndex];
+
+            if (card && card.faceUp) {
+                this.dragState.active = false; // Wait for movement threshold
+                this.dragState.source = { type, pileIndex, cardIndex };
+                this.dragState.startX = e.clientX;
+                this.dragState.startY = e.clientY;
+                this.dragState.didMove = false;
+
+                const rect = cardEl.getBoundingClientRect();
+                this.dragState.offsetX = e.clientX - rect.left;
+                this.dragState.offsetY = e.clientY - rect.top;
+            }
+        }
+    }
+
+    handlePointerMove(e) {
+        if (!this.dragState.source) return;
+
+        if (!this.dragState.active) {
+            const dist = Math.sqrt((e.clientX - this.dragState.startX)**2 + (e.clientY - this.dragState.startY)**2);
+            if (dist > CONFIG.dragStartThreshold) {
+                this.dragState.active = true;
+                this.startDragging();
+            }
+        }
+
+        if (this.dragState.active) {
+            this.dragState.currentX = e.clientX;
+            this.dragState.currentY = e.clientY;
+            this.updateDragPosition();
+        }
+    }
+
+    handlePointerUp(e) {
+        if (!this.dragState.source) return;
+
+        if (this.dragState.active) {
+            this.stopDragging(e);
+        } else {
+            // Treat as click
+            this.handleCardClick(this.dragState.source.type, this.dragState.source.pileIndex, this.dragState.source.cardIndex);
+        }
+
+        this.dragState.source = null;
+        this.dragState.active = false;
+        this.dragState.cards = [];
+    }
+
+    startDragging() {
+        const { type, pileIndex, cardIndex } = this.dragState.source;
+        const pile = this.getPile(type, pileIndex);
+        this.dragState.cards = pile.slice(cardIndex);
+
+        // Create drag container if not exists
+        let container = document.getElementById('drag-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'drag-container';
+            container.className = 'drag-container';
+            document.body.appendChild(container);
+        }
+        container.innerHTML = '';
+
+        this.dragState.cards.forEach((card, i) => {
+            const el = this.createCardEl(card, type, pileIndex, cardIndex + i);
+            el.classList.add('dragging');
+            el.style.position = 'absolute';
+            el.style.top = `${i * CONFIG.cardDragStackOffset}px`;
+            container.appendChild(el);
+        });
+
+        // Hide original cards being dragged
+        this.render(); 
+    }
+
+    updateDragPosition() {
+        const container = document.getElementById('drag-container');
+        if (!container) return;
+        container.style.transform = `translate(${this.dragState.currentX - this.dragState.offsetX}px, ${this.dragState.currentY - this.dragState.offsetY}px)`;
+    }
+
+    stopDragging(e) {
+        const container = document.getElementById('drag-container');
+        if (container) container.innerHTML = '';
+
+        // Find drop target
+        const dropEl = document.elementFromPoint(e.clientX, e.clientY);
+        const targetSlot = dropEl?.closest('.card-slot');
+        const targetCard = dropEl?.closest('.card:not(.dragging)');
+
+        let handled = false;
+        if (targetSlot || targetCard) {
+            const type = targetSlot ? targetSlot.dataset.type : targetCard.dataset.type;
+            const pileIndex = parseInt(targetSlot ? targetSlot.dataset.pileIndex : targetCard.dataset.pileIndex);
+            
+            // Try move
+            this.selected = this.dragState.source;
+            if (this.tryMove(type, pileIndex)) {
+                this.selected = null;
+                this.moves++;
+                this.movesEl.textContent = this.moves;
+                this.checkWin();
+                handled = true;
+            }
+            this.selected = null;
+        }
+
+        this.render();
     }
 }
 
