@@ -50,19 +50,23 @@ class LumenSequence {
     initPads() {
         this.container.innerHTML = '';
         this.pads = [];
-        const radius = 34; // % from center
-        const centerX = 50; // %
-        const centerY = 50; // %
+        
+        // Exact stable positions for centered layout
+        const positions = [
+            { x: 50, y: 16 }, // Node 1
+            { x: 22, y: 42 }, // Node 2
+            { x: 78, y: 42 }, // Node 3
+            { x: 34, y: 76 }, // Node 4
+            { x: 66, y: 76 }  // Node 5
+        ];
 
         for (let i = 0; i < CONFIG.padCount; i++) {
-            const angle = (i / CONFIG.padCount) * Math.PI * 2 - Math.PI / 2;
-            const x = centerX + Math.cos(angle) * radius;
-            const y = centerY + Math.sin(angle) * radius;
+            const pos = positions[i] || { x: 50, y: 50 };
             
             const pad = document.createElement('div');
             pad.className = `lumen-pad pad-${i}`;
-            pad.style.left = `${x}%`;
-            pad.style.top = `${y}%`;
+            pad.style.left = `${pos.x}%`;
+            pad.style.top = `${pos.y}%`;
             pad.innerHTML = `<span>${i + 1}</span>`;
             
             pad.onmousedown = () => this.handlePadInput(i);

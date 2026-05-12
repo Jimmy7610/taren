@@ -3,17 +3,21 @@
 }
 
 .game-board-wrapper {
+  --lumen-board-size: 460px; /* INSTÄLLNING - Ändra maxstorlek på Lumen Sequence spelbräde. */
+  --lumen-node-size: 84px; /* INSTÄLLNING - Ändra storlek på Lumen-noderna. */
+
   position: relative;
   background: radial-gradient(circle at 50% 50%, rgba(139,108,255,0.04), transparent 70%),
               #050507;
   border: 1px solid rgba(255,255,255,0.05);
   border-radius: 50%;
-  width: min(100%, 480px); /* INSTÄLLNING - Ändra maxstorlek på Lumen Sequence spelbräde. */
+  width: min(100%, var(--lumen-board-size));
   aspect-ratio: 1 / 1;
   margin-inline: auto; /* Centering */
   box-shadow: inset 0 0 40px rgba(0,0,0,0.8),
               0 24px 60px rgba(0,0,0,0.5);
   display: block;
+  overflow: visible;
 }
 
 .lumen-pads {
@@ -22,12 +26,13 @@
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
 
 .lumen-pad {
   position: absolute;
-  width: var(--lumen-node-size, 86px); /* INSTÄLLNING - Ändra storlek på Lumen-noderna. */
-  height: var(--lumen-node-size, 86px);
+  width: var(--lumen-node-size);
+  height: var(--lumen-node-size);
   background: linear-gradient(135deg, #18181b, #0c0c0e);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 50%;
@@ -37,7 +42,7 @@
   align-items: center;
   justify-content: center;
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.2);
   font-weight: 600;
   box-shadow: 0 4px 10px rgba(0,0,0,0.4), 
               inset 0 1px 1px rgba(255,255,255,0.05);
