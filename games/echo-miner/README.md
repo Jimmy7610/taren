@@ -1,12 +1,12 @@
 # Echo Miner
 
-Build 106 - Core Prototype
+Build 107 - Garage Start Fix
 
 ## Concept
 Echo Miner is a dark sci-fi underground exploration game. You control a mining rig descending into crystal caves to extract luminous blue resources. Success requires careful management of life-support systems (Oxygen) and power (Energy) while navigating the increasing darkness of the deep.
 
 ## Core Loop
-1. **Prepare**: Start at the Garage Facility base.
+1. **Prepare**: Start at the **Garage Facility** by clicking **Start Expedition**.
 2. **Explore**: Maneuver the rig through the cave using WASD or Arrow keys.
 3. **Mine**: Collect glowing crystals to gather resources.
 4. **Survive**: Monitor gauges. Darkness increases with depth, draining systems faster.
@@ -22,7 +22,8 @@ Tweakable in `game.js`:
 - `oxygenDrainRate`: Survival difficulty.
 - `darknessRamp`: How quickly visibility drops with depth.
 
-## Build 106 Scope
+## Build 107 Scope
+- Clarified Garage Start flow.
 - Functional exploration loop.
 - Dynamic darkness and lighting (spotlight).
 - Crystal collection and resource tracking.

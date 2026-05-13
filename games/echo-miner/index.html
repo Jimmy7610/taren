@@ -6,7 +6,7 @@
     <title>Echo Miner — Taren</title>
     <meta name="description" content="Echo Miner is a dark crystal-cave exploration game from Taren where you mine resources, manage oxygen and return safely to base.">
     <link rel="canonical" href="https://taren.se/games/echo-miner/">
-    <meta name="taren-build" content="106">
+    <meta name="taren-build" content="107">
     <link rel="stylesheet" href="../../assets/css/global.css">
     <link rel="stylesheet" href="style.css">
     <script src="../../assets/js/build.js" defer></script>
@@ -73,7 +73,12 @@
                                 <h2>Garage Facility</h2>
                                 <p class="base-subtitle">Systems online. Rig ready for expedition.</p>
                                 
-                                <div class="upgrade-grid">
+                                <div class="base-main-action" style="margin-bottom: 40px;">
+                                    <button class="btn btn-primary start-btn" onclick="if(window.game) window.game.startExpedition()">Start Expedition</button>
+                                    <p class="btn-hint" style="margin-top: 12px; font-size: 0.85rem; color: #00a3ff; opacity: 0.8;">Mine crystals, manage oxygen, return safely.</p>
+                                </div>
+                                
+                                <div class="upgrade-grid" style="opacity: 0.6; pointer-events: none;">
                                     <div class="upgrade-slot" title="Higher efficiency drilling">
                                         <div class="slot-icon">⚙️</div>
                                         <div class="slot-info">
@@ -104,8 +109,7 @@
                                     </div>
                                 </div>
 
-                                <button class="btn btn-primary start-btn" onclick="if(window.game) window.game.startExpedition()">Launch Expedition</button>
-                                <p class="hint-text">Crystals await in the deep silence.</p>
+                                <p class="hint-text">Upgrades coming online in a later build.</p>
                             </div>
                         </div>
 
@@ -164,9 +168,9 @@
                 <div class="how-to-play-box">
                     <h2 class="game-help-title">Operation Manual</h2>
                     <ul class="game-help-list">
+                        <li><strong>Start an expedition</strong> from the garage facility.</li>
                         <li>Explore the cave and collect <strong>blue crystals</strong>.</li>
                         <li>Watch your <strong>Oxygen</strong> and <strong>Energy</strong> levels.</li>
-                        <li>Deeper zones are darker and drain systems faster.</li>
                         <li>Return to base before critical system failure.</li>
                         <li><strong>WASD</strong> or <strong>Arrow Keys</strong> to maneuver the rig.</li>
                     </ul>
