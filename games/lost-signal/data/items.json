@@ -1,0 +1,8 @@
+{
+  "rusty_fuse": {
+    "id": "rusty_fuse",
+    "name": "Rusty Fuse",
+    "description": "An old, slightly corroded fuse. It might still work.",
+    "icon": "assets/items/rusty-fuse.webp"
+  }
+}

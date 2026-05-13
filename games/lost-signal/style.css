@@ -1,0 +1,411 @@
+/* 
+ * Lost Signal - Core Styles
+ * Cinematic 2.5D Point-and-Click Adventure
+ */
+
+:root {
+    --bg-dark: #0a0a12;
+    --bg-light: #f0f0f5;
+    --text-dark: #e0e0ed;
+    --text-light: #1a1a2e;
+    --accent: #ffb347; /* Amber light */
+    --signal: #00ffff; /* Cyan signal glow */
+    --panel-bg: rgba(15, 15, 25, 0.85);
+    --panel-border: rgba(255, 179, 71, 0.3);
+    
+    /* INSTÄLLNING - Timing för animationer */
+    --transition-speed: 0.3s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background-color var(--transition-speed);
+}
+
+body.light-mode {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+#game-wrapper {
+    position: relative;
+    width: 100vw;
+    max-width: 1200px;
+    height: 100vh;
+    max-height: 750px;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Build Box */
+.build-box {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    color: var(--accent);
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    font-family: monospace;
+    z-index: 1000;
+    pointer-events: none;
+    border: 1px solid var(--panel-border);
+}
+
+/* Overlays */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-dark);
+    transition: opacity 0.5s ease;
+}
+
+.overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.intro-content {
+    text-align: center;
+    max-width: 600px;
+    padding: 2rem;
+}
+
+.intro-content h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(255, 179, 71, 0.5);
+}
+
+.intro-text {
+    font-style: italic;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+}
+
+.start-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* UI Elements */
+#game-ui {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#game-ui.hidden {
+    display: none;
+}
+
+/* Viewport Area (16:9) */
+#scene-viewport {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    background: #111;
+}
+
+#scene-container {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.5s ease;
+}
+
+#hotspot-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hotspot {
+    position: absolute;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0);
+    transition: background 0.2s;
+}
+
+.hotspot:hover {
+    background: rgba(255, 179, 71, 0.1);
+}
+
+.hotspot-label {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.hotspot:hover .hotspot-label {
+    opacity: 1;
+}
+
+/* Player Placeholder */
+.player-marker {
+    position: absolute;
+    left: 15%;
+    bottom: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 100;
+}
+
+.marker-dot {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.marker-label {
+    margin-top: 5px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+/* VFX Layers */
+.vfx-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.fog {
+    background: linear-gradient(to bottom, transparent 60%, rgba(20, 20, 40, 0.3));
+}
+
+.vignette {
+    box-shadow: inset 0 0 150px rgba(0,0,0,0.7);
+}
+
+.lights {
+    background: radial-gradient(circle at 65% 45%, rgba(255, 179, 71, 0.1) 0%, transparent 40%);
+}
+
+.powered .lights {
+    background: radial-gradient(circle at 65% 45%, rgba(0, 255, 255, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 85% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 30%);
+}
+
+/* Dialogue Panel */
+#dialogue-panel {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    padding: 1.5rem;
+    border-radius: 8px;
+    color: var(--text-dark);
+    display: none;
+    z-index: 600;
+    backdrop-filter: blur(10px);
+}
+
+#dialogue-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+#dialogue-text {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.close-hint {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.5;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+/* Bottom Bar */
+#bottom-bar {
+    height: 100px;
+    background: #05050a;
+    display: flex;
+    padding: 0 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.inventory-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+}
+
+.inventory-section h3 {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    margin-bottom: 5px;
+}
+
+#inventory-bar {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+}
+
+.inventory-item {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: border-color 0.2s;
+}
+
+.inventory-item:hover {
+    border-color: var(--accent);
+}
+
+.inventory-item.selected {
+    border-color: var(--signal);
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.item-icon-placeholder {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 179, 71, 0.2);
+    border-radius: 2px;
+}
+
+.controls-section {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 8px;
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    background: #ffc270;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 10px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-small {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-dark);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn-small:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -40%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@keyframes signalPulse {
+    0% { box-shadow: 0 0 5px var(--signal); }
+    50% { box-shadow: 0 0 20px var(--signal); }
+    100% { box-shadow: 0 0 5px var(--signal); }
+}
+
+.powered .marker-dot {
+    background: var(--signal);
+    box-shadow: 0 0 15px var(--signal);
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+    #game-wrapper {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/11;
+    }
+    
+    #dialogue-panel {
+        width: 95%;
+    }
+}

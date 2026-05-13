@@ -1,8 +1,8 @@
 # Taren Current Status
 
-**Current Build:** Build 112 (Echo Miner removed; game count back to 24 playable games)
+**Current Build:** Build 113 (Added Lost Signal adventure prototype Build 001)
 
-## Playable Games (24)
+## Playable Games (25)
 1.  **Lumen Coil** — Arena survival / Snake-like light collection.
 2.  **Signal Keeper** — Defense / 3D signal protection.
 3.  **Ashveil** — Logic / Minesweeper-style puzzle.
@@ -27,6 +27,7 @@
 22. **Night Signal** — Visual / sequence game.
 23. **Echo Veil** — Stealth / logic game.
 24. **Hollow Path** — Pathfinding / strategy game.
+25. **Lost Signal** — 2.5D point-and-click adventure / Build 001.
 
 ## Upcoming Classics (0)
 - The initial roadmap of 10 classic adaptations is complete.
@@ -41,5 +42,5 @@
 - **Echo Miner:** Removed in Build 112 after testing because the start flow and rendering remained unstable.
 
 ## Active Future Concepts
-- Twenty-four small games are playable.
+- Twenty-five small games are playable.
 - More quiet experiments may appear later.
