@@ -2,7 +2,10 @@ const SETTINGS = {
     coreMaxIntegrity: 100, // INSTÄLLNING - Ändra hur mycket liv signal-kärnan har.
     signalBaseSpeed: 0.015, // INSTÄLLNING - Lägre värde gör inkommande signaler långsammare i början.
     spawnIntervalStart: 1600, // INSTÄLLNING - Högre värde gör att signaler kommer mer sällan i början.
-    shieldGapSize: 0.95, // INSTÄLLNING - Ändra hur stor öppningen i skölden är. Större värde gör spelet lättare att förstå.
+    shieldGapSize: 1.25, // INSTÄLLNING - Ändra hur stor den faktiska öppningen i sköldringen är.
+    shieldWallThickness: 0.055, // INSTÄLLNING - Ändra hur tjock sköldväggen ser ut.
+    gapCenterMarkerOpacity: 0.22, // INSTÄLLNING - Låg hjälppunkt så själva hålet är viktigast.
+    gapEdgeGlowStrength: 0.75, // INSTÄLLNING - Ändra hur tydligt kanterna på öppningen lyser.
     pulseCooldownMs: 5200, // INSTÄLLNING - Ändra cooldown för pulse shield (ms).
     audioVolume: 0.28, // INSTÄLLNING - Ändra standardvolymen för spelets ljud.
     difficultyRamp: 0.99, // INSTÄLLNING - Hur mycket spawn intervallet minskar (multiplikator).
@@ -12,8 +15,6 @@ const SETTINGS = {
     mouseAimSmoothing: 1.0, // INSTÄLLNING - 1.0 betyder direkt musstyrning, lägre värde gör skölden mjukare men trögare.
     keyboardTurnSpeed: 0.15, // INSTÄLLNING - Ändra hur snabbt skölden roterar med tangentbord.
     touchAimSmoothing: 1.0, // INSTÄLLNING - 1.0 betyder direkt touchstyrning.
-    gapMarkerOpacity: 0.82, // INSTÄLLNING - Ändra hur tydlig markören vid öppningen är.
-    aimGuideOpacity: 0.28, // INSTÄLLNING - Ändra hur tydlig siktlinjen mot öppningen är.
     introSafeSignals: 4 // INSTÄLLNING - Antal första signaler som helst ska vara enkla/blå för att lära spelaren.
 };
 
@@ -119,7 +120,7 @@ class SignalKeeper {
         this.scene.add(this.innerCoreMesh);
         
         // Shield Ring
-        const shieldGeo = new THREE.TorusGeometry(SETTINGS.shieldRadius, 0.1, 8, 64, Math.PI * 2 - SETTINGS.shieldGapSize);
+        const shieldGeo = new THREE.TorusGeometry(SETTINGS.shieldRadius, SETTINGS.shieldWallThickness, 8, 64, Math.PI * 2 - SETTINGS.shieldGapSize);
         const shieldMat = new THREE.MeshBasicMaterial({ color: 0x4cc9f0, transparent: true, opacity: 0.5 });
         this.shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
         this.shieldMesh.rotation.x = Math.PI / 2; // Flat on XZ plane
@@ -129,13 +130,13 @@ class SignalKeeper {
         this.gapMarker = new THREE.Group();
         
         const centerGeo = new THREE.SphereGeometry(0.12, 8, 8);
-        const centerMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: SETTINGS.gapMarkerOpacity });
+        const centerMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: SETTINGS.gapCenterMarkerOpacity });
         this.gapMarkerCenter = new THREE.Mesh(centerGeo, centerMat);
         this.gapMarkerCenter.position.set(SETTINGS.shieldRadius, 0, 0);
         this.gapMarker.add(this.gapMarkerCenter);
         
         const edgeGeo = new THREE.SphereGeometry(0.2, 8, 8);
-        const edgeMat = new THREE.MeshBasicMaterial({ color: 0x4cc9f0, transparent: true, opacity: 0.45 });
+        const edgeMat = new THREE.MeshBasicMaterial({ color: 0x4cc9f0, transparent: true, opacity: SETTINGS.gapEdgeGlowStrength });
         const halfGap = SETTINGS.shieldGapSize / 2;
         
         this.gapEdge1 = new THREE.Mesh(edgeGeo, edgeMat);
@@ -467,7 +468,7 @@ class SignalKeeper {
                 }
             }
             
-            // Smooth shield rotation
+            // Smooth shield rotation (if smoothing enabled)
             let diff = this.targetShieldAngle - this.shieldGapAngle;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
@@ -475,9 +476,10 @@ class SignalKeeper {
             this.shieldGapAngle += diff * this.currentSmoothing;
             
             // Align visually with the shield gap
-            const shieldVisualOffset = 0; // INSTÄLLNING - Justera endast om sköldens visuella öppning inte ligger exakt vid muspekaren.
+            const shieldHoleVisualOffset = 0; // INSTÄLLNING - Justera endast om den faktiska sköldöppningen inte ligger exakt vid muspekaren.
             const gapLocalCenter = (Math.PI * 2 - SETTINGS.shieldGapSize) + (SETTINGS.shieldGapSize / 2);
-            this.shieldMesh.rotation.z = -this.shieldGapAngle - gapLocalCenter + shieldVisualOffset;
+            // Positive shieldGapAngle means we rotate Torus so its gapLocalCenter lands at shieldGapAngle.
+            this.shieldMesh.rotation.z = this.shieldGapAngle - gapLocalCenter + shieldHoleVisualOffset;
             
             // Update gap marker group
             this.gapMarker.rotation.y = -this.shieldGapAngle;
@@ -495,15 +497,15 @@ class SignalKeeper {
                 
                 // Collision with shield
                 if (sig.distance <= SETTINGS.shieldRadius + 0.2 && sig.distance >= SETTINGS.shieldRadius - 0.2) {
-                    // Check if aligned with gap
+                    // Check if signal is in the empty hole
                     let angleDiff = sig.angle - this.shieldGapAngle;
                     while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
                     while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
                     
-                    const inGap = Math.abs(angleDiff) < (SETTINGS.shieldGapSize / 2);
+                    const isInHole = Math.abs(angleDiff) <= (SETTINGS.shieldGapSize / 2);
                     
-                    if (!inGap) {
-                        // Hit shield
+                    if (!isInHole) {
+                        // Hit the solid shield wall
                         if (sig.type === 'corrupt') {
                             this.playSound('corrupt_block');
                             this.score += 1;
@@ -569,20 +571,7 @@ class SignalKeeper {
         const cx = this.canvas2d.width / 2;
         const cy = this.canvas2d.height / 2;
         
-        // Aim line from core to shield gap
-        if (this.state === 'playing') {
-            this.ctx2d.beginPath();
-            this.ctx2d.moveTo(cx, cy);
-            // Project the 3D radius to screen space approximately (assume 35px per unit for 12 unit distance)
-            // Just use a fixed visible line length for simplicity
-            const lineLen = Math.min(cx, cy) * 0.45;
-            this.ctx2d.lineTo(cx + Math.cos(this.targetShieldAngle) * lineLen, cy + Math.sin(this.targetShieldAngle) * lineLen);
-            this.ctx2d.strokeStyle = `rgba(255, 255, 255, ${SETTINGS.aimGuideOpacity})`;
-            this.ctx2d.lineWidth = 1;
-            this.ctx2d.setLineDash([4, 4]);
-            this.ctx2d.stroke();
-            this.ctx2d.setLineDash([]);
-        }
+        // Removed dashed aim line per user request to reduce confusion.
         
         // Pulse waves
         for (let i = this.pulseWaves.length - 1; i >= 0; i--) {

@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 102 (Signal Keeper Direct Gap Control: Mouse/touch perfectly aligned with visual gap via 3D raycasting)
+**Current Build:** Build 103 (Signal Keeper True Hole Control: Mouse strictly controls the actual empty hole, visual inversion fixed, dashed line removed)
 
 ## Playable Games (23)
 1.  **Signal Keeper** — Defense / 3D signal protection.
