@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 104 (Added Lumen Coil: A new Canvas-based survival game focused on satisfying gameplay and replayability)
+**Current Build:** Build 105 (Lumen Coil: Removed self-tail collision for a smoother, more direct gameplay experience)
 
 ## Playable Games (24)
 1.  **Lumen Coil** — Arena survival / Snake-like light collection.

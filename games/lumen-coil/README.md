@@ -3,7 +3,7 @@
 Build 104 - A dark arena-survival game built with HTML5 Canvas and Web Audio API.
 
 ## Concept
-Guide a glowing lumen coil through the void. Collect light fragments to grow and gain score. Avoid red corrupt shards and do not crash into your own tail or the arena walls. Survive as long as possible while the intensity increases.
+Guide a glowing lumen coil through the void. Collect light fragments to grow and gain score. Avoid red corrupt shards and do not leave the arena. You are allowed to pass through your own tail. Survive as long as possible while the intensity increases.
 
 ## Controls
 - **Mouse / Touch**: Steer the head of the coil toward the pointer.
@@ -14,7 +14,7 @@ Guide a glowing lumen coil through the void. Collect light fragments to grow and
 - **Cyan Fragments**: Standard growth and points.
 - **Amber Fragments**: Rare bonus points.
 - **Red Shards**: Instant game over upon collision.
-- **Self-Collision**: Instant game over if the head hits the tail after growing enough.
+- **Self-Collision**: Disabled. You can safely cross your own coil.
 - **Boundary**: Instant game over if leaving the arena.
 
 ## Settings

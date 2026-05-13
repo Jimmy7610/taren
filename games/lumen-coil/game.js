@@ -358,16 +358,6 @@ class LumenCoil {
             this.gameOver();
         }
 
-        // Self
-        for (let i = 20; i < this.path.length; i++) {
-            const seg = this.path[i];
-            const dist = Math.sqrt((this.x - seg.x) ** 2 + (this.y - seg.y) ** 2);
-            if (dist < 5) {
-                this.gameOver();
-                return;
-            }
-        }
-
         // Fragments
         for (let i = this.fragments.length - 1; i >= 0; i--) {
             const frag = this.fragments[i];
