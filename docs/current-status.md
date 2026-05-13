@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 96 (Public Readiness: PageSpeed cleanup and robots.txt fix)
+**Current Build:** Build 96 (SEO/PageSpeed Audit: Fixed robots.txt, added canonicals, and improved metadata)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.
