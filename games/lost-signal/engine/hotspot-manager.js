@@ -37,10 +37,17 @@ class HotspotManager {
     }
 
     handleInteraction(hs) {
-        // Special logic for fuse box collection (first build simulation)
+        if (hs.walkTo) {
+            this.game.player.moveTo(hs.walkTo.x, hs.walkTo.y);
+            this.game.player.onArrived = () => this.triggerAction(hs);
+        } else {
+            this.triggerAction(hs);
+        }
+    }
+
+    triggerAction(hs) {
+        // Special logic for fuse box collection
         if (hs.id === 'old_sign' && !this.game.saveSystem.state.hasFuse && !this.game.saveSystem.state.powerOn) {
-            // Secretly find fuse at sign if not found? 
-            // Actually, let's keep it simple: fuse is at the sign in this first build.
             this.game.inventory.addItem('rusty_fuse');
             this.game.dialogue.show('collect_fuse');
             return;

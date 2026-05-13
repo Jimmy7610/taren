@@ -45,11 +45,12 @@ class Inventory {
             div.className = `inventory-item ${this.selectedItem === itemId ? 'selected' : ''}`;
             div.dataset.id = itemId;
             
-            // Item Icon Placeholder
+            // Item Icon
             const img = document.createElement('div');
             img.className = 'item-icon-placeholder';
-            // INSTÄLLNING - Här läggs den riktiga ikonen till senare
-            // img.style.backgroundImage = `url(assets/items/${itemId}.webp)`;
+            // INSTÄLLNING - Använd den riktiga ikonen om den finns
+            const iconPath = `assets/items/${itemId.replace('_', '-')}.webp`;
+            img.style.backgroundImage = `url(${this.game.getAssetUrl(iconPath)})`;
             
             div.appendChild(img);
             div.addEventListener('click', () => this.selectItem(itemId));

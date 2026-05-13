@@ -9,7 +9,7 @@
 <body class="dark-mode">
     <div id="game-wrapper">
         <!-- Build Box -->
-        <div class="build-box">Build 001 — Lost Signal</div>
+        <div class="build-box">Build 002 — Movement + Real Assets</div>
 
         <!-- Start Screen -->
         <div id="start-screen" class="overlay active">
@@ -32,12 +32,18 @@
                 
                 <!-- Player Placeholder (Nilo) -->
                 <div id="player-nilo" class="player-marker">
+                    <img id="player-img" onerror="this.style.display='none'">
                     <div class="marker-dot"></div>
                     <span class="marker-label">Nilo</span>
-                    <!-- 
-                        INSTÄLLNING - Här läggs den riktiga karaktärsbilden till senare:
-                        /games/lost-signal/assets/characters/nilo-idle.webp
-                    -->
+                </div>
+
+                <!-- Debug Layer -->
+                <div id="debug-layer" class="hidden">
+                    <svg id="walk-area-svg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+                    <div id="debug-coords" class="debug-panel">
+                        x: 0.0, y: 0.0
+                        <button id="copy-coords-btn" class="btn-tiny">Copy</button>
+                    </div>
                 </div>
 
                 <!-- VFX Layer -->
@@ -64,6 +70,7 @@
                         <button id="lang-toggle" class="btn-small">EN/SV</button>
                         <button id="theme-toggle" class="btn-small">Theme</button>
                         <button id="mute-toggle" class="btn-small">Mute</button>
+                        <button id="debug-toggle" class="btn-small">Debug</button>
                     </div>
                 </div>
             </div>

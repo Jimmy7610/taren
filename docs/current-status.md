@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 113 (Added Lost Signal adventure prototype Build 001)
+**Current Build:** Build 115 (Fixed Lost Signal asset loading)
 
 ## Playable Games (25)
 1.  **Lumen Coil** — Arena survival / Snake-like light collection.
@@ -27,7 +27,7 @@
 22. **Night Signal** — Visual / sequence game.
 23. **Echo Veil** — Stealth / logic game.
 24. **Hollow Path** — Pathfinding / strategy game.
-25. **Lost Signal** — 2.5D point-and-click adventure / Build 001.
+25. **Lost Signal** — 2.5D point-and-click adventure / Build 002.
 
 ## Upcoming Classics (0)
 - The initial roadmap of 10 classic adaptations is complete.

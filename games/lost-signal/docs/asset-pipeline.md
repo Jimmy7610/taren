@@ -15,6 +15,11 @@ Scenes are the core of the 2.5D experience.
     - **Mood**: Cinematic, mysterious, atmospheric. Use the "Amber/Cyan" theme.
 - **Storage**: Save to `/games/lost-signal/assets/scenes/[scene-id]/background.webp`.
 
+## 1.1 VFX Overlays (Optional but Recommended)
+To add more depth, you can create separate transparent layers:
+- **Fog Overlay**: A transparent webp with soft mist or fog. Save as `fog.webp` in the scene folder.
+- **Signal Glow**: A transparent webp with specific glowing cyan elements. Save as `signal-glow.webp` in the scene folder.
+
 ## 2. Character Sprites
 Nilo and other characters are layered on top of the scene.
 

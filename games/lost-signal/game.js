@@ -11,6 +11,7 @@ import SaveSystem from './engine/save-system.js';
 import AudioManager from './engine/audio-manager.js';
 import LanguageSystem from './engine/language.js';
 import SettingsManager from './engine/settings.js';
+import PlayerManager from './engine/player-manager.js';
 
 class LostSignal {
     constructor() {
@@ -24,6 +25,9 @@ class LostSignal {
         this.dialogue = new Dialogue(this);
 
         this.initialized = false;
+        this.debugMode = false;
+        this.lastClickedCoords = { x: 0, y: 0 };
+        this.buildVersion = 115;
     }
 
     async init() {
@@ -35,6 +39,8 @@ class LostSignal {
         this.settings.setTheme(this.saveSystem.state.theme);
         
         await this.sceneManager.loadScenes();
+
+        this.player = new PlayerManager(this);
 
         // Bind UI events
         this.bindEvents();
@@ -48,7 +54,8 @@ class LostSignal {
         }
 
         this.initialized = true;
-        console.log('Lost Signal Build 001 initialized.');
+        console.log(`Lost Signal Build 002 (Taren ${this.buildVersion}) initialized.`);
+        this.runDiagnostics();
     }
 
     bindEvents() {
@@ -57,6 +64,8 @@ class LostSignal {
         document.getElementById('lang-toggle').addEventListener('click', () => this.toggleLanguage());
         document.getElementById('theme-toggle').addEventListener('click', () => this.settings.toggleTheme());
         document.getElementById('mute-toggle').addEventListener('click', () => this.audio.toggleMute());
+        document.getElementById('debug-toggle').addEventListener('click', () => this.toggleDebug());
+        document.getElementById('copy-coords-btn').addEventListener('click', () => this.copyCoords());
     }
 
     startGame() {
@@ -89,6 +98,93 @@ class LostSignal {
         
         // INSTÄLLNING - Eventuella extra visuella ändringar vid strömpåslag
         console.log('Station power is ON - visual effects applied.');
+    }
+
+    toggleDebug() {
+        this.debugMode = !this.debugMode;
+        const debugLayer = document.getElementById('debug-layer');
+        if (this.debugMode) {
+            debugLayer.classList.remove('hidden');
+            this.renderDebugHotspots();
+            this.renderWalkArea();
+        } else {
+            debugLayer.classList.add('hidden');
+        }
+    }
+
+    updateDebugCoords(x, y) {
+        this.lastClickedCoords = { x: x.toFixed(1), y: y.toFixed(1) };
+        document.getElementById('debug-coords').innerHTML = `
+            x: ${this.lastClickedCoords.x}, y: ${this.lastClickedCoords.y}
+            <button id="copy-coords-btn" class="btn-tiny">Copy</button>
+        `;
+        // Re-bind since we innerHTML'd
+        document.getElementById('copy-coords-btn').addEventListener('click', () => this.copyCoords());
+    }
+
+    copyCoords() {
+        const text = `x: ${this.lastClickedCoords.x}, y: ${this.lastClickedCoords.y}`;
+        navigator.clipboard.writeText(text).then(() => {
+            console.log('Coordinates copied to clipboard');
+        });
+    }
+
+    renderDebugHotspots() {
+        const layer = document.getElementById('debug-layer');
+        // Clear old ones but keep svg and panel
+        const existing = layer.querySelectorAll('.debug-hotspot, .walk-to-point');
+        existing.forEach(e => e.remove());
+
+        const hotspots = this.sceneManager.currentScene.hotspots;
+        hotspots.forEach(hs => {
+            const div = document.createElement('div');
+            div.className = 'hotspot debug-hotspot';
+            div.style.left = `${hs.x}%`;
+            div.style.top = `${hs.y}%`;
+            div.style.width = `${hs.width}%`;
+            div.style.height = `${hs.height}%`;
+            layer.appendChild(div);
+
+            if (hs.walkTo) {
+                const pt = document.createElement('div');
+                pt.className = 'walk-to-point';
+                pt.style.left = `${hs.walkTo.x}%`;
+                pt.style.top = `${hs.walkTo.y}%`;
+                layer.appendChild(pt);
+            }
+        });
+    }
+
+    renderWalkArea() {
+        const svg = document.getElementById('walk-area-svg');
+        const area = this.sceneManager.currentScene.walkArea;
+        if (area) {
+            const points = area.map(p => `${p.x},${p.y}`).join(' ');
+            svg.innerHTML = `<polygon points="${points}" />`;
+        }
+    }
+
+    getAssetUrl(path) {
+        if (!path) return '';
+        // INSTÄLLNING - Cache busting
+        return `${path}?v=${this.buildVersion}`;
+    }
+
+    runDiagnostics() {
+        console.group('Lost Signal - Asset Diagnostics');
+        const assets = [
+            'assets/scenes/dock/background.webp',
+            'assets/characters/nilo-idle.webp',
+            'assets/items/rusty-fuse.webp'
+        ];
+
+        assets.forEach(path => {
+            const img = new Image();
+            img.onload = () => console.log(`%c✓ LOADED: ${path}`, 'color: lime');
+            img.onerror = () => console.warn(`%c✗ FAILED: ${path}`, 'color: orange');
+            img.src = this.getAssetUrl(path);
+        });
+        console.groupEnd();
     }
 }
 

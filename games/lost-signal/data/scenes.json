@@ -11,7 +11,8 @@
         "y": 40,
         "width": 10,
         "height": 15,
-        "dialogue": "dock_sign"
+        "dialogue": "dock_sign",
+        "walkTo": { "x": 22, "y": 75 }
       },
       {
         "id": "fuse_box",
@@ -22,7 +23,8 @@
         "height": 12,
         "dialogue": "dock_fuse_box",
         "itemRequired": "rusty_fuse",
-        "puzzleId": "power_station"
+        "puzzleId": "power_station",
+        "walkTo": { "x": 58, "y": 76 }
       },
       {
         "id": "signal_door",
@@ -31,8 +33,15 @@
         "y": 30,
         "width": 12,
         "height": 40,
-        "dialogue": "dock_door"
+        "dialogue": "dock_door",
+        "walkTo": { "x": 73, "y": 76 }
       }
+    ],
+    "walkArea": [
+      { "x": 10, "y": 70 },
+      { "x": 90, "y": 70 },
+      { "x": 95, "y": 90 },
+      { "x": 5, "y": 90 }
     ]
   }
 }

@@ -32,12 +32,22 @@ class SceneManager {
 
     renderScene() {
         const container = document.getElementById('scene-container');
-        container.style.backgroundImage = `url(${this.currentScene.background})`;
+        container.style.backgroundImage = `url(${this.game.getAssetUrl(this.currentScene.background)})`;
         
         // INSTÄLLNING - Om bakgrundsbild saknas, använd en placeholder färg
         if (!this.currentScene.background || this.currentScene.background.includes('placeholder')) {
             container.style.backgroundColor = '#1a1a2e'; // Mörkblå nattkänsla
         }
+
+        // Real Assets - Fog & Glow
+        const fogLayer = document.querySelector('.vfx-layer.fog');
+        const glowLayer = document.querySelector('.vfx-layer.lights');
+        
+        const scenePath = this.currentScene.background.substring(0, this.currentScene.background.lastIndexOf('/'));
+        
+        // INSTÄLLNING - Försök ladda real assets om de finns
+        fogLayer.style.backgroundImage = `url(${this.game.getAssetUrl(`${scenePath}/fog.webp`)})`;
+        glowLayer.style.backgroundImage = `url(${this.game.getAssetUrl(`${scenePath}/signal-glow.webp`)})`;
     }
 }
 
