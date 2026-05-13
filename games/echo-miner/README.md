@@ -22,7 +22,8 @@ Tweakable in `game.js`:
 - `oxygenDrainRate`: Survival difficulty.
 - `darknessRamp`: How quickly visibility drops with depth.
 
-## Build 107 Scope
+## Build 108 Scope
+- Visual Cave Pass (Atmospheric lighting, rocky floor, detailed rover).
 - Clarified Garage Start flow.
 - Functional exploration loop.
 - Dynamic darkness and lighting (spotlight).

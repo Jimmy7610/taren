@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 107 (Echo Miner: Clarified garage start flow and added prominent Start Expedition button)
+**Current Build:** Build 108 (Echo Miner Visual Cave Pass: Atmospheric lighting, rocky cave floor, improved rover details and crystal clusters)
 
 ## Playable Games (25)
 1.  **Echo Miner** — Flagship prototype / Crystal-cave mining.
