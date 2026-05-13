@@ -42,6 +42,7 @@ Use lowercase kebab-case for all image names, matching the exact name of the con
 - `lumen-sequence-thumbnail.webp`
 - `crosshush-thumbnail.webp`
 - `signal-keeper.webp`
+- `lumen-coil.webp`
 
 ## 5. How to replace an image
 To add or replace a game card image, follow these steps:
