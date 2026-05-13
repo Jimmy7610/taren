@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 101 (Clarity Pass: Improved Signal Keeper early game pacing, start overlay, and fixed thumbnail)
+**Current Build:** Build 102 (Signal Keeper Direct Gap Control: Mouse/touch perfectly aligned with visual gap via 3D raycasting)
 
 ## Playable Games (23)
 1.  **Signal Keeper** — Defense / 3D signal protection.

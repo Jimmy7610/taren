@@ -30,8 +30,8 @@ class SignalKeeper {
         this.currentSpawnInterval = SETTINGS.spawnIntervalStart;
         
         this.signals = [];
-        this.signalsSpawned = 0; // Track spawned count for intro safe signals
-        this.shieldAngle = Math.PI / 2; // Current rotation of the shield (start pointing down)
+        this.signalsSpawned = 0;
+        this.shieldGapAngle = Math.PI / 2; // ONE SOURCE OF TRUTH
         this.targetShieldAngle = Math.PI / 2;
         this.currentSmoothing = 1.0;
         
@@ -125,15 +125,26 @@ class SignalKeeper {
         this.shieldMesh.rotation.x = Math.PI / 2; // Flat on XZ plane
         this.scene.add(this.shieldMesh);
         
-        // Gap Marker
-        const markerGeo = new THREE.SphereGeometry(0.15, 8, 8);
-        const markerMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: SETTINGS.gapMarkerOpacity });
-        this.gapMarker = new THREE.Mesh(markerGeo, markerMat);
+        // Gap Marker Group
+        this.gapMarker = new THREE.Group();
         
-        const glowGeo = new THREE.SphereGeometry(0.35, 8, 8);
-        const glowMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: SETTINGS.gapMarkerOpacity * 0.3 });
-        const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-        this.gapMarker.add(glowMesh);
+        const centerGeo = new THREE.SphereGeometry(0.12, 8, 8);
+        const centerMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: SETTINGS.gapMarkerOpacity });
+        this.gapMarkerCenter = new THREE.Mesh(centerGeo, centerMat);
+        this.gapMarkerCenter.position.set(SETTINGS.shieldRadius, 0, 0);
+        this.gapMarker.add(this.gapMarkerCenter);
+        
+        const edgeGeo = new THREE.SphereGeometry(0.2, 8, 8);
+        const edgeMat = new THREE.MeshBasicMaterial({ color: 0x4cc9f0, transparent: true, opacity: 0.45 });
+        const halfGap = SETTINGS.shieldGapSize / 2;
+        
+        this.gapEdge1 = new THREE.Mesh(edgeGeo, edgeMat);
+        this.gapEdge1.position.set(Math.cos(halfGap) * SETTINGS.shieldRadius, 0, -Math.sin(halfGap) * SETTINGS.shieldRadius);
+        this.gapMarker.add(this.gapEdge1);
+        
+        this.gapEdge2 = new THREE.Mesh(edgeGeo, edgeMat);
+        this.gapEdge2.position.set(Math.cos(-halfGap) * SETTINGS.shieldRadius, 0, -Math.sin(-halfGap) * SETTINGS.shieldRadius);
+        this.gapMarker.add(this.gapEdge2);
         
         this.scene.add(this.gapMarker);
         
@@ -165,33 +176,32 @@ class SignalKeeper {
 
     initInput() {
         const board = document.querySelector('.signal-keeper-board');
-        const canvas = this.renderer.domElement; // Use canvas rect to be precise
+        const canvas = this.renderer.domElement;
         
-        board.addEventListener('pointermove', (e) => {
+        this.raycaster = new THREE.Raycaster();
+        this.mousePlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // XZ plane
+        
+        const handlePointer = (e) => {
             if (this.state !== 'playing') return;
             const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const cx = rect.width / 2;
-            const cy = rect.height / 2;
             
-            this.targetShieldAngle = Math.atan2(y - cy, x - cx);
-            this.currentSmoothing = e.pointerType === 'mouse' ? SETTINGS.mouseAimSmoothing : SETTINGS.touchAimSmoothing;
-        });
-
-        board.addEventListener('pointerdown', (e) => {
-            if (this.state !== 'playing') return;
-            if (e.pointerType === 'touch') {
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const cx = rect.width / 2;
-                const cy = rect.height / 2;
-                
-                this.targetShieldAngle = Math.atan2(y - cy, x - cx);
-                this.currentSmoothing = SETTINGS.touchAimSmoothing;
+            // Map pointer to screen [-1, 1] for raycaster
+            const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+            const ny = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            this.raycaster.setFromCamera(new THREE.Vector2(nx, ny), this.camera);
+            const target = new THREE.Vector3();
+            this.raycaster.ray.intersectPlane(this.mousePlane, target);
+            
+            if (target) {
+                // Fully mapped to 3D world angle in XZ plane
+                this.targetShieldAngle = Math.atan2(target.z, target.x);
+                this.currentSmoothing = e.pointerType === 'mouse' ? SETTINGS.mouseAimSmoothing : SETTINGS.touchAimSmoothing;
             }
-        });
+        };
+
+        board.addEventListener('pointermove', handlePointer);
+        board.addEventListener('pointerdown', handlePointer);
         
         // Mobile touch prevention only on board
         board.addEventListener('touchmove', (e) => {
@@ -458,20 +468,19 @@ class SignalKeeper {
             }
             
             // Smooth shield rotation
-            let diff = this.targetShieldAngle - this.shieldAngle;
+            let diff = this.targetShieldAngle - this.shieldGapAngle;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
             
-            this.shieldAngle += diff * this.currentSmoothing;
+            this.shieldGapAngle += diff * this.currentSmoothing;
             
             // Align visually with the shield gap
-            const shieldVisualOffset = 0; // INSTÄLLNING - Ändra endast om sköldens visuella öppning behöver justeras.
+            const shieldVisualOffset = 0; // INSTÄLLNING - Justera endast om sköldens visuella öppning inte ligger exakt vid muspekaren.
             const gapLocalCenter = (Math.PI * 2 - SETTINGS.shieldGapSize) + (SETTINGS.shieldGapSize / 2);
-            this.shieldMesh.rotation.z = -this.shieldAngle - gapLocalCenter + shieldVisualOffset;
+            this.shieldMesh.rotation.z = -this.shieldGapAngle - gapLocalCenter + shieldVisualOffset;
             
-            // Update gap marker
-            this.gapMarker.position.x = Math.cos(this.shieldAngle) * SETTINGS.shieldRadius;
-            this.gapMarker.position.z = Math.sin(this.shieldAngle) * SETTINGS.shieldRadius;
+            // Update gap marker group
+            this.gapMarker.rotation.y = -this.shieldGapAngle;
             
             // Update signals
             for (let i = this.signals.length - 1; i >= 0; i--) {
@@ -487,7 +496,7 @@ class SignalKeeper {
                 // Collision with shield
                 if (sig.distance <= SETTINGS.shieldRadius + 0.2 && sig.distance >= SETTINGS.shieldRadius - 0.2) {
                     // Check if aligned with gap
-                    let angleDiff = sig.angle - this.shieldAngle;
+                    let angleDiff = sig.angle - this.shieldGapAngle;
                     while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
                     while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
                     
