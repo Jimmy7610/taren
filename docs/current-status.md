@@ -1,33 +1,32 @@
 # Taren Current Status
 
-**Current Build:** Build 108 (Echo Miner Visual Cave Pass: Atmospheric lighting, rocky cave floor, improved rover details and crystal clusters)
+**Current Build:** Build 112 (Echo Miner removed; game count back to 24 playable games)
 
-## Playable Games (25)
-1.  **Echo Miner** — Flagship prototype / Crystal-cave mining.
-2.  **Lumen Coil** — Arena survival / Snake-like light collection.
-3.  **Signal Keeper** — Defense / 3D signal protection.
-4.  **Ashveil** — Logic / Minesweeper-style puzzle.
-5.  **Nightcoil** — Arcade / Snake-style classic.
-6.  **Coreloom** — Puzzle / 2048-style merge classic.
-7.  **Pulse Duel** — Duel / Pong-style classic.
-8.  **Echo Hollow** — Maze / signal gathering classic.
-9.  **Shardrift** — Arcade / fragment breaking classic.
-10. **Night Array** — Defense / pattern hold classic.
-11. **Veil Patience** — Cards / Patience-style classic. Build 57 fixed foundation Ace moves.
-12. **Lumen Sequence** — Memory / sequence classic.
-13. **Crosshush** — Timing / crossing classic.
-14. **Voidbreaker** — Arcade / breaker game.
-15. **Fourfold** — Strategy / board game.
-16. **Tetrafall** — Falling-block puzzle.
-17. **Pulseframe** — Rhythm / reflex game.
-18. **Linebound** — Minimal / timing game.
-19. **Memory Drift** — Atmospheric / memory game.
-20. **Static Bloom** — Abstract / puzzle game.
-21. **Void Runner** — Endless / arcade game.
-22. **Signal Lost** — Sound-based / logic game.
-23. **Night Signal** — Visual / sequence game.
-24. **Echo Veil** — Stealth / logic game.
-25. **Hollow Path** — Pathfinding / strategy game.
+## Playable Games (24)
+1.  **Lumen Coil** — Arena survival / Snake-like light collection.
+2.  **Signal Keeper** — Defense / 3D signal protection.
+3.  **Ashveil** — Logic / Minesweeper-style puzzle.
+4.  **Nightcoil** — Arcade / Snake-style classic.
+5.  **Coreloom** — Puzzle / 2048-style merge classic.
+6.  **Pulse Duel** — Duel / Pong-style classic.
+7.  **Echo Hollow** — Maze / signal gathering classic.
+8.  **Shardrift** — Arcade / fragment breaking classic.
+9.  **Night Array** — Defense / pattern hold classic.
+10. **Veil Patience** — Cards / Patience-style classic. Build 57 fixed foundation Ace moves.
+11. **Lumen Sequence** — Memory / sequence classic.
+12. **Crosshush** — Timing / crossing classic.
+13. **Voidbreaker** — Arcade / breaker game.
+14. **Fourfold** — Strategy / board game.
+15. **Tetrafall** — Falling-block puzzle.
+16. **Pulseframe** — Rhythm / reflex game.
+17. **Linebound** — Minimal / timing game.
+18. **Memory Drift** — Atmospheric / memory game.
+19. **Static Bloom** — Abstract / puzzle game.
+20. **Void Runner** — Endless / arcade game.
+21. **Signal Lost** — Sound-based / logic game.
+22. **Night Signal** — Visual / sequence game.
+23. **Echo Veil** — Stealth / logic game.
+24. **Hollow Path** — Pathfinding / strategy game.
 
 ## Upcoming Classics (0)
 - The initial roadmap of 10 classic adaptations is complete.
@@ -39,7 +38,8 @@
 
 ## History & Removals
 - **Threadline:** Removed in Build 43 after testing because it did not match the intended Taren game direction.
+- **Echo Miner:** Removed in Build 112 after testing because the start flow and rendering remained unstable.
 
 ## Active Future Concepts
-- Twenty-five small games are playable.
+- Twenty-four small games are playable.
 - More quiet experiments may appear later.
