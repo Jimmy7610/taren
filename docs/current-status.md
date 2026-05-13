@@ -1,9 +1,10 @@
 # Taren Current Status
 
-**Current Build:** Build 98 (Experiment Pass: Added Signal Pond experiment with Web Audio and Canvas ripples)
+**Current Build:** Build 99 (Game Pass: Added Signal Keeper)
 
-## Playable Games (22)
-1.  **Ashveil** — Logic / Minesweeper-style puzzle.
+## Playable Games (23)
+1.  **Signal Keeper** — Defense / 3D signal protection.
+2.  **Ashveil** — Logic / Minesweeper-style puzzle.
 2.  **Nightcoil** — Arcade / Snake-style classic.
 3.  **Coreloom** — Puzzle / 2048-style merge classic.
 4.  **Pulse Duel** — Duel / Pong-style classic.
@@ -23,8 +24,8 @@
 18. **Void Runner** — Endless / arcade game.
 19. **Signal Lost** — Sound-based / logic game.
 20. **Night Signal** — Visual / sequence game.
-21. **Echo Veil** — Stealth / logic game.
-22. **Hollow Path** — Pathfinding / strategy game.
+22. **Echo Veil** — Stealth / logic game.
+23. **Hollow Path** — Pathfinding / strategy game.
 
 ## Upcoming Classics (0)
 - The initial roadmap of 10 classic adaptations is complete.
@@ -38,5 +39,5 @@
 - **Threadline:** Removed in Build 43 after testing because it did not match the intended Taren game direction.
 
 ## Active Future Concepts
-- Twenty-two small games are playable.
+- Twenty-three small games are playable.
 - More quiet experiments may appear later.

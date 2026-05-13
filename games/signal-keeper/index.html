@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Keeper — Taren</title>
+    <meta name="description" content="Signal Keeper is a dark 3D signal-defense game from Taren, built with Three.js, Web Audio API and HTML5 Canvas.">
+    <link rel="canonical" href="https://taren.se/games/signal-keeper/">
+    <meta name="taren-build" content="99">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../../assets/js/build.js" defer></script>
+</head>
+<body>
+    <nav class="navbar fade-in-up">
+        <div class="container nav-container">
+            <a href="/" class="nav-link">Taren</a>
+            <a href="/games/" class="nav-link active">Games</a>
+            <a href="/about/" class="nav-link">About</a>
+        </div>
+    </nav>
+
+    <main class="fade-in-up delay-1">
+        <div class="game-layout">
+            <!-- LEFT: Controls & HUD -->
+            <aside class="game-side-panel game-controls-panel">
+                <div class="game-title-block">
+                    <h1>Signal Keeper</h1>
+                    <p>Protect the core from corrupt transmissions.</p>
+                </div>
+
+                <div class="game-status-box" id="game-status">Standby</div>
+
+                <div class="game-stats-grid">
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Integrity</span>
+                        <span id="stat-integrity" class="game-stat-value">100%</span>
+                    </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Score</span>
+                        <span id="stat-score" class="game-stat-value">0</span>
+                    </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Best</span>
+                        <span id="stat-best" class="game-stat-value">0</span>
+                    </div>
+                    <div class="game-stat-card">
+                        <span class="game-stat-label">Intensity</span>
+                        <span id="stat-intensity" class="game-stat-value">1.0</span>
+                    </div>
+                </div>
+
+                <div class="game-control-group">
+                    <button class="btn" id="btn-pulse" onclick="if(window.game) window.game.triggerPulse()" disabled>Pulse Shield [Space]</button>
+                    
+                    <div class="game-actions">
+                        <button class="btn btn-secondary" onclick="if(window.game) window.game.reset()">Restart</button>
+                        <button class="btn btn-secondary" id="btn-audio" onclick="if(window.game) window.game.toggleAudio()">Enable Sound</button>
+                    </div>
+                    
+                    <div class="volume-control hidden" id="volume-control" style="margin-top: 10px;">
+                        <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.28" class="volume-slider" style="width: 100%; -webkit-appearance: none; appearance: none; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;">
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTER: Game Board -->
+            <section class="game-center">
+                <div class="game-board-shell">
+                    <div class="game-board-wrapper signal-keeper-board">
+                        
+                        <!-- Three.js Container -->
+                        <div id="three-container" class="three-canvas-container"></div>
+                        
+                        <!-- 2D Overlay Canvas -->
+                        <canvas id="overlay-canvas" class="overlay-canvas"></canvas>
+
+                        <!-- Error overlay for Three.js failure -->
+                        <div id="error-overlay" class="game-overlay hidden">
+                            <div>
+                                <h2>Signal Lost</h2>
+                                <p>Unable to establish 3D context. Please check your connection or browser settings.</p>
+                            </div>
+                        </div>
+
+                        <div id="game-start" class="game-overlay">
+                            <div>
+                                <h2>Signal Keeper</h2>
+                                <p>Rotate the shield gap to let good signals through and block corrupt ones.</p>
+                                <button class="btn" onclick="if(window.game) window.game.start()">Initialize</button>
+                            </div>
+                        </div>
+
+                        <div id="game-over" class="game-overlay hidden">
+                            <div>
+                                <h2 style="color: #ff4a4a;">Core Compromised</h2>
+                                <p id="final-stats">You survived with a score of 0</p>
+                                <button class="btn" onclick="if(window.game) window.game.reset()">Reinitialize</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT: Help -->
+            <aside class="game-side-panel game-help-panel">
+                <h2 class="game-help-title">How to play</h2>
+                <ul class="game-help-list">
+                    <li><strong>Protect the glowing core</strong> in the center.</li>
+                    <li><strong style="color: #4cc9f0;">Blue signals</strong> are good. Let them pass through the gap.</li>
+                    <li><strong style="color: #ff4a4a;">Red signals</strong> are corrupt. Block them with the shield wall.</li>
+                    <li><strong style="color: #ffb703;">Amber signals</strong> are rare and give bonus points.</li>
+                    <li><strong>Mouse / Touch</strong> or <strong>A/D / Arrows</strong> to rotate the shield gap.</li>
+                    <li><strong>SPACE</strong> to trigger a pulse wave that clears nearby threats (has cooldown).</li>
+                    <li>Game ends when core integrity reaches 0%.</li>
+                </ul>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Three.js CDN -->
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+        window.THREE = THREE;
+        
+        // Load our game script after THREE is ready
+        const script = document.createElement('script');
+        script.src = './game.js';
+        script.onerror = () => {
+            document.getElementById('error-overlay').classList.remove('hidden');
+        };
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>
