@@ -30,6 +30,21 @@
                 </div>
 
                 <div class="game-status-box" id="game-status">Standby</div>
+                
+                <div class="game-legend" style="margin-top: 16px; margin-bottom: 16px; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; font-size: 0.85rem;">
+                    <div style="display: flex; align-items: center; margin-bottom: 6px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #4cc9f0; margin-right: 8px;"></span>
+                        Blue = Receive
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 6px;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ff4a4a; margin-right: 8px;"></span>
+                        Red = Block
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ffb703; margin-right: 8px;"></span>
+                        Amber = Bonus
+                    </div>
+                </div>
 
                 <div class="game-stats-grid">
                     <div class="game-stat-card">
@@ -84,10 +99,18 @@
                         </div>
 
                         <div id="game-start" class="game-overlay">
-                            <div>
-                                <h2>Signal Keeper</h2>
-                                <p>Rotate the shield gap to let good signals through and block corrupt ones.</p>
-                                <button class="btn" onclick="if(window.game) window.game.start()">Initialize</button>
+                            <div style="max-width: 320px; text-align: left;">
+                                <h2 style="margin-bottom: 16px; text-align: center;">Signal Keeper</h2>
+                                <p style="font-weight: bold; margin-bottom: 12px; font-size: 1.1rem; text-align: center;">Protect the core.</p>
+                                <ul style="margin-bottom: 24px; padding-left: 20px; font-size: 0.95rem; line-height: 1.6;">
+                                    <li>Aim the opening with your mouse or touch.</li>
+                                    <li>Let <span style="color: #4cc9f0;">blue signals</span> through the opening.</li>
+                                    <li>Block <span style="color: #ff4a4a;">red signals</span> with the shield wall.</li>
+                                    <li><span style="color: #ffb703;">Amber signals</span> give bonus points.</li>
+                                    <li>If red signals reach the core, integrity falls.</li>
+                                </ul>
+                                <button class="btn" style="width: 100%;" onclick="if(window.game) window.game.start()">Start Run</button>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 16px;">Press SPACE to send a pulse when things get crowded.</p>
                             </div>
                         </div>
 
@@ -105,15 +128,14 @@
             <!-- RIGHT: Help -->
             <aside class="game-side-panel game-help-panel">
                 <h2 class="game-help-title">How to play</h2>
-                <ul class="game-help-list">
-                    <li><strong>Protect the glowing core</strong> in the center.</li>
-                    <li><strong style="color: #4cc9f0;">Blue signals</strong> are good. Let them pass through the gap.</li>
-                    <li><strong style="color: #ff4a4a;">Red signals</strong> are corrupt. Block them with the shield wall.</li>
-                    <li><strong style="color: #ffb703;">Amber signals</strong> are rare and give bonus points.</li>
-                    <li><strong>Mouse / Touch:</strong> Move pointer around the arena to aim the shield gap.</li>
-                    <li><strong>Keyboard:</strong> Use A/D or Arrows to rotate the shield.</li>
-                    <li><strong>SPACE</strong> to trigger a pulse wave that clears nearby threats (has cooldown).</li>
-                    <li>Game ends when core integrity reaches 0%.</li>
+                <ul class="game-help-list" style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 12px;"><strong>Protect the glowing core.</strong></li>
+                    <li style="margin-bottom: 12px;">Move your mouse or finger around the arena to aim the shield opening.</li>
+                    <li style="margin-bottom: 12px;">Let <span style="color: #4cc9f0;">blue signals</span> pass through the opening.</li>
+                    <li style="margin-bottom: 12px;">Block <span style="color: #ff4a4a;">red signals</span> with the solid shield wall.</li>
+                    <li style="margin-bottom: 12px;"><span style="color: #ffb703;">Amber signals</span> give bonus points.</li>
+                    <li style="margin-bottom: 12px;">Press SPACE to trigger Pulse Shield when too many signals get close.</li>
+                    <li>Game over when core integrity reaches 0%.</li>
                 </ul>
             </aside>
         </div>

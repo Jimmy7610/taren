@@ -1,18 +1,20 @@
 const SETTINGS = {
     coreMaxIntegrity: 100, // INSTÄLLNING - Ändra hur mycket liv signal-kärnan har.
-    signalBaseSpeed: 0.02, // INSTÄLLNING - Ändra grundhastigheten på inkommande signaler (Three.js units per frame).
-    spawnIntervalStart: 1250, // INSTÄLLNING - Ändra hur ofta signaler skapas i början (ms).
-    shieldGapSize: 0.78, // INSTÄLLNING - Ändra hur stor öppningen i skölden är i radianer.
+    signalBaseSpeed: 0.015, // INSTÄLLNING - Lägre värde gör inkommande signaler långsammare i början.
+    spawnIntervalStart: 1600, // INSTÄLLNING - Högre värde gör att signaler kommer mer sällan i början.
+    shieldGapSize: 0.95, // INSTÄLLNING - Ändra hur stor öppningen i skölden är. Större värde gör spelet lättare att förstå.
     pulseCooldownMs: 5200, // INSTÄLLNING - Ändra cooldown för pulse shield (ms).
     audioVolume: 0.28, // INSTÄLLNING - Ändra standardvolymen för spelets ljud.
-    difficultyRamp: 0.98, // INSTÄLLNING - Hur mycket spawn intervallet minskar (multiplikator).
+    difficultyRamp: 0.99, // INSTÄLLNING - Hur mycket spawn intervallet minskar (multiplikator).
     minSpawnInterval: 400, // INSTÄLLNING - Lägsta möjliga spawn intervall.
     coreRadius: 1.5, // INSTÄLLNING - Kärnans radie i 3D-scenen.
     shieldRadius: 4.0, // INSTÄLLNING - Sköldens radie.
     mouseAimSmoothing: 1.0, // INSTÄLLNING - 1.0 betyder direkt musstyrning, lägre värde gör skölden mjukare men trögare.
     keyboardTurnSpeed: 0.15, // INSTÄLLNING - Ändra hur snabbt skölden roterar med tangentbord.
     touchAimSmoothing: 1.0, // INSTÄLLNING - 1.0 betyder direkt touchstyrning.
-    gapMarkerOpacity: 0.72 // INSTÄLLNING - Ändra hur tydlig markören vid sköldens öppning är.
+    gapMarkerOpacity: 0.82, // INSTÄLLNING - Ändra hur tydlig markören vid öppningen är.
+    aimGuideOpacity: 0.28, // INSTÄLLNING - Ändra hur tydlig siktlinjen mot öppningen är.
+    introSafeSignals: 4 // INSTÄLLNING - Antal första signaler som helst ska vara enkla/blå för att lära spelaren.
 };
 
 class SignalKeeper {
@@ -28,6 +30,7 @@ class SignalKeeper {
         this.currentSpawnInterval = SETTINGS.spawnIntervalStart;
         
         this.signals = [];
+        this.signalsSpawned = 0; // Track spawned count for intro safe signals
         this.shieldAngle = Math.PI / 2; // Current rotation of the shield (start pointing down)
         this.targetShieldAngle = Math.PI / 2;
         this.currentSmoothing = 1.0;
@@ -317,6 +320,7 @@ class SignalKeeper {
         this.integrity = SETTINGS.coreMaxIntegrity;
         this.intensity = 1.0;
         this.currentSpawnInterval = SETTINGS.spawnIntervalStart;
+        this.signalsSpawned = 0;
         this.pulseReady = true;
         this.pulseTimer = 0;
         this.pulseWaves = [];
@@ -353,10 +357,16 @@ class SignalKeeper {
     }
 
     spawnSignal() {
+        this.signalsSpawned++;
         const rand = Math.random();
         let type = 'corrupt'; // 60%
         if (rand > 0.6) type = 'good'; // 35%
         if (rand > 0.95) type = 'rare'; // 5%
+        
+        // Force good signals during intro to teach the player
+        if (this.signalsSpawned <= SETTINGS.introSafeSignals) {
+            type = 'good';
+        }
         
         let color = 0xff4a4a;
         if (type === 'good') color = 0x4cc9f0;
@@ -549,6 +559,21 @@ class SignalKeeper {
         
         const cx = this.canvas2d.width / 2;
         const cy = this.canvas2d.height / 2;
+        
+        // Aim line from core to shield gap
+        if (this.state === 'playing') {
+            this.ctx2d.beginPath();
+            this.ctx2d.moveTo(cx, cy);
+            // Project the 3D radius to screen space approximately (assume 35px per unit for 12 unit distance)
+            // Just use a fixed visible line length for simplicity
+            const lineLen = Math.min(cx, cy) * 0.45;
+            this.ctx2d.lineTo(cx + Math.cos(this.targetShieldAngle) * lineLen, cy + Math.sin(this.targetShieldAngle) * lineLen);
+            this.ctx2d.strokeStyle = `rgba(255, 255, 255, ${SETTINGS.aimGuideOpacity})`;
+            this.ctx2d.lineWidth = 1;
+            this.ctx2d.setLineDash([4, 4]);
+            this.ctx2d.stroke();
+            this.ctx2d.setLineDash([]);
+        }
         
         // Pulse waves
         for (let i = this.pulseWaves.length - 1; i >= 0; i--) {
