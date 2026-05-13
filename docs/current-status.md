@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 97 (Dev Pass: Hidden public build badge; available in DevTools/Meta only)
+**Current Build:** Build 98 (Experiment Pass: Added Signal Pond experiment with Web Audio and Canvas ripples)
 
 ## Playable Games (22)
 1.  **Ashveil** — Logic / Minesweeper-style puzzle.
