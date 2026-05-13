@@ -8,7 +8,11 @@ const SETTINGS = {
     difficultyRamp: 0.98, // INSTÄLLNING - Hur mycket spawn intervallet minskar (multiplikator).
     minSpawnInterval: 400, // INSTÄLLNING - Lägsta möjliga spawn intervall.
     coreRadius: 1.5, // INSTÄLLNING - Kärnans radie i 3D-scenen.
-    shieldRadius: 4.0 // INSTÄLLNING - Sköldens radie.
+    shieldRadius: 4.0, // INSTÄLLNING - Sköldens radie.
+    mouseAimSmoothing: 1.0, // INSTÄLLNING - 1.0 betyder direkt musstyrning, lägre värde gör skölden mjukare men trögare.
+    keyboardTurnSpeed: 0.15, // INSTÄLLNING - Ändra hur snabbt skölden roterar med tangentbord.
+    touchAimSmoothing: 1.0, // INSTÄLLNING - 1.0 betyder direkt touchstyrning.
+    gapMarkerOpacity: 0.72 // INSTÄLLNING - Ändra hur tydlig markören vid sköldens öppning är.
 };
 
 class SignalKeeper {
@@ -24,8 +28,9 @@ class SignalKeeper {
         this.currentSpawnInterval = SETTINGS.spawnIntervalStart;
         
         this.signals = [];
-        this.shieldAngle = 0; // Current rotation of the shield
-        this.targetShieldAngle = 0;
+        this.shieldAngle = Math.PI / 2; // Current rotation of the shield (start pointing down)
+        this.targetShieldAngle = Math.PI / 2;
+        this.currentSmoothing = 1.0;
         
         this.pulseReady = true;
         this.pulseTimer = 0;
@@ -117,6 +122,18 @@ class SignalKeeper {
         this.shieldMesh.rotation.x = Math.PI / 2; // Flat on XZ plane
         this.scene.add(this.shieldMesh);
         
+        // Gap Marker
+        const markerGeo = new THREE.SphereGeometry(0.15, 8, 8);
+        const markerMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: SETTINGS.gapMarkerOpacity });
+        this.gapMarker = new THREE.Mesh(markerGeo, markerMat);
+        
+        const glowGeo = new THREE.SphereGeometry(0.35, 8, 8);
+        const glowMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: SETTINGS.gapMarkerOpacity * 0.3 });
+        const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+        this.gapMarker.add(glowMesh);
+        
+        this.scene.add(this.gapMarker);
+        
         // Particles group
         this.signalGroup = new THREE.Group();
         this.scene.add(this.signalGroup);
@@ -144,39 +161,50 @@ class SignalKeeper {
     }
 
     initInput() {
-        // Desktop mouse
         const board = document.querySelector('.signal-keeper-board');
-        board.addEventListener('mousemove', (e) => {
+        const canvas = this.renderer.domElement; // Use canvas rect to be precise
+        
+        board.addEventListener('pointermove', (e) => {
             if (this.state !== 'playing') return;
-            const rect = board.getBoundingClientRect();
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const x = e.clientX - rect.left - centerX;
-            const y = e.clientY - rect.top - centerY;
-            this.targetShieldAngle = Math.atan2(y, x);
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            
+            this.targetShieldAngle = Math.atan2(y - cy, x - cx);
+            this.currentSmoothing = e.pointerType === 'mouse' ? SETTINGS.mouseAimSmoothing : SETTINGS.touchAimSmoothing;
+        });
+
+        board.addEventListener('pointerdown', (e) => {
+            if (this.state !== 'playing') return;
+            if (e.pointerType === 'touch') {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                
+                this.targetShieldAngle = Math.atan2(y - cy, x - cx);
+                this.currentSmoothing = SETTINGS.touchAimSmoothing;
+            }
         });
         
-        // Mobile touch
+        // Mobile touch prevention only on board
         board.addEventListener('touchmove', (e) => {
-            if (this.state !== 'playing') return;
-            e.preventDefault();
-            const rect = board.getBoundingClientRect();
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left - centerX;
-            const y = touch.clientY - rect.top - centerY;
-            this.targetShieldAngle = Math.atan2(y, x);
+            if (this.state === 'playing') e.preventDefault();
         }, { passive: false });
         
         // Keyboard
         window.addEventListener('keydown', (e) => {
             if (this.state !== 'playing') return;
             if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
-                this.targetShieldAngle -= 0.2;
+                this.targetShieldAngle -= SETTINGS.keyboardTurnSpeed;
+                this.currentSmoothing = 1.0; // Keyboard should feel direct
             }
             if (e.code === 'ArrowRight' || e.code === 'KeyD') {
-                this.targetShieldAngle += 0.2;
+                this.targetShieldAngle += SETTINGS.keyboardTurnSpeed;
+                this.currentSmoothing = 1.0;
             }
             if (e.code === 'Space') {
                 e.preventDefault();
@@ -420,23 +448,20 @@ class SignalKeeper {
             }
             
             // Smooth shield rotation
-            // We need to handle wrapping around PI/-PI
             let diff = this.targetShieldAngle - this.shieldAngle;
             while (diff < -Math.PI) diff += Math.PI * 2;
             while (diff > Math.PI) diff -= Math.PI * 2;
-            this.shieldAngle += diff * 0.1;
             
-            // Note: Three.js Torus starts from X axis.
-            // A gap of SETTINGS.shieldGapSize means the torus is drawn for (2PI - gap).
-            // So the gap is roughly at the end of the drawn arc.
-            // We rotate the mesh around Y axis (since it's flat on XZ).
-            // Torus is drawn from 0 to 2PI-gap. The gap is at angle (2PI - gap/2) in its local space.
-            // We offset rotation so that targetShieldAngle aligns with the center of the gap.
+            this.shieldAngle += diff * this.currentSmoothing;
+            
+            // Align visually with the shield gap
+            const shieldVisualOffset = 0; // INSTÄLLNING - Ändra endast om sköldens visuella öppning behöver justeras.
             const gapLocalCenter = (Math.PI * 2 - SETTINGS.shieldGapSize) + (SETTINGS.shieldGapSize / 2);
-            // Shield is rotated around X by PI/2, which maps 2D XY to 3D XZ.
-            // The angle in XZ plane corresponds to rotation.z of the original geometry, 
-            // but after rotating around X by PI/2, we rotate around Z. Wait, rotating around Z rotates in the original XY plane, which is now XZ.
-            this.shieldMesh.rotation.z = -this.shieldAngle - gapLocalCenter;
+            this.shieldMesh.rotation.z = -this.shieldAngle - gapLocalCenter + shieldVisualOffset;
+            
+            // Update gap marker
+            this.gapMarker.position.x = Math.cos(this.shieldAngle) * SETTINGS.shieldRadius;
+            this.gapMarker.position.z = Math.sin(this.shieldAngle) * SETTINGS.shieldRadius;
             
             // Update signals
             for (let i = this.signals.length - 1; i >= 0; i--) {

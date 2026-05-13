@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 99 (Game Pass: Added Signal Keeper)
+**Current Build:** Build 100 (Control Pass: Improved Signal Keeper mouse/touch aiming and added gap marker)
 
 ## Playable Games (23)
 1.  **Signal Keeper** — Defense / 3D signal protection.
