@@ -13,4 +13,5 @@ yarn-error.log*
 *.diff
 *.txt
 !README.md
+!robots.txt
 !LICENSE
