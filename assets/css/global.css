@@ -34,11 +34,6 @@
   --home-hero-offset: -5vh; /* INSTÄLLNING - Ändra om startsidans innehåll ska flyttas upp/ner. Negativt värde = uppåt. */
   --home-content-gap: 24px; /* INSTÄLLNING - Ändra avståndet mellan titel, text och knapp på startsidan. */
 
-  /* Build Badge */
-  --build-badge-top: 14px; /* INSTÄLLNING - Ändra avståndet från toppen för build-rutan. */
-  --build-badge-right: 14px; /* INSTÄLLNING - Ändra avståndet från högerkanten för build-rutan. */
-  --build-badge-opacity: 0.78; /* INSTÄLLNING - Ändra hur tydlig build-rutan ska vara. */
-
   /* Gallery Cards */
   --concept-thumbnail-opacity: 0.9; /* INSTÄLLNING - Ändra hur tydliga konceptbildernas CSS-effekter ska vara. */
   --featured-card-border-opacity: 0.55; /* INSTÄLLNING - Ändra hur tydlig Pulseframe-kortets markerade kant ska vara. */
@@ -520,15 +515,7 @@ button:focus-visible,
   pointer-events: none;
 }
 
-/* Build Badge */
-.build-badge {
-  position: fixed;
-  top: var(--build-badge-top);
-  right: var(--build-badge-right);
-  background-color: rgba(5, 5, 7, 0.6);
-  opacity: var(--build-badge-opacity);
-  pointer-events: none;
-}
+
 
 /* ==================================================
    SHARED GAME LAYOUT (Build 58 Unified Standard)
