@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Signal - Hotspot Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <header class="editor-header">
+            <div class="header-content">
+                <h1>Lost Signal Hotspot Editor</h1>
+                <div class="build-indicator">Build 121</div>
+            </div>
+            <nav class="header-actions">
+                <button id="btn-load-image" class="btn btn-secondary">Load Image</button>
+                <input type="file" id="file-input" accept=".png,.jpg,.jpeg,.webp" style="display: none;">
+                <div class="preset-group">
+                    <button class="btn btn-tiny btn-preset" data-scene="scene-01-old-pier">Pier</button>
+                    <button class="btn btn-tiny btn-preset" data-scene="scene-02-station-exterior">Exterior</button>
+                    <button class="btn btn-tiny btn-preset" data-scene="scene-03-control-room">Control</button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="editor-main">
+            <!-- Stage Area (16:9 Viewport) -->
+            <section id="stage-area">
+                <div id="stage-viewport">
+                    <div id="image-container">
+                        <img id="bg-image" src="" alt="" style="display: none;">
+                        <div id="hotspot-overlay"></div>
+                        <div id="selection-layer"></div>
+                        <div id="draw-layer"></div>
+                    </div>
+                    <div id="empty-state">
+                        <p>No image loaded. Click "Load Image" to start.</p>
+                    </div>
+                </div>
+                <div class="stage-footer">
+                    <span id="coord-display">X: 0, Y: 0 (0%, 0%)</span>
+                    <div class="view-controls">
+                        <label><input type="checkbox" id="toggle-hotspots" checked> Show Hotspots</label>
+                        <label><input type="checkbox" id="toggle-labels" checked> Show Labels</label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sidebar Area -->
+            <aside id="sidebar">
+                <section class="sidebar-section">
+                    <h3>Scene Properties</h3>
+                    <div class="form-group">
+                        <label for="scene-id">Scene ID</label>
+                        <input type="text" id="scene-id" placeholder="e.g. scene-01-old-pier">
+                    </div>
+                    <div class="info-row">
+                        <span>Image:</span> <span id="info-filename">None</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Resolution:</span> <span id="info-res">0 x 0</span>
+                    </div>
+                </section>
+
+                <section class="sidebar-section">
+                    <h3>Selection</h3>
+                    <div id="selection-properties" class="disabled">
+                        <div class="form-group">
+                            <label for="hotspot-id">ID</label>
+                            <input type="text" id="hotspot-id">
+                        </div>
+                        <div class="form-group">
+                            <label for="hotspot-label">Label (EN)</label>
+                            <input type="text" id="hotspot-label-en">
+                        </div>
+                        <div class="form-group">
+                            <label for="hotspot-label-sv">Label (SV)</label>
+                            <input type="text" id="hotspot-label-sv">
+                        </div>
+                        <div class="coord-grid">
+                            <div class="form-group">
+                                <label>X (px)</label>
+                                <input type="number" id="hs-x">
+                            </div>
+                            <div class="form-group">
+                                <label>Y (px)</label>
+                                <input type="number" id="hs-y">
+                            </div>
+                            <div class="form-group">
+                                <label>W (px)</label>
+                                <input type="number" id="hs-w">
+                            </div>
+                            <div class="form-group">
+                                <label>H (px)</label>
+                                <input type="number" id="hs-h">
+                            </div>
+                        </div>
+                        <div class="action-row">
+                            <button id="btn-duplicate" class="btn btn-small">Duplicate</button>
+                            <button id="btn-delete" class="btn btn-small btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="sidebar-section list-section">
+                    <h3>Hotspots</h3>
+                    <ul id="hotspot-list"></ul>
+                </section>
+
+                <section class="sidebar-section export-section">
+                    <h3>Output</h3>
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="full-json">Full JSON</button>
+                        <button class="tab-btn" data-tab="game-array">Game Array</button>
+                    </div>
+                    <textarea id="json-output" readonly></textarea>
+                    <div class="action-row">
+                        <button id="btn-copy" class="btn btn-primary">Copy</button>
+                        <button id="btn-download" class="btn btn-secondary">Download</button>
+                    </div>
+                    <div class="action-row" style="margin-top: 10px;">
+                        <button id="btn-import" class="btn btn-tiny">Import JSON</button>
+                        <button id="btn-clear" class="btn btn-tiny btn-danger">Clear All</button>
+                    </div>
+                </section>
+            </aside>
+        </main>
+
+        <!-- Modals -->
+        <div id="modal-container" style="display: none;">
+            <div class="modal">
+                <h2 id="modal-title">Import JSON</h2>
+                <textarea id="import-area" placeholder="Paste JSON here..."></textarea>
+                <div class="modal-actions">
+                    <button id="btn-modal-cancel" class="btn btn-secondary">Cancel</button>
+                    <button id="btn-modal-confirm" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="editor.js"></script>
+</body>
+</html>

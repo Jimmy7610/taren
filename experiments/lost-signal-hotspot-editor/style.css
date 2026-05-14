@@ -1,0 +1,403 @@
+/* 
+ * Lost Signal Hotspot Editor - Styles
+ * Theme: Dark Cinematic / Brass / Rust
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+    --bg-dark: #0f0f15;
+    --bg-panel: #1a1a24;
+    --bg-input: #0a0a0f;
+    --text-brass: #d2c8b0;
+    --accent: #b08d57;
+    --accent-glow: rgba(176, 141, 87, 0.3);
+    --danger: #8b3a3a;
+    --border: rgba(176, 141, 87, 0.2);
+    --sidebar-width: 350px;
+    --header-height: 70px;
+}
+
+/* INSTÄLLNING - Hotspot Visuals */
+const HOTSPOT_FILL = 'rgba(176, 141, 87, 0.2)';
+const HOTSPOT_BORDER = '#b08d57';
+const SELECTION_COLOR = '#00ffff';
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-brass);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.editor-header {
+    height: var(--header-height);
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 100;
+}
+
+.header-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--accent);
+}
+
+.build-indicator {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    letter-spacing: 0.1em;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.preset-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Main Layout */
+.editor-main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* Stage Area */
+#stage-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background: #050508;
+    overflow: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+#stage-viewport {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+}
+
+#image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+#empty-state {
+    text-align: center;
+    opacity: 0.5;
+}
+
+/* Layers */
+#hotspot-overlay, #selection-layer, #draw-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#hotspot-overlay {
+    pointer-events: auto;
+}
+
+/* Hotspot UI */
+.hotspot-rect {
+    position: absolute;
+    border: 1px solid var(--accent);
+    background: var(--accent-glow);
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.hotspot-rect.selected {
+    border-color: #00ffff;
+    background: rgba(0, 255, 255, 0.1);
+    z-index: 10;
+}
+
+.hotspot-label {
+    position: absolute;
+    top: -22px;
+    left: 0;
+    background: var(--accent);
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    white-space: nowrap;
+    border-radius: 2px 2px 0 0;
+}
+
+/* Handles */
+.resize-handle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border: 1px solid #000;
+    pointer-events: auto;
+}
+
+/* Footer info */
+.stage-footer {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* Sidebar */
+#sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-panel);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 1.5rem;
+    gap: 2rem;
+}
+
+.sidebar-section h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.2rem;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    margin-bottom: 0.4rem;
+    opacity: 0.7;
+}
+
+input[type="text"], input[type="number"], textarea {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-brass);
+    padding: 0.6rem;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 5px var(--accent-glow);
+}
+
+.info-row {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.coord-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.action-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    font-size: 0.85rem;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #000;
+}
+
+.btn-primary:hover {
+    background: #c9a775;
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-brass);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-tiny {
+    font-size: 0.65rem;
+    padding: 4px 8px;
+}
+
+.btn-small {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* List */
+#hotspot-list {
+    list-style: none;
+}
+
+.hs-list-item {
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.hs-list-item:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.hs-list-item.active {
+    color: var(--accent);
+    background: rgba(176, 141, 87, 0.05);
+}
+
+/* Export */
+.tabs {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-brass);
+    opacity: 0.5;
+    font-size: 0.75rem;
+    padding: 0.4rem;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+}
+
+.tab-btn.active {
+    opacity: 1;
+    border-bottom-color: var(--accent);
+}
+
+#json-output {
+    height: 150px;
+    font-family: monospace;
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+    resize: none;
+}
+
+/* Modal */
+#modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 12px;
+    width: 500px;
+}
+
+.modal h2 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 1rem;
+}
+
+#import-area {
+    height: 300px;
+    margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
