@@ -1,8 +1,0 @@
-{
-  "power_station": {
-    "id": "power_station",
-    "requiredItem": "rusty_fuse",
-    "targetHotspot": "fuse_box",
-    "solved": false
-  }
-}

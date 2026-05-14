@@ -13,8 +13,11 @@ class PlayerManager {
         this.moveSpeed = 25; 
         
         // INSTÄLLNING - Skalning baserat på djup (Y-koordinat)
-        this.minScale = 0.6;
-        this.maxScale = 1.2;
+        this.minScale = 0.5;
+        this.maxScale = 1.0;
+        
+        // INSTÄLLNING - Grundhöjd (justeras via CSS max-height, men här för beräkning)
+        this.baseHeight = 200; 
         
         this.x = 15;
         this.y = 80;
@@ -55,24 +58,43 @@ class PlayerManager {
         this.animate();
     }
 
-    updatePlayerSprite() {
+    async updatePlayerSprite() {
         const img = document.getElementById('player-img');
         if (!img) return;
         
         // INSTÄLLNING - Använd side-sprite om den finns, annars default
-        // I Build 002 har vi lagt till stöd för nilo-side-idle.webp
-        let spritePath = 'assets/characters/nilo-idle.webp';
-        
-        // Enkel logik för sidovy (Build 002)
+        let spriteBase = 'nilo-idle';
         if (this.facing === 'left' || this.facing === 'right') {
-            spritePath = 'assets/characters/nilo-side-idle.webp';
+            spriteBase = 'nilo-side-idle';
         }
         
-        const fullUrl = this.game.getAssetUrl(spritePath);
-        if (img.src !== fullUrl) {
-            img.src = fullUrl;
-            img.style.display = 'block';
-            console.log(`Player sprite updated: ${spritePath}`);
+        const webpPath = `assets/characters/${spriteBase}.webp`;
+        const pngPath = `assets/characters/${spriteBase}.png`;
+        
+        // INSTÄLLNING - Försök ladda WEBP, sen PNG som fallback
+        try {
+            const fullUrl = this.game.getAssetUrl(webpPath);
+            if (img.src !== fullUrl) {
+                // Testa om bilden finns (för PNG fallback logik)
+                const exists = await this.checkAssetExists(fullUrl);
+                if (exists) {
+                    img.src = fullUrl;
+                } else {
+                    img.src = this.game.getAssetUrl(pngPath);
+                }
+                img.style.display = 'block';
+            }
+        } catch (e) {
+            console.warn("Failed to load player sprite, using fallback.");
+        }
+    }
+
+    async checkAssetExists(url) {
+        try {
+            const response = await fetch(url, { method: 'HEAD' });
+            return response.ok;
+        } catch (e) {
+            return false;
         }
     }
 
@@ -141,9 +163,10 @@ class PlayerManager {
         const scaleFactor = (this.y - 50) / 50; // 0 vid 50%, 1 vid 100%
         const scale = this.minScale + (scaleFactor * scaleRange);
         
-        // Riktning
-        const flip = this.facing === 'left' ? 'scaleX(-1)' : 'scaleX(1)';
-        this.element.style.transform = `translate(-50%, -100%) ${flip} scale(${scale})`;
+        // Riktning och Skala
+        const flip = this.facing === 'left' ? -1 : 1;
+        // Vi använder translate(-50%, -100%) för att fötterna (botten av elementet) ska vara vid x,y
+        this.element.style.transform = `translate(-50%, -100%) scaleX(${flip}) scale(${scale})`;
 
         this.update();
         requestAnimationFrame(() => this.animate());

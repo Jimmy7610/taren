@@ -37,12 +37,7 @@ class HotspotManager {
     }
 
     handleInteraction(hs) {
-        if (hs.walkTo) {
-            this.game.player.moveTo(hs.walkTo.x, hs.walkTo.y);
-            this.game.player.onArrived = () => this.triggerAction(hs);
-        } else {
-            this.triggerAction(hs);
-        }
+        this.triggerAction(hs);
     }
 
     triggerAction(hs) {

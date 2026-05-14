@@ -3,81 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lost Signal — Taren Adventure</title>
+    <title>Lost Signal — Den dag Taren ringde tillbaka</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-mode">
     <div id="game-wrapper">
         <!-- Build Box -->
-        <div class="build-box">Build 002 — Movement + Real Assets</div>
+        <div class="build-box">Build 003 — Den dag Taren ringde tillbaka</div>
 
         <!-- Start Screen -->
-        <div id="start-screen" class="overlay active">
+        <div id="start-screen" class="overlay">
             <div class="intro-content">
                 <h1 data-lang-key="game_title">Lost Signal</h1>
-                <p class="intro-text" data-lang-key="intro_text">A strange signal is waking something beneath Taren.</p>
+                <p class="subtitle">Den dag Taren ringde tillbaka</p>
                 <div class="start-actions">
-                    <button id="start-btn" class="btn-primary" data-lang-key="ui_start">Start Expedition</button>
-                    <button id="reset-btn" class="btn-secondary" data-lang-key="ui_reset">Reset Progress</button>
+                    <button id="start-btn" class="btn-primary">Start Expedition</button>
+                    <button id="reset-btn" class="btn-secondary">Reset Progress</button>
                 </div>
             </div>
         </div>
 
         <!-- Game Interface -->
         <div id="game-ui" class="hidden">
-            <!-- Scene Viewport -->
-            <div id="scene-viewport">
-                <div id="scene-container"></div>
-                <div id="hotspot-layer"></div>
-                
-                <!-- Player Placeholder (Nilo) -->
-                <div id="player-nilo" class="player-marker">
-                    <img id="player-img" onerror="this.style.display='none'">
-                    <div class="marker-dot"></div>
-                    <span class="marker-label">Nilo</span>
+            <!-- Sidebar -->
+            <aside id="game-sidebar">
+                <div class="sidebar-header">
+                    <h2 data-lang-key="game_title">Lost Signal</h2>
+                    <div id="scene-title">---</div>
                 </div>
 
-                <!-- Debug Layer -->
-                <div id="debug-layer" class="hidden">
-                    <svg id="walk-area-svg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
-                    <div id="debug-coords" class="debug-panel">
-                        x: 0.0, y: 0.0
-                        <button id="copy-coords-btn" class="btn-tiny">Copy</button>
-                    </div>
+                <div class="sidebar-section">
+                    <h3>Objective</h3>
+                    <p id="current-objective">---</p>
                 </div>
 
-                <!-- VFX Layer -->
-                <div class="vfx-layer fog"></div>
-                <div class="vfx-layer vignette"></div>
-                <div class="vfx-layer lights"></div>
-            </div>
-
-            <!-- Dialogue Panel -->
-            <div id="dialogue-panel">
-                <p id="dialogue-text"></p>
-                <span class="close-hint">Click anywhere to close</span>
-            </div>
-
-            <!-- Bottom Bar: Inventory & Controls -->
-            <div id="bottom-bar">
-                <div class="inventory-section">
-                    <h3 data-lang-key="ui_inventory">Inventory</h3>
+                <div class="sidebar-section">
+                    <h3>Inventory</h3>
                     <div id="inventory-bar"></div>
                 </div>
-                
-                <div class="controls-section">
-                    <div class="toggle-group">
-                        <button id="lang-toggle" class="btn-small">EN/SV</button>
-                        <button id="theme-toggle" class="btn-small">Theme</button>
-                        <button id="mute-toggle" class="btn-small">Mute</button>
-                        <button id="debug-toggle" class="btn-small">Debug</button>
+
+                <div class="signal-container">
+                    <h3>Signal Strength</h3>
+                    <div class="meter-outer">
+                        <div id="signal-value"></div>
                     </div>
                 </div>
-            </div>
+
+                <div class="sidebar-footer">
+                    <div class="toggle-group">
+                        <button id="lang-toggle" class="btn-tiny">EN/SV</button>
+                        <button id="theme-toggle" class="btn-tiny">Theme</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Area -->
+            <main id="game-main">
+                <div id="scene-viewport">
+                    <div id="scene-container"></div>
+                    <div id="hotspot-layer"></div>
+                </div>
+
+                <div id="dialogue-panel">
+                    <p id="dialogue-text"></p>
+                </div>
+            </main>
         </div>
     </div>
 
-    <!-- Game Script -->
+    <!-- Scripts -->
+    <script src="../../assets/js/build.js"></script>
     <script type="module" src="game.js"></script>
 </body>
 </html>

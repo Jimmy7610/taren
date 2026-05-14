@@ -1,22 +1,27 @@
-# Lost Signal — Technical Plan
+# Lost Signal — Technical Plan (POV Mode)
 
-## Modular Architecture
-The game is built using a component-based modular architecture to ensure scalability and isolation.
+## POV Architecture
+The game uses a first-person POV (Point-of-View) architecture, focusing on direct interaction with a responsive 16:9 scene stage.
 
 ### Core Modules
-- **SceneManager**: Handles background rendering and switching.
-- **HotspotManager**: Manages interactive areas using percentage coordinates for responsive positioning.
-- **Inventory**: Tracks player items and handles item selection/usage logic.
-- **Dialogue**: A lightweight messaging system for narrative delivery.
-- **SaveSystem**: Simple `localStorage` integration for progress persistence.
-- **LanguageSystem**: Dynamic JSON loading for English and Swedish support.
-- **PlayerManager**: Handles movement, depth-scaling, and direction.
+- **SceneManager**: Handles background rendering and aspect ratio management.
+- **HotspotManager**: Manages interaction areas using percentage-based coordinates (0-100).
+- **Inventory**: Handles item collection and usage.
+- **Dialogue**: Cinematic text delivery system.
 
-## Why Percentage Coordinates?
-Using percentage-based values (`left: 20%; top: 40%`) allows the hotspots and character markers to remain correctly positioned regardless of the screen size, as long as the 16:9 aspect ratio is maintained in the viewport.
+## Responsive Coordinate System
+To ensure hotspots remain accurate on all devices, the game uses a relative percentage system:
+- **Scene Stage**: A dedicated element with `aspect-ratio: 16 / 9`.
+- **Calculations**: `x = (offsetX / width) * 100`, `y = (offsetY / height) * 100`.
+- **Absolute Positioning**: Hotspots are placed using `left: x%`, `top: y%`, `width: w%`, `height: h%`.
 
-## Asset Loading & Cache Busting
-Visual assets are loaded using relative paths from the game root (`/games/lost-signal/`).
-- **Standard Path Format**: `assets/[category]/[file].webp`
-- **Cache Busting**: Assets are appended with a version query (e.g., `?v=115`) to ensure updates are reflected immediately during development.
-- **Fallbacks**: If a file is missing, the engine falls back to CSS-based placeholders (solid colors/gradients) or hides the image layer to maintain playability.
+## Calibration Workflow
+Jimmy can use the built-in Debug tools to maintain the game:
+1. **Toggle Debug**: Activates the calibration overlay.
+2. **Draw Hotspot**: Allows drawing rectangular areas.
+3. **JSON Export**: Provides ready-to-use snippets for `scenes.json`.
+
+## Asset Pipeline
+- **Backgrounds**: Must be 16:9 for best results.
+- **Formats**: `.webp` or `.png`.
+- **Cache Busting**: Versioning handled via `game.buildVersion`.

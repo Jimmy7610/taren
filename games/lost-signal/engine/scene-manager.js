@@ -26,6 +26,10 @@ class SceneManager {
         this.renderScene();
         this.game.hotspotManager.loadHotspots(scene.hotspots);
         
+        // Update UI
+        const titleEl = document.getElementById('scene-title');
+        if (titleEl) titleEl.innerText = scene.name;
+
         // INSTÄLLNING - Logga scenskiftet för debugging
         console.log(`Scene changed to: ${scene.name}`);
     }
@@ -37,6 +41,8 @@ class SceneManager {
         // INSTÄLLNING - Om bakgrundsbild saknas, använd en placeholder färg
         if (!this.currentScene.background || this.currentScene.background.includes('placeholder')) {
             container.style.backgroundColor = '#1a1a2e'; // Mörkblå nattkänsla
+        } else {
+            container.style.backgroundColor = 'transparent';
         }
 
         // Real Assets - Fog & Glow
@@ -46,8 +52,18 @@ class SceneManager {
         const scenePath = this.currentScene.background.substring(0, this.currentScene.background.lastIndexOf('/'));
         
         // INSTÄLLNING - Försök ladda real assets om de finns
-        fogLayer.style.backgroundImage = `url(${this.game.getAssetUrl(`${scenePath}/fog.webp`)})`;
-        glowLayer.style.backgroundImage = `url(${this.game.getAssetUrl(`${scenePath}/signal-glow.webp`)})`;
+        const fogUrl = this.game.getAssetUrl(`${scenePath}/fog.webp`);
+        const glowUrl = this.game.getAssetUrl(`${scenePath}/signal-glow.webp`);
+        
+        fogLayer.style.backgroundImage = `url(${fogUrl})`;
+        glowLayer.style.backgroundImage = `url(${glowUrl})`;
+        
+        // Diagnostik i konsolen
+        console.group(`Scene Layers: ${this.currentScene.name}`);
+        console.log(`Main Background: ${this.currentScene.background}`);
+        console.log(`Fog Overlay: ${fogUrl}`);
+        console.log(`Glow Overlay: ${glowUrl}`);
+        console.groupEnd();
     }
 }
 
