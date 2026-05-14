@@ -11,7 +11,7 @@
         <header class="editor-header">
             <div class="header-content">
                 <h1>Lost Signal Hotspot Editor</h1>
-                <div class="build-indicator">Build 121</div>
+                <div class="build-indicator">Build 122</div>
             </div>
             <nav class="header-actions">
                 <button id="btn-load-image" class="btn btn-secondary">Load Image</button>
@@ -30,6 +30,7 @@
                 <div id="stage-viewport">
                     <div id="image-container">
                         <img id="bg-image" src="" alt="" style="display: none;">
+                        <svg id="hotspot-svg" xmlns="http://www.w3.org/2000/svg"></svg>
                         <div id="hotspot-overlay"></div>
                         <div id="selection-layer"></div>
                         <div id="draw-layer"></div>
@@ -54,6 +55,17 @@
                     <div class="form-group">
                         <label for="scene-id">Scene ID</label>
                         <input type="text" id="scene-id" placeholder="e.g. scene-01-old-pier">
+                    </div>
+                    <div class="form-group">
+                        <label>Creation Mode</label>
+                        <div class="shape-selector">
+                            <button class="btn btn-tiny active" data-mode="rect">Rectangle</button>
+                            <button class="btn btn-tiny" data-mode="polygon">Polygon</button>
+                        </div>
+                    </div>
+                    <div id="poly-controls" class="form-group" style="display: none;">
+                        <button id="btn-finish-poly" class="btn btn-primary btn-small">Finish Polygon (Enter)</button>
+                        <p class="help-text">Click to add points. ESC to cancel.</p>
                     </div>
                     <div class="info-row">
                         <span>Image:</span> <span id="info-filename">None</span>

@@ -5,6 +5,8 @@
 
 // --- CONFIGURATION / INSTÄLLNING ---
 const HANDLE_SIZE = 8; // INSTÄLLNING - Size of resize handles in pixels
+const POLYGON_POINT_RADIUS = 6; // INSTÄLLNING - Size of polygon vertex handles
+const POLYGON_FILL_ALPHA = 0.18; // INSTÄLLNING - Fill opacity for polygon hotspots
 const SNAP_THRESHOLD = 5; // INSTÄLLNING - Snap to grid threshold (if implemented)
 const MIN_SIZE = 10; // INSTÄLLNING - Minimum width/height for a hotspot
 const DEFAULT_HOTSPOT_ID_PREFIX = 'hotspot_'; // INSTÄLLNING - Default prefix for new hotspots
@@ -18,10 +20,14 @@ let state = {
     imageHeight: 0,
     hotspots: [],
     selectedId: null,
+    activeShapeMode: 'rect', // 'rect' or 'polygon'
     isDrawing: false,
     isMoving: false,
     isResizing: false,
+    isDraggingVertex: false,
     resizeHandle: null,
+    vertexIndex: -1,
+    currentPolygonPoints: [], // Points currently being drawn [{x, y}] (percents)
     startX: 0,
     startY: 0,
     currentX: 0,
@@ -36,6 +42,7 @@ const el = {
     container: document.getElementById('image-container'),
     img: document.getElementById('bg-image'),
     overlay: document.getElementById('hotspot-overlay'),
+    svg: document.getElementById('hotspot-svg'),
     emptyState: document.getElementById('empty-state'),
     fileInput: document.getElementById('file-input'),
     btnLoadImage: document.getElementById('btn-load-image'),
@@ -47,7 +54,8 @@ const el = {
     hotspotList: document.getElementById('hotspot-list'),
     jsonOutput: document.getElementById('json-output'),
     modalContainer: document.getElementById('modal-container'),
-    importArea: document.getElementById('import-area')
+    importArea: document.getElementById('import-area'),
+    polyControls: document.getElementById('poly-controls')
 };
 
 // --- INITIALIZATION ---
@@ -71,6 +79,19 @@ function bindEvents() {
             updateOutput();
         };
     });
+
+    // Shape Mode
+    document.querySelectorAll('.shape-selector .btn').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.shape-selector .btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.activeShapeMode = btn.dataset.mode;
+            cancelPolygon(); // Reset any drawing in progress
+            el.polyControls.style.display = state.activeShapeMode === 'polygon' ? 'block' : 'none';
+        };
+    });
+
+    document.getElementById('btn-finish-poly').onclick = finishPolygon;
 
     // Drawing / Interaction
     el.container.onmousedown = handleMouseDown;
@@ -117,7 +138,16 @@ function bindEvents() {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         
         if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
-        if (e.key === 'Escape') selectHotspot(null);
+        if (e.key === 'Escape') {
+            if (state.isDrawing && state.activeShapeMode === 'polygon') {
+                cancelPolygon();
+            } else {
+                selectHotspot(null);
+            }
+        }
+        if (e.key === 'Enter') {
+            if (state.isDrawing && state.activeShapeMode === 'polygon') finishPolygon();
+        }
         if (e.key === 'd' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             duplicateSelected();
@@ -173,7 +203,16 @@ function handleMouseDown(e) {
     const coords = getStageCoords(e);
     const target = e.target;
 
-    // Check if clicking a handle
+    // Polygon vertex dragging
+    if (target.classList.contains('vertex-handle')) {
+        state.isDraggingVertex = true;
+        state.vertexIndex = parseInt(target.dataset.index);
+        state.startX = coords.x;
+        state.startY = coords.y;
+        return;
+    }
+
+    // Check if clicking a handle (Rect only)
     if (target.classList.contains('resize-handle')) {
         state.isResizing = true;
         state.resizeHandle = target.dataset.handle;
@@ -182,23 +221,47 @@ function handleMouseDown(e) {
         return;
     }
 
-    // Check if clicking existing hotspot
-    if (target.classList.contains('hotspot-rect') || target.closest('.hotspot-rect')) {
-        const hsEl = target.classList.contains('hotspot-rect') ? target : target.closest('.hotspot-rect');
-        selectHotspot(hsEl.dataset.id);
+    // Polygon creation
+    if (state.activeShapeMode === 'polygon') {
+        if (!state.isDrawing) {
+            state.isDrawing = true;
+            state.currentPolygonPoints = [coords];
+        } else {
+            state.currentPolygonPoints.push(coords);
+        }
+        renderHotspots();
+        return;
+    }
+
+    // Check if clicking existing hotspot (div-based rect or SVG path)
+    if (target.classList.contains('hotspot-rect') || target.closest('.hotspot-rect') || target.classList.contains('hotspot-poly')) {
+        const hsId = target.dataset.id || target.closest('.hotspot-rect')?.dataset.id;
+        selectHotspot(hsId);
         state.isMoving = true;
         state.startX = coords.x;
         state.startY = coords.y;
         return;
     }
 
-    // Start drawing new hotspot
-    selectHotspot(null);
-    state.isDrawing = true;
-    state.startX = coords.x;
-    state.startY = coords.y;
-    state.currentX = coords.x;
-    state.currentY = coords.y;
+    // Hit testing for polygons (for the transparent interior)
+    const hitId = hitTestPolygons(coords);
+    if (hitId) {
+        selectHotspot(hitId);
+        state.isMoving = true;
+        state.startX = coords.x;
+        state.startY = coords.y;
+        return;
+    }
+
+    // Start drawing new RECT hotspot
+    if (state.activeShapeMode === 'rect') {
+        selectHotspot(null);
+        state.isDrawing = true;
+        state.startX = coords.x;
+        state.startY = coords.y;
+        state.currentX = coords.x;
+        state.currentY = coords.y;
+    }
 }
 
 function handleMouseMove(e) {
@@ -208,13 +271,31 @@ function handleMouseMove(e) {
     if (state.isDrawing) {
         state.currentX = coords.x;
         state.currentY = coords.y;
-        renderDrawPreview();
+        if (state.activeShapeMode === 'rect') {
+            renderDrawPreview();
+        } else {
+            renderHotspots(); // Redraw poly preview
+        }
+    } else if (state.isDraggingVertex && state.selectedId) {
+        const hs = state.hotspots.find(h => h.id === state.selectedId);
+        if (hs && hs.shape === 'polygon') {
+            hs.pointsPercent[state.vertexIndex] = coords;
+            syncHotspotFromPercent(hs);
+            updateUI();
+            renderHotspots();
+        }
     } else if (state.isMoving && state.selectedId) {
         const hs = state.hotspots.find(h => h.id === state.selectedId);
         const dx = coords.x - state.startX;
         const dy = coords.y - state.startY;
-        hs.xPercent += dx;
-        hs.yPercent += dy;
+        
+        if (hs.shape === 'rect') {
+            hs.xPercent += dx;
+            hs.yPercent += dy;
+        } else if (hs.shape === 'polygon') {
+            hs.pointsPercent = hs.pointsPercent.map(p => ({ x: p.x + dx, y: p.y + dy }));
+        }
+        
         state.startX = coords.x;
         state.startY = coords.y;
         syncHotspotFromPercent(hs);
@@ -252,7 +333,7 @@ function handleMouseMove(e) {
 }
 
 function handleMouseUp() {
-    if (state.isDrawing) {
+    if (state.isDrawing && state.activeShapeMode === 'rect') {
         const x = Math.min(state.startX, state.currentX);
         const y = Math.min(state.startY, state.currentY);
         const w = Math.abs(state.startX - state.currentX);
@@ -273,15 +354,71 @@ function handleMouseUp() {
             state.hotspots.push(newHs);
             selectHotspot(newId);
         }
+        state.isDrawing = false;
     }
 
-    state.isDrawing = false;
     state.isMoving = false;
     state.isResizing = false;
+    state.isDraggingVertex = false;
     state.resizeHandle = null;
     saveSession();
     updateOutput();
     renderHotspots();
+}
+
+// --- POLYGON SPECIFIC ---
+function finishPolygon() {
+    if (state.currentPolygonPoints.length < 3) {
+        cancelPolygon();
+        return;
+    }
+
+    const newId = generateId();
+    const newHs = {
+        id: newId,
+        label: { en: 'New Polygon', sv: 'Ny Polygon' },
+        shape: 'polygon',
+        pointsPercent: state.currentPolygonPoints
+    };
+    syncHotspotFromPercent(newHs);
+    state.hotspots.push(newHs);
+    state.isDrawing = false;
+    state.currentPolygonPoints = [];
+    selectHotspot(newId);
+    saveSession();
+    updateOutput();
+}
+
+function cancelPolygon() {
+    state.isDrawing = false;
+    state.currentPolygonPoints = [];
+    renderHotspots();
+}
+
+/**
+ * INSTÄLLNING - Point-in-Polygon hit testing algorithm (Ray-casting)
+ */
+function isPointInPolygon(point, polygon) {
+    const x = point.x, y = point.y;
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].x, yi = polygon[i].y;
+        const xj = polygon[j].x, yj = polygon[j].y;
+        const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+}
+
+function hitTestPolygons(coords) {
+    // Reverse order to check top-most first
+    for (let i = state.hotspots.length - 1; i >= 0; i--) {
+        const hs = state.hotspots[i];
+        if (hs.shape === 'polygon' && isPointInPolygon(coords, hs.pointsPercent)) {
+            return hs.id;
+        }
+    }
+    return null;
 }
 
 // --- UTILS ---
@@ -294,48 +431,129 @@ function generateId() {
 }
 
 function syncHotspotFromPercent(hs) {
-    hs.x = Math.round((hs.xPercent / 100) * state.imageWidth);
-    hs.y = Math.round((hs.yPercent / 100) * state.imageHeight);
-    hs.width = Math.round((hs.widthPercent / 100) * state.imageWidth);
-    hs.height = Math.round((hs.heightPercent / 100) * state.imageHeight);
+    if (hs.shape === 'rect') {
+        hs.x = Math.round((hs.xPercent / 100) * state.imageWidth);
+        hs.y = Math.round((hs.yPercent / 100) * state.imageHeight);
+        hs.width = Math.round((hs.widthPercent / 100) * state.imageWidth);
+        hs.height = Math.round((hs.heightPercent / 100) * state.imageHeight);
+    } else if (hs.shape === 'polygon') {
+        hs.points = hs.pointsPercent.map(p => ({
+            x: Math.round((p.x / 100) * state.imageWidth),
+            y: Math.round((p.y / 100) * state.imageHeight)
+        }));
+    }
 }
 
 function syncHotspotFromPixels(hs) {
-    hs.xPercent = (hs.x / state.imageWidth) * 100;
-    hs.yPercent = (hs.y / state.imageHeight) * 100;
-    hs.widthPercent = (hs.width / state.imageWidth) * 100;
-    hs.heightPercent = (hs.height / state.imageHeight) * 100;
+    if (hs.shape === 'rect') {
+        hs.xPercent = (hs.x / state.imageWidth) * 100;
+        hs.yPercent = (hs.y / state.imageHeight) * 100;
+        hs.widthPercent = (hs.width / state.imageWidth) * 100;
+        hs.heightPercent = (hs.height / state.imageHeight) * 100;
+    } else if (hs.shape === 'polygon') {
+        hs.pointsPercent = hs.points.map(p => ({
+            x: (p.x / state.imageWidth) * 100,
+            y: (p.y / state.imageHeight) * 100
+        }));
+    }
 }
 
 // --- UI RENDERING ---
 function renderHotspots() {
     el.overlay.innerHTML = '';
+    el.svg.innerHTML = '';
+    
     if (!state.showHotspots) return;
 
     state.hotspots.forEach(hs => {
-        const div = document.createElement('div');
-        div.className = `hotspot-rect ${hs.id === state.selectedId ? 'selected' : ''}`;
-        div.dataset.id = hs.id;
-        div.style.left = `${hs.xPercent}%`;
-        div.style.top = `${hs.yPercent}%`;
-        div.style.width = `${hs.widthPercent}%`;
-        div.style.height = `${hs.heightPercent}%`;
-
-        if (state.showLabels) {
-            const label = document.createElement('div');
-            label.className = 'hotspot-label';
-            label.innerText = hs.id;
-            div.appendChild(label);
+        if (hs.shape === 'rect') {
+            renderRectHotspot(hs);
+        } else if (hs.shape === 'polygon') {
+            renderPolyHotspot(hs);
         }
-
-        if (hs.id === state.selectedId) {
-            addResizeHandles(div);
-        }
-
-        el.overlay.appendChild(div);
     });
 
+    // Draw current polygon preview
+    if (state.activeShapeMode === 'polygon' && state.isDrawing) {
+        renderPolyPreview();
+    }
+
     renderList();
+}
+
+function renderRectHotspot(hs) {
+    const div = document.createElement('div');
+    div.className = `hotspot-rect ${hs.id === state.selectedId ? 'selected' : ''}`;
+    div.dataset.id = hs.id;
+    div.style.left = `${hs.xPercent}%`;
+    div.style.top = `${hs.yPercent}%`;
+    div.style.width = `${hs.widthPercent}%`;
+    div.style.height = `${hs.heightPercent}%`;
+
+    if (state.showLabels) {
+        const label = document.createElement('div');
+        label.className = 'hotspot-label';
+        label.innerText = hs.id;
+        div.appendChild(label);
+    }
+
+    if (hs.id === state.selectedId) {
+        addResizeHandles(div);
+    }
+
+    el.overlay.appendChild(div);
+}
+
+function renderPolyHotspot(hs) {
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.classList.add('hotspot-poly');
+    if (hs.id === state.selectedId) poly.classList.add('selected');
+    poly.dataset.id = hs.id;
+    
+    const pointsStr = hs.pointsPercent.map(p => `${p.x},${p.y}`).join(' ');
+    poly.setAttribute('points', pointsStr);
+    
+    poly.onmousedown = (e) => {
+        e.stopPropagation();
+        handleMouseDown(e);
+    };
+
+    el.svg.appendChild(poly);
+
+    if (state.showLabels) {
+        const firstPoint = hs.pointsPercent[0];
+        const label = document.createElement('div');
+        label.className = 'hotspot-label';
+        label.style.left = `${firstPoint.x}%`;
+        label.style.top = `${firstPoint.y - 2}%`;
+        label.innerText = hs.id;
+        el.overlay.appendChild(label);
+    }
+
+    if (hs.id === state.selectedId) {
+        addVertexHandles(hs);
+    }
+}
+
+function renderPolyPreview() {
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.classList.add('poly-preview');
+    
+    const points = [...state.currentPolygonPoints];
+    points.push({ x: state.currentX, y: state.currentY });
+    
+    const pointsStr = points.map(p => `${p.x},${p.y}`).join(' ');
+    poly.setAttribute('points', pointsStr);
+    el.svg.appendChild(poly);
+
+    // Draw handles for current points
+    state.currentPolygonPoints.forEach((p, i) => {
+        const handle = document.createElement('div');
+        handle.className = 'vertex-handle';
+        handle.style.left = `${p.x}%`;
+        handle.style.top = `${p.y}%`;
+        el.overlay.appendChild(handle);
+    });
 }
 
 function addResizeHandles(parent) {
@@ -345,11 +563,21 @@ function addResizeHandles(parent) {
         handle.className = `resize-handle handle-${h}`;
         handle.dataset.handle = h;
         
-        // Positioning handles relative to hotspot
         if (h.includes('t')) handle.style.top = '-4px'; else handle.style.bottom = '-4px';
         if (h.includes('l')) handle.style.left = '-4px'; else handle.style.right = '-4px';
         
         parent.appendChild(handle);
+    });
+}
+
+function addVertexHandles(hs) {
+    hs.pointsPercent.forEach((p, i) => {
+        const handle = document.createElement('div');
+        handle.className = 'vertex-handle';
+        handle.dataset.index = i;
+        handle.style.left = `${p.x}%`;
+        handle.style.top = `${p.y}%`;
+        el.overlay.appendChild(handle);
     });
 }
 
@@ -374,7 +602,8 @@ function renderList() {
     state.hotspots.forEach(hs => {
         const li = document.createElement('li');
         li.className = `hs-list-item ${hs.id === state.selectedId ? 'active' : ''}`;
-        li.innerHTML = `<span>${hs.id}</span> <small>${hs.width}x${hs.height}</small>`;
+        const typeIcon = hs.shape === 'rect' ? '▯' : '△';
+        li.innerHTML = `<span>${typeIcon} ${hs.id}</span> <small>${hs.shape}</small>`;
         li.onclick = () => selectHotspot(hs.id);
         el.hotspotList.appendChild(li);
     });
@@ -389,10 +618,15 @@ function selectHotspot(id) {
         document.getElementById('hotspot-id').value = hs.id;
         document.getElementById('hotspot-label-en').value = hs.label.en;
         document.getElementById('hotspot-label-sv').value = hs.label.sv;
-        document.getElementById('hs-x').value = hs.x;
-        document.getElementById('hs-y').value = hs.y;
-        document.getElementById('hs-w').value = hs.width;
-        document.getElementById('hs-h').value = hs.height;
+        
+        const isRect = hs.shape === 'rect';
+        document.getElementById('hs-x').value = isRect ? hs.x : hs.points[0].x;
+        document.getElementById('hs-y').value = isRect ? hs.y : hs.points[0].y;
+        document.getElementById('hs-w').value = isRect ? hs.width : 0;
+        document.getElementById('hs-h').value = isRect ? hs.height : 0;
+        
+        document.getElementById('hs-w').disabled = !isRect;
+        document.getElementById('hs-h').disabled = !isRect;
     } else {
         el.selectionProps.classList.add('disabled');
     }
@@ -408,9 +642,8 @@ function updateSelectedHotspot() {
     const oldId = hs.id;
     const newId = document.getElementById('hotspot-id').value;
     
-    // ID Uniqueness
     if (newId !== oldId && state.hotspots.some(h => h.id === newId)) {
-        // Just revert or handle silently for now
+        // Silently ignore or revert
     } else {
         hs.id = newId;
         state.selectedId = newId;
@@ -418,10 +651,17 @@ function updateSelectedHotspot() {
 
     hs.label.en = document.getElementById('hotspot-label-en').value;
     hs.label.sv = document.getElementById('hotspot-label-sv').value;
-    hs.x = parseInt(document.getElementById('hs-x').value) || 0;
-    hs.y = parseInt(document.getElementById('hs-y').value) || 0;
-    hs.width = parseInt(document.getElementById('hs-w').value) || 0;
-    hs.height = parseInt(document.getElementById('hs-h').value) || 0;
+    
+    if (hs.shape === 'rect') {
+        hs.x = parseInt(document.getElementById('hs-x').value) || 0;
+        hs.y = parseInt(document.getElementById('hs-y').value) || 0;
+        hs.width = parseInt(document.getElementById('hs-w').value) || 0;
+        hs.height = parseInt(document.getElementById('hs-h').value) || 0;
+    } else {
+        const dx = (parseInt(document.getElementById('hs-x').value) || 0) - hs.points[0].x;
+        const dy = (parseInt(document.getElementById('hs-y').value) || 0) - hs.points[0].y;
+        hs.points = hs.points.map(p => ({ x: p.x + dx, y: p.y + dy }));
+    }
 
     syncHotspotFromPixels(hs);
     renderHotspots();
@@ -435,8 +675,12 @@ function duplicateSelected() {
 
     const newHs = JSON.parse(JSON.stringify(hs));
     newHs.id = generateId();
-    newHs.xPercent += 2;
-    newHs.yPercent += 2;
+    if (newHs.shape === 'rect') {
+        newHs.xPercent += 2;
+        newHs.yPercent += 2;
+    } else {
+        newHs.pointsPercent = newHs.pointsPercent.map(p => ({ x: p.x + 2, y: p.y + 2 }));
+    }
     syncHotspotFromPercent(newHs);
     state.hotspots.push(newHs);
     selectHotspot(newHs.id);
@@ -445,12 +689,14 @@ function duplicateSelected() {
 function deleteSelected() {
     state.hotspots = state.hotspots.filter(h => h.id !== state.selectedId);
     selectHotspot(null);
+    updateOutput();
 }
 
 function clearAll() {
     if (confirm('Clear all hotspots?')) {
         state.hotspots = [];
         selectHotspot(null);
+        updateOutput();
     }
 }
 
@@ -459,14 +705,18 @@ function updateOutput() {
     const isGameArray = document.querySelector('.tab-btn[data-tab="game-array"]').classList.contains('active');
     
     if (isGameArray) {
-        const arr = state.hotspots.map(hs => ({
-            id: hs.id,
-            x: parseFloat(hs.xPercent.toFixed(2)),
-            y: parseFloat(hs.yPercent.toFixed(2)),
-            w: parseFloat(hs.widthPercent.toFixed(2)),
-            h: parseFloat(hs.heightPercent.toFixed(2)),
-            name: { en: hs.label.en, sv: hs.label.sv }
-        }));
+        const arr = state.hotspots.map(hs => {
+            const base = {
+                id: hs.id,
+                shape: hs.shape,
+                name: { en: hs.label.en, sv: hs.label.sv }
+            };
+            if (hs.shape === 'rect') {
+                return { ...base, x: hs.xPercent, y: hs.yPercent, w: hs.widthPercent, h: hs.heightPercent };
+            } else {
+                return { ...base, pointsPercent: hs.pointsPercent.map(p => ({ x: parseFloat(p.x.toFixed(2)), y: parseFloat(p.y.toFixed(2)) })) };
+            }
+        });
         el.jsonOutput.value = JSON.stringify(arr, null, 2);
     } else {
         const out = {
@@ -474,19 +724,29 @@ function updateOutput() {
             image: state.imageName,
             imageWidth: state.imageWidth,
             imageHeight: state.imageHeight,
-            hotspots: state.hotspots.map(hs => ({
-                id: hs.id,
-                label: hs.label,
-                shape: hs.shape,
-                x: hs.x,
-                y: hs.y,
-                width: hs.width,
-                height: hs.height,
-                xPercent: parseFloat(hs.xPercent.toFixed(2)),
-                yPercent: parseFloat(hs.yPercent.toFixed(2)),
-                widthPercent: parseFloat(hs.widthPercent.toFixed(2)),
-                heightPercent: parseFloat(hs.heightPercent.toFixed(2))
-            }))
+            hotspots: state.hotspots.map(hs => {
+                const base = {
+                    id: hs.id,
+                    label: hs.label,
+                    shape: hs.shape
+                };
+                if (hs.shape === 'rect') {
+                    return {
+                        ...base,
+                        x: hs.x, y: hs.y, width: hs.width, height: hs.height,
+                        xPercent: parseFloat(hs.xPercent.toFixed(2)),
+                        yPercent: parseFloat(hs.yPercent.toFixed(2)),
+                        widthPercent: parseFloat(hs.widthPercent.toFixed(2)),
+                        heightPercent: parseFloat(hs.heightPercent.toFixed(2))
+                    };
+                } else {
+                    return {
+                        ...base,
+                        points: hs.points,
+                        pointsPercent: hs.pointsPercent.map(p => ({ x: parseFloat(p.x.toFixed(2)), y: parseFloat(p.y.toFixed(2)) }))
+                    };
+                }
+            })
         };
         el.jsonOutput.value = JSON.stringify(out, null, 2);
     }
@@ -519,24 +779,27 @@ function handleImport() {
             state.imageName = data.image || '';
             state.imageWidth = data.imageWidth || 0;
             state.imageHeight = data.imageHeight || 0;
-            updateUI();
         } else if (Array.isArray(data)) {
-            // Assume game array format
-            state.hotspots = data.map(h => ({
-                id: h.id,
-                label: h.name || { en: '', sv: '' },
-                shape: 'rect',
-                xPercent: h.x,
-                yPercent: h.y,
-                widthPercent: h.w,
-                heightPercent: h.h
-            }));
+            state.hotspots = data.map(h => {
+                const hs = {
+                    id: h.id,
+                    label: h.name || { en: '', sv: '' },
+                    shape: h.shape || 'rect'
+                };
+                if (hs.shape === 'rect') {
+                    hs.xPercent = h.x;
+                    hs.yPercent = h.y;
+                    hs.widthPercent = h.w;
+                    hs.heightPercent = h.h;
+                } else {
+                    hs.pointsPercent = h.pointsPercent;
+                }
+                return hs;
+            });
             state.hotspots.forEach(syncHotspotFromPercent);
         }
         el.modalContainer.style.display = 'none';
-        renderHotspots();
-        updateOutput();
-        saveSession();
+        updateUI();
     } catch (e) {
         alert('Invalid JSON format');
     }
@@ -551,6 +814,7 @@ function loadSession() {
     if (saved) {
         const parsed = JSON.parse(saved);
         state = { ...state, ...parsed };
+        if (!state.activeShapeMode) state.activeShapeMode = 'rect';
         updateUI();
     }
 }
@@ -564,6 +828,11 @@ function updateUI() {
         el.img.style.display = 'block';
         el.emptyState.style.display = 'none';
     }
+
+    document.querySelectorAll('.shape-selector .btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === state.activeShapeMode);
+    });
+    el.polyControls.style.display = state.activeShapeMode === 'polygon' ? 'block' : 'none';
 
     renderHotspots();
     updateOutput();

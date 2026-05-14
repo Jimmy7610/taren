@@ -10,51 +10,60 @@ This tool allows Jimmy to load scene background images and visually define recta
 
 ## How to use
 1. **Open the tool**: Open `index.html` in a modern browser.
-2. **Load an image**: Click "Load Image" and select a scene background (recommended: 1920x1080, 16:9 ratio).
-3. **Define a hotspot**: Click and drag on the image to create a rectangle.
-4. **Edit details**: Select a hotspot to rename its ID, adjust labels (English/Swedish), or fine-tune its position and size in the sidebar.
+2. **Load an image**: Click "Load Image" and select a scene background.
+3. **Select Mode**: Use the "Creation Mode" toggle in the sidebar to choose between **Rectangle** or **Polygon**.
+
+### Rectangle Hotspots (Default)
+- **Create**: Click and drag on the image.
+- **Edit**: Click to select, then drag corner handles to resize or the center to move.
+
+### Polygon Hotspots
+- **Create**: Click individual points on the image to define vertices. A dashed preview line shows the next segment.
+- **Finish**: Press **Enter**, click the **"Finish Polygon"** button, or double-click to close the shape. Polygons must have at least 3 points.
+- **Cancel**: Press **Escape** to discard the current polygon being drawn.
+- **Edit**: Select the polygon to see its vertex handles. Drag individual points to reshape, or drag the shape itself to move it.
+- **When to use**: Ideal for angled or irregular objects like the loose plank on the pier, winding cables, or perspective-heavy doorways.
+
+4. **Edit details**: Select a hotspot to rename its ID, adjust labels (English/Swedish), or fine-tune its position in the sidebar.
 5. **Export**: Copy the JSON from the "Output" area or download it as a file.
 
 ## Features
-- **Visual Editing**: Drag to create, move, and resize with corner handles.
-- **Dual Coordinates**: Automatically calculates both absolute pixels and percentage values.
-- **Hotspot Management**: Duplicate, delete, or clear all hotspots.
-- **Persistence**: Your work is automatically saved in `localStorage` so you don't lose progress on refresh.
-- **Import/Export**: Easily import existing JSON data to continue editing.
+- **Visual Editing**: Drag to create, move, and reshape with handles.
+- **Shape Support**: Both simple rectangles and complex polygons.
+- **Dual Coordinates**: Calculates absolute pixels and responsive percentage values.
+- **Hit Testing**: Click anywhere inside a polygon to select it.
+- **Persistence**: Work is auto-saved in `localStorage`.
+- **Import/Export**: Supports both rect and polygon formats.
 
 ## Integration
-The "Game Array" tab in the Output area provides a simplified array format that can be pasted directly into `scenes.js` for the game loop.
+The "Game Array" tab provides a simplified format. Percent coordinates are relative to the 16:9 stage (0-100%).
 
 ### Sample JSON Format
 ```json
 {
-  "sceneId": "scene-01-old-pier",
-  "image": "scene-01-old-pier.webp",
-  "imageWidth": 1920,
-  "imageHeight": 1080,
-  "hotspots": [
-    {
-      "id": "toolbox",
-      "label": { "en": "Toolbox", "sv": "Verktygslåda" },
-      "shape": "rect",
-      "x": 210,
-      "y": 670,
-      "width": 180,
-      "height": 120,
-      "xPercent": 10.94,
-      "yPercent": 62.04,
-      "widthPercent": 9.38,
-      "heightPercent": 11.11
-    }
+  "id": "loose_plank",
+  "label": { "en": "Loose Plank", "sv": "Lös planka" },
+  "shape": "polygon",
+  "points": [
+    { "x": 345, "y": 605 },
+    { "x": 890, "y": 638 },
+    { "x": 885, "y": 742 },
+    { "x": 320, "y": 705 }
+  ],
+  "pointsPercent": [
+    { "x": 25.07, "y": 78.78 },
+    { "x": 64.68, "y": 83.07 },
+    { "x": 64.32, "y": 96.61 },
+    { "x": 23.26, "y": 91.80 }
   ]
 }
 ```
 
 ## Maintenance
 All adjustable parameters are marked with `INSTÄLLNING -` in the code for easy tweaking.
-- `HANDLE_SIZE`: Size of the drag handles.
-- `MIN_SIZE`: Minimum allowed width/height.
-- `DEFAULT_HOTSPOT_ID_PREFIX`: Prefix for auto-generated IDs.
+- `HANDLE_SIZE`: Size of the rect drag handles.
+- `POLYGON_POINT_RADIUS`: Size of the polygon vertex handles.
+- `POLYGON_FILL_ALPHA`: Opacity of the polygon fill.
 
 ---
 *Taren Internal Tools*
