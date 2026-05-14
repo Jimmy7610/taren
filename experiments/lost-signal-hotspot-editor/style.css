@@ -56,10 +56,31 @@ body {
     color: var(--accent);
 }
 
+.header-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
 .build-indicator {
     font-size: 0.7rem;
     opacity: 0.5;
     letter-spacing: 0.1em;
+}
+
+.status-indicator {
+    font-size: 0.7rem;
+    color: #ff9d00;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    animation: pulse-warn 2s infinite;
+}
+
+@keyframes pulse-warn {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }
 
 .header-actions {
@@ -217,15 +238,22 @@ body {
     stroke-dasharray: 4;
 }
 
+.status-message {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    min-height: 1.2em;
+}
+
 /* Footer info */
 .stage-footer {
     width: 100%;
     max-width: 1400px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-top: 1rem;
     font-size: 0.8rem;
-    opacity: 0.7;
 }
 
 /* Sidebar */
@@ -365,6 +393,12 @@ input:focus {
     color: #fff;
 }
 
+.btn-danger-hover:hover {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+
 .btn-tiny {
     font-size: 0.65rem;
     padding: 4px 8px;
@@ -456,6 +490,12 @@ input:focus {
 .modal h2 {
     font-family: 'Playfair Display', serif;
     margin-bottom: 1rem;
+}
+
+#modal-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
 }
 
 #import-area {

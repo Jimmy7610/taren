@@ -11,9 +11,13 @@
         <header class="editor-header">
             <div class="header-content">
                 <h1>Lost Signal Hotspot Editor</h1>
-                <div class="build-indicator">Build 124</div>
+                <div class="header-meta">
+                    <div class="build-indicator">Build 125</div>
+                    <div id="unsaved-indicator" class="status-indicator" style="display: none;">● Unsaved changes</div>
+                </div>
             </div>
             <nav class="header-actions">
+                <button id="btn-new-scene" class="btn btn-secondary btn-danger-hover">New Scene / Clear</button>
                 <button id="btn-load-image" class="btn btn-secondary">Load Image</button>
                 <input type="file" id="file-input" accept=".png,.jpg,.jpeg,.webp" style="display: none;">
                 <div class="preset-group">
@@ -40,6 +44,7 @@
                     </div>
                 </div>
                 <div class="stage-footer">
+                    <div id="status-message" class="status-message"></div>
                     <span id="coord-display">X: 0, Y: 0 (0%, 0%)</span>
                     <div class="view-controls">
                         <label><input type="checkbox" id="toggle-hotspots" checked> Show Hotspots</label>
@@ -142,8 +147,11 @@
         <!-- Modals -->
         <div id="modal-container" style="display: none;">
             <div class="modal">
-                <h2 id="modal-title">Import JSON</h2>
-                <textarea id="import-area" placeholder="Paste JSON here..."></textarea>
+                <h2 id="modal-title">Title</h2>
+                <div id="modal-body">
+                    <p id="modal-text"></p>
+                    <textarea id="import-area" style="display: none;" placeholder="Paste JSON here..."></textarea>
+                </div>
                 <div class="modal-actions">
                     <button id="btn-modal-cancel" class="btn btn-secondary">Cancel</button>
                     <button id="btn-modal-confirm" class="btn btn-primary">Confirm</button>

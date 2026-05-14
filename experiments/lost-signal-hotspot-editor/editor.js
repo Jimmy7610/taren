@@ -11,6 +11,8 @@ const SNAP_THRESHOLD = 5; // INSTÄLLNING - Snap to grid threshold (if implement
 const MIN_SIZE = 10; // INSTÄLLNING - Minimum width/height for a hotspot
 const DEFAULT_HOTSPOT_ID_PREFIX = 'hotspot_'; // INSTÄLLNING - Default prefix for new hotspots
 const SAVE_KEY = 'lost-signal-hotspot-session'; // INSTÄLLNING - LocalStorage key
+const UNSAVED_WARNING_ENABLED = true; // INSTÄLLNING - Enables warning before clearing unsaved work.
+const AUTO_HIDE_STATUS_MS = 4000; // INSTÄLLNING - How long to show status messages.
 
 // --- STATE ---
 let state = {
@@ -33,7 +35,8 @@ let state = {
     currentX: 0,
     currentY: 0,
     showHotspots: true,
-    showLabels: true
+    showLabels: true,
+    hasUnsavedChanges: false
 };
 
 // --- DOM ELEMENTS ---
@@ -54,8 +57,14 @@ const el = {
     hotspotList: document.getElementById('hotspot-list'),
     jsonOutput: document.getElementById('json-output'),
     modalContainer: document.getElementById('modal-container'),
+    modalTitle: document.getElementById('modal-title'),
+    modalText: document.getElementById('modal-text'),
     importArea: document.getElementById('import-area'),
-    polyControls: document.getElementById('poly-controls')
+    btnModalConfirm: document.getElementById('btn-modal-confirm'),
+    btnModalCancel: document.getElementById('btn-modal-cancel'),
+    polyControls: document.getElementById('poly-controls'),
+    unsavedIndicator: document.getElementById('unsaved-indicator'),
+    statusMessage: document.getElementById('status-message')
 };
 
 // --- INITIALIZATION ---
@@ -67,7 +76,31 @@ function init() {
 
 function bindEvents() {
     // Image Loading
-    el.btnLoadImage.onclick = () => el.fileInput.click();
+    // Image Loading
+    el.btnLoadImage.onclick = () => {
+        if (state.hotspots.length > 0) {
+            showModal({
+                title: { en: "Load New Image?", sv: "Ladda ny bild?" },
+                text: { 
+                    en: "You already have hotspots for the current image. Have you exported/saved them? Loading a new image can clear the current hotspots. Do you want to clear the hotspots and start fresh for the new image?",
+                    sv: "Du har redan hotspots för den nuvarande bilden. Har du exporterat/sparat dem? Om du laddar en ny bild kan nuvarande hotspots rensas. Vill du rensa hotspots och börja om på den nya bilden?"
+                },
+                confirmLabel: { en: "Clear and Load / Yes", sv: "Rensa och ladda / Ja" },
+                cancelLabel: { en: "Cancel / No", sv: "Avbryt / Nej" },
+                onConfirm: () => {
+                    el.fileInput.click();
+                },
+                onCancel: () => {
+                    showStatus({
+                        en: "Image load cancelled. Current hotspots kept.",
+                        sv: "Bildladdning avbröts. Nuvarande hotspots behålls."
+                    });
+                }
+            });
+        } else {
+            el.fileInput.click();
+        }
+    };
     el.fileInput.onchange = handleFileSelect;
 
     // Presets
@@ -101,6 +134,7 @@ function bindEvents() {
     // Sidebar Inputs
     el.sceneIdInput.oninput = (e) => {
         state.sceneId = e.target.value;
+        markUnsaved();
         saveSession();
         updateOutput();
     };
@@ -114,14 +148,39 @@ function bindEvents() {
     document.getElementById('hs-h').oninput = updateSelectedHotspot;
 
     // Buttons
+    document.getElementById('btn-new-scene').onclick = handleNewScene;
     document.getElementById('btn-duplicate').onclick = duplicateSelected;
     document.getElementById('btn-delete').onclick = deleteSelected;
-    document.getElementById('btn-copy').onclick = copyToClipboard;
-    document.getElementById('btn-download').onclick = downloadJSON;
-    document.getElementById('btn-clear').onclick = clearAll;
-    document.getElementById('btn-import').onclick = () => el.modalContainer.style.display = 'flex';
-    document.getElementById('btn-modal-cancel').onclick = () => el.modalContainer.style.display = 'none';
-    document.getElementById('btn-modal-confirm').onclick = handleImport;
+    document.getElementById('btn-copy').onclick = () => { copyToClipboard(); clearUnsaved(); };
+    document.getElementById('btn-download').onclick = () => { downloadJSON(); clearUnsaved(); };
+    document.getElementById('btn-clear').onclick = handleNewScene;
+    document.getElementById('btn-import').onclick = () => {
+        if (state.hotspots.length > 0) {
+            showModal({
+                title: { en: "Import JSON", sv: "Importera JSON" },
+                text: { 
+                    en: "Importing JSON will replace the current hotspots. Have you exported/saved your current work?",
+                    sv: "Import av JSON ersätter nuvarande hotspots. Har du exporterat/sparat ditt nuvarande arbete?"
+                },
+                confirmLabel: { en: "Replace / Ersätt", sv: "Ersätt / Ja" },
+                onConfirm: () => {
+                    showImportModal();
+                }
+            });
+        } else {
+            showImportModal();
+        }
+    };
+    el.btnModalCancel.onclick = closeModal;
+    el.btnModalConfirm.onclick = () => {
+        if (el.btnModalConfirm.dataset.action === 'import') {
+            handleImport();
+        } else if (el.btnModalConfirm.dataset.action === 'confirm') {
+            const callback = el.btnModalConfirm._callback;
+            closeModal();
+            if (callback) callback();
+        }
+    };
 
     // Toggles
     document.getElementById('toggle-hotspots').onchange = (e) => {
@@ -139,18 +198,32 @@ function bindEvents() {
         
         if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
         if (e.key === 'Escape') {
-            if (state.isDrawing && state.activeShapeMode === 'polygon') {
+            if (el.modalContainer.style.display === 'flex') {
+                closeModal();
+            } else if (state.isDrawing && state.activeShapeMode === 'polygon') {
                 cancelPolygon();
             } else {
                 selectHotspot(null);
             }
         }
         if (e.key === 'Enter') {
-            if (state.isDrawing && state.activeShapeMode === 'polygon') finishPolygon();
+            if (el.modalContainer.style.display === 'flex') {
+                el.btnModalConfirm.click();
+            } else if (state.isDrawing && state.activeShapeMode === 'polygon') {
+                finishPolygon();
+            }
         }
         if (e.key === 'd' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
             duplicateSelected();
+        }
+    };
+
+    // Unload Warning
+    window.onbeforeunload = (e) => {
+        if (UNSAVED_WARNING_ENABLED && state.hasUnsavedChanges) {
+            e.preventDefault();
+            e.returnValue = '';
         }
     };
 
@@ -169,6 +242,11 @@ function handleFileSelect(e) {
     const file = e.target.files[0];
     if (!file) return;
 
+    // If confirmation happened, we clear current work
+    state.hotspots = [];
+    state.selectedId = null;
+    cancelPolygon();
+
     state.imageName = file.name;
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -181,6 +259,13 @@ function handleFileSelect(e) {
             state.imageHeight = el.img.naturalHeight;
             el.infoFilename.innerText = state.imageName;
             el.infoRes.innerText = `${state.imageWidth} x ${state.imageHeight}`;
+            
+            showStatus({
+                en: "New image loaded. Hotspots cleared.",
+                sv: "Ny bild laddad. Hotspots rensade."
+            });
+            
+            markUnsaved(); // New image is a change
             saveSession();
             updateOutput();
             renderHotspots();
@@ -281,6 +366,7 @@ function handleMouseMove(e) {
         if (hs && hs.shape === 'polygon') {
             hs.pointsPercent[state.vertexIndex] = coords;
             syncHotspotFromPercent(hs);
+            markUnsaved();
             updateUI();
             renderHotspots();
         }
@@ -299,6 +385,7 @@ function handleMouseMove(e) {
         state.startX = coords.x;
         state.startY = coords.y;
         syncHotspotFromPercent(hs);
+        markUnsaved();
         updateUI();
         renderHotspots();
     } else if (state.isResizing && state.selectedId) {
@@ -327,6 +414,7 @@ function handleMouseMove(e) {
         state.startX = coords.x;
         state.startY = coords.y;
         syncHotspotFromPercent(hs);
+        markUnsaved();
         updateUI();
         renderHotspots();
     }
@@ -352,6 +440,7 @@ function handleMouseUp() {
             };
             syncHotspotFromPercent(newHs);
             state.hotspots.push(newHs);
+            markUnsaved();
             selectHotspot(newId);
         }
         state.isDrawing = false;
@@ -384,6 +473,7 @@ function finishPolygon() {
     state.hotspots.push(newHs);
     state.isDrawing = false;
     state.currentPolygonPoints = [];
+    markUnsaved();
     selectHotspot(newId);
     saveSession();
     updateOutput();
@@ -663,6 +753,7 @@ function updateSelectedHotspot() {
         hs.points = hs.points.map(p => ({ x: p.x + dx, y: p.y + dy }));
     }
 
+    markUnsaved();
     syncHotspotFromPixels(hs);
     renderHotspots();
     saveSession();
@@ -683,19 +774,39 @@ function duplicateSelected() {
     }
     syncHotspotFromPercent(newHs);
     state.hotspots.push(newHs);
+    markUnsaved();
     selectHotspot(newHs.id);
 }
 
 function deleteSelected() {
     state.hotspots = state.hotspots.filter(h => h.id !== state.selectedId);
+    markUnsaved();
     selectHotspot(null);
     updateOutput();
 }
 
-function clearAll() {
-    if (confirm('Clear all hotspots?')) {
+function handleNewScene() {
+    if (state.hotspots.length > 0) {
+        showModal({
+            title: { en: "New Scene / Clear", sv: "Ny scen / Rensa" },
+            text: { 
+                en: "This will clear all current hotspots. Make sure you have exported your JSON first. Continue?",
+                sv: "Detta rensar alla nuvarande hotspots. Kontrollera att du har exporterat din JSON först. Fortsätta?"
+            },
+            confirmLabel: { en: "Clear All / Ja", sv: "Rensa alla / Ja" },
+            onConfirm: () => {
+                state.hotspots = [];
+                selectHotspot(null);
+                cancelPolygon();
+                markUnsaved();
+                updateOutput();
+            }
+        });
+    } else {
+        // Already empty, just make sure state is reset
         state.hotspots = [];
         selectHotspot(null);
+        cancelPolygon();
         updateOutput();
     }
 }
@@ -798,11 +909,77 @@ function handleImport() {
             });
             state.hotspots.forEach(syncHotspotFromPercent);
         }
-        el.modalContainer.style.display = 'none';
-        updateUI();
+        
+        closeModal();
+        markUnsaved();
+        selectHotspot(null);
+        saveSession();
+        updateOutput();
+        renderHotspots();
+
+        showStatus({
+            en: "JSON imported successfully.",
+            sv: "JSON importerad."
+        });
     } catch (e) {
-        alert('Invalid JSON format');
+        alert("Invalid JSON format.");
     }
+}
+
+// --- UI HELPERS ---
+function showModal({ title, text, onConfirm, onCancel, confirmLabel, cancelLabel }) {
+    el.modalTitle.innerText = title.en;
+    el.modalText.innerText = text.en;
+    el.modalText.style.display = 'block';
+    el.importArea.style.display = 'none';
+    
+    el.btnModalConfirm.innerText = confirmLabel ? confirmLabel.en : "Confirm";
+    el.btnModalCancel.innerText = cancelLabel ? cancelLabel.en : "Cancel";
+    
+    el.btnModalConfirm.dataset.action = 'confirm';
+    el.btnModalConfirm._callback = onConfirm;
+    el.btnModalCancel.onclick = () => {
+        closeModal();
+        if (onCancel) onCancel();
+    };
+    
+    el.modalContainer.style.display = 'flex';
+}
+
+function showImportModal() {
+    el.modalTitle.innerText = "Import JSON";
+    el.modalText.style.display = 'none';
+    el.importArea.style.display = 'block';
+    el.importArea.value = '';
+    
+    el.btnModalConfirm.innerText = "Import";
+    el.btnModalCancel.innerText = "Cancel";
+    el.btnModalConfirm.dataset.action = 'import';
+    
+    el.modalContainer.style.display = 'flex';
+}
+
+function closeModal() {
+    el.modalContainer.style.display = 'none';
+}
+
+function markUnsaved() {
+    state.hasUnsavedChanges = true;
+    el.unsavedIndicator.style.display = 'block';
+}
+
+function clearUnsaved() {
+    state.hasUnsavedChanges = false;
+    el.unsavedIndicator.style.display = 'none';
+}
+
+function showStatus(msg) {
+    el.statusMessage.innerText = msg.en;
+    setTimeout(() => {
+        if (el.statusMessage.innerText === msg.en) {
+            el.statusMessage.innerText = '';
+        }
+    }, AUTO_HIDE_STATUS_MS);
 }
 
 function saveSession() {

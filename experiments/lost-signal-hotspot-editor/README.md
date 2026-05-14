@@ -27,7 +27,16 @@ This tool allows Jimmy to load scene background images and visually define recta
 4. **Edit details**: Select a hotspot to rename its ID, adjust labels (English/Swedish), or fine-tune its position in the sidebar.
 5. **Export**: Copy the JSON from the "Output" area or download it as a file.
 
+## Starting a new scene safely
+To prevent accidental data loss, the editor includes several safety features:
+- **Export first**: Always export or download your JSON before loading a new image or starting a new scene.
+- **Confirmation dialogs**: The editor will ask for confirmation before clearing existing hotspots when you load a new image or import JSON. Choosing **No** keeps your current work.
+- **New Scene / Clear**: Use the "New Scene / Clear" button in the header to start fresh. This will clear all hotspots but keep the current image.
+- **Unsaved changes indicator**: A small "● Unsaved changes" indicator appears in the header when you have made modifications. It clears after you click **Copy** or **Download**.
+- **Browser protection**: If you have unsaved changes, the browser will warn you before you reload or close the page.
+
 ## Features
+- **Project Safety**: Confirmation dialogs and unsaved work indicators to prevent data loss.
 - **Visual Editing**: Drag to create, move, and reshape with handles.
 - **Shape Support**: Both simple rectangles and complex polygons.
 - **Dual Coordinates**: Calculates absolute pixels and responsive percentage values.
