@@ -28,6 +28,7 @@ class LostSignal {
             viewport: document.getElementById('scene-viewport'),
             container: document.getElementById('scene-container'),
             hotspots: document.getElementById('hotspot-layer'),
+            svg: document.getElementById('hotspot-svg'),
             dialogue: document.getElementById('dialogue-text'),
             inventory: document.getElementById('inventory-bar'),
             objective: document.getElementById('current-objective'),
@@ -63,7 +64,7 @@ class LostSignal {
         
         // Background click to clear dialogue
         this.ui.viewport.addEventListener('click', (e) => {
-            if (e.target === this.ui.viewport || e.target === this.ui.container) {
+            if (e.target === this.ui.viewport || e.target === this.ui.container || e.target === this.ui.svg) {
                 this.clearDialogue();
             }
         });
@@ -71,7 +72,7 @@ class LostSignal {
 
     renderScene() {
         const scene = scenes[this.state.currentScene];
-        this.ui.sceneTitle.innerText = scene.name[this.state.language];
+        this.ui.sceneTitle.innerText = this.getLocalizedText(scene.name);
         
         // INSTÄLLNING - Scenövergång och fallbacks
         this.ui.container.className = ''; // Reset classes
@@ -97,38 +98,99 @@ class LostSignal {
         
         // Render Hotspots
         this.ui.hotspots.innerHTML = '';
+        this.ui.svg.innerHTML = '';
+
         scene.hotspots.forEach(hs => {
-            const el = document.createElement('div');
-            el.className = 'hotspot';
-            el.style.left = `${hs.x}%`;
-            el.style.top = `${hs.y}%`;
-            el.style.width = `${hs.w}%`;
-            el.style.height = `${hs.h}%`;
-            el.setAttribute('tabindex', '0'); // För tillgänglighet och focus-styling
-            
-            const label = document.createElement('span');
-            label.className = 'hotspot-label';
-            label.innerText = hs.name[this.state.language];
-            el.appendChild(label);
-
-            el.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.handleHotspot(hs);
-            });
-
-            // Enter key support for hotspots
-            el.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.handleHotspot(hs);
-                }
-            });
-            
-            this.ui.hotspots.appendChild(el);
+            if (hs.shape === 'polygon') {
+                this.renderPolygonHotspot(hs);
+            } else {
+                this.renderRectHotspot(hs);
+            }
         });
 
-        this.showText(scene.description[this.state.language]);
+        this.showText(scene.description);
         setTimeout(() => this.ui.container.classList.remove('scene-fade-in'), this.config.fadeTime);
+    }
+
+    renderRectHotspot(hs) {
+        const el = document.createElement('div');
+        el.className = 'hotspot';
+        el.style.left = `${hs.x}%`;
+        el.style.top = `${hs.y}%`;
+        el.style.width = `${hs.w}%`;
+        el.style.height = `${hs.h}%`;
+        el.setAttribute('tabindex', '0');
+        
+        const label = document.createElement('span');
+        label.className = 'hotspot-label';
+        label.innerText = this.getLocalizedText(hs.name);
+        el.appendChild(label);
+
+        el.onclick = (e) => {
+            e.stopPropagation();
+            this.handleHotspot(hs);
+        };
+
+        el.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.handleHotspot(hs);
+            }
+        };
+        
+        this.ui.hotspots.appendChild(el);
+    }
+
+    renderPolygonHotspot(hs) {
+        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        poly.classList.add('hotspot-poly');
+        
+        const pointsStr = hs.pointsPercent.map(p => `${p.x},${p.y}`).join(' ');
+        poly.setAttribute('points', pointsStr);
+        
+        poly.onclick = (e) => {
+            e.stopPropagation();
+            this.handleHotspot(hs);
+        };
+
+        // Add label div (polygons also need names on hover)
+        const labelTrigger = document.createElement('div');
+        labelTrigger.className = 'hotspot polygon-label-trigger';
+        // Position trigger at first point for simplicity
+        const p1 = hs.pointsPercent[0];
+        labelTrigger.style.left = `${p1.x}%`;
+        labelTrigger.style.top = `${p1.y}%`;
+        labelTrigger.style.width = '1px';
+        labelTrigger.style.height = '1px';
+        labelTrigger.style.pointerEvents = 'none'; // Only for visual label
+
+        const label = document.createElement('span');
+        label.className = 'hotspot-label';
+        label.innerText = this.getLocalizedText(hs.name);
+        labelTrigger.appendChild(label);
+        
+        // Sync hover state between poly and label
+        poly.onmouseenter = () => label.style.opacity = '1';
+        poly.onmouseleave = () => label.style.opacity = '0';
+
+        this.ui.svg.appendChild(poly);
+        this.ui.hotspots.appendChild(labelTrigger);
+    }
+
+    /**
+     * INSTÄLLNING - Point-in-Polygon hit testing algorithm (Ray-casting)
+     * Used for mouse/touch clicks on irregular shapes.
+     */
+    isPointInPolygon(point, polygon) {
+        const x = point.x, y = point.y;
+        let inside = false;
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            const xi = polygon[i].x, yi = polygon[i].y;
+            const xj = polygon[j].x, yj = polygon[j].y;
+            const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
     }
 
     handleHotspot(hs) {
@@ -151,9 +213,12 @@ class LostSignal {
             if (act.action === 'pickup') {
                 if (this.checkCondition(act.condition)) {
                     this.pickupItem(act.itemId);
-                    this.showText(act.success[this.state.language]);
+                    this.showText(act.success);
                 } else {
-                    this.showText(this.state.language === 'en' ? "There's nothing left here." : "Det finns inget kvar här.");
+                    this.showText({
+                        en: "There's nothing left here.",
+                        sv: "Det finns inget kvar här."
+                    });
                 }
                 return;
             }
@@ -164,35 +229,41 @@ class LostSignal {
             }
 
             if (act.action === 'dialogue') {
-                this.showText(act.text[this.state.language]);
+                this.showText(act.text);
                 return;
             }
             
             if (act.action === 'funny_button') {
-                const lines = this.state.language === 'en' ? [
-                    "The button appears to know exactly how interesting it is.",
-                    "Not yet. Especially not because you want to.",
-                    "This is precisely the sort of behavior the warning label was trying to prevent."
-                ] : [
-                    "Knappen verkar veta exakt hur intressant den är.",
-                    "Inte än. Särskilt inte bara för att du vill det.",
-                    "Det här är precis den sortens beteende som varningsskylten försökte förhindra."
+                const lines = [
+                    {
+                        en: "The button appears to know exactly how interesting it is.",
+                        sv: "Knappen verkar veta exakt hur intressant den är."
+                    },
+                    {
+                        en: "Not yet. Especially not because you want to.",
+                        sv: "Inte än. Särskilt inte bara för att du vill det."
+                    },
+                    {
+                        en: "This is precisely the sort of behavior the warning label was trying to prevent.",
+                        sv: "Det här är precis den sortens beteende som varningsskylten försökte förhindra."
+                    }
                 ];
                 this.showText(lines[Math.floor(Math.random() * lines.length)]);
                 return;
             }
 
             if (act.action === 'printer_output') {
-                this.showText(this.state.language === 'en' ? 
-                    "SIGNAL FRAGMENT 01\nSOURCE: NOT SEA\nSOURCE: NOT SKY\nSOURCE: HERE" : 
-                    "SIGNALFRAGMENT 01\nKÄLLA: EJ HAV\nKÄLLA: EJ HIMMEL\nKÄLLA: HÄR");
+                this.showText({
+                    en: "SIGNAL FRAGMENT 01\nSOURCE: NOT SEA\nSOURCE: NOT SKY\nSOURCE: HERE",
+                    sv: "SIGNALFRAGMENT 01\nKÄLLA: EJ HAV\nKÄLLA: EJ HIMMEL\nKÄLLA: HÄR"
+                });
                 return;
             }
         }
 
         // Fallback to look
         if (hs.look) {
-            this.showText(hs.look[this.state.language]);
+            this.showText(hs.look);
         }
     }
 
@@ -225,23 +296,31 @@ class LostSignal {
             if (itemId === 'clean_fuse') {
                 this.state.flags.fuse_inserted = true;
                 this.removeItem('clean_fuse');
-                this.showText(this.state.language === 'en' ? 
-                    "The clean fuse fits perfectly. The box looks slightly less judgmental now." : 
-                    "Den rena säkringen passar perfekt. Boxen ser något mindre dömande ut nu.");
+                this.showText({
+                    en: "The clean fuse fits perfectly. The box looks slightly less judgmental now.",
+                    sv: "Den rena säkringen passar perfekt. Boxen ser något mindre dömande ut nu."
+                });
                 this.saveState();
                 return;
             }
             if (itemId === 'rusty_fuse') {
-                this.showText(this.state.language === 'en' ? 
-                    "The fuse is too rusty to make a connection. It needs a good scrub." : 
-                    "Säkringen är för rostig för att få kontakt. Den behöver skrubbas ordentligt.");
+                this.showText({
+                    en: "The fuse is too rusty to make a connection. It needs a good scrub.",
+                    sv: "Säkringen är för rostig för att få kontakt. Den behöver skrubbas ordentligt."
+                });
                 return;
             }
         }
 
-        this.showText(this.state.language === 'en' ? 
-            "Bold idea. Not a good idea, but definitely bold." : 
-            "Djärv idé. Ingen bra idé, men definitivt djärv.");
+        const wrongItemLines = [
+            { en: "Bold idea. Not a good idea, but definitely bold.", sv: "Djärv idé. Inte en bra idé, men definitivt djärv." },
+            { en: "Taren considers this for a moment and then politely declines.", sv: "Taren överväger detta en stund och tackar sedan artigt nej." },
+            { en: "That would solve a different problem in a much stranger game.", sv: "Det där skulle lösa ett annat problem i ett betydligt konstigare spel." },
+            { en: "The item and the idea refuse to be seen together.", sv: "Föremålet och idén vägrar att synas tillsammans." },
+            { en: "A rust spot nearby seems embarrassed on your behalf.", sv: "En rostfläck i närheten verkar skämmas å dina vägnar." }
+        ];
+
+        this.showText(wrongItemLines[Math.floor(Math.random() * wrongItemLines.length)]);
         
         this.state.selectedItem = null;
         this.updateInventory();
@@ -249,9 +328,10 @@ class LostSignal {
 
     handleFuseBox() {
         if (!this.state.flags.fuse_inserted) {
-            this.showText(this.state.language === 'en' ? 
-                "The fuse box is empty. It's waiting for someone to do their job." : 
-                "Säkringsboxen är tom. Den väntar på att någon ska göra sitt jobb.");
+            this.showText({
+                en: "The fuse box is empty. It's waiting for someone to do their job.",
+                sv: "Säkringsboxen är tom. Den väntar på att någon ska göra sitt jobb."
+            });
             return;
         }
 
@@ -260,13 +340,15 @@ class LostSignal {
         idx = (idx + 1) % states.length;
         this.state.flags.lever_state = states[idx];
         
-        let msg = `${this.state.language === 'en' ? 'Lever set to' : 'Spak inställd på'}: ${this.state.flags.lever_state}`;
+        let msg = {
+            en: `Lever set to: ${this.state.flags.lever_state}`,
+            sv: `Spak inställd på: ${this.state.flags.lever_state}`
+        };
         
         if (this.state.flags.lever_state === 'ON' && this.state.flags.fuse_inserted) {
             this.state.flags.station_awake = true;
-            msg += `\n\n${this.state.language === 'en' ? 
-                "The station wakes with the sound of an old friend reluctantly admitting it was asleep." : 
-                "Stationen vaknar med ljudet av en gammal vän som motvilligt erkänner att den sov."}`;
+            msg.en += "\n\nThe station wakes with the sound of an old friend reluctantly admitting it was asleep.";
+            msg.sv += "\n\nStationen vaknar med ljudet av en gammal vän som motvilligt erkänner att den sov.";
             this.updateObjective();
             this.applyWorldChanges();
         }
@@ -290,8 +372,25 @@ class LostSignal {
         }
     }
 
-    showText(text) {
+    /**
+     * INSTÄLLNING - Robust Localization Helper
+     * Handles plain strings, {en, sv} objects, and missing translations.
+     */
+    getLocalizedText(data, lang = this.state.language) {
+        if (!data) return '';
+        if (typeof data === 'string') return data;
+        
+        // Handle { en, sv } objects
+        if (lang === 'sv') {
+            return data.sv || data.en || '';
+        }
+        return data.en || data.sv || '';
+    }
+
+    showText(data) {
+        const text = this.getLocalizedText(data);
         if (!text) return;
+        
         this.ui.dialogue.textContent = '';
         let i = 0;
         const type = () => {
@@ -314,7 +413,7 @@ class LostSignal {
             const item = items[itemId];
             const el = document.createElement('div');
             el.className = `inventory-item ${this.state.selectedItem === itemId ? 'selected' : ''}`;
-            el.innerHTML = `<span class="item-name">${item.name[this.state.language]}</span>`;
+            el.innerHTML = `<span class="item-name">${this.getLocalizedText(item.name)}</span>`;
             
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -333,9 +432,10 @@ class LostSignal {
                 this.removeItem('rusty_fuse');
                 this.state.inventory.push('clean_fuse');
                 this.state.flags.fuse_cleaned = true;
-                this.showText(this.state.language === 'en' ? 
-                    "You scrub the fuse. It's still a fuse, but now it's a fuse with a brighter future." : 
-                    "Du skrubbar säkringen. Det är fortfarande en säkring, men nu är det en säkring med en ljusare framtid.");
+                this.showText({
+                    en: "You scrub the fuse. It's still a fuse, but now it's a fuse with a brighter future.",
+                    sv: "Du skrubbar säkringen. Det är fortfarande en säkring, men nu är det en säkring med en ljusare framtid."
+                });
                 this.updateInventory();
                 this.saveState();
             };
@@ -349,7 +449,7 @@ class LostSignal {
         } else {
             this.state.selectedItem = itemId;
             const item = items[itemId];
-            this.showText(item.description[this.state.language]);
+            this.showText(item.description);
         }
         this.updateInventory();
     }
@@ -362,9 +462,15 @@ class LostSignal {
 
     updateObjective() {
         if (this.state.flags.station_awake) {
-            this.ui.objective.innerText = this.state.language === 'en' ? "Explore the station." : "Utforska stationen.";
+            this.ui.objective.innerText = this.getLocalizedText({
+                en: "Explore the station.",
+                sv: "Utforska stationen."
+            });
         } else {
-            this.ui.objective.innerText = this.state.language === 'en' ? "Restore power to the station." : "Återställ strömmen till stationen.";
+            this.ui.objective.innerText = this.getLocalizedText({
+                en: "Restore power to the station.",
+                sv: "Återställ strömmen till stationen."
+            });
         }
     }
 
