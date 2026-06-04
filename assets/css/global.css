@@ -914,3 +914,23 @@ canvas {
     margin-right: 4px;
 }
 .geo-faq-list { margin-top: 8px; }
+
+/* Subtler metadata/footer integration */
+.geo-footer-note {
+    opacity: 0.6;
+    max-width: 640px;
+    margin: 1.5rem auto 0 auto;
+    text-align: center;
+    transition: opacity 0.3s ease;
+}
+.geo-footer-note:hover {
+    opacity: 1;
+}
+.geo-footer-note .geo-title,
+.geo-footer-note .geo-text {
+    text-align: center;
+}
+.geo-footer-note .geo-list,
+.geo-footer-note .geo-dl {
+    justify-content: center;
+}
