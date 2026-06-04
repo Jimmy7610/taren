@@ -93,3 +93,20 @@
 /* Memory Drift Overlay specific overrides */
 .overlay-title { font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-4); }
 #finalScoreDisplay { font-size: 1.125rem; color: var(--text-muted); margin-bottom: var(--spacing-5); }
+
+
+/* INSTÄLLNING - Global Mobile Fallback Fix */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+}
+@media (max-width: 800px) {
+    canvas, .game-canvas, #game-container, #game-stage, #app {
+        max-width: 100% !important;
+        height: auto;
+    }
+    .panel, .sidebar, .menu, #ui, #overlay {
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+}

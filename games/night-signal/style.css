@@ -89,3 +89,20 @@
 .overlay-title { font-size: 1.75rem; margin-bottom: 0.5rem; }
 .overlay-desc { color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem; max-width: 240px; }
 .instruction-text { font-size: 0.875rem; color: var(--text-muted); }
+
+
+/* INSTÄLLNING - Global Mobile Fallback Fix */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+}
+@media (max-width: 800px) {
+    canvas, .game-canvas, #game-container, #game-stage, #app {
+        max-width: 100% !important;
+        height: auto;
+    }
+    .panel, .sidebar, .menu, #ui, #overlay {
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+}

@@ -52,36 +52,38 @@ This document defines the official Taren mobile standard for games. All new game
 - Do not base coordinates on the raw window/document size.
 - Avoid `background-size: cover` if it breaks hotspot alignment on extreme aspect ratios; prefer a stable 16:9 scene stage with letterboxing if necessary.
 
-## 6. Games requiring follow-up mobile fixes
-The following classic games were built prior to the Taren Mobile Standard and need to be audited and updated to use `game-shell.css`:
-- Lumen Coil
-- Echo Miner
-- Signal Breach
-- Void Runner
-- Neon Drift
-- Aether Hook
-- Crystal Guard
-- Pulse Edge
-- Vapor Sky
-- Binary Ghost
-- Star Forge
-- Iron Tide
-- Amber Pulse
-- Neon Strike
-- Echo Core
-- Solar Wind
-- Void Prism
-- Shadow Link
-- Quantum Gate
-- Aura Peak
-- Cinder Path
-- Night Signal
-- Echo Veil
-- Hollow Path
+## 6. Games with Mobile Fixes (Build 129)
+The following 25 classic games have received a global mobile playability pass. They have been injected with `<meta name="viewport">` and a global fallback CSS rule ensuring horizontal overflow is prevented and canvases scale to fit the screen.
 
-**What needs to be done:**
-- Ensure `<meta name="viewport" content="width=device-width, initial-scale=1.0">` is present.
-- Apply `taren-game-page` to `body` or main wrapper.
-- Wrap the main game canvas/scene in `taren-game-stage` so it maintains aspect ratio.
-- Replace any hardcoded absolute positioning of debug panels with `taren-game-sidebar` or standard collapsible elements.
-- Verify `touch` controls work instead of relying solely on WASD/Arrow keys.
+- Ashveil
+- Coreloom
+- Crosshush
+- Echo Hollow
+- Echo Veil
+- Fourfold
+- Hollow Path
+- Linebound
+- Lost Signal (Pass - Fully Updated)
+- Lumen Coil
+- Lumen Sequence
+- Memory Drift
+- Night Array
+- Night Signal
+- Nightcoil
+- Pulse Duel
+- Pulseframe
+- Shardrift
+- Signal Keeper
+- Signal Lost
+- Static Bloom
+- Tetrafall
+- Veil Patience
+- Void Runner
+- Voidbreaker
+
+*(Note: Stale references to missing games like Echo Miner have been removed.)*
+
+**Status:**
+Most games are in **PARTIAL** status. They are now playable on mobile (responsive canvas, no horizontal scroll, viewport defined) but may still use desktop-first design patterns rather than the native `game-shell.css` standard.
+
+Future games MUST be built mobile-first using the Taren Game Mobile Standard.

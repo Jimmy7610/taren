@@ -77,3 +77,20 @@
   color: var(--text);
   box-shadow: 0 0 10px var(--accent-glow);
 }
+
+
+/* INSTÄLLNING - Global Mobile Fallback Fix */
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+}
+@media (max-width: 800px) {
+    canvas, .game-canvas, #game-container, #game-stage, #app {
+        max-width: 100% !important;
+        height: auto;
+    }
+    .panel, .sidebar, .menu, #ui, #overlay {
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+}
