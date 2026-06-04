@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,42 @@
     <link rel="stylesheet" href="/assets/css/global.css">
     <link rel="stylesheet" href="./style.css">
     <script src="/assets/js/build.js" defer></script>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://taren.se/#person-jimmy-eliasson",
+          "name": "Jimmy Eliasson"
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://taren.se/#organization",
+          "name": "Taren",
+          "url": "https://taren.se/"
+        },
+        {
+          "@type": "VideoGame",
+          "@id": "https://taren.se/games/ashveil/#videogame",
+          "url": "https://taren.se/games/ashveil/",
+          "name": "Ashveil",
+          "description": "Clear the field without waking what lies below. A logic puzzle browser game.",
+          "applicationCategory": "Game",
+          "gamePlatform": "Web Browser",
+          "operatingSystem": "Any",
+          "creator": {
+            "@id": "https://taren.se/#person-jimmy-eliasson"
+          },
+          "publisher": {
+            "@id": "https://taren.se/#organization"
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <nav class="navbar fade-in-up">

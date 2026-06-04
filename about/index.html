@@ -9,6 +9,41 @@
     <link rel="stylesheet" href="/assets/css/global.css">
     <script src="/assets/js/build.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://taren.se/#person-jimmy-eliasson",
+          "name": "Jimmy Eliasson",
+          "url": "https://taren.se/about/",
+          "description": "Creator of Taren, a personal vibe-coded test project for browser games and experiments."
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://taren.se/#organization",
+          "name": "Taren",
+          "url": "https://taren.se/",
+          "founder": {
+            "@id": "https://taren.se/#person-jimmy-eliasson"
+          }
+        },
+        {
+          "@type": "AboutPage",
+          "@id": "https://taren.se/about/#webpage",
+          "url": "https://taren.se/about/",
+          "name": "About Taren",
+          "description": "About Taren, a personal vibe-coded test project by Jimmy Eliasson for browser games, experiments and playful ideas.",
+          "about": {
+            "@id": "https://taren.se/#person-jimmy-eliasson"
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <nav class="navbar fade-in-up">

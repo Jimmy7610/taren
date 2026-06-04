@@ -9,6 +9,39 @@
     <link rel="stylesheet" href="/assets/css/global.css">
     <script src="/assets/js/build.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://taren.se/#person-jimmy-eliasson",
+          "name": "Jimmy Eliasson"
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://taren.se/#organization",
+          "name": "Taren",
+          "url": "https://taren.se/",
+          "founder": {
+            "@id": "https://taren.se/#person-jimmy-eliasson"
+          }
+        },
+        {
+          "@type": "CollectionPage",
+          "@id": "https://taren.se/games/#webpage",
+          "url": "https://taren.se/games/",
+          "name": "Taren Games",
+          "description": "Explore 25 small playable games and browser experiments from the Taren project.",
+          "publisher": {
+            "@id": "https://taren.se/#organization"
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <nav class="navbar fade-in-up">

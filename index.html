@@ -21,6 +21,41 @@
     <link rel="stylesheet" href="/assets/css/global.css">
     <script src="/assets/js/build.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
+    
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://taren.se/#person-jimmy-eliasson",
+          "name": "Jimmy Eliasson",
+          "url": "https://taren.se/about/"
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://taren.se/#organization",
+          "name": "Taren",
+          "url": "https://taren.se/",
+          "description": "A calm digital place for small strange games, playful ideas and experiments.",
+          "founder": {
+            "@id": "https://taren.se/#person-jimmy-eliasson"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://taren.se/#website",
+          "url": "https://taren.se/",
+          "name": "Taren",
+          "description": "Taren is a living test project by Jimmy Eliasson — a calm digital place for small strange games, playful ideas and experiments.",
+          "publisher": {
+            "@id": "https://taren.se/#organization"
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <nav class="navbar fade-in-up">
