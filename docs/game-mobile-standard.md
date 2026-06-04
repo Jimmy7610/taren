@@ -4,6 +4,8 @@ This document defines the official Taren mobile standard for games. All new game
 
 ## 1. Core Rules
 - **Playability First:** Every game must be playable on mobile devices.
+- **Clear App States:** Games must have clear `is-start`, `is-playing`, and `is-focus-mode` states managed via body/wrapper classes.
+- **Start Screen Overlays:** Start/menu overlays must be completely removed from the interaction layer after gameplay begins. Hidden overlays must use `display: none` or `pointer-events: none` and must not intercept taps.
 - **Touch Support:** Every game must support touch controls natively (minimum touch target size ~44px).
 - **Unobstructed View:** No permanent sidebar may cover or shrink the game area on small screens.
 - **Collapsible UI:** On mobile, side panels (inventory, debug, settings) must collapse into bottom sheets, drawers, tabs, or modal panels.

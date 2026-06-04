@@ -54,8 +54,13 @@ class LostSignal {
 
     bindEvents() {
         document.getElementById('start-btn')?.addEventListener('click', () => {
+            document.body.classList.remove('is-start');
+            document.body.classList.add('is-playing');
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-ui').classList.remove('hidden');
+            
+            // On mobile, ensure the scene is scrolled into view immediately
+            window.scrollTo(0, 0);
         });
 
         document.getElementById('reset-btn')?.addEventListener('click', () => this.resetGame());
@@ -485,11 +490,12 @@ class LostSignal {
 
     toggleTheme() {
         this.state.theme = this.state.theme === 'dark' ? 'light' : 'dark';
-        document.body.className = this.state.theme + '-mode taren-game-page';
+        document.body.className = `${this.state.theme}-mode taren-game-page ${document.body.classList.contains('is-start') ? 'is-start' : ''} ${document.body.classList.contains('is-playing') ? 'is-playing' : ''} ${document.body.classList.contains('is-focus-mode') ? 'is-focus-mode' : ''}`;
         localStorage.setItem('taren_theme', this.state.theme);
     }
 
     toggleFocus() {
+        document.body.classList.toggle('is-focus-mode');
         const shell = document.getElementById('game-ui');
         if (shell) {
             shell.classList.toggle('focus-mode');
@@ -502,14 +508,28 @@ class LostSignal {
 
     loadState() {
         const saved = localStorage.getItem('lost_signal_state');
+        let hasSavedGame = false;
         if (saved) {
             const parsed = JSON.parse(saved);
             this.state.inventory = parsed.inventory || [];
             this.state.flags = parsed.flags || this.state.flags;
             this.state.currentScene = parsed.currentScene || 'pier';
             this.applyWorldChanges();
+            hasSavedGame = true;
         }
-        document.body.className = this.state.theme + '-mode taren-game-page';
+        
+        // Preserve standard classes, including state
+        const isStart = document.body.classList.contains('is-start') ? 'is-start' : '';
+        const isPlaying = document.body.classList.contains('is-playing') ? 'is-playing' : '';
+        const isFocus = document.body.classList.contains('is-focus-mode') ? 'is-focus-mode' : '';
+        
+        document.body.className = `${this.state.theme}-mode taren-game-page ${isStart} ${isPlaying} ${isFocus}`;
+        
+        // If there's a saved game, we could automatically skip start screen or change button text
+        if (hasSavedGame) {
+            const btn = document.getElementById('start-btn');
+            if (btn) btn.innerText = this.state.language === 'sv' ? "Fortsätt Expedition" : "Resume Expedition";
+        }
     }
 
     resetGame() {

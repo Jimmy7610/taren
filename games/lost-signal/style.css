@@ -43,13 +43,25 @@ body.light-mode {
 
 #game-wrapper {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
+}
+
+@media (max-width: 1000px) {
+    #game-wrapper {
+        padding: 0;
+        height: auto;
+        min-height: 100svh;
+    }
+    
+    body {
+        align-items: flex-start;
+    }
 }
 
 /* Build Box */
@@ -82,8 +94,17 @@ body.light-mode {
     text-align: center;
 }
 
-.overlay.hidden {
-    display: none;
+/* State management for overlay */
+body.is-playing .overlay {
+    display: none !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+body.is-start #game-ui {
+    display: none !important;
+    pointer-events: none !important;
 }
 
 .intro-content h1 {
@@ -103,10 +124,6 @@ body.light-mode {
 /* POV Layout (Base structure moved to game-shell.css) */
 #game-ui {
     gap: 20px;
-}
-
-#game-ui.hidden {
-    display: none !important;
 }
 
 /* Sidebar */
