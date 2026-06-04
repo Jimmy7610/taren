@@ -39,29 +39,18 @@ body {
 body.light-mode {
     background-color: var(--bg-light);
     color: var(--text-light);
-}
-
-#game-wrapper {
-    position: relative;
+/* Base app shell constraints removed. Mobile handled via game-shell.css */
+.lost-signal-app {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
-@media (max-width: 1000px) {
-    #game-wrapper {
-        padding: 0;
-        height: auto;
-        min-height: 100svh;
-    }
-    
-    body {
-        align-items: flex-start;
-    }
+[hidden] {
+    display: none !important;
 }
 
 /* Build Box */
@@ -78,33 +67,25 @@ body.light-mode {
     z-index: 1000;
 }
 
-/* Start Screen */
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* --- View States --- */
+/* Ensure only the active view is visible */
+body[data-screen="start"] .game-view {
+    display: none !important;
+}
+body[data-screen="game"] .start-view {
+    display: none !important;
+}
+
+/* Start View */
+.start-view {
     width: 100%;
-    height: 100%;
+    height: 100svh;
     background: var(--bg-dark);
-    z-index: 500;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-}
-
-/* State management for overlay */
-body.is-playing .overlay {
-    display: none !important;
-    pointer-events: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-}
-
-body.is-start #game-ui {
-    display: none !important;
-    pointer-events: none !important;
 }
 
 .intro-content h1 {

@@ -5,7 +5,7 @@ Before pushing any new game or updating an existing game on Taren, developers mu
 ## Manual Test Steps
 1. **Desktop Verification:** Open the game on desktop and ensure base functionality (layout, controls, logic) is intact.
 2. **Narrow Mobile Width:** Resize the browser to a narrow mobile width (around 390px - iPhone layout).
-3. **Start Screen Isolation:** Verify that the start screen/menu functions as a separate state (`is-start`) and completely disappears (`display: none` / `pointer-events: none`) when gameplay begins, never blocking the scene.
+3. **Start Screen Isolation:** Verify that the start screen is a completely separate DOM section/view from the game, and is hidden completely (`display: none` or `[hidden]`) when gameplay begins. It must not be an overlay.
 4. **Horizontal Scroll Check:** Verify there is absolutely NO horizontal scrollbar (`overflow-x: hidden` on body/wrappers).
 5. **Game Area Visibility:** Verify the game area (canvas/scene) is fully visible, not pushed off-screen, and not obscured by sidebars.
 6. **Touch Targets:** Verify all interactive controls are at least touch-sized (~44px minimum).

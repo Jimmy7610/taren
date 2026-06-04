@@ -1,6 +1,6 @@
 # Taren Current Status
 
-**Current Build:** Build 127 (Lost Signal Mobile Fixes - Start Overlay)
+**Current Build:** Build 128 (Lost Signal Mobile Fixes - True Screen States)
 
 ## Playable Games (25)
 1.  **Lumen Coil** — Arena survival / Snake-like light collection.

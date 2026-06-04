@@ -54,10 +54,9 @@ class LostSignal {
 
     bindEvents() {
         document.getElementById('start-btn')?.addEventListener('click', () => {
-            document.body.classList.remove('is-start');
-            document.body.classList.add('is-playing');
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('game-ui').classList.remove('hidden');
+            document.body.setAttribute('data-screen', 'game');
+            document.getElementById('start-view').setAttribute('hidden', '');
+            document.getElementById('game-view').removeAttribute('hidden');
             
             // On mobile, ensure the scene is scrolled into view immediately
             window.scrollTo(0, 0);
@@ -490,13 +489,17 @@ class LostSignal {
 
     toggleTheme() {
         this.state.theme = this.state.theme === 'dark' ? 'light' : 'dark';
-        document.body.className = `${this.state.theme}-mode taren-game-page ${document.body.classList.contains('is-start') ? 'is-start' : ''} ${document.body.classList.contains('is-playing') ? 'is-playing' : ''} ${document.body.classList.contains('is-focus-mode') ? 'is-focus-mode' : ''}`;
+        
+        // Preserve base classes and focus mode
+        const isFocus = document.body.classList.contains('is-focus-mode') ? 'is-focus-mode' : '';
+        document.body.className = `${this.state.theme}-mode taren-game-page ${isFocus}`;
+        
         localStorage.setItem('taren_theme', this.state.theme);
     }
 
     toggleFocus() {
         document.body.classList.toggle('is-focus-mode');
-        const shell = document.getElementById('game-ui');
+        const shell = document.getElementById('game-view');
         if (shell) {
             shell.classList.toggle('focus-mode');
         }
@@ -518,12 +521,15 @@ class LostSignal {
             hasSavedGame = true;
         }
         
-        // Preserve standard classes, including state
-        const isStart = document.body.classList.contains('is-start') ? 'is-start' : '';
-        const isPlaying = document.body.classList.contains('is-playing') ? 'is-playing' : '';
+        // Preserve standard classes, including focus state
         const isFocus = document.body.classList.contains('is-focus-mode') ? 'is-focus-mode' : '';
         
-        document.body.className = `${this.state.theme}-mode taren-game-page ${isStart} ${isPlaying} ${isFocus}`;
+        document.body.className = `${this.state.theme}-mode taren-game-page ${isFocus}`;
+        
+        // Ensure data-screen attribute is initialized (defaults to 'start' on load in HTML)
+        if (!document.body.hasAttribute('data-screen')) {
+            document.body.setAttribute('data-screen', 'start');
+        }
         
         // If there's a saved game, we could automatically skip start screen or change button text
         if (hasSavedGame) {

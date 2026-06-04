@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="../../assets/css/game-shell.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="dark-mode taren-game-page is-start">
-    <div id="game-wrapper">
+<body class="dark-mode taren-game-page" data-screen="start">
+    <main class="lost-signal-app">
         <!-- Build Box -->
-        <div class="build-box">Build 125 — Den dag Taren ringde tillbaka</div>
+        <div class="build-box">Build 128 — Den dag Taren ringde tillbaka</div>
 
-        <!-- Start Screen -->
-        <div id="start-screen" class="overlay">
+        <!-- Start Screen View -->
+        <section id="start-view" class="start-view">
             <div class="intro-content">
                 <h1 data-lang-key="game_title">Lost Signal</h1>
                 <p class="subtitle">Den dag Taren ringde tillbaka</p>
@@ -22,10 +22,10 @@
                     <button id="reset-btn" class="btn-secondary">Reset Progress</button>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Game Interface -->
-        <div id="game-ui" class="taren-game-shell hidden">
+        <!-- Game Interface View -->
+        <section id="game-view" class="game-view taren-game-shell" hidden>
             <!-- Sidebar -->
             <aside id="game-sidebar" class="taren-game-sidebar">
                 <div class="sidebar-header">
@@ -56,6 +56,7 @@
                         <button id="theme-toggle" class="btn-tiny taren-game-button">Theme</button>
                     </div>
                     <a href="/games/" class="btn-tiny taren-game-button" style="text-align: center; text-decoration: none; display: block; margin-top: 10px;">Back to Gallery</a>
+                    <div style="font-size: 0.6rem; opacity: 0.5; margin-top: 10px; text-align: center;">Mobile shell: active</div>
                 </div>
             </aside>
 
@@ -72,8 +73,8 @@
                     <p id="dialogue-text"></p>
                 </div>
             </main>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <!-- Scripts -->
     <script src="../../assets/js/build.js"></script>
