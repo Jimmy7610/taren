@@ -87,7 +87,7 @@
                     <a href="/games/" class="btn">Explore Games</a>
                 </div>
 
-                <section class="geo-citation-box" style="margin-top: 1rem; margin-bottom: 3rem; max-width: 640px; width: 100%;">
+                <section class="geo-citation-box">
                     <h2 class="geo-title">Vanliga frågor</h2>
                     <dl class="geo-dl">
                         <dt>Vem har skapat Taren?</dt>
@@ -275,9 +275,10 @@
             .about-actions { display: none; }
         }
 
-        /* No scrollbar rule */
+        /* Allow vertical scroll if content is too tall */
         body {
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
     </style>
 </body>
