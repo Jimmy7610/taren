@@ -100,26 +100,18 @@ body.light-mode {
     margin-bottom: 2rem;
 }
 
-/* POV Layout */
+/* POV Layout (Base structure moved to game-shell.css) */
 #game-ui {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    grid-template-rows: 1fr 200px;
     gap: 20px;
-    width: 100%;
-    height: 100%;
 }
 
 #game-ui.hidden {
-    display: none;
+    display: none !important;
 }
 
 /* Sidebar */
 #game-sidebar {
-    grid-row: 1 / 3;
-    background: var(--panel-bg);
-    border: 1px solid var(--border);
-    padding: 2rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -529,13 +521,20 @@ body.light-mode {
     gap: 5px;
 }
 
-/* Responsive */
+/* Responsive adjustments specific to Lost Signal content */
 @media (max-width: 1000px) {
-    #game-ui {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr auto;
-    }
     #game-sidebar {
-        grid-row: auto;
+        padding: 1rem;
+        border-radius: 0;
+        gap: 10px;
+    }
+    
+    #scene-viewport {
+        border-radius: 0;
+    }
+    
+    #dialogue-panel {
+        border-radius: 0;
+        margin: 0;
     }
 }

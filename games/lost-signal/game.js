@@ -61,6 +61,7 @@ class LostSignal {
         document.getElementById('reset-btn')?.addEventListener('click', () => this.resetGame());
         document.getElementById('lang-toggle')?.addEventListener('click', () => this.toggleLanguage());
         document.getElementById('theme-toggle')?.addEventListener('click', () => this.toggleTheme());
+        document.getElementById('focus-toggle')?.addEventListener('click', () => this.toggleFocus());
         
         // Background click to clear dialogue
         this.ui.viewport.addEventListener('click', (e) => {
@@ -484,8 +485,15 @@ class LostSignal {
 
     toggleTheme() {
         this.state.theme = this.state.theme === 'dark' ? 'light' : 'dark';
-        document.body.className = this.state.theme + '-mode';
+        document.body.className = this.state.theme + '-mode taren-game-page';
         localStorage.setItem('taren_theme', this.state.theme);
+    }
+
+    toggleFocus() {
+        const shell = document.getElementById('game-ui');
+        if (shell) {
+            shell.classList.toggle('focus-mode');
+        }
     }
 
     saveState() {
@@ -501,7 +509,7 @@ class LostSignal {
             this.state.currentScene = parsed.currentScene || 'pier';
             this.applyWorldChanges();
         }
-        document.body.className = this.state.theme + '-mode';
+        document.body.className = this.state.theme + '-mode taren-game-page';
     }
 
     resetGame() {

@@ -1,0 +1,118 @@
+/**
+ * Taren Game Mobile Standard - Shared Shell CSS
+ * Included in games to standardize mobile layouts, prevent horizontal scroll,
+ * and ensure games don't get squashed by sidebars.
+ */
+
+:root {
+    /* INSTÄLLNING - Standard mobilbrytpunkt för layout */
+    --taren-mobile-break: 1000px;
+}
+
+/* Base Wrapper */
+.taren-game-page {
+    width: 100%;
+    height: 100svh; /* Avoids mobile browser bar issues */
+    overflow: hidden; /* No overall scroll, internal scrolling handled individually */
+}
+
+/* Desktop: Side-by-side. Mobile: Stacked with priority to game stage */
+.taren-game-shell {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 1fr;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Sidebar behavior */
+.taren-game-sidebar {
+    background: var(--panel-bg, rgba(20, 20, 30, 0.9));
+    border-right: 1px solid var(--border, rgba(255,255,255,0.1));
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+/* Main gameplay area */
+.taren-game-main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Stable 16:9 stage container */
+.taren-game-stage {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+    max-height: 70vh; /* Don't let it take the ENTIRE vertical space if stacked, leave room for UI */
+}
+
+/* Collapsible Mobile Drawer Pattern */
+.taren-game-mobile-drawer {
+    display: none; /* Desktop */
+}
+
+/* Focus Mode Modifier */
+.taren-game-shell.focus-mode .taren-game-sidebar,
+.taren-game-shell.focus-mode .taren-game-mobile-drawer {
+    display: none !important;
+}
+
+.taren-game-shell.focus-mode {
+    grid-template-columns: 1fr;
+}
+
+.taren-game-shell.focus-mode .taren-game-stage {
+    max-height: none; /* Let it grow */
+    height: 100%;
+}
+
+/* --- MOBILE SPECIFIC FIXES --- */
+@media (max-width: 1000px) {
+    /* Stack layout */
+    .taren-game-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr; /* Sidebar/UI moves to bottom or drawer */
+        height: 100svh;
+        overflow-y: auto; /* Allow scrolling the whole page if stacked UI is long */
+        overflow-x: hidden;
+    }
+    
+    .taren-game-page {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    /* Move sidebar below the game or convert to drawer */
+    .taren-game-sidebar {
+        grid-row: 2; /* Put it below the main area */
+        border-right: none;
+        border-top: 1px solid var(--border, rgba(255,255,255,0.1));
+        height: auto;
+        overflow: visible;
+    }
+    
+    .taren-game-main {
+        grid-row: 1; /* Main area is always top priority */
+        height: auto; /* Let it size based on stage aspect ratio */
+    }
+    
+    .taren-game-stage {
+        max-height: none;
+    }
+
+    /* Touch target standardization */
+    button, .taren-game-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}

@@ -2,6 +2,13 @@
 
 Taren is a personal creative test project by **Jimmy Eliasson** — a calm digital place for small strange games, sketches and experiments.
 
+## Design Philosophy
+Taren relies on a simple, minimal aesthetic. All UI, interaction, and sound should feel slightly offbeat but focused. 
+- "Vibe-coded" — built with feeling, iterated on until it feels right.
+- No heavy frameworks, vanilla tech only.
+- Focus on fast iteration and interesting outcomes over perfect engineering.
+- **Taren Game Mobile Standard:** All games must follow the official mobile UX standard (see `/docs/game-mobile-standard.md`). Playability on mobile is non-negotiable.
+
 The project is vibe-coded and slowly evolving. It currently contains 24 playable browser games, built and refined step by step.
 
 Taren is not meant to feel like a finished commercial platform. It is a living lab where ideas can appear, break, improve and grow over time.

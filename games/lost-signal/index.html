@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lost Signal — Den dag Taren ringde tillbaka</title>
+    <link rel="stylesheet" href="../../assets/css/game-shell.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="dark-mode">
+<body class="dark-mode taren-game-page">
     <div id="game-wrapper">
         <!-- Build Box -->
         <div class="build-box">Build 125 — Den dag Taren ringde tillbaka</div>
@@ -24,9 +25,9 @@
         </div>
 
         <!-- Game Interface -->
-        <div id="game-ui" class="hidden">
+        <div id="game-ui" class="taren-game-shell hidden">
             <!-- Sidebar -->
-            <aside id="game-sidebar">
+            <aside id="game-sidebar" class="taren-game-sidebar">
                 <div class="sidebar-header">
                     <h2 data-lang-key="game_title">Lost Signal</h2>
                     <div id="scene-title">---</div>
@@ -51,15 +52,17 @@
 
                 <div class="sidebar-footer">
                     <div class="toggle-group">
-                        <button id="lang-toggle" class="btn-tiny">EN/SV</button>
-                        <button id="theme-toggle" class="btn-tiny">Theme</button>
+                        <button id="lang-toggle" class="btn-tiny taren-game-button">EN/SV</button>
+                        <button id="theme-toggle" class="btn-tiny taren-game-button">Theme</button>
                     </div>
+                    <a href="/games/" class="btn-tiny taren-game-button" style="text-align: center; text-decoration: none; display: block; margin-top: 10px;">Back to Gallery</a>
                 </div>
             </aside>
 
             <!-- Main Area -->
-            <main id="game-main">
-                <div id="scene-viewport">
+            <main id="game-main" class="taren-game-main">
+                <button id="focus-toggle" class="btn-tiny taren-game-button" style="position: absolute; top: 10px; right: 10px; z-index: 200; opacity: 0.5;">Focus</button>
+                <div id="scene-viewport" class="taren-game-stage">
                     <div id="scene-container"></div>
                     <div id="hotspot-layer"></div>
                     <svg id="hotspot-svg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
