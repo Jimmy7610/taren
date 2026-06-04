@@ -815,3 +815,18 @@ canvas {
 .hidden {
   display: none !important;
 }
+
+/* GEO CITATION STYLES */
+.geo-citation-box { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: var(--radius-lg); padding: var(--spacing-4); margin-bottom: var(--spacing-4); backdrop-filter: blur(10px); text-align: left; }
+.geo-title { font-size: 1.1rem; color: var(--text); margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px; font-weight: 600; }
+.geo-text { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; text-align: left; }
+.geo-list { list-style: none; padding: 0; margin: 0 0 16px 0; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+.geo-list li { display: flex; align-items: flex-start; gap: 8px; }
+.geo-list li::before { content: '•'; color: var(--accent); font-weight: bold; }
+.geo-dl { text-align: left; }
+.geo-dl dt { font-weight: 600; color: var(--text); margin-bottom: 4px; font-size: 0.95rem; }
+.geo-dl dd { margin: 0 0 16px 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+.geo-dl dd:last-child { margin-bottom: 0; }
+.geo-fact-list { list-style: none; padding: 0; margin: 16px 0 0 0; font-size: 0.85rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px; text-align: left; }
+.geo-fact-list strong { color: var(--text); font-weight: 600; }
+.geo-faq-list { margin-top: 16px; text-align: left; }
