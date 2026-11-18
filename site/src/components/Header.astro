@@ -1,0 +1,67 @@
+---
+import BrandMark from './BrandMark.astro';
+import MobileNavigation from './MobileNavigation.astro';
+import { PRIMARY_NAV } from '@/config/site';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+---
+
+<a
+  href="#main"
+  class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-text focus:px-5 focus:py-3 focus:text-ink focus:font-medium"
+>
+  Skip to content
+</a>
+
+<header class="site-header sticky top-0 z-50 border-b border-line">
+  <div class="container-x flex h-(--header-h) items-center justify-between gap-6">
+    <a href="/" class="-m-2 flex min-h-11 items-center p-2" aria-label="Taren — home">
+      <BrandMark size="sm" />
+    </a>
+
+    <nav aria-label="Primary" class="hidden md:block">
+      <ul class="flex items-center gap-1">
+        {
+          PRIMARY_NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                class="nav-link relative inline-flex min-h-11 items-center rounded-full px-4 text-[0.9375rem] text-muted transition-colors duration-200 hover:text-text aria-[current=page]:text-text"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <MobileNavigation currentPath={path} />
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: rgb(10 16 32 / 0.82);
+    backdrop-filter: saturate(140%) blur(14px);
+    -webkit-backdrop-filter: saturate(140%) blur(14px);
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0.55rem;
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-cyan), var(--color-purple));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s var(--ease-out-expo);
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+</style>

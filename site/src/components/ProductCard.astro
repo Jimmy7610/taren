@@ -1,0 +1,77 @@
+---
+import ProductMedia from './ProductMedia.astro';
+import ProductStatus from './ProductStatus.astro';
+import type { ProductData } from '@/lib/catalog';
+
+interface Props {
+  product: ProductData;
+  headingLevel?: 'h2' | 'h3';
+  eager?: boolean;
+}
+const { product, headingLevel: H = 'h3', eager = false } = Astro.props;
+const href = `/products/${product.slug}/`;
+---
+
+<article class="product-card group relative flex flex-col overflow-hidden rounded-(--radius-card) border border-line bg-surface" data-product-card={product.slug}>
+  <ProductMedia
+    name={product.name}
+    heroImage={product.heroImage}
+    heroImageAlt=""
+    icon={product.icon}
+    iconAlt=""
+    eager={eager}
+  />
+  <div class="flex flex-1 flex-col gap-4 p-6 sm:p-7">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <p class="text-sm text-subtle">
+        <span class="sr-only">Category: </span>{product.category}
+        <span aria-hidden="true" class="mx-1.5">·</span>
+        <span class="sr-only">Platforms: </span>{product.platforms.join(', ')}
+      </p>
+      <ProductStatus status={product.status} />
+    </div>
+    <H class="text-title text-text">
+      <a href={href} class="card-link focus:outline-none">{product.name}</a>
+    </H>
+    <p class="text-muted">{product.tagline}</p>
+    <span class="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-medium text-cyan-soft" aria-hidden="true">
+      View product
+      <svg viewBox="0 0 16 16" class="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
+        ><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg
+      >
+    </span>
+  </div>
+</article>
+
+<style>
+  .product-card {
+    transition:
+      transform 0.6s var(--ease-out-expo),
+      border-color 0.3s,
+      box-shadow 0.6s var(--ease-out-expo);
+  }
+  /* The whole card is clickable through the title link; keyboard focus shows on the card. */
+  .card-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .product-card:has(.card-link:focus-visible) {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+  }
+  @media (hover: hover) {
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-line-strong);
+      box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.8);
+    }
+    .product-card:hover :global(.media-phone) {
+      transform: translateY(12%) rotate(-2deg);
+    }
+    .product-card:hover :global(.media-icon) {
+      transform: translateY(-4px) rotate(-3deg);
+    }
+  }
+</style>

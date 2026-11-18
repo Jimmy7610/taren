@@ -1,0 +1,62 @@
+---
+/**
+ * ProductGallery — a horizontally scrolling row of real screenshots. Native scroll with snap
+ * points (touch, trackpad, Shift+wheel) and keyboard scrolling when the region is focused.
+ */
+import PhoneFrame from './PhoneFrame.astro';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  items: ReadonlyArray<{ image: ImageMetadata; alt: string; caption?: string | undefined }>;
+  label: string;
+}
+const { items, label } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <div class="gallery-wrap">
+      <div class="gallery" tabindex="0" role="region" aria-label={label}>
+        <ul class="gallery-track">
+        {items.map((item) => (
+          <li class="gallery-item">
+            <figure>
+              <PhoneFrame src={item.image} alt={item.alt} sizes="(min-width: 768px) 260px, 62vw" widths={[240, 360, 520, 786]} />
+              {item.caption && <figcaption class="mt-4 text-sm text-muted">{item.caption}</figcaption>}
+            </figure>
+          </li>
+        ))}
+        </ul>
+      </div>
+      <p class="container-x mt-4 text-sm text-subtle" aria-hidden="true">
+        Swipe or scroll sideways for more screenshots.
+      </p>
+    </div>
+  )
+}
+
+<style>
+  .gallery-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(62vw, 16.25rem);
+    gap: clamp(1rem, 3vw, 2rem);
+    width: max-content;
+  }
+  .gallery {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(var(--gutter), calc((100vw - 78rem) / 2 + var(--gutter)));
+    padding: 0.5rem max(var(--gutter), calc((100vw - 78rem) / 2 + var(--gutter))) 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+  .gallery:focus-visible {
+    outline-offset: -2px;
+    border-radius: 0;
+  }
+  .gallery-item {
+    scroll-snap-align: start;
+  }
+</style>

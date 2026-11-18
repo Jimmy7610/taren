@@ -1,0 +1,30 @@
+---
+/**
+ * BrandMark — the TAREN identity.
+ *
+ * INTERIM: the official logo files (taren-logo-*.png, taren-icon.png) were not found in the
+ * repository. Until they are supplied, this renders a typographic wordmark only. It does not
+ * imitate or redraw the official T symbol. To switch to the official artwork, place the files in
+ * src/assets/brand/ and follow docs/DESIGN_SYSTEM.md → "Brand assets".
+ */
+interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+const { size = 'md', class: className = '' } = Astro.props;
+const sizes = { sm: 'text-[0.95rem]', md: 'text-[1.05rem]', lg: 'text-[clamp(2.5rem,8vw,5rem)]' };
+---
+
+<span
+  class:list={['brandmark inline-flex items-center font-display font-semibold leading-none text-text', sizes[size], className]}
+  data-brandmark="interim-wordmark"
+>
+  TAREN
+</span>
+
+<style>
+  .brandmark {
+    letter-spacing: 0.32em;
+    margin-right: -0.32em; /* optical: cancel trailing tracking */
+  }
+</style>

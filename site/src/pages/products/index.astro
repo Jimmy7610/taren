@@ -1,0 +1,64 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import { getPublicProducts } from '@/lib/catalog';
+import { breadcrumbJsonLd } from '@/lib/seo';
+
+const products = await getPublicProducts();
+---
+
+<BaseLayout
+  title="Products"
+  description="Applications, games and experiments from Taren, an independent software studio in Sweden. Each product has its own page and an honest status."
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Products', path: '/products/' }])]}
+>
+  <section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="products-title">
+    <div class="grid-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+    <div class="container-x py-20 md:py-28">
+      <SectionHeading eyebrow="Products" title="Selected work" id="products-title" level="h1">
+        <p>
+          Every product has its own page with an honest status. Released means you can get it today; in development
+          means it is real, being built, and not finished yet.
+        </p>
+      </SectionHeading>
+    </div>
+  </section>
+
+  <section class="container-x py-16 md:py-24" aria-label="Product list">
+    {
+      products.length > 0 ? (
+        <ul class="grid gap-6 md:grid-cols-2" role="list">
+          {products.map((p, i) => (
+            <li class="flex">
+              <ProductCard product={p} headingLevel="h2" eager={i === 0} />
+            </li>
+          ))}
+          <li class="flex">
+            <div class="workshop flex w-full flex-col justify-end rounded-(--radius-card) border border-dashed border-line-strong p-7 sm:p-10">
+              <p class="eyebrow text-subtle!">In the workshop</p>
+              <p class="mt-4 font-display text-title text-text">More is on the way.</p>
+              <p class="mt-4 max-w-md text-muted">
+                Other projects are in progress. They will appear here when there is something real to show — not before.
+              </p>
+            </div>
+          </li>
+        </ul>
+      ) : (
+        <p class="text-lead text-muted">The first products will appear here when they are ready to show.</p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .workshop {
+    min-height: 20rem;
+    background:
+      radial-gradient(ellipse 60% 60% at 100% 0%, rgb(141 91 255 / 0.08), transparent 70%),
+      transparent;
+  }
+  li > :global(.product-card) {
+    width: 100%;
+  }
+</style>

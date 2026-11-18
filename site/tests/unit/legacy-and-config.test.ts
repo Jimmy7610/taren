@@ -1,0 +1,43 @@
+import { describe, expect, it } from 'vitest';
+import { goneResponse, isGone, onRetiredRequest } from '@/lib/legacy';
+import { KOFI_URL, PRIMARY_NAV, STATIC_ROUTES } from '@/config/site';
+
+const assets = { fetch: async () => new Response('<html>retired</html>', { status: 200 }) };
+
+describe('legacy route retirement', () => {
+  it('marks old game and experiment routes as gone', () => {
+    for (const p of ['/games', '/games/', '/games/ashveil/', '/games/ashveil/index.html', '/experiments/signal-pond/']) expect(isGone(p)).toBe(true);
+    for (const p of ['/', '/gamesx', '/products/', '/studio/']) expect(isGone(p)).toBe(false);
+  });
+
+  it('responds 410 with the retired page and noindex', async () => {
+    const res = await goneResponse(new Request('https://taren.se/games/ashveil/'), assets);
+    expect(res.status).toBe(410);
+    expect(res.headers.get('x-robots-tag')).toBe('noindex');
+    expect(await res.text()).toContain('retired');
+  });
+
+  it('handles HEAD without a body', async () => {
+    const res = await goneResponse(new Request('https://taren.se/games/', { method: 'HEAD' }), assets);
+    expect(res.status).toBe(410);
+    expect(await res.text()).toBe('');
+  });
+
+  it('the function handler returns 404 for anything outside retired prefixes', async () => {
+    const res = await onRetiredRequest({ request: new Request('https://taren.se/gamesx'), env: { ASSETS: assets } });
+    expect(res.status).toBe(404);
+  });
+});
+
+describe('site config', () => {
+  it('points Ko-fi at the official page', () => {
+    expect(KOFI_URL).toBe('https://ko-fi.com/taren');
+  });
+  it('includes Support in the primary navigation', () => {
+    expect(PRIMARY_NAV.map((n) => n.href)).toEqual(['/products/', '/studio/', '/support/']);
+  });
+  it('does not list error pages as indexable routes', () => {
+    expect(STATIC_ROUTES).not.toContain('/404/');
+    expect(STATIC_ROUTES).not.toContain('/410/');
+  });
+});

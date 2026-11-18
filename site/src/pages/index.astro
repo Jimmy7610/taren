@@ -1,0 +1,375 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import SupportCTA from '@/components/SupportCTA.astro';
+import ProductStatus from '@/components/ProductStatus.astro';
+import PhoneFrame from '@/components/PhoneFrame.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import { getFeaturedProducts, getPublicProducts } from '@/lib/catalog';
+import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
+import { SITE } from '@/config/site';
+
+const featured = await getFeaturedProducts();
+const spotlight = featured[0];
+const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.slug).slice(0, 3);
+const spotlightShots = spotlight ? spotlight.gallery.filter((g) => g.image !== spotlight.heroImage).slice(0, 1) : [];
+---
+
+<BaseLayout description={SITE.description} jsonLd={[organizationJsonLd(), websiteJsonLd()]}>
+  <!-- HERO -->
+  <section class="hero relative isolate overflow-hidden" aria-labelledby="hero-title">
+    <div class="grid-field pointer-events-none absolute inset-0 -z-20" aria-hidden="true"></div>
+    <div class="orbits pointer-events-none absolute -z-10" aria-hidden="true">
+      <svg viewBox="0 0 800 800" focusable="false">
+        <defs>
+          <linearGradient id="orbit-stroke" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#35D5FF" stop-opacity="0.55"></stop>
+            <stop offset="1" stop-color="#8D5BFF" stop-opacity="0.15"></stop>
+          </linearGradient>
+          <radialGradient id="core-glow">
+            <stop offset="0" stop-color="#35D5FF" stop-opacity="0.35"></stop>
+            <stop offset="1" stop-color="#35D5FF" stop-opacity="0"></stop>
+          </radialGradient>
+        </defs>
+        <circle cx="400" cy="400" r="150" fill="url(#core-glow)"></circle>
+        <circle cx="400" cy="400" r="120" fill="none" stroke="url(#orbit-stroke)" stroke-width="1"></circle>
+        <circle cx="400" cy="400" r="210" fill="none" stroke="rgb(168 179 207 / 0.16)" stroke-width="1"></circle>
+        <circle cx="400" cy="400" r="300" fill="none" stroke="url(#orbit-stroke)" stroke-width="1" stroke-dasharray="2 10"></circle>
+        <circle cx="400" cy="400" r="390" fill="none" stroke="rgb(168 179 207 / 0.1)" stroke-width="1"></circle>
+      </svg>
+      <!-- Moving dots live on their own HTML layers so rotation runs on the compositor. -->
+      <span class="orbit orbit-a"><i class="dot dot-cyan"></i></span>
+      <span class="orbit orbit-b"><i class="dot dot-purple"></i></span>
+      <span class="orbit orbit-c"><i class="dot dot-white"></i></span>
+    </div>
+
+    <div class="container-x relative flex min-h-[min(88dvh,58rem)] flex-col justify-center py-20 md:py-28">
+      <p class="eyebrow hero-in">Independent software studio · {SITE.country}</p>
+      <h1 id="hero-title" class="hero-title hero-in mt-6 max-w-5xl text-display text-text">
+        Software built with <span class="accent">curiosity.</span>
+      </h1>
+      <p class="hero-in hero-in-2 mt-8 max-w-2xl text-lead text-muted">
+        Taren makes thoughtful applications, original games and experiments in creative technology — designed with care
+        and released when they are ready.
+      </p>
+      <div class="hero-in hero-in-3 mt-10 flex flex-wrap gap-3">
+        <Button href="/products/" size="lg">Explore products</Button>
+        <Button href="/studio/" variant="secondary" size="lg">About the studio</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- POSITIONING -->
+  <section class="border-y border-line bg-ink-deep py-20 md:py-28" aria-labelledby="what-title">
+    <div class="container-x">
+      <div class="grid gap-12 md:gap-16">
+        <SectionHeading eyebrow="What Taren makes" title="Few things, made carefully." id="what-title" />
+        <ul class="grid gap-px overflow-hidden rounded-(--radius-card) border border-line bg-line md:grid-cols-3">
+          <li class="bg-ink-deep p-7 md:p-9" data-reveal>
+            <span class="pillar-mark c-cyan" aria-hidden="true"></span>
+            <h3 class="mt-6 text-lg tracking-[-0.015em] text-text">Applications</h3>
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">Focused tools that do one job well and respect your time and attention.</p>
+          </li>
+          <li class="bg-ink-deep p-7 md:p-9" data-reveal>
+            <span class="pillar-mark c-purple" aria-hidden="true"></span>
+            <h3 class="mt-6 text-lg tracking-[-0.015em] text-text">Original games</h3>
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">Games built around a single clear idea, explored until it becomes deep.</p>
+          </li>
+          <li class="bg-ink-deep p-7 md:p-9" data-reveal>
+            <span class="pillar-mark c-amber" aria-hidden="true"></span>
+            <h3 class="mt-6 text-lg tracking-[-0.015em] text-text">Experiments</h3>
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">Creative technology tried out in the open, kept only when it earns its place.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK -->
+  {
+    spotlight && (
+      <section class="py-20 md:py-32" aria-labelledby="work-title">
+        <div class="container-x">
+          <div class="flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading eyebrow="Selected work" title="Now in development" id="work-title" />
+            <Button href="/products/" variant="ghost">
+              All products
+            </Button>
+          </div>
+
+          <article class="spotlight relative mt-12 overflow-hidden rounded-(--radius-panel) border border-line" data-reveal aria-labelledby="spotlight-title">
+            <div class="grid items-center lg:grid-cols-[1fr_1.05fr]">
+              <div class="relative z-10 p-7 sm:p-12 lg:p-16">
+                <div class="flex flex-wrap items-center gap-3">
+                  <ProductStatus status={spotlight.status} />
+                  <span class="text-sm text-subtle">
+                    {spotlight.category} · {spotlight.platforms.join(', ')}
+                  </span>
+                </div>
+                <h3 id="spotlight-title" class="mt-8 text-headline text-text">
+                  {spotlight.name}
+                </h3>
+                <p class="mt-4 font-display text-xl leading-snug tracking-[-0.02em] text-text">{spotlight.tagline}</p>
+                <p class="mt-5 max-w-lg text-muted">{spotlight.description}</p>
+                {spotlight.statusNote && <p class="mt-5 max-w-lg text-sm leading-relaxed text-subtle">{spotlight.statusNote}</p>}
+                <div class="mt-9">
+                  <Button href={`/products/${spotlight.slug}/`} size="lg">
+                    Explore {spotlight.name}
+                  </Button>
+                </div>
+              </div>
+              <div class="spotlight-media relative flex min-h-[26rem] items-end justify-center gap-4 overflow-hidden px-6 pt-10 sm:min-h-[34rem] lg:h-full">
+                {spotlight.heroImage && (
+                  <PhoneFrame
+                    src={spotlight.heroImage}
+                    alt={spotlight.heroImageAlt ?? ''}
+                    sizes="(min-width: 1024px) 280px, 52vw"
+                    class="spot-phone spot-phone-a"
+                  />
+                )}
+                {spotlightShots.map((shot) => (
+                  <PhoneFrame src={shot.image} alt={shot.alt} sizes="(min-width: 1024px) 240px, 40vw" class="spot-phone spot-phone-b" />
+                ))}
+              </div>
+            </div>
+          </article>
+
+          {others.length > 0 && (
+            <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {others.map((p) => (
+                <ProductCard product={p} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- STUDIO -->
+  <section class:list={['pb-20 md:pb-32', !spotlight && 'pt-20 md:pt-32']} aria-labelledby="studio-title">
+    <div class="container-x grid gap-12 lg:grid-cols-2 lg:gap-20">
+      <div data-reveal>
+        <SectionHeading eyebrow="The studio" title="Independent, on purpose." id="studio-title">
+          <p>
+            Taren is a one-person software studio in {SITE.country}. It started as a small lab for browser games and
+            experiments, and has grown into a home for finished, separately branded products.
+          </p>
+        </SectionHeading>
+        <div class="mt-9">
+          <Button href="/studio/" variant="secondary">Read about the studio</Button>
+        </div>
+      </div>
+      <ol class="principles self-end">
+        <li data-reveal>
+          <h3>Curiosity first</h3>
+          <p>Every project starts with a question worth exploring, not a feature list.</p>
+        </li>
+        <li data-reveal>
+          <h3>Made with care</h3>
+          <p>Fast, accessible and calm to use. No dark patterns, no manipulative design.</p>
+        </li>
+        <li data-reveal>
+          <h3>Honest status</h3>
+          <p>Products are labelled for exactly what they are. Nothing is called released until you can get it.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <SupportCTA />
+  <div class="h-20 md:h-32" aria-hidden="true"></div>
+</BaseLayout>
+
+<style>
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--color-ink));
+    pointer-events: none;
+  }
+  .orbits {
+    width: min(68rem, 150vw);
+    aspect-ratio: 1;
+    right: -24%;
+    top: 50%;
+    translate: 0 -50%;
+    opacity: 0.85;
+  }
+  @media (max-width: 47.99rem) {
+    .orbits {
+      right: -70%;
+      top: 34%;
+      opacity: 0.5;
+    }
+  }
+  .orbits svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .orbit {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+  .dot {
+    position: absolute;
+    left: 50%;
+    border-radius: 999px;
+    translate: -50% -50%;
+  }
+  /* Radii as a share of the 800-unit box: 120 → 15%, 300 → 37.5%, 210 → 26.25% */
+  .orbit-a .dot {
+    top: 35%;
+  }
+  .orbit-b .dot {
+    top: 12.5%;
+  }
+  .orbit-c .dot {
+    top: 23.75%;
+  }
+  .dot-cyan {
+    width: 1%;
+    aspect-ratio: 1;
+    background: var(--color-cyan);
+    box-shadow: 0 0 0 0.6rem rgb(53 213 255 / 0.15);
+  }
+  .dot-purple {
+    width: 0.9%;
+    aspect-ratio: 1;
+    background: var(--color-purple-soft);
+    box-shadow: 0 0 0 0.5rem rgb(141 91 255 / 0.18);
+  }
+  .dot-white {
+    width: 0.6%;
+    aspect-ratio: 1;
+    background: rgb(244 247 255 / 0.8);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .orbit-a {
+      animation: spin 26s linear infinite;
+    }
+    .orbit-b {
+      animation: spin 64s linear infinite reverse;
+    }
+    .orbit-c {
+      animation: spin 40s linear infinite;
+      animation-delay: -12s;
+    }
+    .hero-in {
+      animation: var(--animate-rise);
+    }
+    .hero-in-2 {
+      animation-delay: 0.08s;
+    }
+    .hero-in-3 {
+      animation-delay: 0.16s;
+    }
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .accent {
+    background: linear-gradient(100deg, var(--color-cyan-soft) 0%, var(--color-cyan) 35%, var(--color-purple-soft) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Keeps descenders from clipping */
+    padding-bottom: 0.08em;
+  }
+  .pillar-mark {
+    display: block;
+    width: 1.75rem;
+    height: 2px;
+    background: var(--c);
+    box-shadow: 0 0 16px var(--c);
+  }
+  .c-cyan {
+    --c: var(--color-cyan);
+  }
+  .c-purple {
+    --c: var(--color-purple-soft);
+  }
+  .c-amber {
+    --c: var(--color-amber);
+  }
+  .spotlight {
+    background:
+      radial-gradient(ellipse 60% 80% at 85% 80%, rgb(53 213 255 / 0.14), transparent 65%),
+      radial-gradient(ellipse 50% 60% at 100% 0%, rgb(141 91 255 / 0.14), transparent 70%),
+      var(--color-surface);
+  }
+  .spotlight-media::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgb(168 179 207 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(168 179 207 / 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 60%, #000, transparent 75%);
+  }
+  .spotlight-media :global(.spot-phone) {
+    position: relative;
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+  .spotlight-media :global(.spot-phone-a) {
+    width: min(48%, 17.5rem);
+    margin-bottom: -18%;
+    z-index: 2;
+  }
+  .spotlight-media :global(.spot-phone-b) {
+    width: min(40%, 15rem);
+    margin-bottom: -32%;
+    opacity: 0.9;
+  }
+  @media (hover: hover) {
+    .spotlight:hover :global(.spot-phone-a) {
+      transform: translateY(-10px);
+    }
+    .spotlight:hover :global(.spot-phone-b) {
+      transform: translateY(-4px);
+    }
+  }
+  .principles {
+    display: grid;
+    gap: 0;
+    counter-reset: p;
+  }
+  .principles li {
+    counter-increment: p;
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: 1rem;
+    padding: 1.6rem 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .principles li:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .principles li::before {
+    content: counter(p, decimal-leading-zero);
+    grid-row: span 2;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    color: var(--color-subtle);
+    padding-top: 0.2rem;
+  }
+  .principles h3 {
+    font-size: 1.125rem;
+    letter-spacing: -0.015em;
+    color: var(--color-text);
+  }
+  .principles p {
+    margin-top: 0.4rem;
+    color: var(--color-muted);
+  }
+</style>

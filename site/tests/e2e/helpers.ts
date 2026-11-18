@@ -1,0 +1,44 @@
+import type { Page } from '@playwright/test';
+
+export const PAGES = [
+  { path: '/', h1: /Software built with curiosity/ },
+  { path: '/products/', h1: /Selected work/ },
+  { path: '/products/pulse-garden/', h1: /Pulse Garden/ },
+  { path: '/studio/', h1: /independent software studio/i },
+  { path: '/support/', h1: /Enjoying what we’re building/ },
+  { path: '/privacy/', h1: /Privacy/ },
+  { path: '/terms/', h1: /Terms/ },
+] as const;
+
+export const VIEWPORTS = [320, 375, 390, 768, 1024, 1440, 1920] as const;
+
+export const KOFI = 'https://ko-fi.com/taren';
+
+/** Collects console errors, page errors and failed same-origin requests. */
+export function watchErrors(page: Page) {
+  const errors: string[] = [];
+  page.on('console', (m) => {
+    if (m.type() === 'error') errors.push(`console: ${m.text()}`);
+  });
+  page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
+  page.on('requestfailed', (r) => {
+    if (r.url().startsWith('http://localhost')) errors.push(`requestfailed: ${r.url()}`);
+  });
+  page.on('response', (r) => {
+    if (r.url().startsWith('http://localhost') && r.status() >= 400 && r.request().resourceType() !== 'document')
+      errors.push(`http ${r.status()}: ${r.url()}`);
+  });
+  return errors;
+}
+
+/** Scrolls through the page so lazy images load, then returns to the top. */
+export async function scrollThrough(page: Page) {
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.documentElement.scrollHeight; y += Math.max(300, innerHeight / 2)) {
+      window.scrollTo({ top: y, behavior: 'instant' });
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  });
+  await page.waitForLoadState('networkidle');
+}

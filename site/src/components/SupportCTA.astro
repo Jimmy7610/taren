@@ -1,0 +1,45 @@
+---
+/** Optional, low-key support section. Never a gate, never a popup. */
+import Button from './Button.astro';
+import { KOFI_URL } from '@/config/site';
+
+interface Props {
+  headingLevel?: 'h2' | 'h3';
+  showLearnMore?: boolean;
+}
+const { headingLevel: H = 'h2', showLearnMore = true } = Astro.props;
+---
+
+<section aria-labelledby="support-cta-title" class="container-x" data-reveal>
+  <div class="support-panel relative overflow-hidden rounded-(--radius-panel) border border-line px-6 py-14 sm:px-12 md:py-20">
+    <div class="relative grid items-end gap-10 md:grid-cols-[1.5fr_1fr]">
+      <div>
+        <p class="eyebrow mb-4">Optional support</p>
+        <H id="support-cta-title" class="text-headline text-text">Enjoying what we’re building?</H>
+        <p class="mt-5 max-w-xl text-lead text-muted">
+          Taren projects are created independently. If you enjoy the work, you can support future development with a
+          small, optional contribution.
+        </p>
+      </div>
+      <div class="flex flex-col gap-3 sm:flex-row md:flex-col md:items-end">
+        <Button href={KOFI_URL} external size="lg" data-kofi-link>Support on Ko-fi</Button>
+        {
+          showLearnMore && (
+            <Button href="/support/" variant="ghost" size="lg">
+              How support works
+            </Button>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .support-panel {
+    background:
+      radial-gradient(ellipse 60% 90% at 100% 100%, rgb(141 91 255 / 0.16), transparent 60%),
+      radial-gradient(ellipse 50% 80% at 0% 0%, rgb(53 213 255 / 0.08), transparent 60%),
+      var(--color-surface);
+  }
+</style>

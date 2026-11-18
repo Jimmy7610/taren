@@ -1,0 +1,23 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  id?: string;
+  level?: 'h1' | 'h2';
+  align?: 'left' | 'center';
+  class?: string;
+}
+const { eyebrow, title, id, level: H = 'h2', align = 'left', class: className = '' } = Astro.props;
+---
+
+<div class:list={['max-w-3xl', align === 'center' && 'mx-auto text-center', className]}>
+  {eyebrow && <p class="eyebrow mb-4">{eyebrow}</p>}
+  <H id={id} class="text-headline text-text">{title}</H>
+  {
+    Astro.slots.has('default') && (
+      <div class="mt-5 text-lead text-muted">
+        <slot />
+      </div>
+    )
+  }
+</div>

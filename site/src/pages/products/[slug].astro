@@ -1,0 +1,109 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProductHero from '@/components/ProductHero.astro';
+import FeatureGrid from '@/components/FeatureGrid.astro';
+import ProductGallery from '@/components/ProductGallery.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import SupportCTA from '@/components/SupportCTA.astro';
+import { getPublicEntries, type Product } from '@/lib/catalog';
+import { isAvailable, relatedProducts } from '@/lib/products';
+import { absoluteUrl, breadcrumbJsonLd } from '@/lib/seo';
+import { SITE } from '@/config/site';
+
+export const getStaticPaths = (async () => {
+  // Only published products get a page. Unpublished entries never reach the build output.
+  const entries = await getPublicEntries();
+  return entries.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry, all: entries } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entry: Product;
+  all: Product[];
+}
+const { entry, all } = Astro.props;
+const product = entry.data;
+const { Content } = await render(entry);
+const related = relatedProducts(product, all.map((e) => e.data));
+const path = `/products/${product.slug}/`;
+
+const jsonLd: unknown[] = [
+  breadcrumbJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Products', path: '/products/' },
+    { name: product.name, path },
+  ]),
+];
+// Software structured data only for things people can actually get (see docs/PRODUCT_MANAGEMENT.md).
+if (isAvailable(product)) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': product.category === 'Game' ? 'VideoGame' : 'SoftwareApplication',
+    name: product.name,
+    description: product.description,
+    url: absoluteUrl(path),
+    applicationCategory: product.category === 'Game' ? 'GameApplication' : 'Application',
+    operatingSystem: product.platforms.join(', '),
+    author: { '@id': `${SITE.origin}/#organization` },
+    ...(product.downloadUrl ? { downloadUrl: product.downloadUrl } : {}),
+  });
+}
+---
+
+<BaseLayout
+  title={`${product.name} — ${product.tagline.replace(/\.$/, '')}`}
+  description={product.description}
+  ogImage={product.ogImage}
+  ogImageAlt={product.ogImageAlt}
+  jsonLd={jsonLd}
+>
+  <ProductHero product={product} />
+
+  <section class="container-x grid gap-12 py-20 md:py-28 lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="about-title">
+    <h2 id="about-title" class="text-headline text-text">About {product.name}</h2>
+    <div class="prose-taren max-w-2xl" data-reveal>
+      <Content />
+    </div>
+  </section>
+
+  {
+    product.features.length > 0 && (
+      <section class="container-x pb-20 md:pb-28" aria-labelledby="features-title">
+        <SectionHeading eyebrow="Highlights" title="What makes it work" id="features-title" class="mb-12" />
+        <FeatureGrid features={product.features} />
+      </section>
+    )
+  }
+
+  {
+    product.gallery.length > 0 && (
+      <section id="screenshots" class="border-y border-line bg-ink-deep py-20 md:py-28" aria-labelledby="screens-title">
+        <div class="container-x mb-12">
+          <SectionHeading eyebrow="Screenshots" title="From the current build" id="screens-title">
+            <p>Real captures of {product.name} as it is today. Details will change before release.</p>
+          </SectionHeading>
+        </div>
+        <ProductGallery items={product.gallery} label={`${product.name} screenshots`} />
+      </section>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <section class="container-x py-20 md:py-28" aria-labelledby="related-title">
+        <SectionHeading title="Related products" id="related-title" class="mb-12" />
+        <div class="grid gap-6 md:grid-cols-2">
+          {related.map((p) => (
+            <ProductCard product={p} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <div class="py-20 md:py-28">
+    <SupportCTA />
+  </div>
+</BaseLayout>

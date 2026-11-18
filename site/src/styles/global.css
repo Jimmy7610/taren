@@ -1,0 +1,261 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter/wght.css';
+@import '@fontsource-variable/sora/wght.css';
+
+/*
+ * TAREN design tokens. See docs/DESIGN_SYSTEM.md.
+ * Contrast (on --color-ink #0A1020): text 17.6:1, muted 9.0:1, subtle 5.6:1, cyan 10.6:1.
+ */
+@theme {
+  --color-ink: #0a1020;
+  --color-ink-deep: #070b17;
+  --color-surface: #121b31;
+  --color-surface-raised: #18233f;
+  --color-line: rgb(168 179 207 / 0.14);
+  --color-line-strong: rgb(168 179 207 / 0.28);
+  --color-text: #f4f7ff;
+  --color-muted: #a8b3cf;
+  --color-subtle: #8591b0;
+  --color-cyan: #35d5ff;
+  --color-cyan-soft: #8ae6ff;
+  --color-purple: #8d5bff;
+  --color-purple-soft: #b394ff;
+  --color-amber: #ffc46b;
+
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Sora Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: clamp(2.75rem, 1.6rem + 5.6vw, 6.25rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.045em;
+  --text-headline: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
+  --text-headline--line-height: 1.04;
+  --text-headline--letter-spacing: -0.035em;
+  --text-title: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem);
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.02em;
+  --text-lead: clamp(1.0625rem, 0.98rem + 0.4vw, 1.3125rem);
+  --text-lead--line-height: 1.6;
+
+  --radius-card: 1.25rem;
+  --radius-panel: 1.75rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  --animate-rise: rise 0.9s var(--ease-out-expo) both;
+  --animate-fade: fade 1.2s var(--ease-out-quart) both;
+
+  @keyframes rise {
+    from {
+      transform: translateY(18px);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --gutter: clamp(1rem, 0.6rem + 2.2vw, 2.5rem);
+    --header-h: 4.5rem;
+    --focus: 0 0 0 2px var(--color-ink), 0 0 0 4px var(--color-cyan);
+  }
+
+  html {
+    background: var(--color-ink);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-ink);
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: rgb(53 213 255 / 0.3);
+    color: var(--color-text);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-cyan-soft);
+  }
+
+  .prose-taren {
+    color: var(--color-muted);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .prose-taren > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-taren h2 {
+    color: var(--color-text);
+    font-size: 1.5rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-top: 2.2em;
+  }
+  .prose-taren h3 {
+    color: var(--color-text);
+    font-size: 1.15rem;
+    margin-top: 1.8em;
+  }
+  .prose-taren strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  .prose-taren a {
+    color: var(--color-cyan-soft);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .prose-taren a:hover {
+    color: var(--color-text);
+  }
+  .prose-taren ul {
+    list-style: none;
+    padding: 0;
+  }
+  .prose-taren ul > li {
+    position: relative;
+    padding-left: 1.4em;
+  }
+  .prose-taren ul > li + li {
+    margin-top: 0.5em;
+  }
+  .prose-taren ul > li::before {
+    content: '';
+    position: absolute;
+    left: 0.15em;
+    top: 0.72em;
+    width: 0.45em;
+    height: 1px;
+    background: var(--color-cyan);
+  }
+
+  /* Fine grid used behind heroes. Pure CSS, no image request. */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgb(168 179 207 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(168 179 207 / 0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  }
+}
+
+/* Scroll-linked reveals: progressive enhancement. Content is fully visible where unsupported
+   and for anyone who prefers reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-reveal] {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0.001;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Cross-document page transitions (no JavaScript). */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+  animation-timing-function: var(--ease-out-quart);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

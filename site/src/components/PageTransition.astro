@@ -1,0 +1,29 @@
+---
+/**
+ * PageTransition — gentle entry animation for page content. Uses CSS only; the browser's
+ * cross-document View Transitions (enabled in global.css) handle navigation. Disabled for
+ * prefers-reduced-motion. Content is never hidden: the animation moves, it does not fade from 0.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['page-enter', className]}><slot /></div>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .page-enter {
+      animation: page-enter 0.7s var(--ease-out-expo) both;
+    }
+  }
+  @keyframes page-enter {
+    from {
+      transform: translateY(10px);
+    }
+    to {
+      transform: none;
+    }
+  }
+</style>
