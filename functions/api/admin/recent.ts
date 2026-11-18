@@ -5,7 +5,9 @@ interface Env {
 export const onRequestGet: PagesFunction<Env> = async (ctx) => {
     const { request, env } = ctx;
     const url = new URL(request.url);
-    const limit = Math.min(Number(url.searchParams.get("limit")) || 50, 200);
+    // Clamp to 1..200. A negative LIMIT means "no limit" in SQLite, so it must never pass through.
+    const requested = Math.floor(Number(url.searchParams.get("limit")));
+    const limit = Number.isFinite(requested) && requested >= 1 ? Math.min(requested, 200) : 50;
 
     try {
         const rows = await env.DB.prepare(
@@ -18,8 +20,8 @@ export const onRequestGet: PagesFunction<Env> = async (ctx) => {
         return new Response(JSON.stringify({ items: rows.results || [] }), {
             headers: { "content-type": "application/json" },
         });
-    } catch (err: any) {
-        return new Response(JSON.stringify({ ok: false, error: err.message }), {
+    } catch {
+        return new Response(JSON.stringify({ ok: false, error: "Internal error" }), {
             status: 500,
             headers: { "content-type": "application/json" },
         });

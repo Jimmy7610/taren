@@ -1,0 +1,34 @@
+name: Functions security tests
+
+on:
+  push:
+    branches: [main, 'security/**']
+    paths: ['functions/**', 'tests/security/**', '.github/workflows/functions-security.yml']
+  pull_request:
+    paths: ['functions/**', 'tests/security/**', '.github/workflows/functions-security.yml']
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: tests/security
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/security/package-lock.json
+      - run: npm ci
+      - name: Typecheck auth, middleware and ingestion
+        run: npm run typecheck
+      - name: Unit / regression tests
+        run: npm test
+      - name: Integration tests (wrangler pages dev + local D1, synthetic data)
+        run: npm run test:integration
