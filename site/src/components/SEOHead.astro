@@ -15,7 +15,7 @@ const meta = buildSeo({ ...input, path: Astro.url.pathname });
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>{meta.title}</title>
 <meta name="description" content={meta.description} />
-<link rel="canonical" href={meta.canonical} />
+{meta.canonical && <link rel="canonical" href={meta.canonical} />}
 <meta name="robots" content={meta.robots} />
 <meta name="theme-color" content="#0a1020" />
 <meta name="color-scheme" content="dark" />
@@ -35,7 +35,7 @@ const meta = buildSeo({ ...input, path: Astro.url.pathname });
 <meta property="og:type" content={meta.ogType} />
 <meta property="og:title" content={meta.title} />
 <meta property="og:description" content={meta.description} />
-<meta property="og:url" content={meta.canonical} />
+{meta.canonical && <meta property="og:url" content={meta.canonical} />}
 <meta property="og:image" content={meta.ogImage} />
 <meta property="og:image:alt" content={meta.ogImageAlt} />
 <meta property="og:image:width" content="1200" />

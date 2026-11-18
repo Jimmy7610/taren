@@ -32,6 +32,10 @@ describe('buildSeo', () => {
     expect(m.robots).toBe('noindex, follow');
     expect(m.ogImage).toBe('https://taren.se/og/x.jpg');
   });
+  it('emits no canonical URL on noindex pages (404, 410, drafts would point at non-existent URLs)', () => {
+    expect(buildSeo({ description: 'd', path: '/404', noindex: true }).canonical).toBeUndefined();
+    expect(buildSeo({ description: 'd', path: '/products/pdfstudio/', noindex: true }).canonical).toBeUndefined();
+  });
 });
 
 describe('JSON-LD serialisation', () => {

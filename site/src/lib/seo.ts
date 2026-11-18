@@ -14,7 +14,8 @@ export interface SeoInput {
 export interface SeoMeta {
   title: string;
   description: string;
-  canonical: string;
+  /** Absent on noindex pages (404, 410, drafts): a canonical URL there would point at a page that does not exist. */
+  canonical: string | undefined;
   ogImage: string;
   ogImageAlt: string;
   ogType: 'website' | 'article';
@@ -38,7 +39,7 @@ export function buildSeo(input: SeoInput): SeoMeta {
   return {
     title,
     description: input.description,
-    canonical: absoluteUrl(canonicalPath(input.path)),
+    canonical: input.noindex ? undefined : absoluteUrl(canonicalPath(input.path)),
     ogImage: absoluteUrl(input.ogImage ?? SITE.defaultOgImage),
     ogImageAlt: input.ogImageAlt ?? SITE.defaultOgImageAlt,
     ogType: input.ogType ?? 'website',

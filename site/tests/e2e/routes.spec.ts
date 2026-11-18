@@ -59,6 +59,9 @@ test.describe('routes', () => {
   test('unknown routes return the 404 page with a 404 status', async ({ page }) => {
     const res = await page.goto('/this-page-does-not-exist/');
     expect(res?.status()).toBe(404);
+    // Error pages are noindex and carry no canonical/og:url (they would point at /404/, which is not a page).
+    await expect(page.locator('link[rel=canonical]')).toHaveCount(0);
+    await expect(page.locator('meta[property="og:url"]')).toHaveCount(0);
     await expect(page.locator('h1')).toHaveText(/doesn’t exist/);
     expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('noindex, follow');
     await page.getByRole('link', { name: 'Back to home' }).click();
