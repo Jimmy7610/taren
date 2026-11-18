@@ -111,6 +111,9 @@ Nothing in this column is deleted by the cutover itself.
 
 ## 9. Optional interim hotfix for F1 (before cutover, owner approval required)
 
+Simplest interim option (dashboard only): a WAF custom rule on the taren.se zone blocking the internal paths
+(`TAREN_2_3_GODKANNANDE.md` §4.3 M2). It does **not** cover `taren.pages.dev`, which serves the same files.
+
 Only if cutover is far away. In a PR to `main`, add to the root `_headers`/`_redirects` (served by the legacy
 project) rules returning 404 for `/.agent/*`, `/docs/*`, `/workers/*`, `/tests/*`, `/CLAUDE.md`, `/README.md`,
 `/.gitignore`. Pages `_redirects` cannot return 404 directly; the reliable way is a small rule in the existing
