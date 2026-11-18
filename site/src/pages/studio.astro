@@ -1,6 +1,7 @@
 ---
 import TextPage from '@/layouts/TextPage.astro';
 import ExternalLink from '@/components/ExternalLink.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
 import { SITE } from '@/config/site';
 import { breadcrumbJsonLd, organizationJsonLd } from '@/lib/seo';
 ---
@@ -50,6 +51,9 @@ import { breadcrumbJsonLd, organizationJsonLd } from '@/lib/seo';
 
   <h2>Get in touch</h2>
   <p>
-    The best way to reach the studio right now is through <ExternalLink href={SITE.contactUrl}>{SITE.contactLabel}</ExternalLink>.
+    Email <ContactEmail /> for anything about Taren or its products.
+  </p>
+  <p>
+    Public code is on <ExternalLink href={SITE.githubUrl}>{SITE.githubLabel}</ExternalLink>.
   </p>
 </TextPage>

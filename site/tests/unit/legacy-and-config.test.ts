@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { goneResponse, isGone, onRetiredRequest } from '@/lib/legacy';
-import { KOFI_URL, PRIMARY_NAV, STATIC_ROUTES } from '@/config/site';
+import { KOFI_URL, PRIMARY_NAV, SITE, STATIC_ROUTES } from '@/config/site';
 
 const assets = { fetch: async () => new Response('<html>retired</html>', { status: 200 }) };
 
@@ -57,5 +57,13 @@ describe('site config', () => {
   it('does not list error pages as indexable routes', () => {
     expect(STATIC_ROUTES).not.toContain('/404/');
     expect(STATIC_ROUTES).not.toContain('/410/');
+  });
+});
+
+describe('owner-approved contact and copyright (Taren 2.3)', () => {
+  it('uses the approved contact address and copyright line', () => {
+    expect(SITE.contactEmail).toBe('Jbl_76@hotmail.com');
+    expect(SITE.copyright).toBe('© 2026 Jimmy Eliasson · Taren');
+    expect(SITE.copyright).not.toMatch(/\b(AB|Ltd|Inc)\b|All rights reserved/i);
   });
 });

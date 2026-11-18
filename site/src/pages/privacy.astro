@@ -2,11 +2,12 @@
 /*
  * OWNER REVIEW REQUIRED before public launch (docs/RELEASE_CHECKLIST.md):
  * - confirm Cloudflare Web Analytics / other zone features stay disabled for taren.se
- * - confirm the contact route, and whether a dedicated contact e-mail should be added
+ * - contact e-mail approved by the owner (2026-11-18); wording of this page still needs owner approval
  * - confirm no product page adds third-party embeds
  */
 import TextPage from '@/layouts/TextPage.astro';
 import ExternalLink from '@/components/ExternalLink.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
 import { KOFI_URL, SITE } from '@/config/site';
 ---
 
@@ -20,8 +21,8 @@ import { KOFI_URL, SITE } from '@/config/site';
 >
   <h2>Who is responsible</h2>
   <p>
-    taren.se is run by {SITE.founder}, an independent developer in {SITE.country}, under the name Taren. You can get
-    in touch through <ExternalLink href={SITE.contactUrl}>{SITE.contactLabel}</ExternalLink>.
+    taren.se is run by {SITE.founder}, an independent developer in {SITE.country}, under the name Taren. For
+    questions about privacy or this website, email <ContactEmail />.
   </p>
 
   <h2>What this website does not do</h2>
@@ -31,6 +32,12 @@ import { KOFI_URL, SITE } from '@/config/site';
     <li>It runs no analytics, advertising or tracking scripts.</li>
     <li>It loads no third-party scripts, fonts or embeds. Fonts and images are served from taren.se itself.</li>
   </ul>
+
+  <h2>If you email Taren</h2>
+  <p>
+    If you send an email, your address and message are used to read and answer it. They are kept in that mailbox,
+    which is provided by Microsoft’s Outlook.com service.
+  </p>
 
   <h2>Hosting</h2>
   <p>
@@ -57,8 +64,9 @@ import { KOFI_URL, SITE } from '@/config/site';
   <h2>Your rights</h2>
   <p>
     If you are in the EU or EEA, the GDPR gives you rights regarding personal data, including access, correction and
-    deletion. Because this website does not collect personal data itself, there is usually nothing held about you, but
-    you are welcome to ask. You can also contact the Swedish Authority for Privacy Protection (IMY).
+    deletion. Because this website does not collect personal data itself, there is usually nothing held about you
+    unless you have emailed Taren or contributed through Ko-fi. To ask, email <ContactEmail />. You can also contact
+    the Swedish Authority for Privacy Protection (IMY).
   </p>
 
   <h2>Changes</h2>

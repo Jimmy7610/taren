@@ -1,7 +1,6 @@
 ---
 import BrandMark from './BrandMark.astro';
 import { KOFI_URL, LEGAL_NAV, PRIMARY_NAV, SITE } from '@/config/site';
-const year = new Date().getFullYear();
 ---
 
 <footer class="relative mt-auto border-t border-line bg-ink-deep" id="site-footer">
@@ -49,7 +48,7 @@ const year = new Date().getFullYear();
     </div>
   </div>
   <div class="container-x flex flex-col gap-2 border-t border-line py-6 text-sm text-subtle sm:flex-row sm:justify-between">
-    <p>© {year} Taren. All rights reserved.</p>
+    <p data-copyright>{SITE.copyright}</p>
     <p>Made in {SITE.country}.</p>
   </div>
 </footer>

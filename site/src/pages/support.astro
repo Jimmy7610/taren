@@ -4,6 +4,7 @@ import Button from '@/components/Button.astro';
 import ExternalLink from '@/components/ExternalLink.astro';
 import { KOFI_URL } from '@/config/site';
 import { breadcrumbJsonLd } from '@/lib/seo';
+import ContactEmail from '@/components/ContactEmail.astro';
 ---
 
 <TextPage
@@ -52,6 +53,9 @@ import { breadcrumbJsonLd } from '@/lib/seo';
       any of its scripts; the link above is an ordinary link.
     </li>
   </ul>
+
+  <h2>Questions</h2>
+  <p>Questions about supporting Taren are welcome by email: <ContactEmail />.</p>
 
   <h2>Other ways to help</h2>
   <p>

@@ -15,9 +15,19 @@ export const SITE = {
   /** The person behind the studio, as stated in the project README. Owner review: see docs/RELEASE_CHECKLIST.md. */
   founder: 'Jimmy Eliasson',
   country: 'Sweden',
-  /** Public profile used as the contact route until a dedicated contact address is approved. */
-  contactUrl: 'https://github.com/Jimmy7610',
-  contactLabel: 'GitHub (@Jimmy7610)',
+  /**
+   * Owner-approved contact address (2026-11-18) for general, support and privacy enquiries.
+   * Rendered only through <ContactEmail /> as a plain mailto link.
+   */
+  contactEmail: 'Jbl_76@hotmail.com',
+  /** Public code profile. Not a contact route. */
+  githubUrl: 'https://github.com/Jimmy7610',
+  githubLabel: 'GitHub (@Jimmy7610)',
+  /**
+   * Owner-approved copyright line: the rights holder is the person; "Taren" is the name the work is published under
+   * (not a registered company). Fixed year as approved.
+   */
+  copyright: '© 2026 Jimmy Eliasson · Taren',
 } as const;
 
 /** The one and only Ko-fi URL. Every support link on the site reads it from here. */
