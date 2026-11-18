@@ -91,20 +91,22 @@ test.describe('PDF Studio (draft)', () => {
     await expect(page.locator('.reqs dt')).toHaveCount(6);
     await expect(page.getByRole('heading', { name: 'Made by Taren' })).toBeVisible();
     await expect(page.locator('.attribution img[alt*="About PDF Studio"]')).toHaveCount(1);
-    // PDF Studio's own app icon in the hero, loaded — never the Taren symbol.
-    const heroIcon = page.locator('#product-title').locator('xpath=ancestor::section[1]').locator('picture img[alt^="PDF Studio app icon"]');
-    await expect(heroIcon).toHaveCount(1);
+    // PDF Studio's own app icon beside the title, visible and loaded — never the Taren symbol.
+    const heroIcon = page.locator('#product-title').locator('xpath=ancestor::section[1]').locator('picture img[alt^="PDF Studio app icon"]').first();
+    await expect(heroIcon).toBeVisible();
     await expect.poll(() => heroIcon.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
-    expect(await heroIcon.getAttribute('src')).not.toMatch(/taren/i);
+    expect(await heroIcon.getAttribute('src')).toMatch(/\/_astro\/icon\./);
   });
 
-  test("the product card shows PDF Studio's own icon", async ({ page }) => {
+  test("the product card carries PDF Studio's own icon, hidden over the desktop screenshot like Lumen Capture's", async ({ page }) => {
     await page.goto('/products/');
-    const icon = page.locator('[data-product-card="pdfstudio"] img.media-icon');
-    await expect(icon).toHaveCount(1);
-    await icon.scrollIntoViewIfNeeded();
-    await expect.poll(() => icon.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
-    expect(await icon.getAttribute('src')).toMatch(/\/_astro\/icon\./);
+    const card = page.locator('[data-product-card="pdfstudio"]');
+    await expect(card.locator('img.media-icon')).toHaveCount(1);
+    expect(await card.locator('img.media-icon').getAttribute('src')).toMatch(/\/_astro\/icon\./);
+    // Desktop cards show the app screenshot; ProductMedia hides the floating icon so it never covers the capture.
+    await expect(card.locator('img.media-icon')).toBeHidden();
+    await expect(page.locator('[data-product-card="lumen-capture"] img.media-icon')).toBeHidden();
+    await expect(card.locator('.media-phone').first()).toBeVisible();
   });
 
   test('every screenshot loads in a desktop frame at the right ratio', async ({ page }) => {

@@ -155,7 +155,7 @@ are Swedish-only. No distribution channel has been chosen. For the website: the
 screenshots are Swedish-only at 1×, so English and 2× captures would improve the page.
 
 ### Tests (this branch)
-- Unit tests (80): PDF Studio is unpublished, not featured, has no download or website URL, has its own hash-checked icon, no banned
+- Unit tests (81): PDF Studio is unpublished, not featured, has no download or website URL, has its own hash-checked icon, no banned
   claims, and its status note mentions 0.9.0, unsigned and not released. The originals match the manifest SHA-256 and
   are 1424×911. All 13 derivatives are 1000×660 WebP. Every desktop image is at the 1000:660 ratio.
 - Production e2e: `/products/pdfstudio/` returns 404. "PDF Studio" appears neither on `/`, `/products/` nor
