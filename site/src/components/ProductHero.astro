@@ -10,14 +10,17 @@ interface Props {
   product: ProductData;
 }
 const { product } = Astro.props;
+// Desktop apps show a wide window capture: it follows the title in reading order (so it is seen early
+// on phones) and gets the wider column on large screens. Phone products keep the original layout.
+const wide = product.device === 'desktop';
 ---
 
 <section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="product-title" data-accent={product.slug}>
   <div class="grid-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="hero-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <Swoosh id="product-hero-arc" class="hero-arc pointer-events-none absolute -z-10" />
-  <div class="container-x grid items-center gap-12 py-14 md:py-20 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-    <div class="hero-copy">
+  <div class:list={['container-x hero-grid py-14 md:py-20', wide ? 'is-wide' : 'is-tall']}>
+    <div class="hero-head">
       <nav aria-label="Breadcrumb" class="mb-8 text-sm text-subtle">
         <ol class="flex items-center gap-2">
           <li><a href="/products/" class="inline-flex min-h-11 items-center hover:text-text">Products</a></li>
@@ -36,6 +39,7 @@ const { product } = Astro.props;
               formats={['avif', 'webp']}
     fallbackFormat="webp"
               loading="eager"
+              pictureAttributes={{ class: 'shrink-0' }}
               class="size-16 shrink-0 rounded-[1.1rem] shadow-[0_20px_40px_-16px_rgb(0_0_0/0.7)] sm:size-20 sm:rounded-[1.3rem]"
             />
           )
@@ -50,7 +54,25 @@ const { product } = Astro.props;
       <p class="mt-8 max-w-xl font-display text-[clamp(1.25rem,1rem+1vw,1.75rem)] leading-snug tracking-[-0.02em] text-text">
         {product.tagline}
       </p>
-      <p class="mt-5 max-w-xl text-lead text-muted">{product.description}</p>
+    </div>
+    {
+      wide && (
+      <div class="hero-media">
+        <ProductMedia
+          name={product.name}
+          heroImage={product.heroImage}
+          heroImageAlt={product.heroImageAlt}
+          icon={product.icon}
+          iconAlt={product.iconAlt}
+          variant="hero"
+          device={product.device}
+          eager
+        />
+      </div>
+      )
+    }
+    <div class="hero-body">
+      <p class="max-w-xl text-lead text-muted">{product.description}</p>
 
       <dl class="mt-8 grid max-w-xl gap-4 rounded-(--radius-card) border border-line bg-surface/60 p-5 sm:grid-cols-[auto_1fr] sm:gap-x-8">
         <dt class="text-sm text-subtle">Status</dt>
@@ -93,19 +115,23 @@ const { product } = Astro.props;
         }
       </div>
     </div>
-    <div class="hero-media">
-      <ProductMedia
-        name={product.name}
-        heroImage={product.heroImage}
-        heroImageAlt={product.heroImageAlt}
-        icon={product.icon}
-        iconAlt={product.iconAlt}
-        variant="hero"
-        device={product.device}
-        eager
-      />
+    {
+      !wide && (
+      <div class="hero-media">
+        <ProductMedia
+          name={product.name}
+          heroImage={product.heroImage}
+          heroImageAlt={product.heroImageAlt}
+          icon={product.icon}
+          iconAlt={product.iconAlt}
+          variant="hero"
+          device={product.device}
+          eager
+        />
+      </div>
+      )
+    }
     </div>
-  </div>
 </section>
 
 <style>
@@ -124,6 +150,63 @@ const { product } = Astro.props;
   }
   .hero-media :global(.product-media) {
     background: transparent;
+  }
+
+  /* Layout: head (breadcrumb, title, tagline) · body (description, status, actions) · media. */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-body {
+    margin-top: 1.25rem;
+  }
+  .is-tall .hero-media {
+    margin-top: 3rem;
+  }
+  /* Wide (desktop-app) captures follow the tagline, so they are seen early on phones and tablets. */
+  .is-wide .hero-media {
+    margin-top: 2.5rem;
+  }
+  .is-wide .hero-body {
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    .hero-grid {
+      column-gap: 4rem;
+    }
+    .hero-head {
+      grid-area: head;
+    }
+    .hero-body {
+      grid-area: body;
+    }
+    .hero-media {
+      grid-area: media;
+    }
+    /* Phone products: unchanged — copy centred against the phone. */
+    .is-tall {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      grid-template-rows: 1fr auto auto 1fr;
+      grid-template-areas: '. media' 'head media' 'body media' '. media';
+    }
+    .is-tall .hero-media {
+      margin-top: 0;
+      align-self: center;
+    }
+    /* Desktop apps: the screenshot gets the wider column and sits level with the title. */
+    .is-wide {
+      column-gap: 3.5rem;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas: 'head media' 'body media';
+    }
+    .is-wide .hero-media {
+      align-self: start;
+      margin-top: 4.25rem;
+    }
+    .is-wide .hero-body {
+      margin-top: 1.25rem;
+    }
   }
   @media (prefers-reduced-motion: no-preference) {
     .hero-media {

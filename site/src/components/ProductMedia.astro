@@ -32,7 +32,7 @@ const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
         sizes={
           device === 'desktop'
             ? variant === 'hero'
-              ? '(min-width: 1024px) 560px, 92vw'
+              ? '(min-width: 1280px) 700px, (min-width: 1024px) 56vw, 92vw'
               : '(min-width: 768px) 420px, 86vw'
             : variant === 'hero'
               ? '(min-width: 1024px) 320px, 60vw'
@@ -127,8 +127,14 @@ const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
     max-width: none;
     transform: translateY(8%);
   }
+  /* Wide captures fill their column; no side padding so nothing is scaled down needlessly. */
+  .device-desktop.is-hero {
+    overflow: visible;
+    padding: 0 0 1.5rem;
+  }
   .device-desktop.is-hero :global(.media-phone) {
-    width: min(100%, 40rem);
+    width: 100%;
+    max-width: 48rem;
   }
   .is-hero :global(.media-phone) {
     width: min(72%, 20rem);

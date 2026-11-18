@@ -1,5 +1,31 @@
 # Taren 2.0 — Test report
 
+## Taren 2.2 final portfolio polish — 2026-11-18
+
+Branch `feature/taren-2.2-final-polish` from `preview/drafts` @ `2c17026`. All commands run from `site/`; every
+result below comes from an actual run in the cloud session (Linux, Chromium).
+
+| Command | Result |
+|---|---|
+| `npm run check` (typecheck → lint → Vitest → build → Playwright) | ✅ exit 0 |
+| `npm run typecheck` | ✅ 0 errors, 0 warnings, 0 hints |
+| `npm run lint` | ✅ 0 problems |
+| `npm test` (Vitest) | ✅ 80 / 80, 10 files |
+| Playwright, both projects (production + drafts build) | ✅ 220 / 220, incl. axe, visual regression, 8 viewports |
+| New drafts e2e | hero order on phones, hero size/aspect/first-viewport at 1024/1440/1920 for both desktop apps, icon never squeezed, gallery arrows + position read-out + keyboard focus at the ends, touch swipe + lightbox, reduced motion, no-JS fallback |
+| Visual baselines | Pulse Garden: **unchanged** (pixel-identical hero at 1440/834/390). PDF Studio draft 375/1440 baselines updated deliberately (new hero order). |
+
+Lighthouse 13 (local static server; drafts build for the two apps):
+
+| Page | Mobile perf / a11y / BP / SEO | Desktop perf / a11y / BP / SEO |
+|---|---|---|
+| Pulse Garden (production build) | 99 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Lumen Capture (draft) | 97 / 100 / 100 / 69\* | 100 / 100 / 100 / 69\* |
+| PDF Studio (draft) | 97 / 100 / 100 / 69\* | 100 / 100 / 100 / 69\* |
+
+\* SEO 69 is the intentional `noindex` on unpublished drafts. CLS 0 on every page. Mobile LCP for the two apps is
+now the hero screenshot (≈ 2.4–2.5 s simulated slow 4G, previously text), because it is shown in the first screen.
+
 ## Taren 2.1 release candidate — 2026-11-18
 
 Branch `feature/taren-2.0`, implementation commit `9297785` (+ follow-up docs/headers commit). Preview:

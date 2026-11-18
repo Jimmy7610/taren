@@ -106,6 +106,9 @@ description.
 this repository, so `icon` is left empty. The page uses the existing fallbacks: the hero shows no icon and cards use
 the screenshot. The Taren symbol is never used as PDF Studio's icon, and a unit test enforces that. To add the icon,
 place `site/src/assets/products/pdfstudio/icon.png` (≥ 256 px, preferably 512 px) and set `icon`/`iconAlt`.
+Re-checked in the Taren 2.2 final polish (2026-11-18): the file is still not reachable from the cloud session (no
+shared computer folder, not in this repository), so the fallback is unchanged. No replacement icon was generated, and
+the icon was not cut out of the About screenshot, because only the original file counts as a verified source.
 
 **New optional schema fields** (available to every product, unused by Pulse Garden and Lumen Capture):
 `beforeRelease` (honest pre-release list, shown with the timeline; not allowed for released products), `requirements`
@@ -170,3 +173,14 @@ screenshots are Swedish-only at 1×, so English and 2× captures would improve t
 Locally: `cd site && TAREN_SHOW_DRAFTS=1 npm run dev`, then open `/products/pdfstudio/`. Online (owner approval
 needed): push this branch's commit to `preview/drafts` (`git push origin <sha>:preview/drafts`). Cloudflare builds it
 at `https://preview-drafts.taren-2-preview.pages.dev/products/pdfstudio/`, which is noindex.
+
+## Product page layout notes (Taren 2.2 final polish)
+
+- **Hero:** phone products (`device: phone`) keep the original layout. Desktop apps (`device: desktop`) show the
+  screenshot right after the tagline on phones and tablets, and in the wider right-hand column, level with the title,
+  on large screens (≈ 645 px wide at 1440 px instead of 480 px). The whole capture is always shown: no cropping, aspect
+  ratio kept (e2e-tested).
+- **Gallery:** previous/next buttons (`aria-controls`, `aria-disabled` at the ends so focus stays), a position read-out
+  ("2–3 of 10"), edge fades that show more content follows, and a hint adapted to touch or mouse. Reduced motion jumps
+  instead of smooth-scrolling. Without JavaScript the arrows stay hidden and every screenshot is still a link. The
+  lightbox is unchanged.

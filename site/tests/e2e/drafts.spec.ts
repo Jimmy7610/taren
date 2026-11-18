@@ -186,3 +186,110 @@ for (const [w, h] of [[375, 812], [1440, 900]] as const) {
     });
   });
 }
+
+// Taren 2.2 final polish: hero prominence and gallery navigation for desktop apps.
+for (const slug of ['lumen-capture', 'pdfstudio']) {
+  test.describe(`${slug} hero`, () => {
+    test('on phones the screenshot follows the tagline, before the description', async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(`/products/${slug}/`);
+      const order = await page.evaluate(() =>
+        ['.hero-head', '.hero-media', '.hero-body'].map((s) => document.querySelector(s)!.getBoundingClientRect().top),
+      );
+      expect(order[0]).toBeLessThan(order[1]!);
+      expect(order[1]).toBeLessThan(order[2]!);
+      const shot = (await page.locator('.hero-media .desktop').boundingBox())!;
+      expect(shot.x).toBeGreaterThanOrEqual(0);
+      expect(shot.x + shot.width).toBeLessThanOrEqual(390);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    });
+
+    for (const [w, h] of [[1024, 768], [1440, 900], [1920, 1080]] as const) {
+      test(`at ${w}px the screenshot is large, uncropped and level with the title`, async ({ page }) => {
+        await page.setViewportSize({ width: w, height: h });
+        await page.goto(`/products/${slug}/`);
+        const img = page.locator('.hero-media .desktop img');
+        const box = (await img.boundingBox())!;
+        const title = (await page.locator('h1').boundingBox())!;
+        expect(box.width).toBeGreaterThanOrEqual(w >= 1440 ? 600 : 480);
+        expect(box.width / box.height).toBeCloseTo(1000 / 660, 1); // aspect ratio preserved
+        expect(box.x + box.width).toBeLessThanOrEqual(w);
+        expect(box.y).toBeLessThan(title.y + title.height); // starts beside the title, not below the copy
+        expect(box.y + box.height).toBeLessThanOrEqual(h); // fully in the first viewport
+        // A product icon beside a long title is never squeezed.
+        for (const icon of await page.locator('.hero-head picture img').all()) {
+          const ib = (await icon.boundingBox())!;
+          expect(ib.width).toBeCloseTo(ib.height, 0);
+        }
+        // The frame does not clip the image.
+        expect(await img.evaluate((i: HTMLImageElement) => i.naturalWidth > 0 && i.complete)).toBe(true);
+      });
+    }
+  });
+}
+
+test.describe('gallery navigation', () => {
+  test('arrow buttons page through the screenshots and report the position', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/products/pdfstudio/');
+    const root = page.locator('#screenshots [data-gallery]');
+    const prev = root.getByRole('button', { name: 'Previous screenshots' });
+    const next = root.getByRole('button', { name: 'Next screenshots' });
+    const status = root.locator('[data-gallery-status]');
+    await root.scrollIntoViewIfNeeded();
+    await expect(prev).toHaveAttribute('aria-disabled', 'true');
+    await expect(next).toHaveAttribute('aria-disabled', 'false');
+    await expect(status).toHaveText('1–2 of 10');
+    await next.click();
+    await expect(status).toHaveText('2–3 of 10');
+    await expect(prev).toHaveAttribute('aria-disabled', 'false');
+    // Keyboard: the buttons are reachable and keep focus at the end of the row.
+    await next.focus();
+    for (let i = 0; i < 12; i++) await page.keyboard.press('Enter');
+    await expect(next).toHaveAttribute('aria-disabled', 'true');
+    await expect(next).toBeFocused();
+    await expect(status).toHaveText('9–10 of 10');
+    await expect(root).toHaveAttribute('data-at-end', '');
+    await prev.click();
+    await expect(root).not.toHaveAttribute('data-at-end', '');
+  });
+
+  test('touch: swiping updates the indicator; the lightbox still opens', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+    const page = await ctx.newPage();
+    await page.goto('/products/lumen-capture/');
+    const root = page.locator('#screenshots [data-gallery]');
+    await root.scrollIntoViewIfNeeded();
+    await expect(root.locator('.hint-touch')).toBeVisible();
+    await expect(root.locator('[data-gallery-status]')).toHaveText('1 of 8');
+    await root.locator('.gallery').evaluate((g) => g.scrollBy({ left: g.clientWidth, behavior: 'instant' }));
+    await expect(root.locator('[data-gallery-status]')).not.toHaveText('1 of 8');
+    await root.locator('.shot-link').first().scrollIntoViewIfNeeded();
+    await root.locator('.shot-link').first().tap();
+    await expect(root.locator('dialog[data-lightbox]')).toBeVisible();
+    await ctx.close();
+  });
+
+  test('reduced motion: arrows jump instantly instead of animating', async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+    const page = await ctx.newPage();
+    await page.goto('/products/pdfstudio/');
+    const gallery = page.locator('#screenshots .gallery');
+    await gallery.scrollIntoViewIfNeeded();
+    await page.getByRole('button', { name: 'Next screenshots' }).click();
+    // Instant: scrolled on the very next frame, without waiting for a smooth-scroll animation.
+    const left = await gallery.evaluate(() => new Promise<number>((r) => requestAnimationFrame(() => r(document.querySelector('#screenshots .gallery')!.scrollLeft))));
+    expect(left).toBeGreaterThan(400);
+    await ctx.close();
+  });
+
+  test('without JavaScript the gallery still lists every screenshot and hides the arrows', async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto('/products/pdfstudio/');
+    await expect(page.locator('#screenshots [data-gallery-status]')).toHaveText('10 screenshots');
+    await expect(page.locator('#screenshots [data-gallery-nav]')).toBeHidden();
+    await expect(page.locator('#screenshots .shot-link')).toHaveCount(10);
+    await ctx.close();
+  });
+});
