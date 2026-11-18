@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { PAGES, VIEWPORTS, scrollThrough } from './helpers';
+import { EXTRA_SIZES, PAGES, VIEWPORTS, scrollThrough } from './helpers';
 
-for (const width of VIEWPORTS) {
-  test.describe(`${width}px`, () => {
-    test.use({ viewport: { width, height: width < 768 ? 800 : 900 } });
+const SIZES: ReadonlyArray<readonly [number, number]> = [...VIEWPORTS.map((w) => [w, w < 768 ? 800 : 900] as const), ...EXTRA_SIZES];
+
+for (const [width, height] of SIZES) {
+  test.describe(`${width}×${height}`, () => {
+    test.use({ viewport: { width, height } });
 
     for (const { path } of [...PAGES, { path: '/404.html' }]) {
       test(`${path} has no overflow, overlap or tiny targets`, async ({ page }) => {

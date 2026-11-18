@@ -7,9 +7,10 @@ const root = resolve(__dirname, '../..');
 const meta = (p: string) => sharp(resolve(root, p)).metadata();
 
 describe('official brand assets', () => {
-  it('keeps the three owner-supplied masters', () => {
+  it('keeps the three owner-supplied masters outside the public directory', () => {
     for (const f of ['taren-icon.png', 'taren-logo-dark.png', 'taren-logo-light.png']) {
-      expect(existsSync(resolve(root, 'public/branding', f)), f).toBe(true);
+      expect(existsSync(resolve(root, 'brand/masters', f)), f).toBe(true);
+      expect(existsSync(resolve(root, 'public/branding', f)), `${f} must not be public`).toBe(false);
     }
   });
 

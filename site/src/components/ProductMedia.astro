@@ -29,7 +29,7 @@ const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
         alt={heroImageAlt ?? ''}
         sizes={variant === 'hero' ? '(min-width: 1024px) 320px, 60vw' : '(min-width: 768px) 200px, 40vw'}
         loading={eager ? 'eager' : 'lazy'}
-        fetchpriority={eager ? 'high' : 'auto'}
+        fetchpriority="auto"
         class="media-phone"
       />
     )
@@ -81,8 +81,8 @@ const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
     overflow: hidden;
     isolation: isolate;
     background:
-      radial-gradient(ellipse 70% 60% at 50% 110%, rgb(53 213 255 / 0.18), transparent 70%),
-      radial-gradient(ellipse 60% 50% at 90% 0%, rgb(141 91 255 / 0.16), transparent 70%),
+      radial-gradient(ellipse 70% 60% at 50% 110%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%),
+      radial-gradient(ellipse 60% 50% at 90% 0%, color-mix(in srgb, var(--accent-alt) 16%, transparent), transparent 70%),
       var(--color-surface-raised);
   }
   .is-card {
@@ -138,7 +138,7 @@ const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
     aspect-ratio: 1;
     border: 1px solid var(--color-line-strong);
     border-radius: 24%;
-    background: linear-gradient(150deg, rgb(53 213 255 / 0.12), rgb(141 91 255 / 0.14));
+    background: linear-gradient(150deg, rgb(1 227 252 / 0.12), rgb(227 4 251 / 0.12));
     color: var(--color-text);
     font-size: clamp(2.5rem, 7vw, 4rem);
     font-weight: 600;

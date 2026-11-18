@@ -12,6 +12,13 @@ export const PAGES = [
 
 export const VIEWPORTS = [320, 375, 390, 768, 1024, 1440, 1920] as const;
 
+/** Extra sizes beyond the required widths: ultrawide and landscape phones. */
+export const EXTRA_SIZES = [
+  [2560, 1440],
+  [844, 390],
+  [932, 430],
+] as const;
+
 export const KOFI = 'https://ko-fi.com/taren';
 
 /** Collects console errors, page errors and failed same-origin requests. */

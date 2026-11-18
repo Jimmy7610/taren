@@ -1,0 +1,87 @@
+---
+/** Honest progress timeline from verified milestones (with its source). */
+import type { MilestoneState } from '@/lib/product-schema';
+
+interface Props {
+  milestones: ReadonlyArray<{ title: string; state: MilestoneState; note?: string | undefined }>;
+  source?: string | undefined;
+}
+const { milestones, source } = Astro.props;
+const LABEL: Record<MilestoneState, string> = { done: 'Done', 'in-progress': 'In progress', next: 'Next', planned: 'Planned' };
+---
+
+<div>
+  <ol class="timeline">
+    {
+      milestones.map((m) => (
+        <li class:list={['tl-item', `is-${m.state}`]} data-state={m.state}>
+          <span class="tl-dot" aria-hidden="true" />
+          <div class="tl-body">
+            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h3 class="text-base leading-snug font-semibold tracking-[-0.01em] text-text sm:text-lg">{m.title}</h3>
+              <span class="tl-state text-xs font-medium tracking-[0.06em] uppercase">{LABEL[m.state]}</span>
+            </div>
+            {m.note && <p class="mt-1.5 max-w-xl text-[0.9375rem] leading-relaxed text-muted">{m.note}</p>}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  {source && <p class="mt-8 text-sm text-subtle">Source: {source}.</p>}
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    display: grid;
+    gap: 1.75rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.4375rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent-alt) 55%, var(--color-line) 80%);
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1rem 1fr;
+    column-gap: 1.25rem;
+  }
+  .tl-dot {
+    position: relative;
+    z-index: 1;
+    margin-top: 0.35rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    border: 2px solid var(--color-line-strong);
+    background: var(--color-ink);
+  }
+  .is-done .tl-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .is-in-progress .tl-dot {
+    border-color: var(--accent-alt);
+    background: radial-gradient(circle, var(--accent-alt) 0 35%, var(--color-ink) 40%);
+  }
+  .tl-state {
+    color: var(--color-subtle);
+  }
+  .is-done .tl-state {
+    color: var(--color-text);
+  }
+  .is-in-progress .tl-state {
+    color: var(--color-magenta-text);
+  }
+  .is-next .tl-body,
+  .is-planned .tl-body {
+    opacity: 0.85;
+  }
+</style>

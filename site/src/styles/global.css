@@ -1,10 +1,28 @@
 @import 'tailwindcss';
-@import '@fontsource-variable/inter/wght.css';
-@import '@fontsource-variable/sora/wght.css';
+@import './product-accents.css';
+
+/* Self-hosted, subset variable fonts (scripts/subset-fonts.py). Latin + Latin-1 incl. å ä ö. */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../assets/fonts/inter-subset.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Sora Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url('../assets/fonts/sora-subset.woff2') format('woff2-variations');
+}
 
 /*
  * TAREN design tokens. See docs/DESIGN_SYSTEM.md.
- * Contrast on --color-ink #0A1020: text 17.7:1, muted 9.0:1, subtle 6.0:1, cyan 10.9:1. Purple (4.6:1) is for accents, never body text.
+ * Contrast on --color-ink #0A1020: text 17.7:1, muted 9.0:1, subtle 6.0:1, cyan 10.9:1.
+ * Brand colours are sampled from the official symbol (public masters in site/brand/masters/):
+ *   cyan #01E3FC → blue #0155F6 → violet #630CE1 → magenta #E304FB. Blue and violet are below
+ *   text contrast and are for graphics only; the *-text tints (≥ 6:1) are for type.
  */
 @theme {
   --color-ink: #0a1020;
@@ -22,20 +40,29 @@
   --color-purple-soft: #b394ff;
   --color-amber: #ffc46b;
 
+  --color-brand-cyan: #01e3fc;
+  --color-brand-blue: #0155f6;
+  --color-brand-violet: #630ce1;
+  --color-brand-magenta: #e304fb;
+  --color-blue-text: #5a9bff;
+  --color-violet-text: #a47bff;
+  --color-magenta-text: #f07cff;
+
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Sora Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
-  --text-display: clamp(2.75rem, 1.6rem + 5.6vw, 6.25rem);
-  --text-display--line-height: 0.98;
-  --text-display--letter-spacing: -0.045em;
-  --text-headline: clamp(2rem, 1.35rem + 2.9vw, 3.5rem);
+  /* Fluid modular scale (≈ 1.25 at mobile → ≈ 1.333 at desktop). Tracking tightens as size grows. */
+  --text-display: clamp(2.625rem, 1.55rem + 5.4vw, 6.5rem);
+  --text-display--line-height: 0.97;
+  --text-display--letter-spacing: -0.048em;
+  --text-headline: clamp(2rem, 1.4rem + 2.7vw, 3.625rem);
   --text-headline--line-height: 1.04;
-  --text-headline--letter-spacing: -0.035em;
-  --text-title: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem);
+  --text-headline--letter-spacing: -0.036em;
+  --text-title: clamp(1.375rem, 1.18rem + 0.85vw, 1.875rem);
   --text-title--line-height: 1.15;
-  --text-title--letter-spacing: -0.02em;
-  --text-lead: clamp(1.0625rem, 0.98rem + 0.4vw, 1.3125rem);
-  --text-lead--line-height: 1.6;
+  --text-title--letter-spacing: -0.022em;
+  --text-lead: clamp(1.0625rem, 0.99rem + 0.36vw, 1.3125rem);
+  --text-lead--line-height: 1.62;
 
   --radius-card: 1.25rem;
   --radius-panel: 1.75rem;
@@ -67,6 +94,13 @@
 @layer base {
   :root {
     color-scheme: dark;
+    /* Default accent for anything without a product accent: the brand cyan → magenta. */
+    --accent: var(--color-brand-cyan);
+    --accent-alt: var(--color-brand-magenta);
+    --gradient-brand: linear-gradient(100deg, #01e3fc 0%, #0155f6 40%, #630ce1 70%, #e304fb 100%);
+    --gradient-brand-text: linear-gradient(100deg, #5eeaff 0%, #5a9bff 40%, #a47bff 70%, #f07cff 100%);
+    --measure-lead: 60ch;
+    --measure-prose: 68ch;
     --gutter: clamp(1rem, 0.6rem + 2.2vw, 2.5rem);
     --header-h: 4.5rem;
     --focus: 0 0 0 2px var(--color-ink), 0 0 0 4px var(--color-cyan);
@@ -76,6 +110,8 @@
     background: var(--color-ink);
     color: var(--color-text);
     font-family: var(--font-sans);
+    /* Inter: single-storey-free alternates for crisper UI text. */
+    font-feature-settings: 'cv11', 'ss01';
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -106,8 +142,14 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 600;
+    /* Slightly heavier than 600 to offset light-on-dark irradiation at large sizes. */
+    font-weight: 620;
+    font-feature-settings: normal;
     text-wrap: balance;
+  }
+  h3,
+  h4 {
+    font-weight: 600;
   }
 
   p {
@@ -141,17 +183,81 @@
 
   .eyebrow {
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    /* Scales down slightly on the narrowest phones so one-line labels stay on one line. */
+    font-size: clamp(0.6875rem, 0.64rem + 0.24vw, 0.75rem);
     font-weight: 600;
-    letter-spacing: 0.16em;
+    letter-spacing: clamp(0.11em, 0.07em + 0.28vw, 0.16em);
     text-transform: uppercase;
     color: var(--color-cyan-soft);
   }
 
   .prose-taren {
+    max-width: var(--measure-prose);
     color: var(--color-muted);
     font-size: 1.0625rem;
     line-height: 1.75;
+  }
+
+  .measure-lead {
+    max-width: var(--measure-lead);
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* Gradient type in the official cyan → blue → violet → magenta, using text-safe tints. */
+  .text-brand-gradient {
+    background: var(--gradient-brand-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.08em; /* keep descenders */
+  }
+
+  /* Subtle film grain to break up gradient banding on large panels (small tiled PNG). */
+  .surface-grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .surface-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: url('../assets/textures/grain.png');
+    background-size: 64px 64px;
+    opacity: 0.045;
+    mix-blend-mode: overlay;
+  }
+
+  /* 1px brand-gradient border, revealed on hover/focus via .is-lit or :hover on the host. */
+  .ring-brand {
+    position: relative;
+  }
+  .ring-brand::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--gradient-brand);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-quart);
+    pointer-events: none;
+  }
+  .ring-brand:hover::before,
+  .ring-brand:focus-within::before,
+  .ring-brand.is-lit::before {
+    opacity: 0.85;
   }
   .prose-taren > * + * {
     margin-top: 1.1em;

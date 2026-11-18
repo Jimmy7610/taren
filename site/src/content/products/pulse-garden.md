@@ -21,6 +21,68 @@ heroImageAlt: >-
   Pulse Garden gameplay: a hexagonal garden of glowing organisms mid-reaction, with the text
   "Chain x19 — Whole garden pulse!".
 ogImage: /og/pulse-garden.jpg
+accent: '#2CC3B3'
+accentAlt: '#FF72D0'
+facts:
+  - label: Genre
+    value: Strategy puzzle
+  - label: Designed for
+    value: iPhone, portrait
+  - label: Connection
+    value: Plays fully offline
+  - label: Languages
+    value: English, Swedish
+  - label: Controls
+    value: One finger, turn-based
+  - label: Modes
+    value: Free · Daily · Challenges
+  - label: Challenges
+    value: 200 levels in 10 chapters
+  - label: Engine
+    value: Godot 4
+stepsEyebrow: How it plays
+stepsTitle: From one tap to a whole-garden pulse
+steps:
+  - title: Read the garden
+    description: >-
+      Three organisms, one rule each. Spark fires when planted, Bloom doubles a pulse, Anchor
+      absorbs it and calms the garden.
+    image: ../../assets/products/pulse-garden/how_to_play.webp
+    alt: The in-game How to play card explaining Spark, Bloom and Anchor, Heat and terrain.
+  - title: Preview the move
+    description: >-
+      Tap a hex to see exactly what will happen — points, Instability before and after, and
+      whether the move is safe or risky. Tap again to plant.
+    image: ../../assets/products/pulse-garden/preview.webp
+    alt: A move preview tagged CALMING showing +520 points and Instability dropping from 8 to 7.
+  - title: Set off the chain
+    description: >-
+      Pulses travel from organism to organism. Plan the placement right and a single tap lights
+      up the whole garden.
+    image: ../../assets/products/pulse-garden/chain.webp
+    alt: A chain reaction of 19 organisms across the garden with the text "Chain x19 — Whole garden pulse!".
+milestones:
+  - title: Playable core
+    state: done
+    note: Hex garden, three organisms, deterministic chain reactions, score, Instability and restart.
+  - title: Clarity and onboarding
+    state: done
+    note: Welcome card, a one-minute tutorial and explicit move previews.
+  - title: Replayability
+    state: in-progress
+    note: Heat, terrain, Free/Daily/Challenge modes, par and stars are in; human playtesting continues.
+  - title: 200 challenge levels
+    state: done
+    note: Ten chapters built and automatically validated; per-chapter playtests still to come.
+  - title: iPhone readiness
+    state: in-progress
+    note: iPhone layouts and Xcode export prepared. Not yet built on a Mac or tested on an iPhone.
+  - title: External playtest
+    state: next
+  - title: TestFlight beta and App Store
+    state: planned
+    note: Only after testing on iPhone, and with the owner's approval.
+milestonesSource: Pulse Garden project roadmap and README (October 2026)
 ogImageAlt: Pulse Garden — a living puzzle where every move changes everything.
 gallery:
   - image: ../../assets/products/pulse-garden/menu.webp

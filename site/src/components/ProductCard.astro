@@ -12,7 +12,7 @@ const { product, headingLevel: H = 'h3', eager = false } = Astro.props;
 const href = `/products/${product.slug}/`;
 ---
 
-<article class="product-card group relative flex flex-col overflow-hidden rounded-(--radius-card) border border-line bg-surface" data-product-card={product.slug}>
+<article class="product-card ring-brand group relative flex flex-col overflow-hidden rounded-(--radius-card) border border-line bg-surface" data-product-card={product.slug} data-accent={product.slug}>
   <ProductMedia
     name={product.name}
     heroImage={product.heroImage}

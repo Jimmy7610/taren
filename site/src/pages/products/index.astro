@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import ProductCard from '@/components/ProductCard.astro';
+import ProductShowcase from '@/components/ProductShowcase.astro';
 import { getPublicProducts } from '@/lib/catalog';
 import { breadcrumbJsonLd } from '@/lib/seo';
 
@@ -27,22 +28,21 @@ const products = await getPublicProducts();
 
   <section class="container-x py-16 md:py-24" aria-label="Product list">
     {
-      products.length > 0 ? (
+      products.length === 1 && products[0] ? (
+        <>
+          {/* One product: a full-width featured stage. The grid takes over from two products. */}
+          <ProductShowcase product={products[0]} headingLevel="h2" eager />
+          <p class="mt-8 text-sm text-subtle">
+            More projects are in the workshop. They will appear here when there is something real to show — not before.
+          </p>
+        </>
+      ) : products.length > 1 ? (
         <ul class="grid gap-6 md:grid-cols-2" role="list">
           {products.map((p, i) => (
             <li class="flex">
-              <ProductCard product={p} headingLevel="h2" eager={i === 0} />
+              <ProductCard product={p} headingLevel="h2" eager={i < 2} />
             </li>
           ))}
-          <li class="flex">
-            <div class="workshop flex w-full flex-col justify-end rounded-(--radius-card) border border-dashed border-line-strong p-7 sm:p-10">
-              <p class="eyebrow text-subtle!">In the workshop</p>
-              <p class="mt-4 font-display text-title text-text">More is on the way.</p>
-              <p class="mt-4 max-w-md text-muted">
-                Other projects are in progress. They will appear here when there is something real to show — not before.
-              </p>
-            </div>
-          </li>
         </ul>
       ) : (
         <p class="text-lead text-muted">The first products will appear here when they are ready to show.</p>
@@ -50,15 +50,3 @@ const products = await getPublicProducts();
     }
   </section>
 </BaseLayout>
-
-<style>
-  .workshop {
-    min-height: 20rem;
-    background:
-      radial-gradient(ellipse 60% 60% at 100% 0%, rgb(141 91 255 / 0.08), transparent 70%),
-      transparent;
-  }
-  li > :global(.product-card) {
-    width: 100%;
-  }
-</style>

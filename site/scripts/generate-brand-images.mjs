@@ -1,11 +1,11 @@
 /**
- * Builds every brand derivative from the official masters in public/branding/.
+ * Builds every brand derivative from the official masters in brand/masters/.
  * Run from site/:  node scripts/generate-brand-images.mjs
  *
  * Masters (owner-supplied, never modified):
- *   public/branding/taren-icon.png        T symbol, colour, transparent
- *   public/branding/taren-logo-light.png  symbol + dark-navy wordmark — for LIGHT backgrounds
- *   public/branding/taren-logo-dark.png   solid black logo — for LIGHT backgrounds (not used: invisible on dark)
+ *   brand/masters/taren-icon.png        T symbol, colour, transparent
+ *   brand/masters/taren-logo-light.png  symbol + dark-navy wordmark — for LIGHT backgrounds
+ *   brand/masters/taren-logo-dark.png   solid black logo — for LIGHT backgrounds (not used: invisible on dark)
  *
  * Derivatives:
  *   src/assets/brand/taren-logo-on-dark.png  full logo for the dark site: the navy wordmark letters are
@@ -97,7 +97,7 @@ const pngOpts = { compressionLevel: 9, adaptiveFiltering: true, palette: false }
 mkdirSync(p('src/assets/brand'), { recursive: true });
 
 // ---- Full logo for dark backgrounds
-const logo = await loadRaw(p('public/branding/taren-logo-light.png'));
+const logo = await loadRaw(p('brand/masters/taren-logo-light.png'));
 const logoCleared = clearStrays(logo);
 const recoloured = recolourWordmark(logo);
 const logoBox = alphaBox(logo);
@@ -109,7 +109,7 @@ await toSharp(logo)
   .toFile(p('src/assets/brand/taren-logo-on-dark.png'));
 
 // ---- Symbol
-const icon = await loadRaw(p('public/branding/taren-icon.png'));
+const icon = await loadRaw(p('brand/masters/taren-icon.png'));
 const iconCleared = clearStrays(icon);
 const iconBox = alphaBox(icon);
 const side = Math.max(iconBox.width, iconBox.height) + 2 * pad;

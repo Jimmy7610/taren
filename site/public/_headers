@@ -10,12 +10,20 @@
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Same-name brand files (favicons, app icons, social images) change rarely but must not stick
+# for a day after a change: 1 hour fresh, then revalidated in the background.
 /og/*
-  Cache-Control: public, max-age=86400
-
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 /*.ico
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 /*.png
-  Cache-Control: public, max-age=86400
-/*.svg
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/site.webmanifest
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# Keep Cloudflare Pages hostnames out of search engines (the preview project and branch/commit
+# previews). These rules match only *.pages.dev hosts, never the custom domain taren.se.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow

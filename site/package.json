@@ -3,19 +3,21 @@
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Taren 2.0 — the website of the independent software studio Taren.",
+  "description": "Taren 2.0 \u2014 the website of the independent software studio Taren.",
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "dev": "node scripts/generate-accents.mjs && astro dev",
+    "build": "node scripts/generate-accents.mjs && astro build",
     "preview": "astro preview --port 4321 --ignore-lock",
     "typecheck": "astro check",
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test --trace off",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run build && npm run test:e2e"
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build && npm run test:e2e",
+    "brand:images": "node scripts/generate-brand-images.mjs",
+    "brand:fonts": "python3 scripts/subset-fonts.py"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

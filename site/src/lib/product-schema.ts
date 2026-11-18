@@ -6,6 +6,22 @@ export type ProductStatus = (typeof PRODUCT_STATUSES)[number];
 export const PRODUCT_CATEGORIES = ['Game', 'App', 'Tool', 'Experiment'] as const;
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export const HEX_PATTERN = /^#[0-9a-fA-F]{6}$/;
+export const MILESTONE_STATES = ['done', 'in-progress', 'next', 'planned'] as const;
+export type MilestoneState = (typeof MILESTONE_STATES)[number];
+
+/** WCAG relative luminance contrast between two #rrggbb colours. */
+export function contrastRatio(a: string, b: string): number {
+  const lum = (hex: string) => {
+    const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * c[0]! + 0.7152 * c[1]! + 0.0722 * c[2]!;
+  };
+  const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m) as [number, number];
+  return (x + 0.05) / (y + 0.05);
+}
+
+/** Page background the accents must stand out against. */
+export const INK = '#0a1020';
 
 const httpsUrl = z
   .url()
@@ -54,6 +70,42 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
       /** Absolute path under /public, e.g. /og/my-product.jpg (1200×630). */
       ogImage: z.string().startsWith('/').optional(),
       ogImageAlt: z.string().optional(),
+      /** Product accent colours (from the product's own artwork). Used for glows, rings and highlights. */
+      accent: z.string().regex(HEX_PATTERN).optional(),
+      accentAlt: z.string().regex(HEX_PATTERN).optional(),
+      /** "At a glance" facts — short, verified label/value pairs. */
+      facts: z
+        .array(z.object({ label: z.string().min(1).max(24), value: z.string().min(1).max(48) }))
+        .max(8)
+        .default([]),
+      /** Heading and eyebrow for the walkthrough section. */
+      stepsEyebrow: z.string().max(32).default('How it works'),
+      stepsTitle: z.string().max(60).optional(),
+      /** "How it plays / how it works" walkthrough using real screenshots. */
+      steps: z
+        .array(
+          z.object({
+            title: z.string().min(1).max(48),
+            description: z.string().min(1).max(220),
+            image: imageSchema,
+            alt: z.string().min(10),
+          }),
+        )
+        .max(5)
+        .default([]),
+      /** Verified progress. Only record milestones the project's own documentation confirms. */
+      milestones: z
+        .array(
+          z.object({
+            title: z.string().min(1).max(60),
+            state: z.enum(MILESTONE_STATES),
+            note: z.string().max(220).optional(),
+          }),
+        )
+        .max(10)
+        .default([]),
+      /** Where the milestone facts come from (repository doc, changelog…). Required with milestones. */
+      milestonesSource: z.string().max(160).optional(),
     })
     .superRefine((p, ctx) => {
       const issue = (path: string, message: string) =>
@@ -63,6 +115,13 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
       if (p.icon && !p.iconAlt) issue('iconAlt', 'icon needs iconAlt');
       if (p.ogImage && !p.ogImageAlt) issue('ogImageAlt', 'ogImage needs ogImageAlt');
       if (p.featured && !p.published) issue('featured', 'An unpublished product cannot be featured');
+      for (const key of ['accent', 'accentAlt'] as const) {
+        const c = p[key];
+        if (c && contrastRatio(c, INK) < 3) issue(key, `${key} must reach 3:1 against the page background`);
+      }
+      if (p.milestones.length > 0 && !p.milestonesSource) issue('milestonesSource', 'milestones need a source');
+      if (p.status !== 'released' && p.milestones.some((m) => /release|launch/i.test(m.title) && m.state === 'done'))
+        issue('milestones', 'An unreleased product cannot have a completed release milestone');
 
       if (!p.published) return;
       // Status honesty rules apply to everything that will be public.

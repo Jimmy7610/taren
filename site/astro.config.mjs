@@ -24,6 +24,8 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
-    build: { assetsInlineLimit: 0 },
+    // One stylesheet for the whole site (≈ 10 kB gzip): fewer render-blocking requests on slow
+    // networks than per-page chunks, and it stays an external file for the CSP.
+    build: { assetsInlineLimit: 0, cssCodeSplit: false },
   },
 });

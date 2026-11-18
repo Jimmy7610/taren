@@ -1,8 +1,8 @@
 ---
 import { buildSeo, serializeJsonLd, type SeoInput } from '@/lib/seo';
 import { SITE } from '@/config/site';
-import soraLatin from '@fontsource-variable/sora/files/sora-latin-wght-normal.woff2?url';
-import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import soraLatin from '@/assets/fonts/sora-subset.woff2?url';
+import interLatin from '@/assets/fonts/inter-subset.woff2?url';
 
 interface Props extends Omit<SeoInput, 'path'> {
   jsonLd?: unknown[];

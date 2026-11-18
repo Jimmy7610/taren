@@ -124,9 +124,9 @@ test.describe('keyboard', () => {
     expect(outline).not.toBe('none');
   });
 
-  test('product cards are reachable and open with Enter', async ({ page }) => {
+  test('the featured product is reachable and opens with Enter', async ({ page }) => {
     await page.goto('/products/');
-    const link = page.locator('[data-product-card="pulse-garden"] a').first();
+    const link = page.getByRole('heading', { name: 'Pulse Garden' }).getByRole('link');
     await link.focus();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL('/products/pulse-garden/');

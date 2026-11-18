@@ -3,6 +3,7 @@ import ProductMedia from './ProductMedia.astro';
 import ProductStatus from './ProductStatus.astro';
 import Button from './Button.astro';
 import { Picture } from 'astro:assets';
+import Swoosh from './Swoosh.astro';
 import type { ProductData } from '@/lib/catalog';
 
 interface Props {
@@ -11,9 +12,10 @@ interface Props {
 const { product } = Astro.props;
 ---
 
-<section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="product-title">
+<section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="product-title" data-accent={product.slug}>
   <div class="grid-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="hero-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <Swoosh id="product-hero-arc" class="hero-arc pointer-events-none absolute -z-10" />
   <div class="container-x grid items-center gap-12 py-14 md:py-20 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
     <div class="hero-copy">
       <nav aria-label="Breadcrumb" class="mb-8 text-sm text-subtle">
@@ -108,8 +110,16 @@ const { product } = Astro.props;
 <style>
   .hero-glow {
     background:
-      radial-gradient(ellipse 50% 60% at 80% 50%, rgb(53 213 255 / 0.12), transparent 70%),
-      radial-gradient(ellipse 40% 50% at 95% 10%, rgb(141 91 255 / 0.14), transparent 70%);
+      radial-gradient(ellipse 50% 60% at 78% 55%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      radial-gradient(ellipse 40% 50% at 95% 8%, color-mix(in srgb, var(--accent-alt) 14%, transparent), transparent 70%);
+  }
+  :global(.hero-arc) {
+    right: -6%;
+    bottom: 6%;
+    width: min(70rem, 110%);
+    height: auto;
+    aspect-ratio: 600 / 160;
+    opacity: 0.22;
   }
   .hero-media :global(.product-media) {
     background: transparent;

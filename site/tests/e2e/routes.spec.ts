@@ -31,8 +31,13 @@ test.describe('routes', () => {
       await expect(page.locator('footer#site-footer')).toHaveCount(1);
 
       await scrollThrough(page);
+      // Images that are not displayed (closed dialogs, breakpoint-hidden blocks) load lazily by design.
       const broken = await page.locator('img').evaluateAll((imgs) =>
-        (imgs as HTMLImageElement[]).filter((i) => !i.complete || i.naturalWidth === 0).map((i) => i.currentSrc || i.src),
+        (imgs as HTMLImageElement[])
+          .filter((i) => !i.closest('dialog:not([open])'))
+          .filter((i) => i.getClientRects().length > 0) // display:none (e.g. phone-only teaser) never loads
+          .filter((i) => !i.complete || i.naturalWidth === 0)
+          .map((i) => i.currentSrc || i.src),
       );
       expect(broken).toEqual([]);
       expect(errors).toEqual([]);

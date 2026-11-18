@@ -7,12 +7,15 @@
  */
 import BrandMark from './BrandMark.astro';
 import { KOFI_URL, LEGAL_NAV, PRIMARY_NAV } from '@/config/site';
+import ProductTeaser from './ProductTeaser.astro';
+import { getFeaturedProducts } from '@/lib/catalog';
 
 interface Props {
   currentPath: string;
 }
 const { currentPath } = Astro.props;
 const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
+const featured = (await getFeaturedProducts())[0];
 ---
 
 <button
@@ -64,6 +67,14 @@ const isCurrent = (href: string) => currentPath === href || (href !== '/' && cur
           ))
         }
       </ul>
+      {
+        featured && (
+          <div class="menu-featured mt-8">
+            <p class="eyebrow mb-3 text-subtle!">Featured</p>
+            <ProductTeaser product={featured} />
+          </div>
+        )
+      }
       <div class="mt-auto flex flex-col gap-6 pt-10">
         <a
           href={KOFI_URL}
@@ -142,8 +153,8 @@ const isCurrent = (href: string) => currentPath === href || (href !== '/' && cur
     border: 0;
     color: var(--color-text);
     background:
-      radial-gradient(ellipse 80% 50% at 100% 0%, rgb(141 91 255 / 0.14), transparent 60%),
-      radial-gradient(ellipse 70% 40% at 0% 100%, rgb(53 213 255 / 0.1), transparent 60%),
+      radial-gradient(ellipse 80% 50% at 100% 0%, rgb(227 4 251 / 0.1), transparent 60%),
+      radial-gradient(ellipse 70% 40% at 0% 100%, rgb(1 85 246 / 0.14), transparent 60%),
       var(--color-ink);
     opacity: 0;
     transform: translateY(-8px);
@@ -204,6 +215,9 @@ const isCurrent = (href: string) => currentPath === href || (href !== '/' && cur
     }
     .mobile-nav[open] .mobile-item:nth-child(4) {
       animation-delay: 120ms;
+    }
+    .mobile-nav[open] .menu-featured {
+      animation: menu-in 0.5s var(--ease-out-expo) 160ms both;
     }
   }
   @keyframes menu-in {

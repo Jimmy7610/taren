@@ -1,0 +1,61 @@
+---
+/**
+ * Swoosh — Taren's recurring motif: the tapered orbit arc from the official T symbol, in the
+ * brand gradient (cyan → blue → violet → magenta). Purely decorative (aria-hidden).
+ *
+ * variant="arc"   a single sweeping crescent (dividers, panel backgrounds)
+ * variant="orbit" a tilted elliptical ring that tapers to a point (hero orbit system)
+ */
+interface Props {
+  variant?: 'arc' | 'orbit';
+  class?: string;
+  /** Unique id prefix — required when several swooshes share a page. */
+  id: string;
+}
+const { variant = 'arc', class: className = '', id } = Astro.props;
+const g = `${id}-grad`;
+---
+
+{
+  variant === 'arc' ? (
+    <svg class:list={['swoosh', className]} viewBox="0 0 600 160" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={g} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#01E3FC" stop-opacity="0" />
+          <stop offset="0.18" stop-color="#01E3FC" />
+          <stop offset="0.5" stop-color="#0155F6" />
+          <stop offset="0.75" stop-color="#630CE1" />
+          <stop offset="1" stop-color="#E304FB" />
+        </linearGradient>
+      </defs>
+      <path d="M2 150 C 150 48, 380 6, 598 22 C 392 22, 170 66, 2 150 Z" fill={`url(#${g})`} />
+    </svg>
+  ) : (
+    <svg class:list={['swoosh', className]} viewBox="0 0 800 800" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={g} x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#01E3FC" />
+          <stop offset="0.45" stop-color="#0155F6" />
+          <stop offset="0.75" stop-color="#630CE1" />
+          <stop offset="1" stop-color="#E304FB" />
+        </linearGradient>
+      </defs>
+      <g transform="rotate(-24 400 400)">
+        {/* Two nested ellipses (even-odd): the inner one is offset upward so the ring is thick at the
+            bottom and tapers to a hairline at the top — the swoosh of the official symbol. */}
+        <path
+          d="M 70 400 A 330 150 0 1 0 730 400 A 330 150 0 1 0 70 400 Z M 78 378 A 322 128 0 1 0 722 378 A 322 128 0 1 0 78 378 Z"
+          fill={`url(#${g})`}
+          fill-rule="evenodd"
+        />
+      </g>
+    </svg>
+  )
+}
+
+<style>
+  .swoosh {
+    display: block;
+    pointer-events: none;
+  }
+</style>

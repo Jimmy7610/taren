@@ -42,32 +42,34 @@ test('header, menu and footer use the official logo; no interim wordmark remains
   );
 });
 
-test('hero shows the official symbol as decoration', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/');
-  const symbol = page.locator('.orbits img[data-brandmark="symbol"]');
-  await expect(symbol).toBeVisible();
-  expect(await symbol.evaluate((i) => !!i.closest('[aria-hidden="true"]'))).toBe(true);
-  // Never overlaps the hero text (measured on the rendered text, not the wider block boxes).
-  const textRight = await page.evaluate(() =>
-    Math.max(
-      ...[...document.querySelectorAll('.hero h1, .hero p, .hero a')].map((el) => {
-        const r = document.createRange();
-        r.selectNodeContents(el);
-        return r.getBoundingClientRect().right;
-      }),
-    ),
-  );
-  const sym = (await symbol.boundingBox())!;
-  expect(sym.x).toBeGreaterThan(textRight + 24);
-});
+for (const [w, h] of [[768, 1024], [1024, 768], [1440, 900], [1920, 1080], [2560, 1440]] as const) {
+  test(`hero symbol stage at ${w}px: visible, decorative, clear of the copy and fully on screen`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto('/');
+    const symbol = page.locator('.hero-stage img[data-brandmark="symbol"]');
+    await expect(symbol).toBeVisible();
+    expect(await symbol.evaluate((i) => !!i.closest('[aria-hidden="true"]'))).toBe(true);
+    const textRight = await page.evaluate(() =>
+      Math.max(
+        ...[...document.querySelectorAll('.hero-copy h1, .hero-copy p, .hero-copy a')].map((el) => {
+          const r = document.createRange();
+          r.selectNodeContents(el);
+          return r.getBoundingClientRect().right;
+        }),
+      ),
+    );
+    const box = (await symbol.boundingBox())!;
+    expect(box.x, 'symbol overlaps the copy').toBeGreaterThan(textRight + 16);
+    expect(box.x + box.width, 'symbol clipped at the right edge').toBeLessThanOrEqual(w);
+  });
+}
 
-test('hero symbol is hidden (and not downloaded) below 1280px', async ({ page }) => {
+test('hero symbol is hidden (and not downloaded) on phones', async ({ page }) => {
   const requested: string[] = [];
   page.on('request', (r) => requested.push(r.url()));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await expect(page.locator('.orbits img[data-brandmark="symbol"]')).toBeHidden();
+  await expect(page.locator('.hero-stage img[data-brandmark="symbol"]')).toBeHidden();
   expect(requested.some((u) => u.includes('taren-symbol'))).toBe(false);
 });
 

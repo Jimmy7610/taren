@@ -1,0 +1,159 @@
+---
+/**
+ * ProductShowcase — the full-width "product stage" for a featured product. Used on the homepage
+ * spotlight and on /products/ while the catalogue has a single product.
+ * Uses only real product data: status, facts, tagline, description and authentic screenshots.
+ */
+import Button from './Button.astro';
+import ProductStatus from './ProductStatus.astro';
+import CrossfadePhone from './CrossfadePhone.astro';
+import Swoosh from './Swoosh.astro';
+import { Picture } from 'astro:assets';
+import type { ProductData } from '@/lib/catalog';
+
+interface Props {
+  product: ProductData;
+  headingLevel?: 'h2' | 'h3';
+  eager?: boolean;
+}
+const { product, headingLevel: H = 'h3', eager = false } = Astro.props;
+const href = `/products/${product.slug}/`;
+const titleId = `showcase-${product.slug}`;
+
+// Hero capture first, then the walkthrough/gallery captures — all real screenshots.
+const pool = [
+  ...(product.heroImage ? [{ image: product.heroImage, alt: product.heroImageAlt ?? '' }] : []),
+  ...product.steps.map((s) => ({ image: s.image, alt: s.alt })),
+  ...product.gallery.map((g) => ({ image: g.image, alt: g.alt })),
+];
+const shots = pool.filter((s, i) => pool.findIndex((t) => t.image.src === s.image.src) === i).slice(0, 3);
+const chips = product.facts.slice(0, 4);
+---
+
+<article class="showcase surface-grain relative overflow-hidden rounded-(--radius-panel) border border-line" data-accent={product.slug} aria-labelledby={titleId}>
+  <div class="glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div class="grid items-stretch lg:grid-cols-[1.05fr_1fr]">
+    <div class="relative z-10 flex flex-col justify-center p-7 sm:p-12 lg:p-16">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+        {
+          product.icon && (
+            <Picture
+              src={product.icon}
+              alt=""
+              widths={[56, 112, 168]}
+              sizes="56px"
+              formats={['avif', 'webp']}
+              fallbackFormat="webp"
+              loading={eager ? 'eager' : 'lazy'}
+              class="size-12 rounded-[0.85rem] shadow-[0_14px_30px_-12px_rgb(0_0_0/0.7)] sm:size-14 sm:rounded-2xl"
+            />
+          )
+        }
+        <ProductStatus status={product.status} />
+      </div>
+      <H id={titleId} class="mt-7 text-headline text-text">
+        <a href={href} class="title-link focus:outline-none">{product.name}</a>
+      </H>
+      <p class="mt-4 font-display text-[clamp(1.2rem,1.05rem+0.6vw,1.5rem)] leading-snug tracking-[-0.02em] text-text">{product.tagline}</p>
+      <p class="measure-lead mt-5 text-muted">{product.description}</p>
+
+      {
+        chips.length > 0 && (
+          <ul class="mt-7 flex flex-wrap gap-2" aria-label={`${product.name} at a glance`}>
+            {chips.map((f) => (
+              <li class="chip">
+                <span class="sr-only">{f.label}: </span>
+                {f.value}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      {product.statusNote && <p class="measure-lead mt-6 text-sm leading-relaxed text-subtle">{product.statusNote}</p>}
+
+      <div class="mt-9 flex flex-wrap gap-3">
+        <Button href={href} size="lg">Explore {product.name}</Button>
+        {
+          product.gallery.length > 0 && (
+            <Button href={`${href}#screenshots`} variant="secondary" size="lg">
+              Screenshots
+            </Button>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="stage relative flex min-h-[30rem] items-center justify-center overflow-hidden px-6 py-12 sm:min-h-[36rem] lg:py-16" aria-hidden={shots.length === 0 ? 'true' : undefined}>
+      <div class="stage-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+      <Swoosh id={`${titleId}-orbit`} variant="orbit" class="stage-orbit" />
+      {shots.length > 0 && <CrossfadePhone shots={shots} sizes="(min-width: 1024px) 300px, (min-width: 640px) 280px, 62vw" eager={eager} class="stage-phone" />}
+    </div>
+  </div>
+</article>
+
+<style>
+  .showcase {
+    background: var(--color-surface);
+  }
+  .glow {
+    background:
+      radial-gradient(ellipse 55% 70% at 80% 75%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+      radial-gradient(ellipse 45% 55% at 100% 0%, color-mix(in srgb, var(--accent-alt) 16%, transparent), transparent 70%),
+      radial-gradient(ellipse 40% 50% at 0% 100%, rgb(1 85 246 / 0.12), transparent 70%);
+  }
+  .title-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .showcase :global(a.inline-flex) {
+    position: relative;
+    z-index: 1; /* CTA buttons stay above the card-wide title link */
+  }
+  .showcase:has(.title-link:focus-visible) {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.25rem 0.8rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: var(--color-text);
+    background: rgb(255 255 255 / 0.03);
+  }
+  .stage-grid {
+    background-image:
+      linear-gradient(to right, rgb(168 179 207 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(168 179 207 / 0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse 65% 65% at 50% 55%, #000, transparent 75%);
+  }
+  .stage :global(.stage-orbit) {
+    position: absolute;
+    width: min(150%, 44rem);
+    left: 50%;
+    top: 52%;
+    translate: -50% -50%;
+    opacity: 0.55;
+  }
+  .stage :global(.stage-phone) {
+    position: relative;
+    width: min(62vw, 17.5rem);
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+  @media (min-width: 64rem) {
+    .stage :global(.stage-phone) {
+      width: min(80%, 18.75rem);
+    }
+  }
+  @media (hover: hover) {
+    .showcase:hover :global(.stage-phone) {
+      transform: translateY(-8px) rotate(-1deg);
+    }
+  }
+</style>
