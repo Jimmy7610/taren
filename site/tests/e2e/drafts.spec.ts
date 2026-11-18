@@ -91,8 +91,20 @@ test.describe('PDF Studio (draft)', () => {
     await expect(page.locator('.reqs dt')).toHaveCount(6);
     await expect(page.getByRole('heading', { name: 'Made by Taren' })).toBeVisible();
     await expect(page.locator('.attribution img[alt*="About PDF Studio"]')).toHaveCount(1);
-    // No product icon (the official PDF Studio icon is not in the repo) — and never the Taren symbol as one.
-    await expect(page.locator('#product-title').locator('xpath=ancestor::section[1]').locator('picture img[alt*="icon" i]')).toHaveCount(0);
+    // PDF Studio's own app icon in the hero, loaded — never the Taren symbol.
+    const heroIcon = page.locator('#product-title').locator('xpath=ancestor::section[1]').locator('picture img[alt^="PDF Studio app icon"]');
+    await expect(heroIcon).toHaveCount(1);
+    await expect.poll(() => heroIcon.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    expect(await heroIcon.getAttribute('src')).not.toMatch(/taren/i);
+  });
+
+  test("the product card shows PDF Studio's own icon", async ({ page }) => {
+    await page.goto('/products/');
+    const icon = page.locator('[data-product-card="pdfstudio"] img.media-icon');
+    await expect(icon).toHaveCount(1);
+    await icon.scrollIntoViewIfNeeded();
+    await expect.poll(() => icon.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+    expect(await icon.getAttribute('src')).toMatch(/\/_astro\/icon\./);
   });
 
   test('every screenshot loads in a desktop frame at the right ratio', async ({ page }) => {

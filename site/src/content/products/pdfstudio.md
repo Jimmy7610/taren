@@ -5,7 +5,8 @@
 # Screenshots: authentic FlaUI UI-test captures of 0.9.0 (1424×911, 100 % scaling; 01–10 from ab78762,
 # 11–13 from 4802bd8). Web derivatives *.web.webp: padded top/bottom with each image's own edge colour to
 # 1000:660, Lanczos down-scale to 1000×660, lossless WebP (scripts/fit-desktop-screenshots.mjs).
-# Icon: PDF Studio's own icon (AppIcon256.png) is not in this repository — intentionally left empty.
+# Icon: PDF Studio's own app icon, byte-identical copy of src/PDFStudio.App/Assets/AppIcon256.png (256×256 RGBA,
+# SHA-256 a981670567deddc9f0112f2cfac6776cabf980c2dcb4b44decf77f8d3503a920), not the Taren symbol.
 slug: pdfstudio
 name: PDF Studio
 tagline: Read, edit, organise, sign, protect and print PDFs — offline.
@@ -22,6 +23,10 @@ published: false
 featured: false
 order: 3
 device: desktop
+icon: ../../assets/products/pdfstudio/icon.png
+iconAlt: >-
+  PDF Studio app icon — a white page with a folded corner and four violet text lines on a rounded
+  square with a violet-to-pink gradient.
 heroImage: ../../assets/products/pdfstudio/03-document-dark.web.webp
 heroImageAlt: >-
   PDF Studio's document workspace in the dark theme: tabs, the ribbon, page thumbnails, a page on the

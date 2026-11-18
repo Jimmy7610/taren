@@ -40,8 +40,8 @@ exists yet, so the build, tests and site output are unaffected.
 5. Suggested images: hero `03-document-dark.png`; gallery 01, 03, 05, 06, 07/08, 09, 10; Taren credit
    `11-about-taren-dark.png`. Alt text: use the "Content" column of `ASSET_MANIFEST.md`. `screenshotsNote`:
    real captures of version 0.9.0, Swedish UI (13 is English), 100 % scaling.
-6. **Icon:** not included. PDF Studio has its own icon (`src/PDFStudio.App/Assets/AppIcon256.png` in the
-   PDFStudio project, 256 px, while the schema recommends ≥ 512 px). Ask the owner for it, or leave `icon` empty
-   (the site falls back to a placeholder). Never use the Taren symbol as PDF Studio's icon.
+6. **Icon:** added later on `feature/pdfstudio-official-icon` as `site/src/assets/products/pdfstudio/icon.png`.
+   It is a byte-identical copy of PDF Studio's own `AppIcon256.png` (256 px, enough for the largest 240 px
+   rendition). Never use the Taren symbol as PDF Studio's icon.
 7. Update the "Current catalogue" row for PDFStudio in `docs/PRODUCT_MANAGEMENT.md`. Run `npm run check`,
    the unit tests and the e2e tests. Preview with `TAREN_SHOW_DRAFTS=1 npm run dev`.

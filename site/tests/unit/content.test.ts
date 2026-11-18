@@ -48,7 +48,7 @@ describe('product content files', () => {
     expect(lumen.downloadUrl).toBeUndefined();
   });
 
-  it('PDF Studio stays an honest, unpublished draft without its own icon or a download', () => {
+  it('PDF Studio stays an honest, unpublished draft with its own icon and no download', () => {
     const pdf = read('pdfstudio.md');
     expect(pdf.published).toBe(false);
     expect(pdf.featured).toBe(false);
@@ -56,11 +56,18 @@ describe('product content files', () => {
     expect(pdf.device).toBe('desktop');
     expect(pdf.downloadUrl).toBeUndefined();
     expect(pdf.websiteUrl).toBeUndefined();
-    expect(pdf.icon).toBeUndefined(); // official PDF Studio icon not in this repo; never substitute the Taren symbol
+    expect(pdf.icon).toBe('../../assets/products/pdfstudio/icon.png'); // PDF Studio's own icon, never the Taren symbol
+    expect(String(pdf.iconAlt)).toMatch(/^PDF Studio app icon/);
     expect(String(pdf.statusNote)).toMatch(/0\.9\.0.*unsigned.*not been released/s);
     const all = JSON.stringify(pdf);
     expect(all).not.toMatch(/taren-symbol|brand\/masters/);
     expect(all).not.toMatch(/PDF\/A compli|Acrobat|available now/i);
+  });
+
+  it("PDF Studio icon is a byte-identical copy of the app's own AppIcon256.png", async () => {
+    const { createHash } = await import('node:crypto');
+    const icon = readFileSync(resolve(__dirname, '../../src/assets/products/pdfstudio/icon.png'));
+    expect(createHash('sha256').update(icon).digest('hex')).toBe('a981670567deddc9f0112f2cfac6776cabf980c2dcb4b44decf77f8d3503a920');
   });
 
   it('PDF Studio originals are byte-identical to the asset manifest and every derivative exists at 1000×660', async () => {

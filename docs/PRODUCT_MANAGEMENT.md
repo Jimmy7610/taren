@@ -102,13 +102,13 @@ ink) of PDF Studio's own gradient (indigo `#4B3FB3` → violet `#743FB0` → ros
 The tagline "Read, edit, organise, sign, protect and print PDFs — offline." is condensed from the verified short
 description.
 
-**Icon (missing):** PDF Studio's own icon (`src/PDFStudio.App/Assets/AppIcon256.png` in the PDFStudio repo) is not in
-this repository, so `icon` is left empty. The page uses the existing fallbacks: the hero shows no icon and cards use
-the screenshot. The Taren symbol is never used as PDF Studio's icon, and a unit test enforces that. To add the icon,
-place `site/src/assets/products/pdfstudio/icon.png` (≥ 256 px, preferably 512 px) and set `icon`/`iconAlt`.
-Re-checked in the Taren 2.2 final polish (2026-11-18): the file is still not reachable from the cloud session (no
-shared computer folder, not in this repository), so the fallback is unchanged. No replacement icon was generated, and
-the icon was not cut out of the About screenshot, because only the original file counts as a verified source.
+**Icon:** `site/src/assets/products/pdfstudio/icon.png` is PDF Studio's own app icon, a byte-identical copy of
+`src/PDFStudio.App/Assets/AppIcon256.png` from the local PDFStudio repo (256×256 RGBA, SHA-256 `a981670…a920`),
+imported on `feature/pdfstudio-official-icon`. A unit test checks the hash. It shows in the hero (80 px) and as the
+small icon on cards and the showcase (56–96 px). The largest rendition the site requests is 240 px, so the original
+is used unscaled and no derivative was made. The icon is drawn by PDFStudio's `tools/scripts/Generate-Icons.ps1`. If
+a 512 px file is ever needed, render it with that script (its 256 px output is pixel-identical to this file) instead
+of upscaling. The Taren symbol is never used as PDF Studio's icon.
 
 **New optional schema fields** (available to every product, unused by Pulse Garden and Lumen Capture):
 `beforeRelease` (honest pre-release list, shown with the timeline; not allowed for released products), `requirements`
@@ -151,11 +151,11 @@ note discloses the version, Swedish UI, 100 % scaling and synthetic test documen
 ### Remaining release blockers (from TAREN_PRODUCT_INFO.md)
 No code signing (SmartScreen). Product name and licence not decided. Manual checks still open: printer, 125–250 %
 scaling, multiple monitors, high contrast, Narrator, touch and pen, large files. PDFium is not sandboxed. Many dialogs
-are Swedish-only. No distribution channel has been chosen. For the website: the official icon is missing, and the
+are Swedish-only. No distribution channel has been chosen. For the website: the
 screenshots are Swedish-only at 1×, so English and 2× captures would improve the page.
 
 ### Tests (this branch)
-- Unit tests (80): PDF Studio is unpublished, not featured, has no download or website URL, no icon, no banned
+- Unit tests (80): PDF Studio is unpublished, not featured, has no download or website URL, has its own hash-checked icon, no banned
   claims, and its status note mentions 0.9.0, unsigned and not released. The originals match the manifest SHA-256 and
   are 1424×911. All 13 derivatives are 1000×660 WebP. Every desktop image is at the 1000:660 ratio.
 - Production e2e: `/products/pdfstudio/` returns 404. "PDF Studio" appears neither on `/`, `/products/` nor
