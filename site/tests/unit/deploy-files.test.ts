@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { SECURITY_HEADERS } from '@/lib/security-headers';
 
 const root = resolve(__dirname, '../..');
 const read = (p: string) => readFileSync(resolve(root, p), 'utf8');
@@ -40,6 +41,20 @@ describe('_headers', () => {
   it('sets standard security headers', () => {
     for (const h of ['X-Content-Type-Options: nosniff', 'Referrer-Policy', 'X-Frame-Options: DENY', 'Permissions-Policy', 'Strict-Transport-Security'])
       expect(headers).toContain(h);
+  });
+});
+
+describe('security headers on Function responses', () => {
+  it('SECURITY_HEADERS is identical to the /* block in _headers (Functions do not get _headers)', () => {
+    const block = /^\/\*\n((?:[ \t]+.+\n)+)/m.exec(read('public/_headers'))?.[1] ?? '';
+    const parsed = Object.fromEntries(
+      block
+        .trim()
+        .split('\n')
+        .map((l) => l.trim())
+        .map((l) => [l.slice(0, l.indexOf(':')), l.slice(l.indexOf(':') + 1).trim()]),
+    );
+    expect(parsed).toEqual(SECURITY_HEADERS);
   });
 });
 

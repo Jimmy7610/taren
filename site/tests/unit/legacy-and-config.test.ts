@@ -20,6 +20,11 @@ describe('legacy route retirement', () => {
     const res = await goneResponse(new Request('https://taren.se/games/ashveil/'), assets);
     expect(res.status).toBe(410);
     expect(res.headers.get('x-robots-tag')).toBe('noindex');
+    // Regression (2.3 audit): Function responses do not receive _headers, so the 410 page sends them itself.
+    expect(res.headers.get('content-security-policy')).toContain("default-src 'self'");
+    expect(res.headers.get('x-frame-options')).toBe('DENY');
+    expect(res.headers.get('x-content-type-options')).toBe('nosniff');
+    expect(res.headers.get('strict-transport-security')).toMatch(/max-age=\d+/);
     expect(await res.text()).toContain('retired');
   });
 

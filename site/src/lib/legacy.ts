@@ -2,6 +2,7 @@
  * Legacy route retirement (old taren.se browser games and experiments).
  * See docs/TAREN_2_AUDIT.md §7. Used by the Pages Functions in /functions.
  */
+import { SECURITY_HEADERS } from './security-headers';
 export const GONE_PREFIXES = [
   '/games',
   '/experiments',
@@ -27,6 +28,7 @@ export async function goneResponse(request: Request, assets: AssetsBinding): Pro
   return new Response(body, {
     status: 410,
     headers: {
+      ...SECURITY_HEADERS,
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': 'public, max-age=3600',
       'X-Robots-Tag': 'noindex',
