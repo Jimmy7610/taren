@@ -12,13 +12,15 @@ interface Props {
   sizes: string;
   eager?: boolean;
   class?: string;
+  /** phone: portrait 786×1704 captures; desktop: landscape window captures (1000×660 ratio). */
+  device?: 'phone' | 'desktop';
 }
-const { shots, sizes, eager = false, class: className = '' } = Astro.props;
+const { shots, sizes, eager = false, class: className = '', device = 'phone' } = Astro.props;
 const frames = shots.slice(0, 3);
-const widths = [280, 400, 560, 786];
+const widths = device === 'desktop' ? [480, 720, 1000, 1400] : [280, 400, 560, 786];
 ---
 
-<div class:list={['xphone', `n-${frames.length}`, className]}>
+<div class:list={['xphone', `n-${frames.length}`, `is-${device}`, className]}>
   <div class="screen">
     {
       frames.map((shot, i) => (
@@ -56,6 +58,14 @@ const widths = [280, 400, 560, 786];
     overflow: hidden;
     border-radius: 1.85rem;
     background: var(--color-ink-deep);
+  }
+  .is-desktop {
+    padding: 0.3rem;
+    border-radius: 0.95rem;
+  }
+  .is-desktop .screen {
+    aspect-ratio: 1000 / 660;
+    border-radius: 0.7rem;
   }
   .screen :global(img) {
     position: absolute;

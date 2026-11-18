@@ -9,18 +9,19 @@
  * the screenshot that opened it.
  */
 import { getImage } from 'astro:assets';
-import PhoneFrame from './PhoneFrame.astro';
+import DeviceFrame from './DeviceFrame.astro';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
   items: ReadonlyArray<{ image: ImageMetadata; alt: string; caption?: string | undefined }>;
   label: string;
+  device?: 'phone' | 'desktop';
 }
-const { items, label } = Astro.props;
+const { items, label, device = 'phone' } = Astro.props;
 
 const full = await Promise.all(
   items.map(async (it) => {
-    const width = Math.min(786, it.image.width);
+    const width = Math.min(device === 'desktop' ? 1400 : 786, it.image.width);
     const [avif, webp] = await Promise.all([
       getImage({ src: it.image, width, format: 'avif' }),
       getImage({ src: it.image, width, format: 'webp' }),
@@ -32,7 +33,7 @@ const full = await Promise.all(
 
 {
   items.length > 0 && (
-    <div class="gallery-wrap" data-gallery>
+    <div class:list={['gallery-wrap', `is-${device}`]} data-gallery>
       <div class="gallery" tabindex="0" role="region" aria-label={label}>
         <ul class="gallery-track">
           {items.map((item, i) => (
@@ -49,7 +50,13 @@ const full = await Promise.all(
                   data-alt={item.alt}
                   data-caption={item.caption ?? ''}
                 >
-                  <PhoneFrame src={item.image} alt={item.alt} sizes="(min-width: 768px) 260px, 62vw" widths={[240, 360, 520, 786]} />
+                  <DeviceFrame
+                    device={device}
+                    src={item.image}
+                    alt={item.alt}
+                    sizes={device === 'desktop' ? '(min-width: 768px) 560px, 86vw' : '(min-width: 768px) 260px, 62vw'}
+                    widths={device === 'desktop' ? [480, 720, 1000, 1400] : [240, 360, 520, 786]}
+                  />
                   <span class="sr-only"> — open larger view</span>
                   <span class="zoom" aria-hidden="true">
                     <svg viewBox="0 0 16 16" class="size-4">
@@ -195,6 +202,17 @@ const full = await Promise.all(
   }
   .gallery-item {
     scroll-snap-align: start;
+  }
+  .is-desktop .gallery-track {
+    grid-auto-columns: min(86vw, 35rem);
+  }
+  .is-desktop .shot-link,
+  .is-desktop .shot-link:focus-visible {
+    border-radius: 0.9rem;
+  }
+  .is-desktop .lb-figure img {
+    max-width: min(100%, 78rem);
+    border-radius: 0.75rem;
   }
   .shot-link {
     display: block;

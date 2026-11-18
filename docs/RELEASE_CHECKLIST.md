@@ -9,7 +9,8 @@ Status legend: ✅ done & verified on this branch · ⬜ owner action required �
 - ⬜ After cutover: confirm `https://taren.se/` sends **no** `X-Robots-Tag`.
 - ✅ **Official brand assets** applied (header, menu, footer, hero symbol, favicons, app icons, social image).
   ✅ Owner approved the white-wordmark recolour for dark backgrounds. Masters moved to `site/brand/masters/`.
-- ⚠️ **Parakollen and Ninefold.** They are live at `/public/parakollen/` and `/public/ninefold/` and
+- ✅ **Parakollen and Ninefold** — owner decided to retire both (2.2). New site answers 410; see `LEGACY_RETIREMENT.md`. (Old note follows.)
+- ~~⚠️ **Parakollen and Ninefold.**~~ They are live at `/public/parakollen/` and `/public/ninefold/` and
   will stop being served at cutover. Decide: move to their own Pages projects (Parakollen has its own
   repo), keep them (copy into `site/public/` + port `functions/parakollen`), or retire them.
 - ⚠️ **Legacy analytics** (`/api/event`, `/api/admin/*`, D1). Retired at cutover. Note that
@@ -26,6 +27,12 @@ Status legend: ✅ done & verified on this branch · ⬜ owner action required �
 - ⬜ **Cloudflare settings.** Confirm Web Analytics / Zaraz / other script-injecting features stay off
   for taren.se — the privacy page states no analytics and no cookies.
 - ⬜ **Preview deployment** created and reviewed on a real phone (see `DEPLOYMENT.md`).
+
+## Taren 2.2 — product expansion
+- ⬜ Owner: review the **Lumen Capture** draft page (draft preview) and decide when to publish.
+- ⬜ Lumen Capture blockers before publishing a download: public release, code signing, updater vs private repo, real Windows screenshots (`WINDOWS_APPS_AUDIT.md`).
+- ⬜ Lumen Capture `feature/taren-branding`: check on a real Windows PC, then merge (not merged automatically).
+- ⬜ **PDFStudio**: run the prepared local task (audit + branding) on the PC; then add `pdfstudio.md` as a draft with verified facts and real screenshots.
 
 ## Verified on the branch
 

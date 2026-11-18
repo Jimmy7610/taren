@@ -47,6 +47,11 @@ curl -sI $BASE/ | grep -i content-security-policy                         # pres
 ```
 Then walk `docs/RELEASE_CHECKLIST.md` on a phone and a desktop.
 
+### Draft preview (unpublished products)
+Push the commit to `preview/drafts` (`git push origin HEAD:preview/drafts`). Cloudflare builds it as a branch preview of
+`taren-2-preview` with `CF_PAGES_BRANCH=preview/drafts`, which turns on draft mode (see `site/src/lib/drafts.ts`). The
+branch URL is a `*.pages.dev` host, so it is also `noindex` via `_headers`.
+
 ### Search engines and the preview
 `site/public/_headers` sends `X-Robots-Tag: noindex, nofollow` for `https://:project.pages.dev/*` and
 `https://:version.:project.pages.dev/*`. These host-specific rules never match `taren.se`. After cutover, verify:

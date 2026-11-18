@@ -65,9 +65,22 @@ test.describe('routes', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('unpublished products have no page', async ({ page }) => {
-    const res = await page.goto('/products/example-product/');
-    expect(res?.status()).toBe(404);
+  test('unpublished products have no page and appear nowhere', async ({ page }) => {
+    for (const slug of ['lumen-capture', 'example-product', '_example-product']) {
+      const res = await page.goto(`/products/${slug}/`);
+      expect(res?.status(), slug).toBe(404);
+    }
+    for (const path of ['/', '/products/', '/studio/']) {
+      await page.goto(path);
+      expect(await page.locator('body').innerText(), path).not.toContain('Lumen Capture');
+      expect(await page.locator('a[href*="lumen-capture"]').count(), path).toBe(0);
+    }
+  });
+
+  test('Parakollen and Ninefold are not part of the site', async ({ request }) => {
+    // Static server: 404. Cloudflare: 410 via functions/public and functions/parakollen.
+    for (const p of ['/public/parakollen/', '/public/ninefold/', '/parakollen/api/medals'])
+      expect([404, 410], p).toContain((await request.get(p)).status());
   });
 
   test('sitemap lists published pages only', async ({ request }) => {

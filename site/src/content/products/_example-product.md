@@ -1,5 +1,5 @@
 ---
-# TEMPLATE — copy this file to add a product. See docs/PRODUCT_MANAGEMENT.md.
+# TEMPLATE (never built: files starting with "_" are skipped) — copy to <slug>.md to add a product. See docs/PRODUCT_MANAGEMENT.md.
 # published: false keeps it out of every page, the navigation and the sitemap.
 slug: example-product
 name: Example Product

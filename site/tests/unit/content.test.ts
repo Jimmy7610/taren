@@ -36,8 +36,29 @@ describe('product content files', () => {
     });
   }
 
-  it('keeps the template unpublished', () => {
-    expect(read('example-product.md').published).toBe(false);
+  it('keeps the template unpublished and out of the build (underscore prefix)', () => {
+    expect(read('_example-product.md').published).toBe(false);
+    expect(files).not.toContain('_example-product.md');
+  });
+
+  it('keeps products the owner has not approved unpublished (Taren 2.2)', () => {
+    const lumen = read('lumen-capture.md');
+    expect(lumen.published).toBe(false);
+    expect(lumen.featured).toBe(false);
+    expect(lumen.downloadUrl).toBeUndefined();
+  });
+
+  it('desktop products use landscape captures that fit the desktop frame (1000:660)', async () => {
+    const sharp = (await import('sharp')).default;
+    for (const file of files) {
+      const d = read(file);
+      if (d.device !== 'desktop') continue;
+      const imgs = [d.heroImage, ...((d.gallery as { image: string }[]) ?? []).map((g) => g.image), ...((d.steps as { image: string }[]) ?? []).map((g) => g.image)];
+      for (const ref of imgs.filter(Boolean) as string[]) {
+        const m = await sharp(resolve(dir, ref)).metadata();
+        expect(m.width! / m.height!, `${file}: ${ref}`).toBeCloseTo(1000 / 660, 2);
+      }
+    }
   });
 
   it('has at least one published, featured product for the homepage spotlight', () => {

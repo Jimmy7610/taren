@@ -39,7 +39,7 @@ const products = await getPublicProducts();
       ) : products.length > 1 ? (
         <ul class="grid gap-6 md:grid-cols-2" role="list">
           {products.map((p, i) => (
-            <li class="flex">
+            <li class="flex *:w-full">
               <ProductCard product={p} headingLevel="h2" eager={i < 2} />
             </li>
           ))}

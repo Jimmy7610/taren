@@ -5,7 +5,7 @@
  */
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import PhoneFrame from './PhoneFrame.astro';
+import DeviceFrame from './DeviceFrame.astro';
 
 interface Props {
   name: string;
@@ -15,19 +15,29 @@ interface Props {
   iconAlt?: string | undefined;
   variant?: 'card' | 'hero';
   eager?: boolean;
+  device?: 'phone' | 'desktop';
 }
-const { name, heroImage, heroImageAlt, icon, iconAlt, variant = 'card', eager = false } = Astro.props;
+const { name, heroImage, heroImageAlt, icon, iconAlt, variant = 'card', eager = false, device = 'phone' } = Astro.props;
 const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
 ---
 
-<div class:list={['product-media', `is-${variant}`, `mode-${mode}`]} data-media={mode}>
+<div class:list={['product-media', `is-${variant}`, `mode-${mode}`, `device-${device}`]} data-media={mode}>
   <div class="glow" aria-hidden="true"></div>
   {
     mode === 'screen' && heroImage && (
-      <PhoneFrame
+      <DeviceFrame
+        device={device}
         src={heroImage}
         alt={heroImageAlt ?? ''}
-        sizes={variant === 'hero' ? '(min-width: 1024px) 320px, 60vw' : '(min-width: 768px) 200px, 40vw'}
+        sizes={
+          device === 'desktop'
+            ? variant === 'hero'
+              ? '(min-width: 1024px) 560px, 92vw'
+              : '(min-width: 768px) 420px, 86vw'
+            : variant === 'hero'
+              ? '(min-width: 1024px) 320px, 60vw'
+              : '(min-width: 768px) 200px, 40vw'
+        }
         loading={eager ? 'eager' : 'lazy'}
         fetchpriority="auto"
         class="media-phone"
@@ -107,6 +117,18 @@ const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
     max-width: 13rem;
     transform: translateY(18%) rotate(-4deg);
     transition: transform 0.7s var(--ease-out-expo);
+  }
+  /* Desktop captures already show the app; the floating icon would cover its sidebar. */
+  .device-desktop.is-card :global(.media-icon) {
+    display: none;
+  }
+  .device-desktop.is-card :global(.media-phone) {
+    width: 88%;
+    max-width: none;
+    transform: translateY(8%);
+  }
+  .device-desktop.is-hero :global(.media-phone) {
+    width: min(100%, 40rem);
   }
   .is-hero :global(.media-phone) {
     width: min(72%, 20rem);

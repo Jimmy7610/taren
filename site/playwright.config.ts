@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 4321;
+const DRAFTS_PORT = 4322;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -16,12 +17,26 @@ export default defineConfig({
     trace: 'off',
     ...devices['Desktop Chrome'],
   },
-  projects: [{ name: 'chromium' }],
-  webServer: {
-    // Tests run against the production build, served statically.
-    command: `npm run build && npx astro preview --port ${PORT} --ignore-lock`,
-    url: `http://localhost:${PORT}/`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
-  },
+  projects: [
+    // The production build: unpublished products must not exist anywhere.
+    { name: 'chromium', testIgnore: /drafts\.spec\.ts/ },
+    // The draft-preview build (TAREN_SHOW_DRAFTS=1): drafts visible but never indexable.
+    { name: 'drafts', testMatch: /drafts\.spec\.ts/, use: { baseURL: `http://127.0.0.1:${DRAFTS_PORT}` } },
+  ],
+  webServer: [
+    {
+      // Production build (served by astro preview) plus a separate draft-preview build in dist-drafts/.
+      command: `npm run build && TAREN_SHOW_DRAFTS=1 npx astro build --outDir dist-drafts && npx astro preview --port ${PORT} --ignore-lock`,
+      url: `http://localhost:${PORT}/`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 300_000,
+    },
+    {
+      // Playwright starts web servers in order, so the draft build above already exists here.
+      command: `python3 -m http.server ${DRAFTS_PORT} --bind 127.0.0.1 -d dist-drafts`,
+      url: `http://127.0.0.1:${DRAFTS_PORT}/`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 300_000,
+    },
+  ],
 });

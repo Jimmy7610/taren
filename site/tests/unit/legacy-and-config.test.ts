@@ -10,6 +10,12 @@ describe('legacy route retirement', () => {
     for (const p of ['/', '/gamesx', '/products/', '/studio/']) expect(isGone(p)).toBe(false);
   });
 
+  it('retires Parakollen and Ninefold (Taren 2.2)', () => {
+    for (const p of ['/public/parakollen/', '/public/parakollen/assets/js/api.js', '/public/ninefold/', '/public/ninefold/index.html', '/parakollen', '/parakollen/api/medals'])
+      expect(isGone(p), p).toBe(true);
+    for (const p of ['/public/', '/public/other/', '/parakollenx', '/products/parakollen/']) expect(isGone(p), p).toBe(false);
+  });
+
   it('responds 410 with the retired page and noindex', async () => {
     const res = await goneResponse(new Request('https://taren.se/games/ashveil/'), assets);
     expect(res.status).toBe(410);
@@ -23,9 +29,16 @@ describe('legacy route retirement', () => {
     expect(await res.text()).toBe('');
   });
 
-  it('the function handler returns 404 for anything outside retired prefixes', async () => {
-    const res = await onRetiredRequest({ request: new Request('https://taren.se/gamesx'), env: { ASSETS: assets } });
+  it('the function handler passes anything outside retired prefixes to the static site', async () => {
+    const res = await onRetiredRequest({
+      request: new Request('https://taren.se/public/other/'),
+      env: { ASSETS: assets },
+      next: async () => new Response('static 404', { status: 404 }),
+    });
     expect(res.status).toBe(404);
+    expect(await res.text()).toBe('static 404');
+    const gone = await onRetiredRequest({ request: new Request('https://taren.se/public/ninefold/'), env: { ASSETS: assets } });
+    expect(gone.status).toBe(410);
   });
 });
 

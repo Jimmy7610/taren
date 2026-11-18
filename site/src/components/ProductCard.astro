@@ -14,6 +14,7 @@ const href = `/products/${product.slug}/`;
 
 <article class="product-card ring-brand group relative flex flex-col overflow-hidden rounded-(--radius-card) border border-line bg-surface" data-product-card={product.slug} data-accent={product.slug}>
   <ProductMedia
+    device={product.device}
     name={product.name}
     heroImage={product.heroImage}
     heroImageAlt=""
@@ -28,7 +29,10 @@ const href = `/products/${product.slug}/`;
         <span aria-hidden="true" class="mx-1.5">·</span>
         <span class="sr-only">Platforms: </span>{product.platforms.join(', ')}
       </p>
-      <ProductStatus status={product.status} />
+      <span class="flex items-center gap-2">
+        {!product.published && <span class="draft-pill">Draft</span>}
+        <ProductStatus status={product.status} />
+      </span>
     </div>
     <H class="text-title text-text">
       <a href={href} class="card-link focus:outline-none">{product.name}</a>
@@ -73,5 +77,16 @@ const href = `/products/${product.slug}/`;
     .product-card:hover :global(.media-icon) {
       transform: translateY(-4px) rotate(-3deg);
     }
+  }
+  .draft-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.75rem;
+    padding: 0 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1a1204;
+    background: var(--color-amber);
   }
 </style>

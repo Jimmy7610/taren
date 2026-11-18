@@ -60,8 +60,19 @@ if (isAvailable(product)) {
   description={product.description}
   ogImage={product.ogImage}
   ogImageAlt={product.ogImageAlt}
-  jsonLd={jsonLd}
+  jsonLd={product.published ? jsonLd : []}
+  noindex={!product.published}
 >
+  {
+    !product.published && (
+      <div class="draft-banner" role="note" data-draft-banner>
+        <div class="container-x py-2.5 text-sm">
+          <strong class="font-semibold">Draft preview</strong> — this product page is not published. It is hidden from
+          navigation, search engines and the sitemap until approved.
+        </div>
+      </div>
+    )
+  }
   <div data-accent={product.slug}>
     <ProductHero product={product} />
 
@@ -78,7 +89,7 @@ if (isAvailable(product)) {
       product.steps.length > 0 && (
         <section class="container-x pb-20 md:pb-28" aria-labelledby="steps-title">
           <SectionHeading eyebrow={product.stepsEyebrow} title={product.stepsTitle ?? `${product.name} in ${product.steps.length} steps`} id="steps-title" class="mb-12" />
-          <ProductSteps steps={product.steps} />
+          <ProductSteps steps={product.steps} device={product.device} />
         </section>
       )
     }
@@ -97,10 +108,13 @@ if (isAvailable(product)) {
         <section id="screenshots" class="border-y border-line bg-ink-deep py-20 md:py-28" aria-labelledby="screens-title">
           <div class="container-x mb-12">
             <SectionHeading eyebrow="Screenshots" title="From the current build" id="screens-title">
-              <p>Real captures of {product.name} as it is today. Details will change before release.</p>
+              <p>
+                {product.screenshotsNote ?? `Real captures of ${product.name} as it is today.`} Details will change before
+                release.
+              </p>
             </SectionHeading>
           </div>
-          <ProductGallery items={product.gallery} label={`${product.name} screenshots`} />
+          <ProductGallery items={product.gallery} label={`${product.name} screenshots`} device={product.device} />
         </section>
       )
     }
@@ -134,3 +148,12 @@ if (isAvailable(product)) {
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .draft-banner {
+    position: relative;
+    z-index: 40;
+    color: #1a1204;
+    background: var(--color-amber);
+  }
+</style>

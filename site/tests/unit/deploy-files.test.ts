@@ -45,7 +45,7 @@ describe('_headers', () => {
 
 describe('Pages Functions', () => {
   it('retire /games and /experiments', () => {
-    for (const f of ['functions/games/[[path]].ts', 'functions/experiments/[[path]].ts']) {
+    for (const f of ['functions/games/[[path]].ts', 'functions/experiments/[[path]].ts', 'functions/public/[[path]].ts', 'functions/parakollen/[[path]].ts']) {
       expect(existsSync(resolve(root, f)), f).toBe(true);
       expect(read(f)).toContain('onRetiredRequest as onRequest');
     }

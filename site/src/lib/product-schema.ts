@@ -70,6 +70,10 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
       /** Absolute path under /public, e.g. /og/my-product.jpg (1200×630). */
       ogImage: z.string().startsWith('/').optional(),
       ogImageAlt: z.string().optional(),
+      /** Screenshot form factor: portrait phone captures or landscape desktop-window captures. */
+      device: z.enum(['phone', 'desktop']).default('phone'),
+      /** Honest note shown with the screenshots (how/when they were captured). */
+      screenshotsNote: z.string().max(240).optional(),
       /** Product accent colours (from the product's own artwork). Used for glows, rings and highlights. */
       accent: z.string().regex(HEX_PATTERN).optional(),
       accentAlt: z.string().regex(HEX_PATTERN).optional(),

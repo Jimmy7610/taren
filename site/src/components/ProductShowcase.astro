@@ -86,7 +86,21 @@ const chips = product.facts.slice(0, 4);
     <div class="stage relative flex min-h-[30rem] items-center justify-center overflow-hidden px-6 py-12 sm:min-h-[36rem] lg:py-16" aria-hidden={shots.length === 0 ? 'true' : undefined}>
       <div class="stage-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
       <Swoosh id={`${titleId}-orbit`} variant="orbit" class="stage-orbit" />
-      {shots.length > 0 && <CrossfadePhone shots={shots} sizes="(min-width: 1024px) 300px, (min-width: 640px) 280px, 62vw" eager={eager} class="stage-phone" />}
+      {
+        shots.length > 0 && (
+          <CrossfadePhone
+            shots={shots}
+            device={product.device}
+            sizes={
+              product.device === 'desktop'
+                ? '(min-width: 1024px) 560px, 88vw'
+                : '(min-width: 1024px) 300px, (min-width: 640px) 280px, 62vw'
+            }
+            eager={eager}
+            class:list={['stage-phone', `stage-${product.device}`]}
+          />
+        )
+      }
     </div>
   </div>
 </article>
@@ -149,6 +163,16 @@ const chips = product.facts.slice(0, 4);
   @media (min-width: 64rem) {
     .stage :global(.stage-phone) {
       width: min(80%, 18.75rem);
+    }
+  }
+  .stage :global(.stage-desktop) {
+    width: min(100%, 36rem);
+  }
+  @media (min-width: 64rem) {
+    .stage :global(.stage-desktop) {
+      width: 112%;
+      max-width: none;
+      margin-right: -14%;
     }
   }
   @media (hover: hover) {
