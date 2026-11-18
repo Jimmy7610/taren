@@ -4,7 +4,7 @@
 
 /*
  * TAREN design tokens. See docs/DESIGN_SYSTEM.md.
- * Contrast (on --color-ink #0A1020): text 17.6:1, muted 9.0:1, subtle 5.6:1, cyan 10.6:1.
+ * Contrast on --color-ink #0A1020: text 17.7:1, muted 9.0:1, subtle 6.0:1, cyan 10.9:1. Purple (4.6:1) is for accents, never body text.
  */
 @theme {
   --color-ink: #0a1020;

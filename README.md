@@ -1,3 +1,17 @@
+> ## Taren 2.0 is in development on `feature/taren-2.0`
+>
+> The new Taren website — an independent software studio site built with Astro — lives in
+> [`site/`](site/). It is **not deployed yet**; production (taren.se) still serves the legacy site
+> described below until the owner approves the cutover.
+>
+> - Run it: `cd site && npm ci && npm run dev`
+> - Docs: [Audit](docs/TAREN_2_AUDIT.md) · [Architecture](docs/ARCHITECTURE.md) ·
+>   [Design system](docs/DESIGN_SYSTEM.md) · [Products](docs/PRODUCT_MANAGEMENT.md) ·
+>   [Tests](docs/TEST_REPORT.md) · [Deployment](docs/DEPLOYMENT.md) · [Rollback](docs/ROLLBACK.md) ·
+>   [Release checklist](docs/RELEASE_CHECKLIST.md) · [Contributing](CONTRIBUTING.md)
+
+---
+
 # Taren
 
 Taren is a personal creative test project by **Jimmy Eliasson** — a calm digital place for small strange games, sketches and experiments.
