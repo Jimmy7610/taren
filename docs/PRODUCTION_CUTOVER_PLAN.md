@@ -13,7 +13,7 @@
 | Production env vars / secrets (names from `main` source; values unknown) | `DB` (D1 binding), `ADMIN_API_TOKEN`, `ADMIN_EMAILS`, `ACCESS_AUD`, `ACCESS_TEAM_DOMAIN`, `ANALYTICS_ALLOWED_ORIGINS`, `ANALYTICS_INGEST` |
 | Separate resources | Worker `taren-analytics` + its D1 database (`workers/taren-analytics`), repo `Jimmy7610/Parakollen` |
 | `www.taren.se` | No reachable DNS record (connection fails). Nothing to migrate; optional to add later. |
-| Release candidate | `feature/taren-2.3-production-readiness` (this branch), merges into `main` without conflicts |
+| Release candidate | `feature/taren-2.3-launch-copy` (2.3 RC `f39692f` + approval docs + approved contact/copyright copy), merges into `main` without conflicts |
 | Preview | `taren-2-preview` project (unchanged by cutover) |
 
 ## 2. Approach
@@ -33,7 +33,7 @@ errors) and is not needed. Not recommended.
 3. CI green on the release-candidate PR (typecheck, lint, unit, build, Playwright both builds, Lighthouse CI).
 4. `npm run check:site` and `npm run verify:cloudflare` pass on the merge commit's build.
 5. `npm audit`: no new advisories beyond the accepted picomatch item (`TAREN_2_3_AUDIT.md` F10).
-6. Cloudflare dashboard: Web Analytics, Zaraz, Bot Fight Mode / other cookie- or script-injecting features off for taren.se (privacy page promises no cookies/analytics).
+6. Cloudflare dashboard: Web Analytics, Zaraz, Bot Fight Mode, Rocket Loader, **Email Address Obfuscation** and other cookie- or script-injecting features off for taren.se (privacy page promises no cookies/analytics; the site now contains an email address).
 7. Screenshot of the current `taren` project settings (Build & deployments, Environment variables, Functions bindings) saved for rollback.
 8. A quiet time chosen; owner available for 30 minutes.
 
@@ -57,7 +57,7 @@ works unchanged; remove them in §8 after a stable week.
 
 ## 5. Cutover steps
 
-1. Open a PR `feature/taren-2.3-production-readiness` → `main`. Wait for CI. **Do not merge yet.**
+1. Open a PR `feature/taren-2.3-launch-copy` → `main`. Wait for CI. **Do not merge yet.**
 2. In Cloudflare → Pages → `taren` → Settings → Builds & deployments: apply §4 "After". (Saving does not redeploy.)
 3. Merge the PR (merge commit). Cloudflare builds `main` with the new settings.
 4. Watch the build log: `npm ci`, `astro build`, "Found Functions directory at /site/functions", upload of `dist`.

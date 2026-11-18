@@ -8,6 +8,13 @@ Datum: 2026-11-18 · Release-kandidat: `f39692f12e0af14f97cb69a760f691480b94a741
 
 ---
 
+## Beslut fattade 2026-11-18 (genomförda på `feature/taren-2.3-launch-copy`)
+- Kontakt-e-post: **Jbl_76@hotmail.com** (privacy, terms, studio, support som `mailto:`-länk).
+- Copyright: **© 2026 Jimmy Eliasson · Taren**.
+- Repot förblir publikt.
+- Pulse Garden är den enda publicerade produkten; Lumen Capture och PDF Studio förblir opublicerade utan nedladdningar.
+- Inte tillagt (ej bedömt): rättslig grund, lagringstider, lagvalsklausul (P2, P3, T3 kvarstår som öppna juridiska frågor).
+
 ## 0. Kort sammanfattning
 
 - **Tekniskt redo:** alla tester gröna, och release-kandidaten är verifierad live på förhandsversionen (290/290 webbläsartester).
@@ -203,12 +210,12 @@ Jag har **inte** hittat på någon adress. Du anger den själv.
 16. ☐ **Zaraz**: avstängt eller tomt för taren.se.
 17. ☐ **Security → Bots → Bot Fight Mode**: av. Annars kan Cloudflare sätta cookien `__cf_bm`, och privacy-sidan lovar inga cookies.
 18. ☐ **Speed → Optimization → Rocket Loader**: av. Den injicerar skript som CSP blockerar.
-19. ☐ **Scrape Shield → Email Address Obfuscation**: av eller verkningslös (den injicerar skript).
+19. ☐ **Scrape Shield → Email Address Obfuscation**: **av**. Sajten visar nu en e-postadress; funktionen skulle skriva om den och injicera ett skript.
 20. ☐ **Rules → Transform Rules (Modify Response Header)**: inga regler som sätter `X-Robots-Tag`, `Content-Security-Policy` eller cookies för taren.se.
 21. ☐ **Analytics & Logs → Logpush**: notera om något är påslaget (påverkar P2).
 
 ### F. Lanseringen (kräver ditt GO — se avsnitt 5)
-22. ☐ Jag öppnar en PR `feature/taren-2.3-production-readiness` → `main` (med de textändringar du godkänt). CI måste vara grön. **Ingen merge än.**
+22. ☐ Jag öppnar en PR `feature/taren-2.3-launch-copy` → `main` (med de textändringar du godkänt). CI måste vara grön. **Ingen merge än.**
 23. ☐ `taren` → **Settings → Build**: Root directory `site`, Build command `npm ci && npm run build`, Build output directory `dist`. **Variables:** lägg till `NODE_VERSION` = `22` (Production och Preview). Se till att `TAREN_SHOW_DRAFTS` **inte** finns. Spara (sparandet startar ingen build).
     - *Om något pushas till `main` innan merge byggs det med nya inställningar, och bygget misslyckas eftersom `site/` saknas på main. Då ligger den gamla sajten kvar. Ofarligt, men gör steg 23 och 24 nära varandra.*
 24. ☐ Merga PR:en. Cloudflare bygger `main` med de nya inställningarna.

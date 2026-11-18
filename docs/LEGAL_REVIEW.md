@@ -34,12 +34,35 @@ inject Web Analytics if those are switched on in the dashboard. Keep them off, o
 
 No wording about analytics, cookies or telemetry needed to change: all such claims were verified as true (§1).
 
+## 2b. Owner decisions applied (2026-11-18, branch `feature/taren-2.3-launch-copy`)
+
+Owner decisions: contact email **Jbl_76@hotmail.com**; copyright **"© 2026 Jimmy Eliasson · Taren"**; repository stays
+public; Pulse Garden is the only listed product; Lumen Capture and PDF Studio stay unpublished without downloads.
+
+| Page | Change | Basis |
+|---|---|---|
+| Footer (all pages) | "© 2026 Taren. All rights reserved." → **"© 2026 Jimmy Eliasson · Taren"** (fixed year as approved) | Owner decision L2; names the person, no company implied |
+| `/privacy/` | Contact: GitHub → "For questions about privacy or this website, email Jbl_76@hotmail.com." | Owner decision L1 |
+| `/privacy/` | New section **"If you email Taren"**: "If you send an email, your address and message are used to read and answer it. They are kept in that mailbox, which is provided by Microsoft's Outlook.com service." | Factual: the site now invites email; hotmail.com is an Outlook.com mailbox. **Owner: confirm you use emails only to reply.** |
+| `/privacy/` | Your rights: "…there is usually nothing held about you unless you have emailed Taren or contributed through Ko-fi. To ask, email Jbl_76@hotmail.com." | Factual consequence of the email + Ko-fi |
+| `/terms/` | Liability: "Taren is not liable" → "Jimmy Eliasson (Taren) is not liable" | Factual: Taren is a name, not a legal person. **Owner approval required (legal wording).** |
+| `/terms/` | Contact: GitHub → "Questions are welcome by email: Jbl_76@hotmail.com." | L1 |
+| `/studio/` | Get in touch: "Email Jbl_76@hotmail.com for anything about Taren or its products." + separate line "Public code is on GitHub (@Jimmy7610)." | L1; GitHub kept as code profile, not as contact |
+| `/support/` | New section **"Questions"**: "Questions about supporting Taren are welcome by email: Jbl_76@hotmail.com." | L1 |
+
+The address is rendered as a plain `mailto:` link whose visible text is the address (accessible name), no new tab.
+No other personal data was added.
+
+**Deliberately not added** (not assessed — would be invented): a GDPR legal basis for Cloudflare's processing, any data
+retention period (email, Ko-fi), a governing-law clause, a registered business, organisation/VAT number or address.
+These stay open below (L3, L4, L13).
+
 ## 3. Points that need owner or legal review
 
 | # | Topic | Finding | Recommendation | Owner |
 |---|---|---|---|---|
-| L1 | **Contact / GDPR controller details** | Privacy and terms name Jimmy Eliasson and give GitHub as the only contact. A GDPR privacy notice must give the controller's contact details; a public GitHub profile is not a private channel for data requests. | Add a dedicated contact email (e.g. on taren.se) to `SITE` in `src/config/site.ts`; it then appears on privacy, terms and studio. | OWNER |
-| L2 | **Footer "© 2026 Taren. All rights reserved."** | Taren is a name, not an entity. Common practice, but inconsistent with the corrected terms. | Consider "© 2026 Jimmy Eliasson (Taren)". Not changed: it is a visible brand decision. | OWNER |
+| L1 ✅ | **Contact / GDPR controller details** (resolved: Jbl_76@hotmail.com, 2026-11-18) | Privacy and terms name Jimmy Eliasson and give GitHub as the only contact. A GDPR privacy notice must give the controller's contact details; a public GitHub profile is not a private channel for data requests. | Add a dedicated contact email (e.g. on taren.se) to `SITE` in `src/config/site.ts`; it then appears on privacy, terms and studio. | OWNER |
+| L2 ✅ | **Footer** (resolved: "© 2026 Jimmy Eliasson · Taren") | Taren is a name, not an entity. Common practice, but inconsistent with the corrected terms. | Consider "© 2026 Jimmy Eliasson (Taren)". Not changed: it is a visible brand decision. | OWNER |
 | L3 | **Cloudflare as processor** | Request data (IP, user agent) is processed by Cloudflare. Cloudflare's customer DPA is part of its self-serve terms. | Confirm the account's terms/DPA cover this; keep logs/analytics features off unless the privacy page is updated. | OWNER |
 | L4 | **Ko-fi data** | See §2. If you export or store supporter data elsewhere, the privacy page must say so (purpose, retention). | Decide retention (e.g. as long as bookkeeping requires). | OWNER |
 | L5 | **Taxes on Ko-fi income** | Contributions to a private individual in Sweden may be taxable (Skatteverket decides whether it is income from employment-like activity or business). Not stated on the site. | Ask Skatteverket or an accountant; keep Ko-fi/PayPal/Stripe statements. If the activity is a business, registration (F-skatt, possibly VAT) may follow. | OWNER/LEGAL |
@@ -49,6 +72,8 @@ No wording about analytics, cookies or telemetry needed to change: all such clai
 | L9 | **Selling software later** | Selling to consumers in the EU brings distance-selling information duties, a 14-day withdrawal right for digital content unless the buyer expressly waives it before delivery, conformity/update obligations (EU Digital Content Directive 2019/770 as implemented in Sweden), VAT on digital services (EU VAT OSS), and possibly the European Accessibility Act for e-commerce (microenterprises have exemptions). | Do not add prices or paid downloads until these are settled; using a store (Microsoft Store, App Store) shifts much of this to the store. | LEGAL |
 | L10 | **App Store privacy URL** | Apple requires a privacy policy URL for Pulse Garden. The website privacy page covers the website only. | Add a product-specific privacy section before App Store submission (Pulse Garden: offline, no accounts — per its brief). | OWNER |
 | L11 | **Names and trademarks** | "Taren", "Pulse Garden", "Lumen Capture" and "PDF Studio" are not stated as registered trademarks, and the site makes no such claim. "PDF Studio" is a generic name (its own checklist lists the final name as open). | Run a name search before release; do not add ™/® without a basis. | OWNER |
+| L13 | **Legal basis, retention, governing law** | The privacy page states what happens to data but no GDPR legal basis or retention periods (email, Ko-fi); the terms have no governing-law clause. Not assessed, so not written. | Decide with a qualified adviser if wanted; the texts are accurate without them but not legally reviewed. | LEGAL |
+| L14 | **Public email address** | The address is now in the HTML of 4 pages as plain text (spam harvesting possible). Cloudflare's *Email Address Obfuscation* would rewrite it and inject a script. | Keep *Email Address Obfuscation* **off** (the site's CSP and privacy statement assume no injected scripts); use your mail provider's spam filtering. | OWNER |
 | L12 | **Legacy analytics data** | The legacy site's analytics (`/api/event`, D1 `taren-analytics`) collected page/game events. The new site removes the endpoint, but data in D1 remains. | Decide retention/deletion of the D1 data at cutover (`PRODUCTION_CUTOVER_PLAN.md` §7). The old site's privacy statement (if any) governed that collection. | OWNER |
 
 ## 4. Ko-fi review (Phase 4)
@@ -68,14 +93,21 @@ Every Ko-fi link was audited in the production and draft builds (static scan of 
 | Embeds | ✅ none (no widget, no script, no iframe) |
 | Fix made | Mobile-menu Ko-fi link was missing the `data-kofi-link` marker the other links use (consistency for tests) |
 
-**Owner must verify manually:** the Ko-fi page shows the right name/branding; tips-only vs. shop/memberships (L7);
-payout setup and eligibility (L6); tax treatment (L5).
+**Not verified by anyone yet** (the site makes none of these claims): tips-only mode, payouts, eligibility, tax.
+
+**Owner must inspect manually in the Ko-fi dashboard (logged in) and on https://ko-fi.com/taren (logged out):**
+1. Public page: name, avatar and text show Taren correctly; the URL is exactly `ko-fi.com/taren`.
+2. *Shop*, *Memberships* and *Commissions* are switched **off** (otherwise contributions buy something and `/support/` must change — L7).
+3. *Payments*: which payout method is connected (PayPal/Stripe) and that it is verified and active (L6).
+4. *Supporters* view: which details you actually receive (name, message, email) — must match the privacy/support text (L4).
+5. Whether supporter emails are exported anywhere else (would need a privacy-page update).
+6. Tax: ask Skatteverket or an accountant how voluntary tips to you are treated (L5). Keep Ko-fi/PayPal/Stripe statements.
 
 ## 5. Approval
 
 | Text | Approved by owner | Date |
 |---|---|---|
-| `/privacy/` | ☐ | |
+| `/privacy/` (incl. 2b changes) | ☐ | |
 | `/terms/` | ☐ | |
 | `/support/` | ☐ | |
 | `/studio/` | ☐ | |
