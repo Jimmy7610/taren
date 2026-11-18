@@ -19,6 +19,20 @@ export const EXTRA_SIZES = [
   [932, 430],
 ] as const;
 
+/** The exact release-test matrix (Taren 2.3): phones, tablets, laptops, wide and landscape phones. */
+export const RELEASE_SIZES = [
+  [320, 568],
+  [375, 812],
+  [390, 844],
+  [768, 1024],
+  [1024, 768],
+  [1440, 900],
+  [1920, 1080],
+  [2560, 1440],
+  [844, 390],
+  [932, 430],
+] as const;
+
 export const KOFI = 'https://ko-fi.com/taren';
 
 /** Collects console errors, page errors and failed same-origin requests. */

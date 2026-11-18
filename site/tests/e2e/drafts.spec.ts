@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { RELEASE_SIZES, scrollThrough, watchErrors } from './helpers';
 
 // Runs against the draft-preview build (TAREN_SHOW_DRAFTS=1). See src/lib/drafts.ts.
 
@@ -8,6 +9,8 @@ test('a draft product page is reviewable but clearly marked and never indexable'
   await expect(page.locator('[data-draft-banner]')).toContainText('not published');
   expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('noindex, follow');
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
+  // No canonical to a production URL that does not exist yet.
+  await expect(page.locator('link[rel=canonical]')).toHaveCount(0);
   await expect(page.locator('h1')).toHaveText('Lumen Capture');
 });
 
@@ -305,5 +308,41 @@ test.describe('gallery navigation', () => {
     await expect(page.locator('#screenshots [data-gallery-nav]')).toBeHidden();
     await expect(page.locator('#screenshots .shot-link')).toHaveCount(10);
     await ctx.close();
+  });
+});
+
+// Taren 2.3 release matrix: both unpublished apps at every release size.
+test.describe('release matrix (drafts)', () => {
+  for (const slug of ['lumen-capture', 'pdfstudio']) {
+    for (const [w, h] of RELEASE_SIZES) {
+      test(`${slug} at ${w}×${h}: no overflow, broken images, tiny targets or errors`, async ({ page }) => {
+        const errors = watchErrors(page);
+        await page.setViewportSize({ width: w, height: h });
+        await page.goto(`/products/${slug}/`);
+        await scrollThrough(page);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
+        const broken = await page.evaluate(() =>
+          [...document.images].filter((i) => !i.closest('dialog')).filter((i) => i.loading !== 'lazy' || i.getBoundingClientRect().top < innerHeight).filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.currentSrc),
+        );
+        expect(broken).toEqual([]);
+        const small = await page.evaluate(() =>
+          [...document.querySelectorAll<HTMLElement>('a, button')]
+            .filter((e) => !e.closest('.prose-taren') && !e.closest('.text-sm') && !e.closest('dialog:not([open])') && !e.classList.contains('sr-only'))
+            .map((e) => ({ t: e.textContent?.trim().slice(0, 30), r: e.getBoundingClientRect() }))
+            .filter(({ r }) => r.width > 0 && (r.height < 24 || r.width < 24))
+            .map(({ t, r }) => `${t} ${Math.round(r.width)}x${Math.round(r.height)}`),
+        );
+        expect(small).toEqual([]);
+        expect(errors).toEqual([]);
+      });
+    }
+  }
+
+  test('Lumen Capture passes axe (WCAG 2.2 AA) in draft mode', async ({ page }) => {
+    const { default: AxeBuilder } = await import('@axe-core/playwright');
+    type AxePage = ConstructorParameters<typeof AxeBuilder>[0]['page'];
+    await page.goto('/products/lumen-capture/');
+    const results = await new AxeBuilder({ page: page as unknown as AxePage }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
+    expect(results.violations.map((v) => `${v.impact} ${v.id}`)).toEqual([]);
   });
 });

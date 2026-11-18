@@ -1,7 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { EXTRA_SIZES, PAGES, VIEWPORTS, scrollThrough } from './helpers';
+import { EXTRA_SIZES, PAGES, RELEASE_SIZES, VIEWPORTS, scrollThrough } from './helpers';
 
-const SIZES: ReadonlyArray<readonly [number, number]> = [...VIEWPORTS.map((w) => [w, w < 768 ? 800 : 900] as const), ...EXTRA_SIZES];
+// The exact release matrix plus the earlier width sweep (deduplicated).
+const SIZES: ReadonlyArray<readonly [number, number]> = [
+  ...new Map(
+    [...RELEASE_SIZES, ...VIEWPORTS.map((w) => [w, w < 768 ? 800 : 900] as const), ...EXTRA_SIZES].map((s) => [`${s[0]}x${s[1]}`, s] as const),
+  ).values(),
+];
 
 for (const [width, height] of SIZES) {
   test.describe(`${width}×${height}`, () => {
