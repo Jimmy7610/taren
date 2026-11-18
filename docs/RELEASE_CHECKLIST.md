@@ -2,7 +2,7 @@
 
 ## Taren 2.3 release candidate (2026-11-18) — owner actions
 
-- ⬜ Approve the legal texts: `/privacy/`, `/terms/`, `/support/`, `/studio/` (`LEGAL_REVIEW.md` §5). **Blocker.**
+- ⬜ Approve the legal texts: `/privacy/`, `/terms/`, `/support/`, `/studio/` (`LEGAL_REVIEW.md` §6). **Blocker.**
 - ✅ L1 contact email and L2 copyright decided and applied (`feature/taren-2.3-launch-copy`). ⬜ Decide L12 (legacy analytics data).
 - ⬜ Cloudflare: **Email Address Obfuscation off** (the site now shows an email address; L14).
 - ⬜ Ko-fi: verify tips-only vs. shop/memberships, payouts, and tax position (`LEGAL_REVIEW.md` L5–L7).

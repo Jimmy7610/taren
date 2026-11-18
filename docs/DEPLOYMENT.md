@@ -1,7 +1,8 @@
 # Taren — Deployment (2.3)
 
-> **Production has not been deployed.** Nothing in this branch changes taren.se until the owner
-> performs the cutover below.
+> **Production has not been switched yet.** Follow `PRODUCTION_CUTOVER_PLAN.md`: change the Pages build settings
+> **first**, then merge into `main`. Merging while the legacy settings are still active would keep serving the old site
+> from the repository root and additionally expose `site/` and `docs/` as plain files.
 
 ## Current production (verified 2026-11-18)
 

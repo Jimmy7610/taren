@@ -39,7 +39,7 @@ Only when a real, distributable build exists. Pre-checks (owner):
 1. The file is hosted at its permanent https URL and downloads correctly on a clean machine.
 2. Code signing: state it honestly in `releaseApproval.signed`. Unsigned Windows builds trigger SmartScreen;
    say so in `statusNote` if `signed: false`.
-3. Licence/terms for the app exist (see `LEGAL_REVIEW.md` §5 — required before any download).
+3. Licence/terms for the app exist (see `LEGAL_REVIEW.md` L8 — required before any download).
 4. Privacy information for the app exists if it processes personal data.
 5. If anything is sold: consumer-rights, VAT and refund questions are settled first (`LEGAL_REVIEW.md` §6).
 

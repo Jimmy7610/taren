@@ -1,14 +1,15 @@
-> ## Taren 2.0 is in development on `feature/taren-2.0`
+> ## The Taren website lives in [`site/`](site/)
 >
-> The new Taren website — an independent software studio site built with Astro — lives in
-> [`site/`](site/). It is **not deployed yet**; production (taren.se) still serves the legacy site
-> described below until the owner approves the cutover.
+> taren.se is built from `site/` (Astro, static) once the Cloudflare cutover in
+> [docs/PRODUCTION_CUTOVER_PLAN.md](docs/PRODUCTION_CUTOVER_PLAN.md) has been carried out. The legacy browser-game site
+> described below stays in the repository root for history and rollback; it is not served after the cutover.
 >
-> - Run it: `cd site && npm ci && npm run dev`
-> - Docs: [Audit](docs/TAREN_2_AUDIT.md) · [Architecture](docs/ARCHITECTURE.md) ·
+> - Run it: `cd site && npm ci && npm run dev` · Verify: `npm run check && npm run check:site && npm run verify:cloudflare`
+> - Docs: [Audit](docs/TAREN_2_3_AUDIT.md) · [Architecture](docs/ARCHITECTURE.md) ·
 >   [Design system](docs/DESIGN_SYSTEM.md) · [Products](docs/PRODUCT_MANAGEMENT.md) ·
->   [Tests](docs/TEST_REPORT.md) · [Deployment](docs/DEPLOYMENT.md) · [Rollback](docs/ROLLBACK.md) ·
->   [Release checklist](docs/RELEASE_CHECKLIST.md) · [Contributing](CONTRIBUTING.md)
+>   [Publication workflow](docs/PUBLICATION_WORKFLOW.md) · [Tests](docs/TEST_REPORT.md) ·
+>   [Deployment](docs/DEPLOYMENT.md) · [Rollback](docs/ROLLBACK.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) ·
+>   [Legal review](docs/LEGAL_REVIEW.md) · [Contributing](CONTRIBUTING.md)
 
 ---
 

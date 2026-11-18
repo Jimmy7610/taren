@@ -28,7 +28,7 @@ errors) and is not needed. Not recommended.
 
 ## 3. Pre-cutover gates (all must be ✅)
 
-1. Owner approves: this plan, the release candidate on the preview, and the legal texts (`LEGAL_REVIEW.md` §5).
+1. Owner approves: this plan, the release candidate on the preview, and the legal texts (`LEGAL_REVIEW.md` §6).
 2. Owner decisions recorded: L1 (contact email), L2 (footer ©), L12 (legacy analytics data) — or explicitly deferred.
 3. CI green on the release-candidate PR (typecheck, lint, unit, build, Playwright both builds, Lighthouse CI).
 4. `npm run check:site` and `npm run verify:cloudflare` pass on the merge commit's build.

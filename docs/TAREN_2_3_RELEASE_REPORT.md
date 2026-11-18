@@ -33,7 +33,7 @@ Results: typecheck/lint clean · unit 88/88 · Playwright 290/290 · LHCI 100/10
 
 ## Requires manual review (owner)
 
-1. Legal texts `/privacy/`, `/terms/`, `/support/`, `/studio/` (`LEGAL_REVIEW.md` §5) and decisions L1 (contact email), L2 (footer ©), L12 (legacy data).
+1. Legal texts `/privacy/`, `/terms/`, `/support/`, `/studio/` (`LEGAL_REVIEW.md` §6) and decisions L1 (contact email), L2 (footer ©), L12 (legacy data).
 2. Ko-fi: tips-only vs shop/memberships, payouts/eligibility, Swedish tax position (L5–L7).
 3. Cloudflare dashboard: no Web Analytics/Zaraz/Bot Fight Mode cookies on taren.se.
 4. Real-device and screen-reader checks (`TAREN_2_3_AUDIT.md` §3).

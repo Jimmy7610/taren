@@ -67,7 +67,7 @@ These stay open below (L3, L4, L13).
 | L4 | **Ko-fi data** | See §2. If you export or store supporter data elsewhere, the privacy page must say so (purpose, retention). | Decide retention (e.g. as long as bookkeeping requires). | OWNER |
 | L5 | **Taxes on Ko-fi income** | Contributions to a private individual in Sweden may be taxable (Skatteverket decides whether it is income from employment-like activity or business). Not stated on the site. | Ask Skatteverket or an accountant; keep Ko-fi/PayPal/Stripe statements. If the activity is a business, registration (F-skatt, possibly VAT) may follow. | OWNER/LEGAL |
 | L6 | **Ko-fi eligibility / payouts** | Not verifiable from here: account verification, payout method (PayPal/Stripe), Ko-fi's fee plan and its terms for Sweden. | Check in the Ko-fi dashboard; the site does not depend on these settings. | OWNER |
-| L7 | **Ko-fi shop, memberships, commissions** | The site describes contributions as tips that buy nothing. If shop items, memberships with perks or commissions are enabled on Ko-fi, those are sales. | Either keep Ko-fi to tips only, or update `/support/` and review consumer law (L9) first. | OWNER |
+| L7 ✅ | **Ko-fi shop, memberships, commissions** (owner-confirmed 2026-11-18: voluntary donations only, no shop or memberships; no donations received yet — confirmed by the owner, not inspected by engineering) | The site describes contributions as tips that buy nothing. If shop items, memberships with perks or commissions are enabled on Ko-fi, those are sales. | Either keep Ko-fi to tips only, or update `/support/` and review consumer law (L9) first. | OWNER |
 | L8 | **App licences / EULAs** | No product has a licence or terms yet. PDF Studio: licence "not decided" (its own release checklist). Lumen Capture vendors whisper.cpp (MIT) and RNNoise (BSD), which require their notices to ship with the app. | Gate 2 (`PUBLICATION_WORKFLOW.md`) requires a licence and third-party notices before any download. | OWNER/LEGAL |
 | L9 | **Selling software later** | Selling to consumers in the EU brings distance-selling information duties, a 14-day withdrawal right for digital content unless the buyer expressly waives it before delivery, conformity/update obligations (EU Digital Content Directive 2019/770 as implemented in Sweden), VAT on digital services (EU VAT OSS), and possibly the European Accessibility Act for e-commerce (microenterprises have exemptions). | Do not add prices or paid downloads until these are settled; using a store (Microsoft Store, App Store) shifts much of this to the store. | LEGAL |
 | L10 | **App Store privacy URL** | Apple requires a privacy policy URL for Pulse Garden. The website privacy page covers the website only. | Add a product-specific privacy section before App Store submission (Pulse Garden: offline, no accounts — per its brief). | OWNER |
@@ -103,7 +103,50 @@ Every Ko-fi link was audited in the production and draft builds (static scan of 
 5. Whether supporter emails are exported anywhere else (would need a privacy-page update).
 6. Tax: ask Skatteverket or an accountant how voluntary tips to you are treated (L5). Keep Ko-fi/PayPal/Stripe statements.
 
-## 5. Approval
+## 5. Final review before the production PR (2026-11-18)
+
+Owner facts used (stated by the owner, not independently verified): public contact Jimmy Eliasson,
+Jbl_76@hotmail.com; the address is used for correspondence; copyright "© 2026 Jimmy Eliasson · Taren"; Ko-fi takes
+voluntary donations only, with no shop or memberships, and no donations have been received yet.
+
+**These texts are not legally certified.** This is an engineering check of accuracy and completeness against the
+implementation and the owner's facts.
+
+### 5.1 Result per topic
+
+| Topic | Current text says | Assessment | Action |
+|---|---|---|---|
+| **Controller and contact (GDPR Art. 13(1)(a))** | Run by Jimmy Eliasson; email Jbl_76@hotmail.com for privacy questions | ✅ Identity and contact given | — |
+| **Purposes** | Email: "used to read and answer it"; Ko-fi details: "only to acknowledge and keep a record"; Cloudflare data: delivery and abuse protection | ✅ Matches the owner's stated use (correspondence) | — |
+| **Legal basis (Art. 13(1)(c))** | Not stated | ⚠️ **Gap.** Art. 13 asks for the legal basis of each processing. Not written because it has not been assessed. | **LEGAL/OWNER** — L13 |
+| **Retention (Art. 13(2)(a))** | Not stated (email, Ko-fi records) | ⚠️ **Gap.** A period *or the criteria* for it is expected. Not invented. | **OWNER** — decide e.g. criteria for deleting old correspondence; bookkeeping rules may set a minimum for donation records. L13 |
+| **Recipients / processors** | Cloudflare (hosting), Microsoft Outlook.com (mailbox), Ko-fi and its payment providers | ✅ Named | — |
+| **Transfers outside the EU/EEA (Art. 13(1)(f))** | Not stated | ⚠️ **Gap.** Cloudflare, Microsoft and Ko-fi may process data outside the EEA; where and on what safeguard was not verified. | **LEGAL** — add once confirmed from each provider's terms |
+| **Data-subject rights and complaint** | Access, correction, deletion "including"; complaint to IMY | ✅ Complaint right present. Listing *all* rights (restriction, objection, portability) would be more complete. | Optional wording improvement — **LEGAL** |
+| **Cookies / analytics / third-party scripts** | None | ✅ Verified (0 cookies, 0 storage, single host). Depends on Cloudflare features staying off (L14, §1). | Cloudflare checklist |
+| **Ko-fi supporter information** | "Ko-fi may share details … name, message and email … with Taren" | ✅ Hedged correctly; no donations yet, so nothing is held. Accurate for donations-only. | Owner: re-check once the first donation arrives (L4) |
+| **Ko-fi as voluntary** | "voluntary tip … does not buy a product, a service, a licence or priority" | ✅ Consistent with donations only (owner-confirmed) | — |
+| **Payments** | "handled entirely by Ko-fi and its payment providers. Taren never sees or stores your card or bank details." | ✅ Plain link, no embed; card data never reaches the site | — |
+| **Liability disclaimer** | "To the extent the law allows, Jimmy Eliasson (Taren) is not liable for losses arising from use of the website." + consumer-law saving clause | ✅ Qualified ("to the extent the law allows") and names the person. Whether it is effective in a given case is a legal question; it does not claim to override mandatory law. | LEGAL (optional) |
+| **Mandatory consumer rights** | "Nothing in these terms limits rights you have under consumer law that cannot be limited." | ✅ Present. Nothing is sold, so no distance-selling information is needed today (L9 applies if that changes). | — |
+| **"By using the site, you agree to these terms"** | Browse-wrap acceptance | ℹ️ Common, but its effect against consumers is limited. Harmless for an information site. | LEGAL (optional) |
+| **Governing law** | Not stated | ℹ️ Not required for a free information site; not invented. | LEGAL (optional) — L13 |
+| **Third-party statements** | Cloudflare privacy policy link; Microsoft Outlook.com provides the mailbox; fonts under SIL OFL; Ko-fi's own terms apply | ✅ All factual (hotmail.com is an Outlook.com mailbox; Inter and Sora are OFL) | — |
+| **Studio facts** | One-person studio, real name, Godot for games, Astro for the site, tests "wherever practical" | ✅ Accurate | — |
+| **No company implied** | Footer names the person; no business, org. no., VAT or address anywhere | ✅ e2e test forbids company/registration wording on every page | — |
+
+### 5.2 Unresolved legal concerns (for the owner and, if wanted, an adviser)
+1. **Art. 13 completeness:** legal basis, retention criteria and third-country transfers are not stated (L13).
+   The texts are *accurate*, but not *complete* by the letter of Art. 13. The risk is low for a small information site
+   that collects no data itself, but it is a known gap.
+2. **Retention of correspondence and donation records:** owner decision (bookkeeping law may require keeping
+   donation records; deletion criteria for ordinary email are up to the owner).
+3. **Tax treatment of donations** (L5) and **Ko-fi payout setup** (L6): not verified; no donations yet.
+4. **Public email address:** spam exposure accepted by the owner; Email Address Obfuscation must stay off (L14).
+
+No change was made to the site texts in this step: every open point needs a decision that has not been taken.
+
+## 6. Approval
 
 | Text | Approved by owner | Date |
 |---|---|---|
