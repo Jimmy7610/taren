@@ -110,6 +110,15 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
         .default([]),
       /** Where the milestone facts come from (repository doc, changelog…). Required with milestones. */
       milestonesSource: z.string().max(160).optional(),
+      /** Honest list of what still has to happen before a public release (shown with the timeline). */
+      beforeRelease: z.array(z.string().min(1).max(160)).max(8).default([]),
+      /** System requirements as verified label/value rows. */
+      requirements: z
+        .array(z.object({ label: z.string().min(1).max(32), value: z.string().min(1).max(200) }))
+        .max(10)
+        .default([]),
+      /** The app's own About screen showing the Taren credit ("A Taren App"). */
+      aboutImage: z.object({ image: imageSchema, alt: z.string().min(10), caption: z.string().max(160).optional() }).optional(),
     })
     .superRefine((p, ctx) => {
       const issue = (path: string, message: string) =>
@@ -124,6 +133,7 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
         if (c && contrastRatio(c, INK) < 3) issue(key, `${key} must reach 3:1 against the page background`);
       }
       if (p.milestones.length > 0 && !p.milestonesSource) issue('milestonesSource', 'milestones need a source');
+      if (p.status === 'released' && p.beforeRelease.length > 0) issue('beforeRelease', 'A released product has no pre-release items');
       if (p.status !== 'released' && p.milestones.some((m) => /release|launch/i.test(m.title) && m.state === 'done'))
         issue('milestones', 'An unreleased product cannot have a completed release milestone');
 

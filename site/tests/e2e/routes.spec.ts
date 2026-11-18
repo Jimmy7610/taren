@@ -66,14 +66,16 @@ test.describe('routes', () => {
   });
 
   test('unpublished products have no page and appear nowhere', async ({ page }) => {
-    for (const slug of ['lumen-capture', 'example-product', '_example-product']) {
+    for (const slug of ['lumen-capture', 'pdfstudio', 'example-product', '_example-product']) {
       const res = await page.goto(`/products/${slug}/`);
       expect(res?.status(), slug).toBe(404);
     }
     for (const path of ['/', '/products/', '/studio/']) {
       await page.goto(path);
-      expect(await page.locator('body').innerText(), path).not.toContain('Lumen Capture');
-      expect(await page.locator('a[href*="lumen-capture"]').count(), path).toBe(0);
+      const text = await page.locator('body').innerText();
+      expect(text, path).not.toContain('Lumen Capture');
+      expect(text, path).not.toContain('PDF Studio');
+      expect(await page.locator('a[href*="lumen-capture"], a[href*="pdfstudio"]').count(), path).toBe(0);
     }
   });
 
@@ -94,6 +96,8 @@ test.describe('routes', () => {
     );
     expect(locs).toHaveLength(PAGES.length);
     expect(xml).not.toContain('example-product');
+    expect(xml).not.toContain('lumen-capture');
+    expect(xml).not.toContain('pdfstudio');
     expect(xml).not.toMatch(/404|410|games/);
   });
 

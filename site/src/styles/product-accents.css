@@ -3,6 +3,10 @@
   --accent: #6e8bff;
   --accent-alt: #ff4d5e;
 }
+[data-accent='pdfstudio'] {
+  --accent: #a48bff;
+  --accent-alt: #f07ab4;
+}
 [data-accent='pulse-garden'] {
   --accent: #2cc3b3;
   --accent-alt: #ff72d0;
