@@ -16,6 +16,7 @@ All commands run from `site/`. Every result below was produced by an actual run;
 | `npm run test:e2e` (Playwright, Chromium) | ✅ 123 / 123 passed (≈30 s) |
 | `npx @lhci/cli@0.15.1 autorun` (5 URLs × 3 runs, mobile emulation) | ✅ all assertions passed |
 | `npm run check` (all of the above except LHCI, chained) | ✅ exit 0 |
+| GitHub Actions run [44224548551](https://github.com/Jimmy7610/taren/actions/runs/44224548551) on `f9df733` (ubuntu-latest) | ✅ success — every step passed, including visual regression and Lighthouse CI |
 
 ## Unit tests (51)
 
