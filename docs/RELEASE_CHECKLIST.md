@@ -1,4 +1,19 @@
-# Taren 2.0 — Release checklist
+# Taren — Release checklist
+
+## Taren 2.3 release candidate (2026-11-18) — owner actions
+
+- ⬜ Approve the legal texts: `/privacy/`, `/terms/`, `/support/`, `/studio/` (`LEGAL_REVIEW.md` §5). **Blocker.**
+- ⬜ Decide L1 (dedicated contact email — recommended before launch), L2 (footer ©), L12 (legacy analytics data).
+- ⬜ Ko-fi: verify tips-only vs. shop/memberships, payouts, and tax position (`LEGAL_REVIEW.md` L5–L7).
+- ⬜ Cloudflare: Web Analytics / Zaraz / Bot Fight Mode off for taren.se (privacy page promises no cookies).
+- ⬜ Review the release candidate on the preview (see `TAREN_2_3_RELEASE_REPORT.md` for URLs) on a real phone.
+- ⬜ Approve `PRODUCTION_CUTOVER_PLAN.md`, then execute it (owner only).
+- ✅ Audit done, fixes tested (`TAREN_2_3_AUDIT.md`): 410 security headers, noindex canonicals, draft download gate.
+- ✅ Publication workflow documented and enforced (`PUBLICATION_WORKFLOW.md`). Lumen Capture and PDF Studio remain drafts.
+- ✅ Preview-only noindex verified **not** to affect taren.se (Cloudflare runtime, Host simulation).
+- ✅ Production exposure of internal repository files documented (F1); removed by cutover.
+
+# Earlier checklist (Taren 2.0–2.2)
 
 Status legend: ✅ done & verified on this branch · ⬜ owner action required · ⚠️ decision needed
 
@@ -13,8 +28,9 @@ Status legend: ✅ done & verified on this branch · ⬜ owner action required �
 - ~~⚠️ **Parakollen and Ninefold.**~~ They are live at `/public/parakollen/` and `/public/ninefold/` and
   will stop being served at cutover. Decide: move to their own Pages projects (Parakollen has its own
   repo), keep them (copy into `site/public/` + port `functions/parakollen`), or retire them.
-- ⚠️ **Legacy analytics** (`/api/event`, `/api/admin/*`, D1). Retired at cutover. Note that
-  `/api/admin/*` is currently publicly readable without authentication.
+- ✅ **Legacy analytics admin API secured** — PR #1 merged and deployed; `/api/admin/*` → 401 without credentials
+  (re-verified 2026-11-18). ⬜ Owner: decide on the D1 data and the `taren-analytics` Worker after cutover
+  (`PRODUCTION_CUTOVER_PLAN.md` §7). The endpoints disappear at cutover.
 - ⬜ **Legal review** of `/privacy/` and `/terms/` (no governing-law clause; contact route is GitHub).
 - ⬜ **Studio facts.** Confirm you are happy to be named (Jimmy Eliasson) and with the "one-person
   studio" description and the history paragraph on `/studio/`.
@@ -29,10 +45,10 @@ Status legend: ✅ done & verified on this branch · ⬜ owner action required �
 - ⬜ **Preview deployment** created and reviewed on a real phone (see `DEPLOYMENT.md`).
 
 ## Taren 2.2 — product expansion
-- ⬜ Owner: review the **Lumen Capture** draft page (draft preview) and decide when to publish.
+- ⬜ Owner: review the **Lumen Capture** draft page (draft preview) and decide when to publish (gate 1, `PUBLICATION_WORKFLOW.md`).
 - ⬜ Lumen Capture blockers before publishing a download: public release, code signing, updater vs private repo, real Windows screenshots (`WINDOWS_APPS_AUDIT.md`).
 - ⬜ Lumen Capture `feature/taren-branding`: check on a real Windows PC, then merge (not merged automatically).
-- ⬜ **PDFStudio**: run the prepared local task (audit + branding) on the PC; then add `pdfstudio.md` as a draft with verified facts and real screenshots.
+- ✅ **PDF Studio**: draft page with verified 0.9.0 facts, real screenshots and its official icon (deployed to the drafts preview). ⬜ Owner: publish decision (gate 1).
 
 ## Verified on the branch
 

@@ -45,5 +45,5 @@ implementation: Lumen Capture (`Jimmy7610/lumen-capture`, branch `feature/taren-
 | App | Status |
 |---|---|
 | Lumen Capture | ✅ Implemented on `feature/taren-branding` (not merged). Verified under Wine (see TEST_REPORT §2.2). Needs a real-Windows check before merge. |
-| PDFStudio | ⏳ Pending — local project, not accessible from the cloud session. Task prepared for a local Claude Code session. |
+| PDF Studio | ✅ Implemented locally on the PDFStudio repo's `feature/taren-branding` (commit `4802bd8`, per `docs/products/pdfstudio/HANDOFF_README.md`); About dialog captured in screenshots 11–13. Not merged; the repository is local-only. |
 | Pulse Garden | Not in scope for 2.2 (Godot/iOS). |

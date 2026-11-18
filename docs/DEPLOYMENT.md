@@ -1,12 +1,16 @@
-# Taren 2.0 — Deployment
+# Taren — Deployment (2.3)
 
 > **Production has not been deployed.** Nothing in this branch changes taren.se until the owner
 > performs the cutover below.
 
 ## Current production (verified 2026-11-18)
 
-Cloudflare Pages project serving taren.se from `main`, repository root as output, no build command,
-Pages Functions in `/functions` (analytics on D1 binding `DB`, Parakollen API, catch-all soft 404).
+Cloudflare Pages project `taren` serving taren.se from `main` @ `7438a6a`, repository root as output, no build
+command, Pages Functions in `/functions` (analytics on D1 binding `DB`, `/api/admin/*` behind authentication since
+security PR #1 — 401 re-verified 2026-11-18 — Parakollen API, catch-all). Because the repository root is the output,
+internal repository files are publicly readable today (`TAREN_2_3_AUDIT.md` F1); cutover removes that.
+
+**The step-by-step production switch is `PRODUCTION_CUTOVER_PLAN.md` (owner approval required).**
 
 ## Build settings for Taren 2.0
 
@@ -76,5 +80,17 @@ builds). Revert the settings or follow `ROLLBACK.md`.
 ## What stops working at cutover (decide first)
 
 - `/public/parakollen/` (+ `/parakollen/api/*`), `/public/ninefold/` — unrelated apps, see audit.
-- `/api/event`, `/api/admin/*` analytics endpoints and the D1 binding usage.
+- `/api/event`, `/api/admin/*` analytics endpoints (404 after cutover) and the D1 binding usage.
 - The `workers/taren-analytics` Worker is a separate deployment and is unaffected.
+
+## Release verification commands (2.3)
+
+```bash
+cd site
+npm run check                 # typecheck, lint, unit, build, Playwright (production + drafts builds)
+npm run check:site            # static: links, canonicals, metadata, no internal files in dist/
+npm run verify:cloudflare     # Cloudflare runtime (wrangler pages dev): routes, 301/404/410, headers, noindex per host
+npx --yes @lhci/cli@0.15.1 autorun   # Lighthouse CI on all 7 public pages (CHROME_PATH may be needed)
+```
+`verify:cloudflare` simulates the hostnames taren.se, www.taren.se, taren.pages.dev and the preview hosts with the
+Host header and fails if a production host gets `X-Robots-Tag` or a preview host does not.

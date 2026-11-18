@@ -1,5 +1,33 @@
 # Taren 2.0 — Test report
 
+## Taren 2.3 release candidate — 2026-11-18
+
+Branch `feature/taren-2.3-production-readiness` (from `preview/drafts` @ `f1ce1b9`). All commands run from `site/` in
+the cloud session (Linux, Chromium). Every number below comes from an actual run.
+
+| Command | Result |
+|---|---|
+| `npm run typecheck` | ✅ 0 errors, 0 warnings, 0 hints |
+| `npm run lint` | ✅ 0 problems |
+| `npm test` (Vitest) | ✅ **88 / 88**, 10 files (+7 vs 2.2: 410 security headers, header parity, no-canonical on noindex, release gate ×4, drafts publish-readiness) |
+| `npm run build` (production) and draft build | ✅ both succeed; production: 9 pages, drafts: 11 pages |
+| Playwright, production + drafts projects | ✅ **290 / 290** (was 221): routes, navigation, a11y (axe), brand, polish, support, motion, visual regression, responsive |
+| Responsive matrix | ✅ every public page **and both drafts** at 320×568, 375×812, 390×844, 768×1024, 1024×768, 1440×900, 1920×1080, 2560×1440, 844×390, 932×430: no overflow, overlaps, off-screen elements, broken images, sub-24 px targets or console errors |
+| Accessibility (axe-core, WCAG 2.0/2.1/2.2 A+AA) | ✅ 0 violations: 7 public pages + 404 + 410 at 375 and 1440 px; PDF Studio and Lumen Capture drafts |
+| Visual regression | ✅ all baselines unchanged (no visual change in 2.3) |
+| `npm run check:site` (new) | ✅ production 9 pages / 177 files; drafts 11 pages / 315 files: internal links + srcsets resolve, unique titles/descriptions, canonicals only on indexable pages, og:images exist, JSON-LD valid, no maps/md/ts/env/docs in output |
+| `npm run verify:cloudflare` (new, wrangler 4.164.0 `pages dev`) | ✅ **55 checks**: 33 routes (200/301/404/410 incl. internal-file paths), security headers on a static page **and** on a Function 410, immutable `/_astro` caching, X-Robots-Tag absent on taren.se / www.taren.se and present on 4 `*.pages.dev` hosts |
+| Lighthouse CI (`@lhci/cli@0.15.1`, 3 runs, simulated mobile, median) | ✅ all 7 public pages **100 / 100 / 100 / 100**; LCP 1.58–1.89 s; CLS 0; TBT 0 ms |
+| Link check | ✅ internal: `check:site`; external: only `ko-fi.com/taren`, `github.com/Jimmy7610`, `cloudflare.com/privacypolicy/` (ko-fi.com refuses automated clients — owner check) |
+| `npm audit` | ⚠️ 21 "high" = one picomatch ReDoS advisory in build tooling, no patched version — accepted (`TAREN_2_3_AUDIT.md` F10) |
+| Final review sweep (drafts build, 11 pages × 390/1440 px) | ✅ 0 broken images, 0 dead links, 0 download links, no legacy games, no overflow, 0 console errors |
+
+Lighthouse for the two draft pages (not in LHCI because they are not public): measured in 2.2 at 97 mobile / 100
+desktop performance, 100 accessibility and best practices; SEO 69 only because drafts are `noindex`.
+
+Not testable here: real devices, VoiceOver/NVDA/Narrator, forced-colors, field INP, the Ko-fi page itself, the
+Cloudflare dashboard (`TAREN_2_3_AUDIT.md` §3).
+
 ## Taren 2.2 final portfolio polish — 2026-11-18
 
 Branch `feature/taren-2.2-final-polish` from `preview/drafts` @ `2c17026`. All commands run from `site/`; every

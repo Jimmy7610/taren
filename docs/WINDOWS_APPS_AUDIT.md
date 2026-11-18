@@ -34,4 +34,4 @@ Date: 2026-11-18. Facts below were verified from source, CI and GitHub, not assu
 6. Own `website/` copy references a download and version 2.5.
 
 ## PDFStudio
-Not inspected (no access). See the local task: *Add Taren branding to PDFStudio (local)*. Required before a product page: verified README/feature list, status, real screenshots, icon, and owner approval.
+Not inspected from the cloud session (no access). Update (Taren 2.2): the owner's local session produced a verified handoff (`docs/products/pdfstudio/`), the Taren branding (`feature/taren-branding` @ `4802bd8`), real 0.9.0 screenshots and the official icon. The draft product page uses only that material; release blockers are listed in `PUBLICATION_WORKFLOW.md` and `PRODUCT_MANAGEMENT.md`.
