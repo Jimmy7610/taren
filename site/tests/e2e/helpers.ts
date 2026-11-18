@@ -21,11 +21,18 @@ export function watchErrors(page: Page) {
     if (m.type() === 'error') errors.push(`console: ${m.text()}`);
   });
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
+  const own = (url: string) => {
+    try {
+      return new URL(url).origin === new URL(page.url() || 'http://localhost').origin || url.startsWith('http://localhost');
+    } catch {
+      return false;
+    }
+  };
   page.on('requestfailed', (r) => {
-    if (r.url().startsWith('http://localhost')) errors.push(`requestfailed: ${r.url()}`);
+    if (own(r.url())) errors.push(`requestfailed: ${r.url()}`);
   });
   page.on('response', (r) => {
-    if (r.url().startsWith('http://localhost') && r.status() >= 400 && r.request().resourceType() !== 'document')
+    if (own(r.url()) && r.status() >= 400 && r.request().resourceType() !== 'document')
       errors.push(`http ${r.status()}: ${r.url()}`);
   });
   return errors;

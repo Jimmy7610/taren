@@ -99,7 +99,7 @@ test.describe('routes', () => {
       for (const name of oldNames) expect(text, `${name} on ${path}`).not.toContain(name);
       expect(await page.locator('a[href^="/games"], a[href^="/experiments"]').count()).toBe(0);
     }
-    // In the static build these do not exist (production answers 410 via Pages Functions).
-    expect((await request.get('/games/ashveil/')).status()).toBe(404);
+    // Static preview server: 404. Cloudflare (Pages Functions): 410 Gone. Never a page.
+    expect([404, 410]).toContain((await request.get('/games/ashveil/')).status());
   });
 });

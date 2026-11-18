@@ -23,10 +23,12 @@ test('homepage has a support section and navigation links to /support/', async (
   await expect(page.getByRole('navigation', { name: 'Primary' }).getByRole('link', { name: 'Support' })).toHaveAttribute('href', '/support/');
 });
 
-test('support is optional and no payment widget or third-party script is loaded', async ({ page }) => {
+test('support is optional and no payment widget or third-party script is loaded', async ({ page, baseURL }) => {
   const thirdParty: string[] = [];
+  const own = new URL(baseURL!).origin;
   page.on('request', (r) => {
-    if (!r.url().startsWith('http://localhost') && !r.url().startsWith('data:')) thirdParty.push(r.url());
+    const url = r.url();
+    if (!url.startsWith('data:') && new URL(url).origin !== own) thirdParty.push(url);
   });
   for (const { path } of PAGES) await page.goto(path);
   expect(thirdParty).toEqual([]);
