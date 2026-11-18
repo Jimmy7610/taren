@@ -1,0 +1,379 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import SupportCTA from '@/components/SupportCTA.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import ProductShowcase from '@/components/ProductShowcase.astro';
+import ProductTeaser from '@/components/ProductTeaser.astro';
+import Swoosh from '@/components/Swoosh.astro';
+import { getFeaturedProducts, getPublicProducts } from '@/lib/catalog';
+import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
+import { SITE } from '@/config/site';
+import BrandMark from '@/components/BrandMark.astro';
+
+const featured = await getFeaturedProducts();
+const spotlight = featured[0];
+const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.slug).slice(0, 3);
+---
+
+<BaseLayout description={SITE.description} jsonLd={[organizationJsonLd(), websiteJsonLd()]}>
+  <!-- HERO -->
+  <section class="hero relative isolate overflow-hidden" aria-labelledby="hero-title">
+    <div class="grid-field pointer-events-none absolute inset-0 -z-20" aria-hidden="true"></div>
+
+    <!-- Phones only: a quiet ring field behind the copy (no symbol, nothing to download). -->
+    <div class="hero-bg-rings pointer-events-none absolute -z-10 md:hidden" aria-hidden="true">
+      <svg viewBox="0 0 800 800" focusable="false">
+        <circle cx="400" cy="400" r="210" fill="none" stroke="rgb(168 179 207 / 0.16)" stroke-width="1"></circle>
+        <circle cx="400" cy="400" r="300" fill="none" stroke="rgb(53 213 255 / 0.32)" stroke-width="1" stroke-dasharray="2 10"></circle>
+        <circle cx="400" cy="400" r="390" fill="none" stroke="rgb(168 179 207 / 0.1)" stroke-width="1"></circle>
+      </svg>
+    </div>
+
+    <div class="hero-grid container-x relative grid items-center gap-x-10 py-14 sm:py-20 md:py-24">
+      <div class="hero-copy relative z-10 min-w-0">
+        <p class="eyebrow hero-in whitespace-nowrap"><span class="max-[359px]:hidden">Independent </span>software studio&nbsp;·&nbsp;{SITE.country}</p>
+        <h1 id="hero-title" class="hero-title hero-in mt-6 text-display text-text">
+          Software built with <span class="text-brand-gradient">curiosity.</span>
+        </h1>
+        <p class="measure-lead hero-in hero-in-2 mt-7 text-lead text-muted sm:mt-8">
+          Taren makes thoughtful applications, original games and experiments in creative technology — designed with care
+          and released when they are ready.
+        </p>
+        <div class="hero-in hero-in-3 mt-9 flex flex-wrap gap-3 sm:mt-10">
+          <Button href="/products/" size="lg">Explore products</Button>
+          <Button href="/studio/" variant="secondary" size="lg">About the studio</Button>
+        </div>
+        {
+          spotlight && (
+            <div class="hero-in hero-in-3 mt-10 max-w-md lg:hidden">
+              <ProductTeaser product={spotlight} />
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Tablet and up: the orbit stage with the official symbol. It lives inside the content
+           container (so it never drifts off-screen) and may bleed a little beyond it. -->
+      <div class="hero-stage relative hidden md:block" aria-hidden="true">
+        <div class="stage-inner">
+          <svg class="stage-rings" viewBox="0 0 800 800" focusable="false">
+            <defs>
+              <radialGradient id="core-glow">
+                <stop offset="0" stop-color="#01E3FC" stop-opacity="0.32"></stop>
+                <stop offset="0.55" stop-color="#0155F6" stop-opacity="0.1"></stop>
+                <stop offset="1" stop-color="#0155F6" stop-opacity="0"></stop>
+              </radialGradient>
+            </defs>
+            <circle cx="400" cy="400" r="230" fill="url(#core-glow)"></circle>
+            <circle cx="400" cy="400" r="250" fill="none" stroke="rgb(168 179 207 / 0.16)" stroke-width="1"></circle>
+            <circle cx="400" cy="400" r="330" fill="none" stroke="rgb(53 213 255 / 0.3)" stroke-width="1" stroke-dasharray="2 10"></circle>
+            <circle cx="400" cy="400" r="396" fill="none" stroke="rgb(168 179 207 / 0.09)" stroke-width="1"></circle>
+          </svg>
+          <Swoosh id="hero-orbit" variant="orbit" class="stage-swoosh" />
+          <span class="stage-symbol"><BrandMark variant="symbol" height={200} eager={false} /></span>
+          <!-- Moving dots live on their own HTML layers so rotation runs on the compositor. -->
+          <span class="orbit orbit-a"><i class="dot dot-cyan"></i></span>
+          <span class="orbit orbit-b"><i class="dot dot-magenta"></i></span>
+          <span class="orbit orbit-c"><i class="dot dot-white"></i></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POSITIONING -->
+  <section class="border-y border-line bg-ink-deep py-20 md:py-28" aria-labelledby="what-title">
+    <div class="container-x">
+      <div class="grid gap-12 md:gap-16">
+        <SectionHeading eyebrow="What Taren makes" title="Few things, made carefully." id="what-title" />
+        <ul class="grid gap-px overflow-hidden rounded-(--radius-card) border border-line bg-line md:grid-cols-3">
+          <li class="bg-ink-deep p-7 md:p-9" data-reveal>
+            <span class="pillar-mark c-cyan" aria-hidden="true"></span>
+            <h3 class="mt-6 text-lg tracking-[-0.015em] text-text">Applications</h3>
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">Focused tools that do one job well and respect your time and attention.</p>
+          </li>
+          <li class="bg-ink-deep p-7 md:p-9" data-reveal>
+            <span class="pillar-mark c-purple" aria-hidden="true"></span>
+            <h3 class="mt-6 text-lg tracking-[-0.015em] text-text">Original games</h3>
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">Games built around a single clear idea, explored until it becomes deep.</p>
+          </li>
+          <li class="bg-ink-deep p-7 md:p-9" data-reveal>
+            <span class="pillar-mark c-amber" aria-hidden="true"></span>
+            <h3 class="mt-6 text-lg tracking-[-0.015em] text-text">Experiments</h3>
+            <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">Creative technology tried out in the open, kept only when it earns its place.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK -->
+  {
+    spotlight && (
+      <section class="py-20 md:py-32" aria-labelledby="work-title">
+        <div class="container-x">
+          <div class="flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading eyebrow="Selected work" title="In the studio now" id="work-title" />
+            <Button href="/products/" variant="ghost">
+              All products
+            </Button>
+          </div>
+
+          <div class="mt-12" data-reveal>
+            <ProductShowcase product={spotlight} />
+          </div>
+
+          {others.length > 0 && (
+            <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {others.map((p) => (
+                <ProductCard product={p} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- STUDIO -->
+  <section class:list={['pb-20 md:pb-32', !spotlight && 'pt-20 md:pt-32']} aria-labelledby="studio-title">
+    <div class="container-x grid gap-12 lg:grid-cols-2 lg:gap-20">
+      <div data-reveal>
+        <SectionHeading eyebrow="The studio" title="Independent, on purpose." id="studio-title">
+          <p>
+            Taren is a one-person software studio in {SITE.country}. It started as a small lab for browser games and
+            experiments, and has grown into a home for finished, separately branded products.
+          </p>
+        </SectionHeading>
+        <div class="mt-9">
+          <Button href="/studio/" variant="secondary">Read about the studio</Button>
+        </div>
+      </div>
+      <ol class="principles self-end">
+        <li data-reveal>
+          <h3>Curiosity first</h3>
+          <p>Every project starts with a question worth exploring, not a feature list.</p>
+        </li>
+        <li data-reveal>
+          <h3>Made with care</h3>
+          <p>Fast, accessible and calm to use. No dark patterns, no manipulative design.</p>
+        </li>
+        <li data-reveal>
+          <h3>Honest status</h3>
+          <p>Products are labelled for exactly what they are. Nothing is called released until you can get it.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <SupportCTA />
+  <div class="h-20 md:h-32" aria-hidden="true"></div>
+</BaseLayout>
+
+<style>
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 30%;
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--color-ink));
+    pointer-events: none;
+  }
+  /* Phones: copy-led, no forced height (no empty first screen). */
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Tablet: copy + a compact stage column. */
+  @media (min-width: 48rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) 13rem;
+    }
+  }
+  /* Desktop: generous stage; the hero fills most of the first screen. */
+  @media (min-width: 64rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      min-height: min(86dvh, 56rem);
+    }
+  }
+  @media (min-width: 80rem) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr) 27rem;
+    }
+  }
+  /* Short landscape screens: never force height. */
+  @media (max-height: 34rem) {
+    .hero-grid {
+      min-height: 0;
+    }
+  }
+  .hero-bg-rings {
+    width: 46rem;
+    aspect-ratio: 1;
+    right: -24rem;
+    top: -6rem;
+    opacity: 0.55;
+  }
+  .hero-bg-rings svg,
+  .stage-rings {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hero-stage {
+    align-self: center;
+  }
+  /* The stage is a square that can bleed past the column (and the container) to the right. */
+  .stage-inner {
+    --bleed: 3rem;
+    position: relative;
+    width: calc(100% + var(--bleed) * 2);
+    margin-left: calc(var(--bleed) * -0.5);
+    aspect-ratio: 1;
+  }
+  @media (min-width: 64rem) {
+    .stage-inner {
+      --bleed: 5rem;
+    }
+  }
+  @media (min-width: 80rem) {
+    .stage-inner {
+      --bleed: 6rem;
+    }
+  }
+  .stage-inner :global(.stage-swoosh) {
+    position: absolute;
+    inset: 8%;
+    width: 84%;
+    height: 84%;
+    opacity: 0.9;
+  }
+  .stage-symbol {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 42%;
+    translate: -50% -50%;
+    filter: drop-shadow(0 0 2.5rem rgb(1 227 252 / 0.22)) drop-shadow(0 0 4rem rgb(227 4 251 / 0.12));
+  }
+  .stage-symbol :global(img) {
+    width: 100%;
+    height: auto;
+  }
+  .orbit {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+  .dot {
+    position: absolute;
+    left: 50%;
+    border-radius: 999px;
+    translate: -50% -50%;
+  }
+  /* Radii as a share of the 800-unit box: 250 → 18.75%, 330 → 8.75%, 396 → 0.5% */
+  .orbit-a .dot {
+    top: 18.75%;
+  }
+  .orbit-b .dot {
+    top: 8.75%;
+  }
+  .orbit-c .dot {
+    top: 1%;
+  }
+  .dot-cyan {
+    width: 1.6%;
+    aspect-ratio: 1;
+    background: var(--color-brand-cyan);
+    box-shadow: 0 0 0 0.5rem rgb(1 227 252 / 0.14);
+  }
+  .dot-magenta {
+    width: 1.4%;
+    aspect-ratio: 1;
+    background: var(--color-magenta-text);
+    box-shadow: 0 0 0 0.45rem rgb(227 4 251 / 0.16);
+  }
+  .dot-white {
+    width: 0.9%;
+    aspect-ratio: 1;
+    background: rgb(244 247 255 / 0.8);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .orbit-a {
+      animation: spin 30s linear infinite;
+    }
+    .orbit-b {
+      animation: spin 64s linear infinite reverse;
+    }
+    .orbit-c {
+      animation: spin 46s linear infinite;
+      animation-delay: -12s;
+    }
+    .hero-in {
+      animation: var(--animate-rise);
+    }
+    .hero-in-2 {
+      animation-delay: 0.08s;
+    }
+    .hero-in-3 {
+      animation-delay: 0.16s;
+    }
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .pillar-mark {
+    display: block;
+    width: 1.75rem;
+    height: 2px;
+    background: var(--c);
+    box-shadow: 0 0 16px var(--c);
+  }
+  .c-cyan {
+    --c: var(--color-cyan);
+  }
+  .c-purple {
+    --c: var(--color-magenta-text);
+  }
+  .c-amber {
+    --c: var(--color-amber);
+  }
+  .principles {
+    display: grid;
+    gap: 0;
+    counter-reset: p;
+  }
+  .principles li {
+    counter-increment: p;
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: 1rem;
+    padding: 1.6rem 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .principles li:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .principles li::before {
+    content: counter(p, decimal-leading-zero);
+    grid-row: span 2;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    color: var(--color-subtle);
+    padding-top: 0.2rem;
+  }
+  .principles h3 {
+    font-size: 1.125rem;
+    letter-spacing: -0.015em;
+    color: var(--color-text);
+  }
+  .principles p {
+    margin-top: 0.4rem;
+    color: var(--color-muted);
+  }
+</style>

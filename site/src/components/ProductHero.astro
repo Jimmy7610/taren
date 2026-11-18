@@ -1,0 +1,221 @@
+---
+import ProductMedia from './ProductMedia.astro';
+import ProductStatus from './ProductStatus.astro';
+import Button from './Button.astro';
+import { Picture } from 'astro:assets';
+import Swoosh from './Swoosh.astro';
+import type { ProductData } from '@/lib/catalog';
+
+interface Props {
+  product: ProductData;
+}
+const { product } = Astro.props;
+// Desktop apps show a wide window capture: it follows the title in reading order (so it is seen early
+// on phones) and gets the wider column on large screens. Phone products keep the original layout.
+const wide = product.device === 'desktop';
+---
+
+<section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="product-title" data-accent={product.slug}>
+  <div class="grid-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div class="hero-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <Swoosh id="product-hero-arc" class="hero-arc pointer-events-none absolute -z-10" />
+  <div class:list={['container-x hero-grid py-14 md:py-20', wide ? 'is-wide' : 'is-tall']}>
+    <div class="hero-head">
+      <nav aria-label="Breadcrumb" class="mb-8 text-sm text-subtle">
+        <ol class="flex items-center gap-2">
+          <li><a href="/products/" class="inline-flex min-h-11 items-center hover:text-text">Products</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="text-muted">{product.name}</li>
+        </ol>
+      </nav>
+      <div class="flex items-center gap-5">
+        {
+          product.icon && (
+            <Picture
+              src={product.icon}
+              alt={product.iconAlt ?? ''}
+              widths={[80, 160, 240]}
+              sizes="80px"
+              formats={['avif', 'webp']}
+    fallbackFormat="webp"
+              loading="eager"
+              pictureAttributes={{ class: 'shrink-0' }}
+              class="size-16 shrink-0 rounded-[1.1rem] shadow-[0_20px_40px_-16px_rgb(0_0_0/0.7)] sm:size-20 sm:rounded-[1.3rem]"
+            />
+          )
+        }
+        <div>
+          <p class="text-sm text-subtle">{product.category}</p>
+          <h1 id="product-title" class="mt-1 text-[clamp(2.25rem,1.4rem+3.6vw,4.25rem)] leading-[1] tracking-[-0.04em] text-text">
+            {product.name}
+          </h1>
+        </div>
+      </div>
+      <p class="mt-8 max-w-xl font-display text-[clamp(1.25rem,1rem+1vw,1.75rem)] leading-snug tracking-[-0.02em] text-text">
+        {product.tagline}
+      </p>
+    </div>
+    {
+      wide && (
+      <div class="hero-media">
+        <ProductMedia
+          name={product.name}
+          heroImage={product.heroImage}
+          heroImageAlt={product.heroImageAlt}
+          icon={product.icon}
+          iconAlt={product.iconAlt}
+          variant="hero"
+          device={product.device}
+          eager
+        />
+      </div>
+      )
+    }
+    <div class="hero-body">
+      <p class="max-w-xl text-lead text-muted">{product.description}</p>
+
+      <dl class="mt-8 grid max-w-xl gap-4 rounded-(--radius-card) border border-line bg-surface/60 p-5 sm:grid-cols-[auto_1fr] sm:gap-x-8">
+        <dt class="text-sm text-subtle">Status</dt>
+        <dd class="flex flex-col items-start gap-2">
+          <ProductStatus status={product.status} />
+          {product.statusNote && <span class="text-sm leading-relaxed text-muted">{product.statusNote}</span>}
+        </dd>
+        <dt class="text-sm text-subtle">Platforms</dt>
+        <dd class="text-sm text-text">{product.platforms.join(', ')}</dd>
+      </dl>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        {
+          product.downloadUrl && (
+            <Button href={product.downloadUrl} external size="lg">
+              {product.downloadLabel ?? 'Download'}
+            </Button>
+          )
+        }
+        {
+          product.websiteUrl && (
+            <Button href={product.websiteUrl} external variant={product.downloadUrl ? 'secondary' : 'primary'} size="lg">
+              Visit website
+            </Button>
+          )
+        }
+        {
+          !product.downloadUrl && product.gallery.length > 0 && (
+            <Button href="#screenshots" variant={product.websiteUrl ? 'secondary' : 'primary'} size="lg">
+              See screenshots
+            </Button>
+          )
+        }
+        {
+          product.repositoryUrl && (
+            <Button href={product.repositoryUrl} external variant="secondary" size="lg">
+              Source on GitHub
+            </Button>
+          )
+        }
+      </div>
+    </div>
+    {
+      !wide && (
+      <div class="hero-media">
+        <ProductMedia
+          name={product.name}
+          heroImage={product.heroImage}
+          heroImageAlt={product.heroImageAlt}
+          icon={product.icon}
+          iconAlt={product.iconAlt}
+          variant="hero"
+          device={product.device}
+          eager
+        />
+      </div>
+      )
+    }
+    </div>
+</section>
+
+<style>
+  .hero-glow {
+    background:
+      radial-gradient(ellipse 50% 60% at 78% 55%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      radial-gradient(ellipse 40% 50% at 95% 8%, color-mix(in srgb, var(--accent-alt) 14%, transparent), transparent 70%);
+  }
+  :global(.hero-arc) {
+    right: -6%;
+    bottom: 6%;
+    width: min(70rem, 110%);
+    height: auto;
+    aspect-ratio: 600 / 160;
+    opacity: 0.22;
+  }
+  .hero-media :global(.product-media) {
+    background: transparent;
+  }
+
+  /* Layout: head (breadcrumb, title, tagline) · body (description, status, actions) · media. */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-body {
+    margin-top: 1.25rem;
+  }
+  .is-tall .hero-media {
+    margin-top: 3rem;
+  }
+  /* Wide (desktop-app) captures follow the tagline, so they are seen early on phones and tablets. */
+  .is-wide .hero-media {
+    margin-top: 2.5rem;
+  }
+  .is-wide .hero-body {
+    margin-top: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    .hero-grid {
+      column-gap: 4rem;
+    }
+    .hero-head {
+      grid-area: head;
+    }
+    .hero-body {
+      grid-area: body;
+    }
+    .hero-media {
+      grid-area: media;
+    }
+    /* Phone products: unchanged — copy centred against the phone. */
+    .is-tall {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      grid-template-rows: 1fr auto auto 1fr;
+      grid-template-areas: '. media' 'head media' 'body media' '. media';
+    }
+    .is-tall .hero-media {
+      margin-top: 0;
+      align-self: center;
+    }
+    /* Desktop apps: the screenshot gets the wider column and sits level with the title. */
+    .is-wide {
+      column-gap: 3.5rem;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas: 'head media' 'body media';
+    }
+    .is-wide .hero-media {
+      align-self: start;
+      margin-top: 4.25rem;
+    }
+    .is-wide .hero-body {
+      margin-top: 1.25rem;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media {
+      animation: hero-media-in 1.1s var(--ease-out-expo) 0.1s both;
+    }
+  }
+  @keyframes hero-media-in {
+    from {
+      transform: translateY(24px) scale(0.98);
+    }
+  }
+</style>

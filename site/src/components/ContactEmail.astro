@@ -1,0 +1,15 @@
+---
+/**
+ * The owner-approved contact address as an ordinary mailto link. The visible text is the address itself, so the
+ * link's accessible name says exactly where it goes. No new tab, no obfuscation script (the CSP allows none).
+ */
+import { SITE } from '@/config/site';
+---
+
+<a href={`mailto:${SITE.contactEmail}`} class="contact-email" data-contact-email>{SITE.contactEmail}</a>
+
+<style>
+  .contact-email {
+    overflow-wrap: anywhere;
+  }
+</style>

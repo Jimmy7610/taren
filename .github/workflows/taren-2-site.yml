@@ -1,0 +1,59 @@
+name: Taren 2.0 site
+
+on:
+  push:
+    branches: [feature/taren-2.0, main]
+    paths: ['site/**', '.github/workflows/taren-2-site.yml']
+  pull_request:
+    paths: ['site/**', '.github/workflows/taren-2-site.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: taren-2-site-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: site
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: End-to-end, accessibility and responsive tests
+        run: npx playwright test --grep-invert visual --trace off
+      - name: Visual regression (advisory — baselines are generated on Linux/Chromium 1.63)
+        continue-on-error: true
+        run: npx playwright test visual --trace off
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@0.15.1 autorun
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: taren-2-reports
+          path: |
+            site/playwright-report
+            site/test-results
+            site/lighthouse/ci
+          if-no-files-found: ignore
+          retention-days: 14

@@ -1,0 +1,48 @@
+---
+/**
+ * BrandMark — the official TAREN identity.
+ *
+ * variant="logo"   full logo (symbol + wordmark), for headers and footers.
+ *                  Source: src/assets/brand/taren-logo-on-dark.png, derived from the official
+ *                  public/branding/taren-logo-light.png with the navy wordmark letters set to the site
+ *                  text colour so it reads on the dark background. Symbol and accent untouched.
+ * variant="symbol" the T symbol alone, for compact placements.
+ *                  Source: src/assets/brand/taren-symbol.png (crop of public/branding/taren-icon.png).
+ *
+ * Regenerate both with `node scripts/generate-brand-images.mjs`. Images are served as AVIF/WebP at
+ * 1×/2×/3× density with transparency and the original aspect ratio preserved.
+ *
+ * The mark is decorative by default (alt=""), because it always sits inside a link or region that
+ * already has an accessible name ("Taren — home"). Pass `alt` when it stands alone.
+ */
+import { Picture } from 'astro:assets';
+import logo from '@/assets/brand/taren-logo-on-dark.png';
+import symbol from '@/assets/brand/taren-symbol.png';
+
+interface Props {
+  variant?: 'logo' | 'symbol';
+  /** Rendered height in CSS pixels. */
+  height?: number;
+  alt?: string;
+  eager?: boolean;
+  class?: string;
+}
+const { variant = 'logo', height = 32, alt = '', eager = true, class: className = '' } = Astro.props;
+const src = variant === 'logo' ? logo : symbol;
+const width = Math.round((src.width / src.height) * height);
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  densities={[1, 2, 3]}
+  formats={['avif', 'webp']}
+  fallbackFormat="png"
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+  class:list={['brandmark block max-w-none select-none', className]}
+  data-brandmark={variant}
+  draggable="false"
+/>

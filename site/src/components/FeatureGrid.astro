@@ -1,0 +1,30 @@
+---
+interface Props {
+  features: ReadonlyArray<{ title: string; description: string }>;
+  headingLevel?: 'h3' | 'h4';
+}
+const { features, headingLevel: H = 'h3' } = Astro.props;
+---
+
+<ul class="grid gap-px overflow-hidden rounded-(--radius-card) border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+  {
+    features.map((f, i) => (
+      <li class="feature bg-ink p-7 sm:p-8" data-reveal>
+        <span class="font-display text-sm text-subtle tabular-nums" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <H class="mt-6 text-lg leading-snug tracking-[-0.015em] text-text">{f.title}</H>
+        <p class="mt-3 text-[0.9375rem] leading-relaxed text-muted">{f.description}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .feature {
+    transition: background-color 0.3s;
+  }
+  .feature:hover {
+    background: var(--color-surface);
+  }
+</style>

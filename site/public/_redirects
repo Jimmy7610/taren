@@ -1,0 +1,5 @@
+# Legacy route retirement — see docs/TAREN_2_AUDIT.md §7.
+# 301 only where a genuinely relevant page exists. /games/* and /experiments/* return 410 via /functions.
+/about        /studio/   301
+/about/       /studio/   301
+/index.html   /          301

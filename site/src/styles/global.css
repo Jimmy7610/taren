@@ -1,0 +1,367 @@
+@import 'tailwindcss';
+@import './product-accents.css';
+
+/* Self-hosted, subset variable fonts (scripts/subset-fonts.py). Latin + Latin-1 incl. å ä ö. */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../assets/fonts/inter-subset.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Sora Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url('../assets/fonts/sora-subset.woff2') format('woff2-variations');
+}
+
+/*
+ * TAREN design tokens. See docs/DESIGN_SYSTEM.md.
+ * Contrast on --color-ink #0A1020: text 17.7:1, muted 9.0:1, subtle 6.0:1, cyan 10.9:1.
+ * Brand colours are sampled from the official symbol (public masters in site/brand/masters/):
+ *   cyan #01E3FC → blue #0155F6 → violet #630CE1 → magenta #E304FB. Blue and violet are below
+ *   text contrast and are for graphics only; the *-text tints (≥ 6:1) are for type.
+ */
+@theme {
+  --color-ink: #0a1020;
+  --color-ink-deep: #070b17;
+  --color-surface: #121b31;
+  --color-surface-raised: #18233f;
+  --color-line: rgb(168 179 207 / 0.14);
+  --color-line-strong: rgb(168 179 207 / 0.28);
+  --color-text: #f4f7ff;
+  --color-muted: #a8b3cf;
+  --color-subtle: #8591b0;
+  --color-cyan: #35d5ff;
+  --color-cyan-soft: #8ae6ff;
+  --color-purple: #8d5bff;
+  --color-purple-soft: #b394ff;
+  --color-amber: #ffc46b;
+
+  --color-brand-cyan: #01e3fc;
+  --color-brand-blue: #0155f6;
+  --color-brand-violet: #630ce1;
+  --color-brand-magenta: #e304fb;
+  --color-blue-text: #5a9bff;
+  --color-violet-text: #a47bff;
+  --color-magenta-text: #f07cff;
+
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Sora Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid modular scale (≈ 1.25 at mobile → ≈ 1.333 at desktop). Tracking tightens as size grows. */
+  --text-display: clamp(2.625rem, 1.55rem + 5.4vw, 6.5rem);
+  --text-display--line-height: 0.97;
+  --text-display--letter-spacing: -0.048em;
+  --text-headline: clamp(2rem, 1.4rem + 2.7vw, 3.625rem);
+  --text-headline--line-height: 1.04;
+  --text-headline--letter-spacing: -0.036em;
+  --text-title: clamp(1.375rem, 1.18rem + 0.85vw, 1.875rem);
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.022em;
+  --text-lead: clamp(1.0625rem, 0.99rem + 0.36vw, 1.3125rem);
+  --text-lead--line-height: 1.62;
+
+  --radius-card: 1.25rem;
+  --radius-panel: 1.75rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  --animate-rise: rise 0.9s var(--ease-out-expo) both;
+  --animate-fade: fade 1.2s var(--ease-out-quart) both;
+
+  @keyframes rise {
+    from {
+      transform: translateY(18px);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* Default accent for anything without a product accent: the brand cyan → magenta. */
+    --accent: var(--color-brand-cyan);
+    --accent-alt: var(--color-brand-magenta);
+    --gradient-brand: linear-gradient(100deg, #01e3fc 0%, #0155f6 40%, #630ce1 70%, #e304fb 100%);
+    --gradient-brand-text: linear-gradient(100deg, #5eeaff 0%, #5a9bff 40%, #a47bff 70%, #f07cff 100%);
+    --measure-lead: 60ch;
+    --measure-prose: 68ch;
+    --gutter: clamp(1rem, 0.6rem + 2.2vw, 2.5rem);
+    --header-h: 4.5rem;
+    --focus: 0 0 0 2px var(--color-ink), 0 0 0 4px var(--color-cyan);
+  }
+
+  html {
+    background: var(--color-ink);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    /* Inter: single-storey-free alternates for crisper UI text. */
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-ink);
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: rgb(53 213 255 / 0.3);
+    color: var(--color-text);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    /* Slightly heavier than 600 to offset light-on-dark irradiation at large sizes. */
+    font-weight: 620;
+    font-feature-settings: normal;
+    text-wrap: balance;
+  }
+  h3,
+  h4 {
+    font-weight: 600;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    /* Scales down slightly on the narrowest phones so one-line labels stay on one line. */
+    font-size: clamp(0.6875rem, 0.64rem + 0.24vw, 0.75rem);
+    font-weight: 600;
+    letter-spacing: clamp(0.11em, 0.07em + 0.28vw, 0.16em);
+    text-transform: uppercase;
+    color: var(--color-cyan-soft);
+  }
+
+  .prose-taren {
+    max-width: var(--measure-prose);
+    color: var(--color-muted);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  .measure-lead {
+    max-width: var(--measure-lead);
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* Gradient type in the official cyan → blue → violet → magenta, using text-safe tints. */
+  .text-brand-gradient {
+    background: var(--gradient-brand-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.08em; /* keep descenders */
+  }
+
+  /* Subtle film grain to break up gradient banding on large panels (small tiled PNG). */
+  .surface-grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .surface-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: url('../assets/textures/grain.png');
+    background-size: 64px 64px;
+    opacity: 0.045;
+    mix-blend-mode: overlay;
+  }
+
+  /* 1px brand-gradient border, revealed on hover/focus via .is-lit or :hover on the host. */
+  .ring-brand {
+    position: relative;
+  }
+  .ring-brand::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--gradient-brand);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-quart);
+    pointer-events: none;
+  }
+  .ring-brand:hover::before,
+  .ring-brand:focus-within::before,
+  .ring-brand.is-lit::before {
+    opacity: 0.85;
+  }
+  .prose-taren > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-taren h2 {
+    color: var(--color-text);
+    font-size: 1.5rem;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-top: 2.2em;
+  }
+  .prose-taren h3 {
+    color: var(--color-text);
+    font-size: 1.15rem;
+    margin-top: 1.8em;
+  }
+  .prose-taren strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  .prose-taren a {
+    color: var(--color-cyan-soft);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .prose-taren a:hover {
+    color: var(--color-text);
+  }
+  .prose-taren ul {
+    list-style: none;
+    padding: 0;
+  }
+  .prose-taren ul > li {
+    position: relative;
+    padding-left: 1.4em;
+  }
+  .prose-taren ul > li + li {
+    margin-top: 0.5em;
+  }
+  .prose-taren ul > li::before {
+    content: '';
+    position: absolute;
+    left: 0.15em;
+    top: 0.72em;
+    width: 0.45em;
+    height: 1px;
+    background: var(--color-cyan);
+  }
+
+  /* Fine grid used behind heroes. Pure CSS, no image request. */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgb(168 179 207 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(168 179 207 / 0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  }
+}
+
+/* Scroll-linked reveals: progressive enhancement. Content is fully visible where unsupported
+   and for anyone who prefers reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-reveal] {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0.001;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Cross-document page transitions (no JavaScript). */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+  animation-timing-function: var(--ease-out-quart);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

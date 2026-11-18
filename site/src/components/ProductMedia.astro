@@ -1,0 +1,174 @@
+---
+/**
+ * ProductMedia — the visual for a product card or hero. Falls back gracefully:
+ * heroImage (in a phone frame) → icon → a branded placeholder. Never a broken image.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import DeviceFrame from './DeviceFrame.astro';
+
+interface Props {
+  name: string;
+  heroImage?: ImageMetadata | undefined;
+  heroImageAlt?: string | undefined;
+  icon?: ImageMetadata | undefined;
+  iconAlt?: string | undefined;
+  variant?: 'card' | 'hero';
+  eager?: boolean;
+  device?: 'phone' | 'desktop';
+}
+const { name, heroImage, heroImageAlt, icon, iconAlt, variant = 'card', eager = false, device = 'phone' } = Astro.props;
+const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
+---
+
+<div class:list={['product-media', `is-${variant}`, `mode-${mode}`, `device-${device}`]} data-media={mode}>
+  <div class="glow" aria-hidden="true"></div>
+  {
+    mode === 'screen' && heroImage && (
+      <DeviceFrame
+        device={device}
+        src={heroImage}
+        alt={heroImageAlt ?? ''}
+        sizes={
+          device === 'desktop'
+            ? variant === 'hero'
+              ? '(min-width: 1280px) 700px, (min-width: 1024px) 56vw, 92vw'
+              : '(min-width: 768px) 420px, 86vw'
+            : variant === 'hero'
+              ? '(min-width: 1024px) 320px, 60vw'
+              : '(min-width: 768px) 200px, 40vw'
+        }
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority="auto"
+        class="media-phone"
+      />
+    )
+  }
+  {
+    mode === 'screen' && icon && (
+      <Picture
+        src={icon}
+        alt={iconAlt ?? ''}
+        widths={[96, 192]}
+        sizes="96px"
+        formats={['avif', 'webp']}
+    fallbackFormat="webp"
+        loading={eager ? 'eager' : 'lazy'}
+        class="media-icon"
+      />
+    )
+  }
+  {
+    mode === 'icon' && icon && (
+      <Picture
+        src={icon}
+        alt={iconAlt ?? ''}
+        widths={[160, 320, 480]}
+        sizes="160px"
+        formats={['avif', 'webp']}
+    fallbackFormat="webp"
+        loading={eager ? 'eager' : 'lazy'}
+        class="media-icon-lg"
+      />
+    )
+  }
+  {
+    mode === 'fallback' && (
+      <div class="placeholder" role="img" aria-label={`${name} — artwork coming later`}>
+        <span class="font-display" aria-hidden="true">
+          {name.charAt(0)}
+        </span>
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .product-media {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 110%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%),
+      radial-gradient(ellipse 60% 50% at 90% 0%, color-mix(in srgb, var(--accent-alt) 16%, transparent), transparent 70%),
+      var(--color-surface-raised);
+  }
+  .is-card {
+    aspect-ratio: 4 / 3;
+  }
+  .is-hero {
+    min-height: 100%;
+    padding: 2rem 1rem;
+  }
+  .glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(to right, rgb(168 179 207 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(168 179 207 / 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000, transparent 75%);
+  }
+  .is-card :global(.media-phone) {
+    width: 44%;
+    max-width: 13rem;
+    transform: translateY(18%) rotate(-4deg);
+    transition: transform 0.7s var(--ease-out-expo);
+  }
+  /* Desktop captures already show the app; the floating icon would cover its sidebar. */
+  .device-desktop.is-card :global(.media-icon) {
+    display: none;
+  }
+  .device-desktop.is-card :global(.media-phone) {
+    width: 88%;
+    max-width: none;
+    transform: translateY(8%);
+  }
+  /* Wide captures fill their column; no side padding so nothing is scaled down needlessly. */
+  .device-desktop.is-hero {
+    overflow: visible;
+    padding: 0 0 1.5rem;
+  }
+  .device-desktop.is-hero :global(.media-phone) {
+    width: 100%;
+    max-width: 48rem;
+  }
+  .is-hero :global(.media-phone) {
+    width: min(72%, 20rem);
+  }
+  .product-media :global(.media-icon) {
+    position: absolute;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 1.1rem;
+    box-shadow: 0 20px 40px -16px rgb(0 0 0 / 0.7);
+    transition: transform 0.7s var(--ease-out-expo);
+  }
+  .is-card :global(.media-icon) {
+    left: 8%;
+    top: 12%;
+  }
+  .is-hero :global(.media-icon) {
+    display: none;
+  }
+  .product-media :global(.media-icon-lg) {
+    width: 40%;
+    max-width: 10rem;
+    border-radius: 22%;
+  }
+  .placeholder {
+    display: grid;
+    place-items: center;
+    width: 38%;
+    aspect-ratio: 1;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 24%;
+    background: linear-gradient(150deg, rgb(1 227 252 / 0.12), rgb(227 4 251 / 0.12));
+    color: var(--color-text);
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,13 @@
+---
+/** Served with HTTP 410 by functions/ for permanently retired legacy routes (old browser games). */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ErrorState from '@/components/ErrorState.astro';
+---
+
+<BaseLayout title="Page retired" description="This page has been permanently removed from taren.se." noindex>
+  <ErrorState
+    code="410"
+    title="This page has been retired."
+    message="The small browser games and experiments that used to live here have been permanently removed as Taren became a product studio. Thanks for playing."
+  />
+</BaseLayout>

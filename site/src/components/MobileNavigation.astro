@@ -1,0 +1,233 @@
+---
+/**
+ * Mobile navigation as a native modal <dialog>: focus is contained while open, Escape closes it,
+ * and focus returns to the menu button. The button uses the Invoker Commands API
+ * (command="show-modal") so it works without JavaScript in current browsers; a small script adds
+ * a fallback and keeps aria-expanded in sync.
+ */
+import BrandMark from './BrandMark.astro';
+import { KOFI_URL, LEGAL_NAV, PRIMARY_NAV } from '@/config/site';
+import ProductTeaser from './ProductTeaser.astro';
+import { getFeaturedProducts } from '@/lib/catalog';
+
+interface Props {
+  currentPath: string;
+}
+const { currentPath } = Astro.props;
+const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
+const featured = (await getFeaturedProducts())[0];
+---
+
+<button
+  type="button"
+  class="menu-button -mr-2 inline-flex size-11 items-center justify-center rounded-full text-text transition-colors hover:bg-white/[0.06] md:hidden"
+  aria-controls="mobile-nav"
+  aria-expanded="false"
+  aria-haspopup="dialog"
+  commandfor="mobile-nav"
+  command="show-modal"
+  data-menu-open
+>
+  <span class="sr-only">Open menu</span>
+  <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6"
+    ><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg
+  >
+</button>
+
+<dialog id="mobile-nav" class="mobile-nav" aria-label="Menu">
+  <div class="flex h-full flex-col">
+    <div class="container-x flex h-(--header-h) shrink-0 items-center justify-between border-b border-line">
+      <a href="/" class="-m-2 flex min-h-11 items-center p-2" aria-label="Taren — home"><BrandMark height={36} class="h-8 w-auto" /></a>
+      <button
+        type="button"
+        class="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-text hover:bg-white/[0.06]"
+        commandfor="mobile-nav"
+        command="close"
+        data-menu-close
+      >
+        <span class="sr-only">Close menu</span>
+        <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6"
+          ><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg
+        >
+      </button>
+    </div>
+
+    <nav aria-label="Mobile" class="container-x flex flex-1 flex-col pt-8 pb-10">
+      <ul class="flex flex-col">
+        <li class="mobile-item">
+          <a href="/" aria-current={currentPath === '/' ? 'page' : undefined} class="mobile-link">Home</a>
+        </li>
+        {
+          PRIMARY_NAV.map((item) => (
+            <li class="mobile-item">
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined} class="mobile-link">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      {
+        featured && (
+          <div class="menu-featured mt-8">
+            <p class="eyebrow mb-3 text-subtle!">Featured</p>
+            <ProductTeaser product={featured} />
+          </div>
+        )
+      }
+      <div class="mt-auto flex flex-col gap-6 pt-10">
+        <a
+          href={KOFI_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-kofi-link
+          class="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-line-strong px-6 text-[0.9375rem] font-medium text-text"
+        >
+          Support on Ko-fi <span aria-hidden="true">↗</span><span class="sr-only">(opens in a new tab)</span>
+        </a>
+        <ul class="flex gap-6 text-sm text-subtle">
+          {
+            LEGAL_NAV.map((item) => (
+              <li>
+                <a href={item.href} class="inline-flex min-h-11 items-center hover:text-text">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </nav>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById('mobile-nav') as HTMLDialogElement | null;
+  const opener = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const closer = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+
+  if (dialog && opener) {
+    const supportsCommands = 'command' in HTMLButtonElement.prototype;
+    const open = () => {
+      if (!dialog.open) dialog.showModal();
+    };
+    const close = () => dialog.close();
+
+    if (!supportsCommands) {
+      opener.addEventListener('click', open);
+      closer?.addEventListener('click', close);
+    }
+
+    // Keep the button state in sync however the dialog opens or closes.
+    new MutationObserver(() => {
+      opener.setAttribute('aria-expanded', String(dialog.open));
+      document.documentElement.classList.toggle('menu-open', dialog.open);
+    }).observe(dialog, { attributes: true, attributeFilter: ['open'] });
+
+    dialog.addEventListener('close', () => opener.focus());
+
+    // Clicking the backdrop area (the dialog itself, not its content) closes it.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+
+    // Following an in-page link closes the menu first.
+    dialog.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+
+    // Leaving the mobile breakpoint closes the menu.
+    matchMedia('(min-width: 48rem)').addEventListener('change', (e) => {
+      if (e.matches) close();
+    });
+  }
+</script>
+
+<style>
+  .mobile-nav {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    color: var(--color-text);
+    background:
+      radial-gradient(ellipse 80% 50% at 100% 0%, rgb(227 4 251 / 0.1), transparent 60%),
+      radial-gradient(ellipse 70% 40% at 0% 100%, rgb(1 85 246 / 0.14), transparent 60%),
+      var(--color-ink);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity 0.3s var(--ease-out-quart),
+      transform 0.45s var(--ease-out-expo),
+      overlay 0.3s allow-discrete,
+      display 0.3s allow-discrete;
+  }
+  .mobile-nav[open] {
+    opacity: 1;
+    transform: none;
+  }
+  @starting-style {
+    .mobile-nav[open] {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+  .mobile-nav::backdrop {
+    background: rgb(7 11 23 / 0.6);
+  }
+  .mobile-item {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .mobile-link {
+    display: flex;
+    align-items: center;
+    min-height: 4rem;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--color-muted);
+    transition: color 0.2s;
+  }
+  .mobile-link:hover,
+  .mobile-link[aria-current='page'] {
+    color: var(--color-text);
+  }
+  .mobile-link[aria-current='page']::after {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-left: 0.75rem;
+    border-radius: 999px;
+    background: var(--color-cyan);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-nav[open] .mobile-item {
+      animation: menu-in 0.5s var(--ease-out-expo) both;
+    }
+    .mobile-nav[open] .mobile-item:nth-child(2) {
+      animation-delay: 40ms;
+    }
+    .mobile-nav[open] .mobile-item:nth-child(3) {
+      animation-delay: 80ms;
+    }
+    .mobile-nav[open] .mobile-item:nth-child(4) {
+      animation-delay: 120ms;
+    }
+    .mobile-nav[open] .menu-featured {
+      animation: menu-in 0.5s var(--ease-out-expo) 160ms both;
+    }
+  }
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+  :global(html.menu-open) {
+    overflow: hidden;
+  }
+</style>

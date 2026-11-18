@@ -1,0 +1,51 @@
+---
+import { STATUS_LABELS } from '@/lib/products';
+import type { ProductStatus as Status } from '@/lib/product-schema';
+
+interface Props {
+  status: Status;
+  class?: string;
+}
+const { status, class: className = '' } = Astro.props;
+---
+
+<span class:list={['product-status', `is-${status}`, className]} data-status={status}>
+  <span class="dot" aria-hidden="true"></span>
+  <span><span class="sr-only">Status: </span>{STATUS_LABELS[status]}</span>
+</span>
+
+<style>
+  .product-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 1.75rem;
+    padding: 0.2rem 0.75rem 0.2rem 0.6rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text);
+    background: rgb(255 255 255 / 0.03);
+    white-space: nowrap;
+  }
+  .dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--c);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);
+  }
+  .is-released {
+    --c: #5ef2a4;
+  }
+  .is-beta {
+    --c: var(--color-cyan);
+  }
+  .is-in-development {
+    --c: var(--color-amber);
+  }
+  .is-coming-soon {
+    --c: var(--color-purple-soft);
+  }
+</style>

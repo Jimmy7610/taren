@@ -1,3 +1,18 @@
+> ## The Taren website lives in [`site/`](site/)
+>
+> taren.se is built from `site/` (Astro, static) once the Cloudflare cutover in
+> [docs/PRODUCTION_CUTOVER_PLAN.md](docs/PRODUCTION_CUTOVER_PLAN.md) has been carried out. The legacy browser-game site
+> described below stays in the repository root for history and rollback; it is not served after the cutover.
+>
+> - Run it: `cd site && npm ci && npm run dev` · Verify: `npm run check && npm run check:site && npm run verify:cloudflare`
+> - Docs: [Audit](docs/TAREN_2_3_AUDIT.md) · [Architecture](docs/ARCHITECTURE.md) ·
+>   [Design system](docs/DESIGN_SYSTEM.md) · [Products](docs/PRODUCT_MANAGEMENT.md) ·
+>   [Publication workflow](docs/PUBLICATION_WORKFLOW.md) · [Tests](docs/TEST_REPORT.md) ·
+>   [Deployment](docs/DEPLOYMENT.md) · [Rollback](docs/ROLLBACK.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) ·
+>   [Legal review](docs/LEGAL_REVIEW.md) · [Contributing](CONTRIBUTING.md)
+
+---
+
 # Taren
 
 Taren is a personal creative test project by **Jimmy Eliasson** — a calm digital place for small strange games, sketches and experiments.

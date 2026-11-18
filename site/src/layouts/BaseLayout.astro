@@ -1,0 +1,30 @@
+---
+import '@/styles/global.css';
+import SEOHead from '@/components/SEOHead.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import PageTransition from '@/components/PageTransition.astro';
+import type { SeoInput } from '@/lib/seo';
+
+interface Props extends Omit<SeoInput, 'path'> {
+  jsonLd?: unknown[];
+}
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <SEOHead {...props} />
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <Header />
+    <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
+      <PageTransition>
+        <slot />
+      </PageTransition>
+    </main>
+    <Footer />
+  </body>
+</html>

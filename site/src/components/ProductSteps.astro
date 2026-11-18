@@ -1,0 +1,75 @@
+---
+/** Visual walkthrough ("how it plays") using real screenshots. */
+import DeviceFrame from './DeviceFrame.astro';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  steps: ReadonlyArray<{ title: string; description: string; image: ImageMetadata; alt: string }>;
+  device?: 'phone' | 'desktop';
+}
+const { steps, device = 'phone' } = Astro.props;
+---
+
+<ol class:list={['steps grid gap-12 md:grid-cols-3 md:gap-8 lg:gap-12', `is-${device}`]}>
+  {
+    steps.map((step, i) => (
+      <li class="step flex flex-col" data-reveal>
+        <div class="step-media relative flex justify-center overflow-hidden rounded-(--radius-card) border border-line px-8 pt-8">
+          <DeviceFrame
+            device={device}
+            src={step.image}
+            alt={step.alt}
+            sizes={device === 'desktop' ? '(min-width: 768px) 360px, 88vw' : '(min-width: 768px) 240px, 68vw'}
+            widths={device === 'desktop' ? [480, 720, 1000] : [240, 360, 520]}
+            class="step-phone"
+          />
+        </div>
+        <div class="mt-6 flex gap-4">
+          <span class="step-num tnum font-display" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div>
+            <h3 class="text-lg leading-snug tracking-[-0.015em] text-text">{step.title}</h3>
+            <p class="mt-2 text-[0.9375rem] leading-relaxed text-muted">{step.description}</p>
+          </div>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .step-media {
+    aspect-ratio: 4 / 4.4;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 100%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+  .is-desktop .step-media {
+    aspect-ratio: 4 / 3;
+    align-items: center;
+    padding: 1.25rem;
+  }
+  .is-desktop .step-media :global(.step-phone) {
+    width: 100%;
+  }
+  .step-media :global(.step-phone) {
+    width: min(72%, 15rem);
+    height: max-content;
+    transition: transform 0.8s var(--ease-out-expo);
+  }
+  @media (hover: hover) {
+    .step:hover :global(.step-phone) {
+      transform: translateY(-6px);
+    }
+  }
+  .step-num {
+    font-size: 0.875rem;
+    padding-top: 0.15rem;
+    background: linear-gradient(120deg, var(--accent), var(--accent-alt));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 600;
+  }
+</style>
