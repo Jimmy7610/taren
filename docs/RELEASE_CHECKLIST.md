@@ -4,9 +4,8 @@ Status legend: ✅ done & verified on this branch · ⬜ owner action required �
 
 ## Blockers before production
 
-- ⚠️ **Official brand assets.** `taren-logo-*.png` / `taren-icon.png` were not found. The site uses an
-  interim typographic wordmark and a letter-T favicon. Supply the files and follow
-  `DESIGN_SYSTEM.md → Brand assets`, or approve the interim identity explicitly.
+- ✅ **Official brand assets** applied (header, menu, footer, hero symbol, favicons, app icons, social image).
+  ⬜ Owner: approve the white-wordmark recolour used on dark backgrounds (`DESIGN_SYSTEM.md → Brand assets`).
 - ⚠️ **Parakollen and Ninefold.** They are live at `/public/parakollen/` and `/public/ninefold/` and
   will stop being served at cutover. Decide: move to their own Pages projects (Parakollen has its own
   repo), keep them (copy into `site/public/` + port `functions/parakollen`), or retire them.

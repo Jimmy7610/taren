@@ -47,6 +47,8 @@ The directive expects `taren-logo-dark.png`, `taren-logo-light.png`, `taren-logo
 
 Decision: the official T symbol is **not** recreated or approximated. The new site uses an interim *typographic* wordmark (the word TAREN set in the site typeface) and an interim letter-T favicon, isolated in one component (`BrandMark`) and one folder (`site/src/assets/brand/`) so the official files can be dropped in. This is a release blocker for owner review (see `RELEASE_CHECKLIST.md`).
 
+**Update 2026-11-18:** the owner uploaded the official files to `site/public/branding/`; they now replace the interim branding (see `DESIGN_SYSTEM.md → Brand assets`).
+
 ## 4. Product evidence
 
 | Candidate | Evidence | Decision |
@@ -75,7 +77,7 @@ Old browser games: **excluded** from the new site entirely (directive §1).
 | **Security:** `/api/admin/*` returns analytics data without authentication (verified: `GET /api/admin/overview` → 200 JSON) | Data exposure (low sensitivity, aggregate counts) | Out of scope for this branch; flagged for the owner. Removed automatically at cutover. |
 | Legacy URLs indexed by search engines (25 game pages, `/about/`, `/games/`) | 404s / lost link equity | Retirement map below; `410 Gone` via a Pages Function, `301` only where a relevant page exists |
 | Pushing `feature/taren-2.0` may create a Pages *preview* build | Preview uses the current (legacy) settings, so it shows the old site | Harmless; production is only built from `main` |
-| No official logo assets | Brand identity incomplete | Interim wordmark, blocker in checklist |
+| ~~No official logo assets~~ | Resolved: official assets supplied and applied | — |
 
 ## 7. Legacy route retirement map
 

@@ -1,6 +1,6 @@
 # Taren 2.0 — Test report
 
-Run date: 2026-11-18 · Branch `feature/taren-2.0` · Environment: Linux container, Node 22.23.5,
+Run date: 2026-11-18 (updated after applying the official brand assets) · Branch `feature/taren-2.0` · Environment: Linux container, Node 22.23.5,
 npm 10.9.9, Astro 7.4.12, Playwright 1.63.0 (Chromium), Vitest 5.1.0, Lighthouse 13.6 / LHCI 0.15.1.
 
 All commands run from `site/`. Every result below was produced by an actual run; nothing was skipped.
@@ -11,14 +11,14 @@ All commands run from `site/`. Every result below was produced by an actual run;
 |---|---|
 | `npm run typecheck` (`astro check`, strictest TS) | ✅ 0 errors, 0 warnings, 0 hints (52 files) |
 | `npm run lint` (ESLint 10 + typescript-eslint + eslint-plugin-astro) | ✅ 0 problems |
-| `npm test` (Vitest) | ✅ 51 / 51 passed, 7 files |
+| `npm test` (Vitest) | ✅ 57 / 57 passed, 8 files |
 | `npm run build` | ✅ 9 HTML pages + sitemap.xml; 0 warnings |
-| `npm run test:e2e` (Playwright, Chromium) | ✅ 123 / 123 passed (≈30 s) |
+| `npm run test:e2e` (Playwright, Chromium) | ✅ 134 / 134 passed (≈30 s) |
 | `npx @lhci/cli@0.15.1 autorun` (5 URLs × 3 runs, mobile emulation) | ✅ all assertions passed |
 | `npm run check` (all of the above except LHCI, chained) | ✅ exit 0 |
 | GitHub Actions run [44224548551](https://github.com/Jimmy7610/taren/actions/runs/44224548551) on `f9df733` (ubuntu-latest) | ✅ success — every step passed, including visual regression and Lighthouse CI |
 
-## Unit tests (51)
+## Unit tests (57)
 
 | File | Tests | Covers |
 |---|---|---|
@@ -28,9 +28,10 @@ All commands run from `site/`. Every result below was produced by an actual run;
 | `seo.test.ts` | 7 | canonical paths, titles, OG image URLs, noindex, JSON-LD escaping, sitemap XML |
 | `legacy-and-config.test.ts` | 7 | 410 handler (GET/HEAD/non-matching), Ko-fi URL constant, navigation, indexable routes |
 | `deploy-files.test.ts` | 6 | `_redirects` (no homepage dumping, no SPA catch-all), CSP without `unsafe-inline`, immutable caching, security headers, functions exist |
+| `brand.test.ts` | 6 | official masters present; on-dark logo keeps alpha, full colour (no palette), master aspect ratio, and has no navy left that would vanish on the background; square symbol; favicon.ico (16/32/48) and app icon sizes; 1200×630 social image |
 | `components.test.ts` | 5 | missing-image fallback (no `<img>`), status pill, external/internal Button behaviour, SupportCTA links |
 
-## End-to-end tests (123)
+## End-to-end tests (134)
 
 | Spec | Tests | Covers |
 |---|---|---|
@@ -40,6 +41,7 @@ All commands run from `site/`. Every result below was produced by an actual run;
 | `a11y.spec.ts` | 20 | axe-core (WCAG 2.0/2.1/2.2 A+AA + best practices) on 9 pages at 375 and 1440px, open mobile menu, heading order |
 | `support.spec.ts` | 4 | all Ko-fi links exact URL + new tab + `noopener` + labelled; homepage section + nav; **zero third-party requests**, no iframes/forms; new tab opens to Ko-fi (network stubbed) |
 | `motion.spec.ts` | 3 | reduced motion disables hero/orbit/page animations and never hides reveal content; full motion animates without fading the headline |
+| `brand.spec.ts` | 11 | header logo at all 7 viewports: loaded, 32px (mobile) / 36px (≥ 768px) tall, aspect ratio preserved, AVIF/WebP, clear of nav; menu and footer use the official logo (menu reuses the header image); no interim wordmark; hero symbol decorative, clear of text at ≥ 1280px, hidden and not downloaded on phones; favicons and OG image wired |
 | `visual.spec.ts` | 14 | screenshot baselines of all 7 pages at 375 and 1440px (2% tolerance) |
 
 Defects found by the suite and fixed during development: gallery list semantics (`ul[role=region]`
@@ -52,10 +54,12 @@ that served stale builds to tests (`--ignore-lock`), and a type mismatch between
 | Page | Perf | A11y | Best practices | SEO | LCP | TBT | CLS |
 |---|---|---|---|---|---|---|---|
 | `/` | 100 | 100 | 100 | 100 | 1.8 s | 0 ms | 0 |
-| `/products/` | 100 | 100 | 100 | 100 | 1.8 s | 0 ms | 0 |
-| `/products/pulse-garden/` | 100 | 100 | 100 | 100 | 1.8 s | 0 ms | 0 |
+| `/products/` | 100 | 100 | 100 | 100 | 1.9 s | 0 ms | 0 |
+| `/products/pulse-garden/` | 99 | 100 | 100 | 100 | 2.0 s | 0 ms | 0 |
 | `/studio/` | 100 | 100 | 100 | 100 | 1.7 s | 0 ms | 0 |
 | `/support/` | 100 | 100 | 100 | 100 | 1.7 s | 0 ms | 0 |
+
+Brand payload: header logo 2–8 kB AVIF (1×–3×), down from the 596 kB master; hero symbol 5–17 kB, only loaded at ≥ 1280px.
 
 Desktop preset (single runs): 100 in all four categories on `/`, `/products/pulse-garden/`, `/studio/`.
 An earlier run measured 93 performance (TBT 310 ms) on the mobile home page. The cause was SVG-internal

@@ -86,7 +86,7 @@ test.describe('routes', () => {
   });
 
   test('icons and manifest exist', async ({ request }) => {
-    for (const p of ['/favicon.ico', '/favicon.svg', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/site.webmanifest', '/og/taren.png', '/og/pulse-garden.jpg']) {
+    for (const p of ['/favicon.ico', '/favicon-32.png', '/apple-touch-icon.png', '/icon-192.png', '/icon-512.png', '/site.webmanifest', '/og/taren.png', '/og/pulse-garden.jpg']) {
       expect((await request.get(p)).status(), p).toBe(200);
     }
   });

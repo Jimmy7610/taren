@@ -9,6 +9,7 @@ import ProductCard from '@/components/ProductCard.astro';
 import { getFeaturedProducts, getPublicProducts } from '@/lib/catalog';
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 import { SITE } from '@/config/site';
+import BrandMark from '@/components/BrandMark.astro';
 
 const featured = await getFeaturedProducts();
 const spotlight = featured[0];
@@ -38,6 +39,8 @@ const spotlightShots = spotlight ? spotlight.gallery.filter((g) => g.image !== s
         <circle cx="400" cy="400" r="300" fill="none" stroke="url(#orbit-stroke)" stroke-width="1" stroke-dasharray="2 10"></circle>
         <circle cx="400" cy="400" r="390" fill="none" stroke="rgb(168 179 207 / 0.1)" stroke-width="1"></circle>
       </svg>
+      <!-- The official symbol sits at the centre of the orbit system. -->
+      <span class="orbit-core"><BrandMark variant="symbol" height={160} eager={false} /></span>
       <!-- Moving dots live on their own HTML layers so rotation runs on the compositor. -->
       <span class="orbit orbit-a"><i class="dot dot-cyan"></i></span>
       <span class="orbit orbit-b"><i class="dot dot-purple"></i></span>
@@ -218,6 +221,27 @@ const spotlightShots = spotlight ? spotlight.gallery.filter((g) => g.image !== s
     inset: 0;
     width: 100%;
     height: 100%;
+  }
+  /* Only where the orbit centre has room beside the headline (≥ 1280px); lazy, so smaller
+     screens never download it. */
+  .orbit-core {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20%;
+    translate: -50% -50%;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 2.5rem rgb(53 213 255 / 0.25));
+  }
+  @media (min-width: 80rem) {
+    .orbit-core {
+      display: block;
+    }
+  }
+  .orbit-core :global(img) {
+    width: 100%;
+    height: auto;
   }
   .orbit {
     position: absolute;
