@@ -47,6 +47,14 @@ curl -sI $BASE/ | grep -i content-security-policy                         # pres
 ```
 Then walk `docs/RELEASE_CHECKLIST.md` on a phone and a desktop.
 
+### Search engines and the preview
+`site/public/_headers` sends `X-Robots-Tag: noindex, nofollow` for `https://:project.pages.dev/*` and
+`https://:version.:project.pages.dev/*`. These host-specific rules never match `taren.se`. After cutover, verify:
+```bash
+curl -sI https://taren.se/ | grep -i x-robots-tag                    # expect: nothing
+curl -sI https://taren-2-preview.pages.dev/ | grep -i x-robots-tag   # expect: noindex, nofollow
+```
+
 ## Step 2 — Production cutover (owner only, after approval)
 
 1. Resolve the open decisions in `RELEASE_CHECKLIST.md` (brand assets, Parakollen/Ninefold, legal review).

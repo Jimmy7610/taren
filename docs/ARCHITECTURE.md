@@ -37,6 +37,11 @@ repo root (legacy site, untouched; still what production serves today)
 | **CSS-only motion** (keyframes, `animation-timeline: view()`, cross-document View Transitions) | Zero JS cost, progressive enhancement, fully disabled for `prefers-reduced-motion`. Animations translate, never fade content from zero (content stays visible to users and crawlers). |
 | **Self-hosted variable fonts** (Sora display, Inter text; Latin subset preloaded) | No third-party requests, which keeps the CSP strict and the privacy statement true. |
 | **External CSS only** (`inlineStylesheets: 'never'`), no `style=""` attributes | Allows a CSP with no `'unsafe-inline'`. JSON-LD uses `type="application/ld+json"`, which CSP does not execute. |
+| **Generated product accent CSS** (`scripts/generate-accents.mjs` → `src/styles/product-accents.css`, runs before `dev`/`build`) | The CSP forbids inline `style` attributes, so per-product colours cannot be injected at runtime. A unit test fails if the committed file is out of sync with the content. |
+| **Single stylesheet** (`cssCodeSplit: false`) | ≈ 12 kB gzip for the whole site: fewer render-blocking requests on slow mobile networks than per-page chunks; still an external file for the CSP. |
+| **Subset fonts committed** (`scripts/subset-fonts.py`) | Builds need no Python; −15 kB of font transfer. |
+| **Brand masters outside `public/`** (`site/brand/masters/`) | Owner decision: the original files are not publicly downloadable; only optimised derivatives ship. |
+| **Preview `noindex` via `_headers` host rules** (`https://:project.pages.dev/*`, `https://:version.:project.pages.dev/*`) | Applies only to Cloudflare Pages hostnames, never to the custom domain. Verified with real response headers. |
 | **Custom sitemap endpoint** | Generated from the same visibility rules as pages, so unpublished products can never leak into it. |
 
 ## Data flow for products

@@ -1,7 +1,7 @@
 # Taren 2.1 — Visual Polish: review findings and recommendations
 
-Status: **proposal, not started.** Based on the verified preview at https://taren-2-preview.pages.dev
-(commit `ca56776`) on 2026-11-18. Nothing here has been implemented.
+Status: **implemented** (2026-11-18, commit `9297785` on `feature/taren-2.0`) after owner approval — see §8.
+Originally written as a proposal from the verified preview of commit `ca56776`.
 
 ## 0. Verification baseline (what 2.1 starts from)
 
@@ -102,3 +102,27 @@ Status: **proposal, not started.** Based on the verified preview at https://tare
 - Approve the scope and order above (or reprioritise).
 - Is there real gameplay footage for Pulse Garden (P6)? Should the brand masters stay public (I5)?
 - Any additional products ready for publication (with verified facts and real assets)?
+
+## 8. Implementation status (2.1 release candidate)
+
+| Item | Status | Notes |
+|---|---|---|
+| I1 wide-screen hero | ✅ | Orbit stage inside the container grid; tested at 768/1024/1440/1920/2560 (never clipped, never over the copy) |
+| I2 preview noindex | ✅ | `_headers` host rules for `*.pages.dev` only; verified on real response headers (see TEST_REPORT) |
+| I3 icon caching | ✅ | `max-age=3600, stale-while-revalidate=86400` for icons, OG images and manifest |
+| I4 mobile hero space | ✅ | No forced height on phones; product teaser in the first screen |
+| I5 brand masters | ✅ | Moved to `site/brand/masters/` (owner decision), unchanged |
+| I6 Pulse Garden LCP | ✅ | Lighthouse 99 → 100 (subset fonts, single CSS, no competing image priority) |
+| V1 brand palette | ✅ | Sampled from the symbol; text-safe tints |
+| V2 swoosh motif | ✅ | `Swoosh` orbit + arc |
+| V3 surface depth | ✅ | Grain + gradient ring |
+| V4 brand usage page | ⏭ Not done | Owner chose to keep masters private; a public brand page would need downloads. Revisit if a press kit is wanted |
+| T1–T5 typography | ✅ | Scale, measures, Inter features, display weight, eyebrow, subset fonts |
+| P1 showcase | ✅ | Cross-fade of 3 real captures, verified chips |
+| P2 product page | ✅ | Facts, walkthrough, lightbox, verified timeline |
+| P3 product accents | ✅ | Schema + generated CSS |
+| P4 catalogue layout | ✅ | Showcase for one product, grid from two |
+| P5 generated OG images | ⏭ Not done | Only needed for products without an owner-made OG image; Pulse Garden has one |
+| P6 gameplay clip | ⏭ Not done | Owner: no verified footage exists; no synthetic footage was made |
+| R1–R4 responsive | ✅ | 320–2560 and landscape phones in the e2e matrix |
+| R5 visual regression | ✅ | 25 baselines incl. 320, 768, 1920, 2560, 844×390 and the open menu |

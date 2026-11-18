@@ -22,12 +22,40 @@ utilities (`bg-surface`, `text-muted`, `text-headline`, …).
 Rules: accents are used sparingly (one gradient word in the hero, hairlines, status dots, focus
 ring). Purple is never used for body text. No constant glows.
 
+### Brand colours (Taren 2.1) — sampled from the official symbol
+
+| Token | Value | Contrast on ink | Use |
+|---|---|---|---|
+| `brand-cyan` | `#01E3FC` | 12.1:1 | Graphics, dots, glows |
+| `brand-blue` | `#0155F6` | 3.3:1 | **Graphics only** |
+| `brand-violet` | `#630CE1` | 2.4:1 | **Graphics only** |
+| `brand-magenta` | `#E304FB` | 5.1:1 | Graphics, dots |
+| `blue-text` / `violet-text` / `magenta-text` | `#5A9BFF` / `#A47BFF` / `#F07CFF` | 6.8 / 6.2 / 8.2:1 | Type and small UI |
+
+- `--gradient-brand` — cyan → blue → violet → magenta (graphics: nav underline, gradient ring, swoosh).
+- `--gradient-brand-text` — the same hues in text-safe tints (`.text-brand-gradient`: the hero's *curiosity.*, 404/410 codes).
+- **Per-product accents** (`--accent`, `--accent-alt`) come from each product's own artwork (Pulse Garden: teal `#2CC3B3`, pink `#FF72D0`), are validated to ≥ 3:1 on ink by the schema, and are applied through `[data-accent="<slug>"]` (generated CSS — see ARCHITECTURE).
+
+### Motif — the swoosh
+`Swoosh.astro` reproduces the tapered orbit of the official T symbol: `variant="orbit"` (a tilted ring, thick cyan at
+the bottom tapering to a magenta hairline — hero stage, product stage) and `variant="arc"` (a sweeping crescent —
+product hero, support panel). Always decorative, always at low opacity behind content.
+
+### Surfaces
+`.surface-grain` adds a 2 kB tiled grain at 4.5% (breaks up gradient banding on large panels). `.ring-brand`
+reveals a 1px brand-gradient border on hover/focus (cards, teasers, screenshots).
+
 ## Typography
 
-- **Display:** Sora Variable (weights 500–600), tight tracking (−0.02 to −0.045em).
-- **Text:** Inter Variable, 16–17px base, 1.6–1.75 line height.
-- Fluid scale: `text-display` (hero), `text-headline` (section titles), `text-title` (cards), `text-lead`.
-- Eyebrow labels: 12px, uppercase, +0.16em tracking, `cyan-soft`.
+- **Display:** Sora Variable — headings at weight 620 (offsets light-on-dark irradiation), h3/h4 at 600; tracking
+  tightens with size (−0.022em titles → −0.048em display).
+- **Text:** Inter Variable with `cv11` + `ss01` alternates, 16–17px base, 1.6–1.75 line height; `.tnum` for numbers.
+- **Fluid modular scale:** ≈ 1.25 on phones → ≈ 1.333 on desktop — `text-display`, `text-headline`, `text-title`, `text-lead`.
+- **Measures:** lead copy ≤ 60ch (`.measure-lead`), long prose ≤ 68ch (`.prose-taren`).
+- **Eyebrow:** 11–12px uppercase, tracking 0.11–0.16em (scales with width so labels stay on one line; the hero drops
+  "Independent" below 360px).
+- **Fonts are subset** (`npm run brand:fonts` → `src/assets/fonts/*-subset.woff2`): Latin + Latin-1 (å ä ö), punctuation,
+  arrows; weight axis and used OpenType features kept. Inter 48 → 37 kB, Sora 34 → 30 kB. Both preloaded.
 
 ## Space & layout
 
@@ -73,10 +101,18 @@ No scroll hijacking, no parallax, no autoplaying media.
 | `SEOHead` | Title, description, canonical, OG/Twitter, icons, font preloads, JSON-LD |
 | `PageTransition` | CSS page-entry wrapper |
 | `ErrorState` | 404/410 layout |
+| `Swoosh` | Brand motif (orbit ring / arc) |
+| `ProductShowcase` | Featured "product stage": icon, status, verified chips, CTAs, cross-fading phone on a swoosh orbit |
+| `CrossfadePhone` | Device frame cross-fading up to 3 real captures (CSS; static with reduced motion) |
+| `ProductTeaser` | Compact featured-product link (phone hero, mobile menu) |
+| `ProductFacts` | "At a glance" strip from verified facts |
+| `ProductSteps` | "How it plays/works" walkthrough with real screenshots |
+| `ProductTimeline` | Verified progress milestones with source line |
+| `ProductGallery` | Scroll-snap screenshots + accessible lightbox (dialog, ←/→, swipe, no-JS fallback) |
 
 ## Brand assets
 
-Official masters (owner-supplied, kept unmodified) in `site/public/branding/`:
+Official masters (owner-supplied, kept unmodified) in `site/brand/masters/` — **not** publicly served (moved out of `public/` in 2.1):
 
 | File | What it is | Readable on the dark site? |
 |---|---|---|
@@ -90,7 +126,7 @@ The filenames describe the logo colour, not the background, so neither full logo
 | Derivative | Source | Processing | Used for |
 |---|---|---|---|
 | `src/assets/brand/taren-logo-on-dark.png` | `taren-logo-light.png` | Navy wordmark letters (low-chroma dark pixels only) set to `--color-text` `#F4F7FF`. Symbol and cyan A-accent untouched. Cropped to artwork. | Header (32px mobile / 36px ≥ 768px), mobile menu, footer (44px), social image |
-| `src/assets/brand/taren-symbol.png` | `taren-icon.png` | Cropped to artwork, square. Pixel-identical to the master. | Hero orbit centre (≥ 1280px only), favicons, app icons |
+| `src/assets/brand/taren-symbol.png` | `taren-icon.png` | Cropped to artwork, square. Pixel-identical to the master. | Hero orbit stage (≥ 768px; never downloaded on phones), favicons, app icons |
 | `public/favicon.ico` (16/32/48), `favicon-32.png` | symbol | Transparent; reads on light and dark tabs | Browser tabs |
 | `public/apple-touch-icon.png`, `icon-192.png`, `icon-512.png` | symbol | On an opaque `#0A1020` tile (platforms fill transparency unpredictably) | Home screen / manifest |
 | `public/og/taren.png` (1200×630) | on-dark logo | Rendered with site fonts | Default social image |

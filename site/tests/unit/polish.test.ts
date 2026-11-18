@@ -91,8 +91,13 @@ describe('_headers — preview indexing and caching', () => {
     for (const b of pathOnly) expect(b).not.toMatch(/X-Robots-Tag/i);
   });
 
+  it('never matches one file with two cache rules (Cloudflare would join the values)', () => {
+    const cacheRules = blocks.filter((b) => /Cache-Control/.test(b)).map((b) => b.split('\n')[0]!);
+    expect(cacheRules).not.toContain('/og/*');
+  });
+
   it('does not let same-name brand files stick for a day', () => {
-    for (const rule of ['/og/*', '/*.ico', '/*.png', '/site.webmanifest']) {
+    for (const rule of ['/*.jpg', '/*.ico', '/*.png', '/site.webmanifest']) {
       const block = blocks.find((b) => b.split('\n')[0] === rule);
       expect(block, rule).toBeDefined();
       expect(block).toMatch(/max-age=3600, stale-while-revalidate=86400/);

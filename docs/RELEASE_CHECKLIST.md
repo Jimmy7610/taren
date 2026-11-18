@@ -4,8 +4,11 @@ Status legend: ✅ done & verified on this branch · ⬜ owner action required �
 
 ## Blockers before production
 
+- ✅ Taren 2.1 visual polish implemented (see `TAREN_2_1_POLISH_PLAN.md` §8). ⬜ Owner: final visual approval on the preview.
+- ✅ Preview kept out of search engines (`X-Robots-Tag` on `*.pages.dev` only).
+- ⬜ After cutover: confirm `https://taren.se/` sends **no** `X-Robots-Tag`.
 - ✅ **Official brand assets** applied (header, menu, footer, hero symbol, favicons, app icons, social image).
-  ⬜ Owner: approve the white-wordmark recolour used on dark backgrounds (`DESIGN_SYSTEM.md → Brand assets`).
+  ✅ Owner approved the white-wordmark recolour for dark backgrounds. Masters moved to `site/brand/masters/`.
 - ⚠️ **Parakollen and Ninefold.** They are live at `/public/parakollen/` and `/public/ninefold/` and
   will stop being served at cutover. Decide: move to their own Pages projects (Parakollen has its own
   repo), keep them (copy into `site/public/` + port `functions/parakollen`), or retire them.

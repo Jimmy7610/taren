@@ -12,7 +12,7 @@
 
 # Same-name brand files (favicons, app icons, social images) change rarely but must not stick
 # for a day after a change: 1 hour fresh, then revalidated in the background.
-/og/*
+/*.jpg
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 /*.ico
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
