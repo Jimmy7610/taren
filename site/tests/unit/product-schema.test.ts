@@ -17,6 +17,8 @@ const base = {
   features: [{ title: 'Feature', description: 'Does a thing.' }],
 };
 
+const approval = { version: '1.0.0', approvedOn: '2026-12-01', signed: true };
+
 const issues = (data: unknown) => {
   const r = schema.safeParse(data);
   return r.success ? [] : r.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`);
@@ -45,7 +47,7 @@ describe('product schema', () => {
 
   it('only allows "released" when a real link exists', () => {
     expect(issues({ ...base, status: 'released' }).join()).toMatch(/released/);
-    expect(issues({ ...base, status: 'released', downloadUrl: 'https://example.com/get' })).toEqual([]);
+    expect(issues({ ...base, status: 'released', downloadUrl: 'https://example.com/get', releaseApproval: approval })).toEqual([]);
   });
 
   it('only allows "beta" when accessible or documented', () => {
@@ -77,6 +79,29 @@ describe('product schema', () => {
     expect(issues({ ...base, heroImage: 'x.webp' }).join()).toMatch(/heroImageAlt/);
     expect(issues({ ...base, icon: 'x.png' }).join()).toMatch(/iconAlt/);
     expect(issues({ ...base, gallery: [{ image: 'x.webp', alt: 'short' }] })).not.toEqual([]);
+  });
+
+  describe('publication workflow: page (gate 1) is separate from download release (gate 2)', () => {
+    it('an in-development product can have a public information page without any download', () => {
+      expect(issues({ ...base, published: true, status: 'in-development' })).toEqual([]);
+    });
+    it('a download link always needs an owner-approved release, even when published as released', () => {
+      expect(issues({ ...base, status: 'released', downloadUrl: 'https://example.com/get' }).join()).toMatch(/releaseApproval/);
+    });
+    it('drafts cannot carry a download link either (it would show on the draft preview)', () => {
+      expect(issues({ ...base, published: false, downloadUrl: 'https://example.com/get' }).join()).toMatch(/downloadUrl/);
+      expect(issues({ ...base, published: false, status: 'in-development', downloadUrl: 'https://e.com/x', releaseApproval: approval }).join()).toMatch(
+        /downloadUrl/,
+      );
+    });
+    it('releaseApproval is validated and cannot exist on its own', () => {
+      expect(issues({ ...base, status: 'released', websiteUrl: 'https://e.com', releaseApproval: approval }).join()).toMatch(/approves nothing/);
+      expect(issues({ ...base, status: 'in-development', releaseApproval: approval }).join()).toMatch(/releaseApproval/);
+      expect(
+        issues({ ...base, status: 'released', downloadUrl: 'https://e.com/x', releaseApproval: { ...approval, approvedOn: 'soon' } }).join(),
+      ).toMatch(/YYYY-MM-DD/);
+      expect(issues({ ...base, status: 'released', downloadUrl: 'https://e.com/x', releaseApproval: { version: '1.0', approvedOn: '2026-12-01' } })).not.toEqual([]);
+    });
   });
 
   it('skips release rules for unpublished drafts', () => {

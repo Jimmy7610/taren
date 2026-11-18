@@ -48,6 +48,19 @@ describe('product content files', () => {
     expect(lumen.downloadUrl).toBeUndefined();
   });
 
+  it('both drafts are ready to be published as information pages only (gate 1), with no release (gate 2)', () => {
+    const schema = productSchema(z.string());
+    for (const file of ['lumen-capture.md', 'pdfstudio.md']) {
+      const data = read(file);
+      expect(data.published, file).toBe(false); // Not published in Taren 2.3 — the owner decides.
+      expect(data.releaseApproval, file).toBeUndefined();
+      expect(data.downloadUrl, file).toBeUndefined();
+      // Simulate the owner's single change for gate 1: the page must then pass every public-page rule.
+      const result = schema.safeParse({ ...data, published: true });
+      expect(result.success ? [] : result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`), file).toEqual([]);
+    }
+  });
+
   it('PDF Studio stays an honest, unpublished draft with its own icon and no download', () => {
     const pdf = read('pdfstudio.md');
     expect(pdf.published).toBe(false);

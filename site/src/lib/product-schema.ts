@@ -64,6 +64,20 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
         .array(z.object({ title: z.string().min(1).max(60), description: z.string().min(1).max(260) }))
         .default([]),
       downloadUrl: httpsUrl.optional(),
+      /**
+       * Gate 2 of the publication workflow (docs/PUBLICATION_WORKFLOW.md): the owner's explicit approval of a
+       * downloadable release. Required for any downloadUrl, independently of `published` (gate 1, the page).
+       */
+      releaseApproval: z
+        .object({
+          /** The exact version the download link delivers, e.g. "1.0.0". */
+          version: z.string().min(1).max(40),
+          /** Date of the owner's approval, YYYY-MM-DD. */
+          approvedOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'approvedOn must be YYYY-MM-DD'),
+          /** Whether the downloadable files are code-signed. Stated honestly; never assumed. */
+          signed: z.boolean(),
+        })
+        .optional(),
       downloadLabel: z.string().max(40).optional(),
       websiteUrl: httpsUrl.optional(),
       repositoryUrl: httpsUrl.optional(),
@@ -137,6 +151,14 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
       if (p.status !== 'released' && p.milestones.some((m) => /release|launch/i.test(m.title) && m.state === 'done'))
         issue('milestones', 'An unreleased product cannot have a completed release milestone');
 
+      // Release gate — applies to drafts too, so a download link can never appear even on the draft preview
+      // unless the product is released or in a real beta AND the owner has approved that release.
+      const downloadable = p.status === 'released' || p.status === 'beta';
+      if (p.downloadUrl && !downloadable) issue('downloadUrl', 'An unreleased product cannot have a downloadUrl');
+      if (p.downloadUrl && !p.releaseApproval) issue('releaseApproval', 'A downloadUrl requires releaseApproval (owner-approved release)');
+      if (p.releaseApproval && !downloadable) issue('releaseApproval', 'releaseApproval only applies to released or beta products');
+      if (p.releaseApproval && !p.downloadUrl) issue('releaseApproval', 'releaseApproval without a downloadUrl approves nothing');
+
       if (!p.published) return;
       // Status honesty rules apply to everything that will be public.
       switch (p.status) {
@@ -152,12 +174,10 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
           if (p.features.length === 0 && p.gallery.length === 0)
             issue('status', '"in-development" needs meaningful content (features or gallery)');
           if (!p.statusNote) issue('statusNote', '"in-development" requires a statusNote');
-          if (p.downloadUrl) issue('downloadUrl', 'An unreleased product cannot have a downloadUrl');
           break;
         case 'coming-soon':
           if (!p.heroImage && p.gallery.length === 0)
             issue('status', '"coming-soon" requires approved visual material (heroImage or gallery)');
-          if (p.downloadUrl) issue('downloadUrl', 'An unreleased product cannot have a downloadUrl');
           break;
       }
     });

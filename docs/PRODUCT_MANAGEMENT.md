@@ -3,6 +3,9 @@
 Every product is one Markdown file in `site/src/content/products/`. The build validates it; if a rule
 is broken, `npm run build` fails with a message that names the field.
 
+Publishing is a two-gate, owner-approved process — information page first, downloadable release separately.
+See **[PUBLICATION_WORKFLOW.md](PUBLICATION_WORKFLOW.md)**.
+
 ## Add a product in five minutes
 
 1. **Copy the template:** `cp site/src/content/products/_example-product.md site/src/content/products/my-app.md` (files starting with `_` are never built)
@@ -36,7 +39,8 @@ is broken, `npm run build` fails with a message that names the field.
 | `heroImage` + `heroImageAlt` | optional | Shown in a phone frame |
 | `gallery[]` (`image`, `alt`, `caption?`) | optional | Real screenshots only |
 | `features[]` (`title`, `description`) | optional | Verified capabilities only |
-| `downloadUrl` (+ `downloadLabel`) | only released / accessible beta | https only |
+| `downloadUrl` (+ `downloadLabel`) | only released / accessible beta, with `releaseApproval` | https only; never on drafts |
+| `releaseApproval` | `{ version, approvedOn: YYYY-MM-DD, signed }` — the owner's release approval (gate 2) | required with `downloadUrl` |
 | `websiteUrl` | optional | https only |
 | `repositoryUrl` | optional | Public repositories only |
 | `ogImage` + `ogImageAlt` | optional | Path under `public/` |

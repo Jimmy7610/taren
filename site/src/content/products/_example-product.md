@@ -17,7 +17,8 @@ order: 999
 features:
   - title: Feature title
     description: One or two sentences about a real, verified capability.
-# downloadUrl: https://example.com/download       # only for released or accessible beta builds
+# downloadUrl: https://example.com/download       # only for released or accessible beta builds, and only with:
+# releaseApproval: { version: 1.0.0, approvedOn: 2026-12-01, signed: true }   # gate 2, see docs/PUBLICATION_WORKFLOW.md
 # websiteUrl: https://example.com
 # repositoryUrl: https://github.com/owner/repo    # public repositories only
 # icon: ../../assets/products/example-product/icon.png
