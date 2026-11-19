@@ -46,22 +46,34 @@ changes, and it is switched **after** the files are verified over the public URL
    Do not enable the `r2.dev` URL.
 2. Optional hardening on the custom domain: a Cache Rule "cache everything" for `downloads.taren.se/*`, and a
    Transform Rule adding `X-Content-Type-Options: nosniff`.
-3. R2 → Manage API tokens: one token, **Object Read & Write**, limited to the two buckets. Note Account ID, Access
-   Key ID and Secret. Never paste them in chat, issues or commits.
+3. **Two separate R2 tokens — never one token for both buckets:**
+   - **Taren Staging** (long-lived, in GitHub): *Object Read & Write*, **only** `taren-downloads-staging`.
+   - **Taren Production** (short-lived, never in GitHub): *Object Read & Write*, **only** `taren-downloads`, created with
+     a **TTL** right before a publication and expiring/revoked afterwards. Kept in the owner's password manager or
+     nowhere. Never paste either in chat, issues, commits or logs.
 4. In **each** app repository (lumen-capture, PDFStudio) → Settings → Environments:
-   - `downloads-staging`: secrets `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`.
-   - `downloads-public`: the same three secrets, **Required reviewers = owner**, **Deployment branches = main only**.
+   - `downloads-staging` (deployment branches: `main` only): secrets `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
+     `R2_SECRET_ACCESS_KEY` of **Taren Staging**.
+   - **No production environment and no production secret.** Delete `downloads-public` if it exists.
 5. Licence/terms for the apps (`LEGAL_REVIEW.md` L8) must exist before the first public download.
+
+### Why publishing is not done by GitHub Actions
+GitHub documents that on GitHub Free, Pro and Team plans, **required reviewers for environments are only available in
+public repositories**, and that administrators can bypass environment protection rules. The app repositories are
+private, so a production secret stored in GitHub could be used by any workflow run on `main` without a real approval.
+Instead, the production token exists only on the owner's PC for the minutes of a publication, and the owner's own
+action (typing the version in `Publish-Beta.ps1`) is the approval. Upgrading to GitHub Enterprise or making the app
+repositories public would make required reviewers possible; neither is needed with this design.
 
 ## 3. Release runbook
 
 | Step | Who | What |
 |---|---|---|
 | 1. Build | CI | Every push: `build.yml` / `ci.yml` build and test. They never publish. |
-| 2. Candidate | Engineer | App repo → Actions → *release (public beta)* → `mode: candidate`, `version: X`. Builds, tests, audits the package, uploads to **staging**, downloads it back and checks SHA-256. |
+| 2. Candidate | Engineer | App repo → Actions → *release candidate (public beta)* → branch `main`, `version: X`. Builds, tests, audits the package, uploads to **staging**, downloads it back and checks SHA-256. It cannot publish. |
 | 3. Verify | Engineer | Download the artifact of that run on a Windows 11 PC: install, launch, smoke test, uninstall (app `docs/RELEASING.md`). PDF Studio: run UI + installation tests locally on the same commit. |
-| 4. Approve | **Owner** | Read the candidate report, then run the workflow with `mode: publish` from `main`. The `publish` job waits on the `downloads-public` environment until the owner approves it in GitHub. |
-| 5. Publish | CI | Copies the verified files from staging to the public bucket, re-downloads them from `downloads.taren.se` and checks SHA-256, then switches `latest.json`. |
+| 4. Approve | **Owner, own PC** | Create the short-lived **Taren Production** token. `tools/release/Publish-Beta.ps1 -Product <p> -Version X -RunId <candidate run> -DryRun`, then the same without `-DryRun`: the script checks the run (release-candidate workflow, `main`, success), verifies every file, refuses to overwrite anything public, and asks the owner to **type the version** — only then it asks for the token (hidden, process only). |
+| 5. Publish | Script | Uploads the verified files to the public bucket, re-downloads them from `downloads.taren.se` and checks SHA-256, then switches `latest.json`. The token expires or is revoked. |
 | 6. Website | Engineer → owner review | `cd site && node scripts/import-release.mjs --feed https://downloads.taren.se/<product>/beta/<version>/feed.json --approved-on YYYY-MM-DD` (verifies every file's SHA-256 over the network), set the product's `status: beta` in both languages, remove the "approval gate" unit test and update `tests/e2e/downloads.spec.ts`; PR → owner merges → Pages deploys. |
 
 The website never shows a download until step 6 is merged: the manifest schema forbids files in `preparing`, a
@@ -70,7 +82,8 @@ The website never shows a download until step 6 is merged: the manifest schema f
 to a product page that is unpublished or not `beta`/`released`.
 
 ## 4. Rollback, revocation, broken downloads
-- **Bad beta, older one is fine (rollback):** app workflow `mode: rollback`, `version: <previous>` (owner approves) →
+- **Bad beta, older one is fine (rollback):** owner runs `Publish-Beta.ps1 -Product <p> -Version <previous> -Rollback`
+  (typed approval, short-lived token) →
   `latest.json` points back; Lumen's updater never downgrades anyone, it only stops offering the bad version. Then
   `import-release.mjs` with the previous version's feed → PR → merge.
 - **Compromised or dangerous file (revocation):** 1) set the manifest to `withdrawn` with a reason in both languages
@@ -103,4 +116,5 @@ privacy information before release (`LEGAL_REVIEW.md`). PDF Studio makes no netw
 | `site/src/lib/catalog.ts` → `getRelease()` | Build-time consistency between manifest and product page |
 | `site/scripts/import-release.mjs` | Turns a published `feed.json` into a manifest after verifying every file |
 | `site/tests/unit/releases.test.ts`, `site/tests/e2e/downloads.spec.ts` | Schema, gate and UI tests |
-| App repos: `.github/workflows/release.yml`, `docs/RELEASING.md` | Build → Test → Stage → Verify → Approve → Publish |
+| App repos: `.github/workflows/release.yml` | Build → Test → Stage → Verify (candidate only, private staging) |
+| App repos: `tools/release/Publish-Beta.ps1`, `docs/RELEASING.md` | Owner approval and publication from the owner's PC (short-lived production token) |
