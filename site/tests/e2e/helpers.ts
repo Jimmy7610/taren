@@ -3,6 +3,8 @@ import type { Page } from '@playwright/test';
 export const PAGES = [
   { path: '/', h1: /Software built with curiosity/ },
   { path: '/products/', h1: /Selected work/ },
+  { path: '/products/lumen-capture/', h1: /Lumen Capture/ },
+  { path: '/products/pdfstudio/', h1: /PDF Studio/ },
   { path: '/products/pulse-garden/', h1: /Pulse Garden/ },
   { path: '/studio/', h1: /independent software studio/i },
   { path: '/support/', h1: /Enjoying what we’re building/ },

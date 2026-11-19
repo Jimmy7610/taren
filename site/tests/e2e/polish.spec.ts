@@ -15,15 +15,15 @@ test.describe('hero', () => {
     });
   }
 
-  test('phones get a product teaser instead of empty space', async ({ page }) => {
+  test('phones get the featured product teaser instead of empty space', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    const teaser = page.locator('.hero [data-teaser="pulse-garden"]');
+    const teaser = page.locator('.hero [data-teaser="lumen-capture"]');
     await expect(teaser).toBeVisible();
     // The teaser starts inside the first screen.
     expect((await teaser.boundingBox())!.y).toBeLessThan(844);
     await teaser.click();
-    await expect(page).toHaveURL('/products/pulse-garden/');
+    await expect(page).toHaveURL('/products/lumen-capture/');
   });
 
   // Taren 2.4 B+ (docs/TAREN_SPACING_UX_AUDIT.md): the featured product is visible in the first desktop screen too.
@@ -31,7 +31,7 @@ test.describe('hero', () => {
     test(`desktop ${w}×${h}: the featured product card is fully in the first screen, clear of the stage`, async ({ page }) => {
       await page.setViewportSize({ width: w, height: h });
       await page.goto('/');
-      const teaser = page.locator('.hero [data-teaser="pulse-garden"]');
+      const teaser = page.locator('.hero [data-teaser="lumen-capture"]');
       await expect(teaser).toBeVisible();
       // Measure the resting layout: wait for the finite entrance animations (the orbits loop forever).
       await page.evaluate(() =>
@@ -43,8 +43,8 @@ test.describe('hero', () => {
       const overlaps = !(t.x + t.width < stage.x || t.x > stage.x + stage.width || t.y + t.height < stage.y || t.y > stage.y + stage.height);
       expect(overlaps, 'card overlaps the symbol stage').toBe(false);
       // The card is a single link in the hero, named after the product.
-      await expect(page.locator('.hero a[href="/products/pulse-garden/"]')).toHaveCount(1);
-      await expect(teaser).toHaveAccessibleName(/Pulse Garden/);
+      await expect(page.locator('.hero a[href="/products/lumen-capture/"]')).toHaveCount(1);
+      await expect(teaser).toHaveAccessibleName(/Lumen Capture/);
     });
   }
 
@@ -62,10 +62,11 @@ test.describe('product showcase', () => {
   test('homepage and products page show the featured stage with verified chips', async ({ page }) => {
     for (const path of ['/', '/products/']) {
       await page.goto(path);
-      const showcase = page.locator('article.showcase[data-accent="pulse-garden"]');
+      // Taren 2.5: Lumen Capture is the featured product (homepage) and first in the catalogue (stage).
+      const showcase = page.locator('article.showcase[data-accent="lumen-capture"]');
       await expect(showcase).toBeVisible();
       const chips = (await showcase.locator('ul[aria-label$="at a glance"] li').allInnerTexts()).map((t) => t.split('\n').pop()!.trim());
-      expect(chips).toEqual(['Strategy puzzle', 'iPhone, portrait', 'Plays fully offline', 'English, Swedish']);
+      expect(chips).toEqual(['Screen recorder and editor', 'Windows 10 (2004+) and 11, x64', 'None — runs on your PC', 'Six built in']);
       await expect(showcase.locator('.xphone img')).toHaveCount(3);
     }
   });
@@ -168,8 +169,8 @@ test('mobile menu features the product', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/studio/');
   await page.getByRole('button', { name: 'Open menu' }).click();
-  const teaser = page.locator('dialog#mobile-nav [data-teaser="pulse-garden"]');
+  const teaser = page.locator('dialog#mobile-nav [data-teaser="lumen-capture"]');
   await expect(teaser).toBeVisible();
   await teaser.click();
-  await expect(page).toHaveURL('/products/pulse-garden/');
+  await expect(page).toHaveURL('/products/lumen-capture/');
 });

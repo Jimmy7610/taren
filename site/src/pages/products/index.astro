@@ -28,22 +28,24 @@ const products = await getPublicProducts();
 
   <section class="container-x pt-12 section-b md:pt-16" aria-label="Product list">
     {
-      products.length === 1 && products[0] ? (
+      products[0] ? (
         <>
-          {/* One product: a full-width featured stage. The grid takes over from two products. */}
+          {/* The first product in catalogue order gets the full-width stage; the rest follow in a two-column grid. */}
           <ProductShowcase product={products[0]} headingLevel="h2" eager />
-          <p class="mt-8 text-sm text-subtle">
-            More projects are in the workshop. They will appear here when there is something real to show — not before.
-          </p>
+          {products.length > 1 ? (
+            <ul class="mt-6 grid gap-6 md:grid-cols-2" role="list" aria-label="More products">
+              {products.slice(1).map((p, i) => (
+                <li class="flex *:w-full">
+                  <ProductCard product={p} headingLevel="h2" eager={i < 2} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="mt-8 text-sm text-subtle">
+              More projects are in the workshop. They will appear here when there is something real to show — not before.
+            </p>
+          )}
         </>
-      ) : products.length > 1 ? (
-        <ul class="grid gap-6 md:grid-cols-2" role="list">
-          {products.map((p, i) => (
-            <li class="flex *:w-full">
-              <ProductCard product={p} headingLevel="h2" eager={i < 2} />
-            </li>
-          ))}
-        </ul>
       ) : (
         <p class="text-lead text-muted">The first products will appear here when they are ready to show.</p>
       )

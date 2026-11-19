@@ -72,10 +72,13 @@ const chips = product.facts.slice(0, 4);
       {product.statusNote && <p class="measure-lead mt-6 text-sm leading-relaxed text-subtle">{product.statusNote}</p>}
 
       <div class="mt-9 flex flex-wrap gap-3">
-        <Button href={href} size="lg">Explore {product.name}</Button>
+        {/* On small phones the CTAs take the full width and may wrap, so long product names never overflow. */}
+        <Button href={href} size="lg" class="max-sm:w-full max-sm:whitespace-normal max-sm:text-center">
+          Explore {product.name}
+        </Button>
         {
           product.gallery.length > 0 && (
-            <Button href={`${href}#screenshots`} variant="secondary" size="lg">
+            <Button href={`${href}#screenshots`} variant="secondary" size="lg" class="max-sm:w-full">
               Screenshots
             </Button>
           )
@@ -168,11 +171,11 @@ const chips = product.facts.slice(0, 4);
   .stage :global(.stage-desktop) {
     width: min(100%, 36rem);
   }
+  /* Desktop-app captures are shown whole (never cropped at the panel edge): they fill the stage column. */
   @media (min-width: 64rem) {
     .stage :global(.stage-desktop) {
-      width: 112%;
-      max-width: none;
-      margin-right: -14%;
+      width: 100%;
+      max-width: 40rem;
     }
   }
   @media (hover: hover) {

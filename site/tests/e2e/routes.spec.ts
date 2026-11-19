@@ -36,6 +36,13 @@ test.describe('routes', () => {
         (imgs as HTMLImageElement[])
           .filter((i) => !i.closest('dialog:not([open])'))
           .filter((i) => i.getClientRects().length > 0) // display:none (e.g. phone-only teaser) never loads
+          // Screenshots further along a horizontal gallery load lazily as it is swiped (apps.spec.ts checks each loads).
+          .filter((i) => {
+            const g = i.closest('.gallery');
+            if (!g) return true;
+            const gr = g.getBoundingClientRect(), r = i.getBoundingClientRect();
+            return r.left < gr.right && r.right > gr.left;
+          })
           .filter((i) => !i.complete || i.naturalWidth === 0)
           .map((i) => i.currentSrc || i.src),
       );
@@ -68,17 +75,18 @@ test.describe('routes', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('unpublished products have no page and appear nowhere', async ({ page }) => {
-    for (const slug of ['lumen-capture', 'pdfstudio', 'example-product', '_example-product']) {
+  test('the template product has no page; all three approved products do (Taren 2.5)', async ({ page }) => {
+    for (const slug of ['example-product', '_example-product']) {
       const res = await page.goto(`/products/${slug}/`);
       expect(res?.status(), slug).toBe(404);
     }
-    for (const path of ['/', '/products/', '/studio/']) {
-      await page.goto(path);
-      const text = await page.locator('body').innerText();
-      expect(text, path).not.toContain('Lumen Capture');
-      expect(text, path).not.toContain('PDF Studio');
-      expect(await page.locator('a[href*="lumen-capture"], a[href*="pdfstudio"]').count(), path).toBe(0);
+    for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) {
+      const res = await page.goto(`/products/${slug}/`);
+      expect(res?.status(), slug).toBe(200);
+      // Public information page: indexable, own canonical, no draft banner.
+      await expect(page.locator('[data-draft-banner]')).toHaveCount(0);
+      expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('index, follow');
+      expect(await page.locator('link[rel=canonical]').getAttribute('href')).toBe(`https://taren.se/products/${slug}/`);
     }
   });
 
@@ -99,8 +107,7 @@ test.describe('routes', () => {
     );
     expect(locs).toHaveLength(PAGES.length);
     expect(xml).not.toContain('example-product');
-    expect(xml).not.toContain('lumen-capture');
-    expect(xml).not.toContain('pdfstudio');
+    for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) expect(xml).toContain(`https://taren.se/products/${slug}/`);
     expect(xml).not.toMatch(/404|410|games/);
   });
 

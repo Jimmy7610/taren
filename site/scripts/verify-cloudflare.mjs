@@ -63,7 +63,9 @@ try {
     '/about': 301, '/about/': 301, '/index.html': 301,
     '/games/': 410, '/games/ashveil/': 410, '/experiments/x/': 410, '/public/parakollen/': 410,
     '/public/ninefold/': 410, '/parakollen/': 410, '/parakollen/api/medals': 410,
-    '/public/other/': 404, '/does-not-exist/': 404, '/products/lumen-capture/': 404, '/products/pdfstudio/': 404,
+    '/public/other/': 404, '/does-not-exist/': 404, '/products/example-product/': 404,
+    // Taren 2.5: public information pages (no downloads).
+    '/products/lumen-capture/': 200, '/products/pdfstudio/': 200,
     '/api/admin/overview': 404, '/api/event': 404,
     // Internal files the legacy site serves from the repository root (audit F1) must not exist here.
     '/README.md': 404, '/CLAUDE.md': 404, '/docs/current-status.md': 404, '/.agent/ARCHITECTURE.md': 404,

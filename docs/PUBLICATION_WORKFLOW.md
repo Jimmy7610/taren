@@ -60,10 +60,13 @@ Remove `beforeRelease` (not allowed on released products) and mark the release m
   `src/lib/legacy.ts` if it was public for a long time).
 - Withdraw a download: remove `downloadUrl` + `releaseApproval`, set the status back, explain in `statusNote`.
 
-## Current state (2026-11-18)
+## Current state (Taren 2.5, owner-approved; branch `feature/taren-2.5-product-showcase`)
 
-| Product | Gate | Notes |
-|---|---|---|
-| Pulse Garden | 1 (published, in development) | No App Store/TestFlight availability; no download |
-| Lumen Capture | 0 (draft) | Publish-ready for gate 1; gate 2 blocked (no signed public build, no release) |
-| PDF Studio | 0 (draft) | Publish-ready for gate 1; gate 2 blocked (0.9.0 unsigned preview, name/licence open) |
+| Product | Gate | Order | Notes |
+|---|---|---|---|
+| Lumen Capture | 1 (published, in development, **featured**) | 1 | Homepage hero card and showcase; full-width stage first on `/products/`. No installer, no download (gate 2 not passed: no signed public build, private repo/updater) |
+| PDF Studio | 1 (published, in development) | 2 | 0.9.0 unsigned development preview; no download (gate 2 blocked: signing, final name and licence) |
+| Pulse Garden | 1 (published, in development) | 3 | No App Store/TestFlight availability; no download |
+
+Publishing these information pages did **not** approve any distribution: none has `downloadUrl` or `releaseApproval`
+(unit- and e2e-tested), and no page carries `SoftwareApplication` structured data.
