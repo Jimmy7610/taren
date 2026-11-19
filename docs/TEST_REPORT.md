@@ -1,5 +1,27 @@
 # Taren 2.0 — Test report
 
+## Taren 2.6 product showcase + English/Swedish localization — 2026-11-19
+
+Branch `feature/taren-2.6-bilingual`, local runs in the cloud container (Linux, Chromium from Playwright).
+
+| Check | Result |
+|---|---|
+| `astro check` (125 files) | 0 errors, 0 warnings |
+| ESLint | clean |
+| Vitest | 102 passed (11 files), incl. 13 new i18n tests |
+| Playwright (`chromium` + `drafts`) | 668 passed, 0 failed |
+| `check:site` (21 HTML pages) | OK — links, metadata, canonicals, build contents |
+| `verify:cloudflare` (wrangler Pages runtime) | all checks passed, incl. `/sv/` routes, Swedish 404, noindex per host |
+| Lighthouse CI, 18 pages × 3 runs (simulated mobile) | median 99–100 in all four categories on every page; all assertions passed |
+| `npm audit` | 0 vulnerabilities |
+
+Responsive: every page in both languages at 320, 360, 375, 390, 430, 768, 1024, 1280, 1440, 1920 (and 2560) px —
+no horizontal overflow. Long Swedish fact values were shortened or given soft hyphens. 18 new Swedish visual
+baselines were reviewed by eye before being committed.
+
+Not covered: real iPhone/Android devices, VoiceOver/NVDA/TalkBack by hand, the Ko-fi page itself (external), and
+review of the Swedish legal text by a lawyer.
+
 ## Taren 2.3 release candidate — 2026-11-18
 
 Branch `feature/taren-2.3-production-readiness` (from `preview/drafts` @ `f1ce1b9`). All commands run from `site/` in

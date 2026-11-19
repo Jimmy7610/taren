@@ -22,6 +22,9 @@ See **[PUBLICATION_WORKFLOW.md](PUBLICATION_WORKFLOW.md)**.
    Drafts get an amber "Draft preview" banner and a "Draft" label, `noindex`, no structured data, are never featured and never appear in the sitemap. Production builds (`main`, `feature/taren-2.0`) never show them.
 6. **Publish:** set `published: true` (and `featured: true` to show it on the homepage spotlight; lowest `order` wins). Run `npm run check`, commit, open a PR.
 
+> **Taren 2.6:** every published product also needs `src/content/product-translations/sv/<slug>.md` with the
+> Swedish text, item for item (see `docs/LOCALIZATION.md`). The build fails if it is missing or incomplete.
+
 ## Fields
 
 | Field | Required | Notes |

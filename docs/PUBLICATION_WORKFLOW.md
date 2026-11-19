@@ -60,6 +60,12 @@ Remove `beforeRelease` (not allowed on released products) and mark the release m
   `src/lib/legacy.ts` if it was public for a long time).
 - Withdraw a download: remove `downloadUrl` + `releaseApproval`, set the status back, explain in `statusNote`.
 
+## Translations (Taren 2.6)
+A published product must have a complete Swedish translation in
+`site/src/content/product-translations/sv/<slug>.md`; the build fails otherwise. Publishing (gate 1) therefore means
+writing and reviewing both languages. Any later change to a product's facts, status note or lists must be made in
+both files. See `LOCALIZATION.md`.
+
 ## Current state (Taren 2.5, owner-approved; branch `feature/taren-2.5-product-showcase`)
 
 | Product | Gate | Order | Notes |
