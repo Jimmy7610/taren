@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { productSchema } from './lib/product-schema';
 import { productTranslationSchema } from './lib/product-i18n';
+import { releaseSchema } from './lib/release-schema';
 
 const products = defineCollection({
   // Files whose names start with "_" are ignored (use them for local drafts that must never build).
@@ -15,4 +16,11 @@ const productTranslations = defineCollection({
   schema: productTranslationSchema,
 });
 
-export const collections = { products, productTranslations };
+// Windows download releases: one manifest per product, src/content/releases/<product-slug>.json
+// (see src/lib/release-schema.ts and docs/WINDOWS_DOWNLOADS.md). The entry id is the product slug.
+const releases = defineCollection({
+  loader: glob({ pattern: '[^_]*.json', base: './src/content/releases' }),
+  schema: releaseSchema,
+});
+
+export const collections = { products, productTranslations, releases };
