@@ -213,7 +213,7 @@ describe('scripts/import-release.mjs (published feed → manifest)', async () =>
 
   it('refuses feeds from other hosts, mismatched versions, other products and missing approval', () => {
     expect(() => manifestFromFeed(`https://example.com/lumen-capture/beta/${v}/feed.json`, lumenFeed, lumen, opts)).toThrow(/feed URL/);
-    expect(() => manifestFromFeed(`${DOWNLOAD_ORIGIN}/lumen-capture/beta/2.9.0-beta.2/feed.json`, lumenFeed, lumen, opts)).toThrow(/does not match/);
+    expect(() => manifestFromFeed(`${DOWNLOAD_ORIGIN}/lumen-capture/beta/2.9.0-beta.3/feed.json`, lumenFeed, lumen, opts)).toThrow(/does not match/);
     expect(() => manifestFromFeed(`${lumenBase}/feed.json`, lumenFeed, pdf, opts)).toThrow(/not "lumen-capture"/);
     expect(() => manifestFromFeed(`${lumenBase}/feed.json`, lumenFeed, lumen, {})).toThrow(/approved-on/);
   });
