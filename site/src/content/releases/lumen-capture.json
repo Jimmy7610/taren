@@ -1,0 +1,36 @@
+{
+  "product": "lumen-capture",
+  "channel": "beta",
+  "state": "preparing",
+  "version": "2.9.0-beta.1",
+  "platform": "windows",
+  "architecture": "x64",
+  "minimumOs": {
+    "en": "Windows 10 version 2004 or later, or Windows 11 (64-bit, x64)",
+    "sv": "Windows 10 version 2004 eller senare, eller Windows 11 (64-bitars, x64)"
+  },
+  "signed": false,
+  "downloads": [],
+  "notes": {
+    "en": [
+      "First public beta of Lumen Capture: screen, window and region recording with system audio, microphone and camera, a built-in editor, export to MP4, GIF and sound, and live streaming.",
+      "Updates are offered in the app from downloads.taren.se and are only installed after their SHA-256 checksum has been verified.",
+      "The interface is available in English, Swedish, German, Spanish, French and Norwegian."
+    ],
+    "sv": [
+      "Första öppna betan av Lumen Capture: inspelning av skärm, fönster och område med systemljud, mikrofon och kamera, inbyggd redigerare, export till MP4, GIF och ljud samt livesändning.",
+      "Uppdateringar erbjuds i appen från downloads.taren.se och installeras bara efter att deras SHA-256-kontrollsumma har verifierats.",
+      "Gränssnittet finns på engelska, svenska, tyska, spanska, franska och norska."
+    ]
+  },
+  "knownIssues": {
+    "en": [
+      "The installer is not code-signed, so Windows SmartScreen may show a warning before it starts.",
+      "Beta software: features can change and you may run into bugs. Keep copies of recordings that matter."
+    ],
+    "sv": [
+      "Installationsprogrammet är inte kodsignerat, så Windows SmartScreen kan visa en varning innan det startar.",
+      "Betaprogramvara: funktioner kan ändras och du kan stöta på buggar. Spara kopior av inspelningar som är viktiga."
+    ]
+  }
+}

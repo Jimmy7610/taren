@@ -35,6 +35,11 @@ Result: the page appears in `/products/`, the sitemap and search; it still shows
 
 ## Gate 2 — approve a downloadable release
 
+> **Windows apps (Lumen Capture, PDF Studio) use release manifests instead of `downloadUrl`** —
+> `src/content/releases/<slug>.json`, hosted on `downloads.taren.se`, approved per version in the app repository's
+> release workflow. Full runbook: `WINDOWS_DOWNLOADS.md`. The build fails if a product has both. The rules below
+> still apply to every other product.
+
 Only when a real, distributable build exists. Pre-checks (owner):
 1. The file is hosted at its permanent https URL and downloads correctly on a clean machine.
 2. Code signing: state it honestly in `releaseApproval.signed`. Unsigned Windows builds trigger SmartScreen;

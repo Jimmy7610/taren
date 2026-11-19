@@ -1,0 +1,38 @@
+{
+  "product": "pdfstudio",
+  "channel": "beta",
+  "state": "preparing",
+  "version": "0.9.0-beta.1",
+  "platform": "windows",
+  "architecture": "x64",
+  "minimumOs": {
+    "en": "Windows 10 version 2004 or later, or Windows 11 (64-bit, x64)",
+    "sv": "Windows 10 version 2004 eller senare, eller Windows 11 (64-bitars, x64)"
+  },
+  "signed": false,
+  "downloads": [],
+  "notes": {
+    "en": [
+      "First public beta of PDF Studio: read, search, annotate, organise pages, fill forms, redact, sign, protect and print PDF files.",
+      "Redaction removes the selected content from the saved file; the result is checked with an independent PDF parser.",
+      "Works fully offline, with no account and no telemetry. Installs per user, without administrator rights."
+    ],
+    "sv": [
+      "Första öppna betan av PDF Studio: läs, sök, kommentera, ordna sidor, fyll i formulär, maskera, signera, skydda och skriv ut PDF-filer.",
+      "Maskering tar bort det markerade innehållet ur den sparade filen; resultatet kontrolleras med en oberoende PDF-tolk.",
+      "Fungerar helt offline, utan konto och utan telemetri. Installeras per användare, utan administratörsrättigheter."
+    ]
+  },
+  "knownIssues": {
+    "en": [
+      "The installer is not code-signed, so Windows SmartScreen may show a warning before it starts.",
+      "Some secondary dialogs and texts are still only in Swedish when the interface language is English.",
+      "Beta software: always keep a copy of important PDF files before editing them."
+    ],
+    "sv": [
+      "Installationsprogrammet är inte kodsignerat, så Windows SmartScreen kan visa en varning innan det startar.",
+      "Vissa dialogrutor och texter är fortfarande bara på svenska när gränssnittet är på engelska.",
+      "Betaprogramvara: spara alltid en kopia av viktiga PDF-filer innan du redigerar dem."
+    ]
+  }
+}

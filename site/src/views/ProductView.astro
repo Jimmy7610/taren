@@ -13,7 +13,9 @@ import ProductAttribution from '@/components/ProductAttribution.astro';
 import ProductCard from '@/components/ProductCard.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import SupportCTA from '@/components/SupportCTA.astro';
-import { getTranslationEntry, localize, type Product } from '@/lib/catalog';
+import DownloadPanel from '@/components/DownloadPanel.astro';
+import { getRelease, getTranslationEntry, localize, type Product } from '@/lib/catalog';
+import { hasActiveDownloads } from '@/lib/release-schema';
 import { isAvailable, relatedProducts } from '@/lib/products';
 import { absoluteUrl, breadcrumbJsonLd } from '@/lib/seo';
 import { SITE } from '@/config/site';
@@ -31,6 +33,9 @@ const product = await localize(entry.data, locale);
 const { Content } = await render(locale === DEFAULT_LOCALE ? entry : await getTranslationEntry(entry.data.slug, locale));
 const related = relatedProducts(product, await Promise.all(all.map((e) => localize(e.data, locale))));
 const path = lp(`/products/${product.slug}/`);
+// Windows download release (manifest in src/content/releases/); validated against the product in getRelease().
+const release = await getRelease(entry.data);
+const releaseInstaller = release && hasActiveDownloads(release, product.published) ? release.downloads.find((d) => d.type === 'installer') : undefined;
 
 const jsonLd: unknown[] = [
   breadcrumbJsonLd([
@@ -40,7 +45,7 @@ const jsonLd: unknown[] = [
   ]),
 ];
 // Software structured data only for things people can actually get (see docs/PRODUCT_MANAGEMENT.md).
-if (isAvailable(product)) {
+if (isAvailable(product) || releaseInstaller) {
   jsonLd.push({
     '@context': 'https://schema.org',
     '@type': product.category === 'Game' ? 'VideoGame' : 'SoftwareApplication',
@@ -51,6 +56,7 @@ if (isAvailable(product)) {
     operatingSystem: product.platforms.join(', '),
     author: { '@id': `${SITE.origin}/#organization` },
     ...(product.downloadUrl ? { downloadUrl: product.downloadUrl } : {}),
+    ...(releaseInstaller ? { downloadUrl: releaseInstaller.url, softwareVersion: release!.version } : {}),
   });
 }
 ---
@@ -76,6 +82,8 @@ if (isAvailable(product)) {
     <ProductHero product={product} />
 
     <ProductFacts facts={product.facts} name={product.name} />
+
+    {release && <DownloadPanel product={product} release={release} />}
 
     <section class="container-x grid gap-10 section-y lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="about-title">
       <h2 id="about-title" class="text-headline text-text">{t('product.about', { name: product.name })}</h2>

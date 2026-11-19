@@ -60,3 +60,25 @@ export async function getPublicEntries(): Promise<Product[]> {
 export async function getFeaturedProducts(locale: Locale = DEFAULT_LOCALE): Promise<ProductData[]> {
   return featuredProducts(await getIndexableProducts(locale));
 }
+
+export type ReleaseEntry = CollectionEntry<'releases'>;
+
+/**
+ * The Windows download release of a product (src/content/releases/<slug>.json), or undefined when it has none.
+ * Throws (build fails) when the manifest and the product page disagree, so a download can never appear by accident:
+ * a published release needs a published product page with status "beta" or "released", and the manifest replaces the
+ * product's own downloadUrl (one source of truth). See docs/WINDOWS_DOWNLOADS.md.
+ */
+export async function getRelease(product: Pick<ProductData, 'slug' | 'published' | 'status' | 'downloadUrl'>) {
+  const entry = (await getCollection('releases')).find((e) => e.id === product.slug);
+  if (!entry) return undefined;
+  const r = entry.data;
+  if (r.product !== product.slug) throw new Error(`Release "${entry.id}.json" must declare product "${entry.id}" (found "${r.product}").`);
+  if (product.downloadUrl) throw new Error(`Product "${product.slug}" has both a downloadUrl and a release manifest; keep only the manifest.`);
+  if (r.state === 'published') {
+    if (!product.published) throw new Error(`Release of "${product.slug}" is published but the product page is not.`);
+    if (product.status !== 'beta' && product.status !== 'released')
+      throw new Error(`Release of "${product.slug}" is published but the product status is "${product.status}" (needs "beta" or "released").`);
+  }
+  return r;
+}

@@ -1,0 +1,329 @@
+---
+/**
+ * "Download for Windows" section of a product page, driven only by the product's release manifest
+ * (src/content/releases/<slug>.json, validated by src/lib/release-schema.ts).
+ *
+ * - preparing : honest status text, no button, no file data.
+ * - published : (owner-approved, product page public, status beta/released) download button, size, checksum + copy,
+ *               release date, notes, known issues and installation instructions.
+ * - withdrawn : explanation, no button.
+ * No tracking, no redirects, no new tabs: the button is a plain link to the file on downloads.taren.se.
+ */
+import { Image } from 'astro:assets';
+import ContactEmail from '@/components/ContactEmail.astro';
+import { i18n } from '@/i18n';
+import { formatReleaseDate, formatSize, hasActiveDownloads, type Release } from '@/lib/release-schema';
+import type { ProductData } from '@/lib/catalog';
+
+interface Props {
+  product: ProductData;
+  release: Release;
+}
+const { product, release } = Astro.props;
+const { t, path: lp, locale } = i18n(Astro);
+const lang = locale === 'sv' ? 'sv' : 'en';
+const active = hasActiveDownloads(release, product.published);
+const installer = release.downloads.find((d) => d.type === 'installer');
+const portable = release.downloads.find((d) => d.type === 'portable');
+const notes = release.notes[lang];
+const issues = release.knownIssues[lang];
+const statusKey = release.state === 'withdrawn' ? 'download.withdrawnStatus' : active ? 'download.eyebrow' : 'download.preparingStatus';
+---
+
+<section id="download" class="container-x section-b" aria-labelledby="download-title" data-download-panel data-release-state={release.state}>
+  <div class="panel rounded-(--radius-panel) border border-line p-6 sm:p-10">
+    <div class="flex flex-wrap items-start gap-5">
+      {
+        product.icon && (
+          <Image src={product.icon} alt="" width={64} height={64} class="size-14 shrink-0 rounded-2xl sm:size-16" loading="lazy" />
+        )
+      }
+      <div class="min-w-[13rem] flex-1">
+        <p class="eyebrow">{t('download.eyebrow')}</p>
+        <h2 id="download-title" class="mt-2 text-headline text-text">{t('download.title')}</h2>
+        <p class="mt-2 text-muted">
+          {product.name} · <span data-release-version>{t('download.version')} {release.version}</span>
+        </p>
+      </div>
+      <span class:list={['release-pill', `is-${active ? 'live' : release.state}`]} data-release-pill>
+        <span class="dot" aria-hidden="true"></span>{t(statusKey)}
+      </span>
+    </div>
+
+    <p class="beta-note mt-6 rounded-xl px-4 py-3 text-[0.9375rem] text-text" role="note">{t('download.betaWarning')}</p>
+
+    {
+      release.state === 'withdrawn' && release.withdrawnReason && (
+        <div class="mt-6 text-[0.9375rem] leading-relaxed text-muted" data-withdrawn>
+          <p>{t('download.withdrawnText', { version: release.version })}</p>
+          <p class="mt-2">{release.withdrawnReason[lang]}</p>
+        </div>
+      )
+    }
+
+    {
+      !active && release.state === 'preparing' && (
+        <div class="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center" data-preparing>
+          <p class="text-[0.9375rem] leading-relaxed text-muted">{t('download.preparingText', { version: release.version })}</p>
+          <span class="unavailable inline-flex min-h-11 items-center rounded-full border border-dashed border-line-strong px-5 text-[0.9375rem] text-subtle">
+            {t('download.notAvailable')}
+          </span>
+        </div>
+      )
+    }
+
+    {
+      active && installer && (
+        <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]" data-active-download>
+          <div>
+            <a
+              href={installer.url}
+              download={installer.fileName}
+              class="download-btn inline-flex min-h-13 items-center justify-center gap-2.5 rounded-full bg-text px-7 text-base font-medium text-ink"
+              aria-label={t('download.buttonLabel', { name: product.name, version: release.version, size: formatSize(installer.sizeBytes, lang) })}
+              data-download-installer
+            >
+              <svg aria-hidden="true" viewBox="0 0 16 16" class="size-4">
+                <path d="M8 2.5v8M4.5 7 8 10.5 11.5 7M3 13.5h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              {t('download.button')}
+            </a>
+            <p class="mt-3 text-sm text-subtle">{installer.fileName} · {formatSize(installer.sizeBytes, lang)}</p>
+            {
+              portable && (
+                <p class="mt-3 text-[0.9375rem]">
+                  <a href={portable.url} download={portable.fileName} class="link" data-download-portable>
+                    {t('download.portable', { size: formatSize(portable.sizeBytes, lang) })}
+                  </a>
+                </p>
+              )
+            }
+            <p class="mt-5 text-sm leading-relaxed text-muted">{release.signed ? t('download.signed') : t('download.unsigned')}</p>
+            <p class="mt-3 text-sm text-muted">{t('download.noAccount')}</p>
+          </div>
+
+          <dl class="facts grid gap-x-6 gap-y-4 rounded-(--radius-card) border border-line p-5 sm:grid-cols-[auto_1fr] sm:p-6">
+            <dt class="text-sm text-subtle">{t('download.version')}</dt>
+            <dd class="text-[0.9375rem] text-text">{release.version}</dd>
+            {
+              release.releaseDate && (
+                <>
+                  <dt class="text-sm text-subtle">{t('download.releaseDate')}</dt>
+                  <dd class="text-[0.9375rem] text-text">
+                    <time datetime={release.releaseDate}>{formatReleaseDate(release.releaseDate, lang)}</time>
+                  </dd>
+                </>
+              )
+            }
+            <dt class="text-sm text-subtle">{t('download.requirements')}</dt>
+            <dd class="text-[0.9375rem] text-text">{release.minimumOs[lang]}</dd>
+            <dt class="text-sm text-subtle">{t('download.size')}</dt>
+            <dd class="text-[0.9375rem] text-text">{formatSize(installer.sizeBytes, lang)}</dd>
+            {release.downloads.map((d) => (
+              <>
+                <dt class="text-sm text-subtle">
+                  {t('download.checksum')}
+                  <span class="block text-xs">{d.fileName}</span>
+                </dt>
+                <dd class="min-w-0">
+                  <code class="hash block text-[0.8125rem] leading-relaxed text-text" data-sha256={d.fileName}>{d.sha256}</code>
+                  <button
+                    type="button"
+                    class="copy-btn mt-2 inline-flex min-h-9 items-center rounded-full border border-line-strong px-3.5 text-sm text-text"
+                    data-copy={d.sha256}
+                    data-copied-label={t('download.copied')}
+                    aria-label={t('download.copyLabel', { file: d.fileName })}
+                  >
+                    {t('download.copy')}
+                  </button>
+                </dd>
+              </>
+            ))}
+          </dl>
+        </div>
+      )
+    }
+
+    {
+      !active && (
+        <dl class="mt-6 grid gap-x-6 gap-y-2 text-[0.9375rem] sm:grid-cols-[auto_1fr]">
+          <dt class="text-sm text-subtle">{t('download.requirements')}</dt>
+          <dd class="text-text">{release.minimumOs[lang]}</dd>
+        </dl>
+      )
+    }
+
+    <div class="mt-10 grid gap-8 md:grid-cols-2">
+      <div>
+        <h3 class="text-lg tracking-[-0.015em] text-text">{t('download.notes')}</h3>
+        <ul class="prose-taren mt-3">{notes.map((n) => <li>{n}</li>)}</ul>
+      </div>
+      <div>
+        <h3 class="text-lg tracking-[-0.015em] text-text">{t('download.knownIssues')}</h3>
+        <ul class="prose-taren mt-3">{issues.map((n) => <li>{n}</li>)}</ul>
+      </div>
+    </div>
+
+    <div class="mt-10" data-install-guide>
+      <h3 class="text-lg tracking-[-0.015em] text-text">{t('download.instructions')}</h3>
+      <div class="guide mt-4 overflow-hidden rounded-(--radius-card) border border-line">
+        <details>
+          <summary>{t('download.guideVerifyTitle')}</summary>
+          <div class="prose-taren">
+            <p>{t('download.guideVerifyText')}</p>
+            <pre><code>Get-FileHash .\{installer?.fileName ?? `<${t('download.fileName')}>`} -Algorithm SHA256</code></pre>
+            <p>{t('download.guideVerifyMatch')}</p>
+          </div>
+        </details>
+        <details>
+          <summary>{t('download.guideInstallTitle')}</summary>
+          <ol class="prose-taren">
+            <li>{t('download.guideInstall1')}</li>
+            <li>{t('download.guideInstall2')}</li>
+            <li>{t('download.guideInstall3')}</li>
+            <li>{t('download.guideInstall4', { name: product.name })}</li>
+          </ol>
+        </details>
+        <details>
+          <summary>{t('download.guideVersionTitle')}</summary>
+          <p class="prose-taren">{t('download.guideVersionText')}</p>
+        </details>
+        <details>
+          <summary>{t('download.guideUpdateTitle')}</summary>
+          <p class="prose-taren">{t('download.guideUpdateText')}</p>
+        </details>
+        <details>
+          <summary>{t('download.guideUninstallTitle')}</summary>
+          <p class="prose-taren">{t('download.guideUninstallText', { name: product.name })}</p>
+        </details>
+        <details>
+          <summary>{t('download.guideRecoverTitle')}</summary>
+          <p class="prose-taren">{t('download.guideRecoverText', { name: product.name })}</p>
+        </details>
+        <details>
+          <summary>{t('download.guideBugTitle')}</summary>
+          <div class="prose-taren">
+            <p>{t('download.guideBugText')}</p>
+            <p><ContactEmail /></p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <p class="mt-8 text-sm text-subtle">
+      {t('download.legalPrefix')} <a class="link" href={lp('/terms/')}>{t('nav.terms')}</a>{t('download.legalMiddle')}
+      <a class="link" href={lp('/privacy/')}>{t('nav.privacy')}</a>.
+    </p>
+  </div>
+</section>
+
+<script>
+  // Copy-checksum buttons. Progressive enhancement: without JavaScript the checksum is plain, selectable text.
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const label = btn.textContent ?? '';
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        btn.textContent = btn.dataset.copiedLabel ?? label;
+      } catch {
+        const code = btn.parentElement?.querySelector('code');
+        if (code) window.getSelection()?.selectAllChildren(code);
+      }
+      window.setTimeout(() => (btn.textContent = label), 2000);
+    });
+  }
+</script>
+
+<style>
+  .panel {
+    background:
+      radial-gradient(ellipse 60% 90% at 100% 0%, color-mix(in srgb, var(--accent, var(--color-cyan)) 9%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+  .beta-note {
+    border: 1px solid color-mix(in srgb, var(--color-amber) 45%, transparent);
+    background: color-mix(in srgb, var(--color-amber) 8%, transparent);
+  }
+  .release-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 1.75rem;
+    padding: 0.2rem 0.75rem 0.2rem 0.6rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+  .release-pill .dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--c);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);
+  }
+  .is-live {
+    --c: var(--color-cyan);
+  }
+  .is-preparing {
+    --c: var(--color-amber);
+  }
+  .is-withdrawn {
+    --c: #ff6b7a;
+  }
+  .download-btn {
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.4) inset,
+      0 10px 30px -12px rgb(53 213 255 / 0.55);
+    transition: background-color 0.3s;
+  }
+  .download-btn:hover {
+    background: var(--color-cyan-soft);
+  }
+  .facts {
+    background: rgb(255 255 255 / 0.02);
+  }
+  .hash {
+    overflow-wrap: anywhere;
+    font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  }
+  .copy-btn:hover {
+    border-color: color-mix(in srgb, var(--color-cyan) 60%, transparent);
+  }
+  .link {
+    color: var(--color-cyan-soft);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .guide {
+    background: rgb(255 255 255 / 0.02);
+  }
+  .guide details + details {
+    border-top: 1px solid var(--color-line);
+  }
+  .guide summary {
+    cursor: pointer;
+    padding: 1rem 1.25rem;
+    color: var(--color-text);
+    font-weight: 500;
+  }
+  .guide details > :not(summary) {
+    padding: 0 1.25rem 1.25rem;
+  }
+  .guide pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--color-ink-deep);
+    font-size: 0.8125rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .download-btn {
+      transition: none;
+    }
+  }
+</style>
