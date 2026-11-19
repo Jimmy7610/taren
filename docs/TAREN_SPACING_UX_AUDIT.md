@@ -245,3 +245,48 @@ Rådata per sida och skärm finns i `assets/spacing-audit/spacing-{A,B,C,D}.json
 - Produktkortet i heron på desktop laddar en ikon till (cirka 3–6 kB, i AVIF/WebP), som redan laddas på mobil.
 - LCP-elementet (rubriken) påverkas inte, och layoutskiften blir inte fler (allt är statiskt). Lighthouse förväntas
   ligga kvar på 100; det mäts om vid en implementation.
+
+---
+
+## 12. Genomförande: Taren 2.4 B+ (gren `feature/taren-2.4-balanced-premium`)
+
+Godkänt av ägaren för implementation, **inte för release**. taren.se är oförändrad.
+
+### 12.1 Ändringar
+| Område | Före | Efter |
+|---|---|---|
+| Sektionsrytm | utspridda `py-20 md:py-28/32` | en token `--section-y`: **56 px mobil, 80 px från 768 px, 88 px från 1024 px** (`section-y`, `section-t`, `section-b`) |
+| Desktop-hero | `min-height: min(86dvh, 56rem)`, padding 56/80/96 px | `min-height: min(70dvh, 46rem)` (bara min-höjd, så innehållet klipps aldrig), padding 48/64/80 px; 40 px topp på korta laptopskärmar (≥ 1024 px bred, ≤ 760 px hög) |
+| Utvald produkt, desktop | Pulse Garden-kortet dolt från 1024 px | Samma befintliga kort visas under knapparna på alla storlekar |
+| Innehållsavstånd | rubrik → innehåll 48–64 px | 40–48 px (startsidan, produktsidan) |
+| Supportrutan | inre padding 56/80 px | 48/64 px |
+| Produkthero | 56/80 px | 48/64 px |
+| Textsidor | sidhuvud 64/96 px, avslut 80/112 px | sidhuvud 56/80 px, avslut enligt token. Läsbredden (68ch) är oförändrad |
+| Sidfot, mobil | allt i en kolumn | varumärket överst och de två länklistorna i två kolumner från 352 px. En kolumn under 352 px; desktop oförändrad |
+| Ordning | — | oförändrad ("What Taren makes" före "In the studio now"), inga nya sektioner |
+
+### 12.2 Före och efter (samma skript och inställningar som §2; före = live taren.se, efter = byggd gren)
+| | Före | Efter |
+|---|---|---|
+| Sidhöjd, snitt alla sidor | — | **−5,2 %** (mobil −8,7 %, surfplatta −3,9 %, desktop −3,7 %) |
+| Startsidan | — | mobil −8,2 %, desktop −7,8 % |
+| Produkter | — | mobil −11,7 %, desktop −4,4 % |
+| Studio | — | mobil −9,5 %, desktop −2,4 % |
+| Pulse Garden-sidan | — | mobil −5,3 %, desktop −4,7 % |
+| Startsidans hero, 1440×900 | 816 px (91 %), fyllnad 57 % | 784 px (87 %), fyllnad **76 %** (med produktkortet) |
+| Avstånd mellan sektioner, start 1440 | 287 · 241 · 128 · 128 px | 185 · 177 · 88 · 88 px |
+| Oanvänd yta, start 1440 | 34 % | 27 % |
+| Utvald produkt synlig, desktop | vid 1,81 skärmar (1440) | **i första skärmen** på 1024×768, 1280×720, 1366×768, 1440×900, 1920×1080 och 2560×1440 (e2e-testat) |
+| Startsidan till sidfoten | 4,15 (1440) · 5,64 (390) | 3,83 · 5,40 |
+
+Desktop minskar något mindre än i experiment B. Två medvetna avvägningar förklarar det: produktkortet gör heron
+högre, och textsidorna behåller mer luft för läsbarheten. Startsidan, där problemet låg, minskar med 7,8 %.
+
+### 12.3 Bilder
+`assets/spacing-audit/2.4/{home,products,studio}-{desktop,mobile}-{first,full}.jpg` (före till vänster, efter till
+höger). Rådata finns i `spacing-before.json` och `spacing-after.json`.
+
+### 12.4 Kvar
+- Produktsidan för Pulse Garden är fortfarande cirka 11 skärmar på mobil. Det är en innehållsfråga (§6, uppföljning).
+- På liggande mobil (844×390) hamnar produktkortet under första skärmen, precis som före ändringen.
+- Desktop har nu två länkar till Pulse Garden (kortet i heron och presentationen), i olika sammanhang och med tydliga namn.
