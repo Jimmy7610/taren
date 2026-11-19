@@ -26,10 +26,35 @@ test.describe('hero', () => {
     await expect(page).toHaveURL('/products/pulse-garden/');
   });
 
-  test('desktop has no teaser (the showcase follows)', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
+  // Taren 2.4 B+ (docs/TAREN_SPACING_UX_AUDIT.md): the featured product is visible in the first desktop screen too.
+  for (const [w, h] of [[1024, 768], [1280, 720], [1366, 768], [1440, 900], [1920, 1080], [2560, 1440]] as const) {
+    test(`desktop ${w}×${h}: the featured product card is fully in the first screen, clear of the stage`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto('/');
+      const teaser = page.locator('.hero [data-teaser="pulse-garden"]');
+      await expect(teaser).toBeVisible();
+      // Measure the resting layout: wait for the finite entrance animations (the orbits loop forever).
+      await page.evaluate(() =>
+        Promise.all(document.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity).map((a) => a.finished)),
+      );
+      const t = (await teaser.boundingBox())!;
+      expect(t.y + t.height, 'card below the fold').toBeLessThanOrEqual(h);
+      const stage = (await page.locator('.hero-stage').boundingBox())!;
+      const overlaps = !(t.x + t.width < stage.x || t.x > stage.x + stage.width || t.y + t.height < stage.y || t.y > stage.y + stage.height);
+      expect(overlaps, 'card overlaps the symbol stage').toBe(false);
+      // The card is a single link in the hero, named after the product.
+      await expect(page.locator('.hero a[href="/products/pulse-garden/"]')).toHaveCount(1);
+      await expect(teaser).toHaveAccessibleName(/Pulse Garden/);
+    });
+  }
+
+  test('the desktop hero is about 70 % of the screen and never clips its content', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto('/');
-    await expect(page.locator('.hero [data-teaser]')).toBeHidden();
+    const hero = (await page.locator('.hero').boundingBox())!;
+    expect(hero.height).toBeLessThanOrEqual(1080 * 0.8);
+    const overflow = await page.locator('.hero-grid').evaluate((el) => el.scrollHeight - el.clientHeight);
+    expect(overflow).toBeLessThanOrEqual(0);
   });
 });
 

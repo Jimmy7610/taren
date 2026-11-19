@@ -80,7 +80,7 @@ if (isAvailable(product)) {
 
     <ProductFacts facts={product.facts} name={product.name} />
 
-    <section class="container-x grid gap-10 py-20 md:py-28 lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="about-title">
+    <section class="container-x grid gap-10 section-y lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="about-title">
       <h2 id="about-title" class="text-headline text-text">About {product.name}</h2>
       <div class="prose-taren" data-reveal>
         <Content />
@@ -89,8 +89,8 @@ if (isAvailable(product)) {
 
     {
       product.steps.length > 0 && (
-        <section class="container-x pb-20 md:pb-28" aria-labelledby="steps-title">
-          <SectionHeading eyebrow={product.stepsEyebrow} title={product.stepsTitle ?? `${product.name} in ${product.steps.length} steps`} id="steps-title" class="mb-12" />
+        <section class="container-x section-b" aria-labelledby="steps-title">
+          <SectionHeading eyebrow={product.stepsEyebrow} title={product.stepsTitle ?? `${product.name} in ${product.steps.length} steps`} id="steps-title" class="mb-10" />
           <ProductSteps steps={product.steps} device={product.device} />
         </section>
       )
@@ -98,8 +98,8 @@ if (isAvailable(product)) {
 
     {
       product.features.length > 0 && (
-        <section class="container-x pb-20 md:pb-28" aria-labelledby="features-title">
-          <SectionHeading eyebrow="Highlights" title="What makes it work" id="features-title" class="mb-12" />
+        <section class="container-x section-b" aria-labelledby="features-title">
+          <SectionHeading eyebrow="Highlights" title="What makes it work" id="features-title" class="mb-10" />
           <FeatureGrid features={product.features} />
         </section>
       )
@@ -107,8 +107,8 @@ if (isAvailable(product)) {
 
     {
       product.gallery.length > 0 && (
-        <section id="screenshots" class="border-y border-line bg-ink-deep py-20 md:py-28" aria-labelledby="screens-title">
-          <div class="container-x mb-12">
+        <section id="screenshots" class="border-y border-line bg-ink-deep section-y" aria-labelledby="screens-title">
+          <div class="container-x mb-10">
             <SectionHeading eyebrow="Screenshots" title="From the current build" id="screens-title">
               <p>
                 {product.screenshotsNote ?? `Real captures of ${product.name} as it is today.`} Details will change before
@@ -123,7 +123,7 @@ if (isAvailable(product)) {
 
     {
       product.milestones.length > 0 && (
-        <section class="container-x grid gap-10 py-20 md:py-28 lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="progress-title">
+        <section class="container-x grid gap-10 section-y lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="progress-title">
           <SectionHeading eyebrow="Progress" title="Where it stands" id="progress-title">
             <p>An honest view of what is finished, what is being worked on and what comes next.</p>
           </SectionHeading>
@@ -146,7 +146,7 @@ if (isAvailable(product)) {
 
     {
       product.requirements.length > 0 && (
-        <section class="container-x grid gap-10 pb-20 md:pb-28 lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="requirements-title">
+        <section class="container-x grid gap-10 section-b lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="requirements-title">
           <SectionHeading eyebrow="Requirements" title={`What ${product.name} needs`} id="requirements-title">
             <p>Verified with the current development build. Final requirements may change before release.</p>
           </SectionHeading>
@@ -159,8 +159,8 @@ if (isAvailable(product)) {
 
     {
       related.length > 0 && (
-        <section class="container-x py-20 md:py-28" aria-labelledby="related-title">
-          <SectionHeading title="Related products" id="related-title" class="mb-12" />
+        <section class="container-x section-y" aria-labelledby="related-title">
+          <SectionHeading title="Related products" id="related-title" class="mb-10" />
           <div class="grid gap-6 md:grid-cols-2">
             {related.map((p) => (
               <ProductCard product={p} />
@@ -170,7 +170,7 @@ if (isAvailable(product)) {
       )
     }
 
-    <div class="pb-20 md:pb-28">
+    <div class="section-b">
       <SupportCTA />
     </div>
   </div>
