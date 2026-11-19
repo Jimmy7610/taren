@@ -19,9 +19,9 @@ status: in-development
 statusNote: >-
   Version 0.9.0 is an unsigned development preview, tested on the developer's PC. It has not been
   released: there is no public download, beta, price or release date.
-published: false
+published: true
 featured: false
-order: 3
+order: 2
 device: desktop
 icon: ../../assets/products/pdfstudio/icon.png
 iconAlt: >-
@@ -50,7 +50,7 @@ facts:
   - label: Install
     value: Per user, no admin rights
   - label: Languages
-    value: Swedish · English main UI
+    value: Swedish and English (main interface)
   - label: Version
     value: 0.9.0 preview · not released
 stepsEyebrow: How it works

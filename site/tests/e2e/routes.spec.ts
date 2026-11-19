@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { PAGES, scrollThrough, watchErrors } from './helpers';
+import { ALL_PAGES, PAGES, scrollThrough, watchErrors } from './helpers';
 
 test.describe('routes', () => {
-  for (const { path, h1 } of PAGES) {
+  for (const { path, h1 } of ALL_PAGES) {
     test(`${path} renders with correct metadata and no errors`, async ({ page }) => {
       const errors = watchErrors(page);
       const res = await page.goto(path);
@@ -19,7 +19,7 @@ test.describe('routes', () => {
       expect(desc!.length).toBeLessThanOrEqual(200);
       expect(await page.locator('meta[property="og:image"]').getAttribute('content')).toMatch(/^https:\/\/taren\.se\/og\//);
       expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('index, follow');
-      await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+      await expect(page.locator('html')).toHaveAttribute('lang', path.startsWith('/sv/') ? 'sv' : 'en');
 
       for (const json of await page.locator('script[type="application/ld+json"]').allTextContents()) {
         expect(() => JSON.parse(json)).not.toThrow();
@@ -36,6 +36,13 @@ test.describe('routes', () => {
         (imgs as HTMLImageElement[])
           .filter((i) => !i.closest('dialog:not([open])'))
           .filter((i) => i.getClientRects().length > 0) // display:none (e.g. phone-only teaser) never loads
+          // Screenshots further along a horizontal gallery load lazily as it is swiped (apps.spec.ts checks each loads).
+          .filter((i) => {
+            const g = i.closest('.gallery');
+            if (!g) return true;
+            const gr = g.getBoundingClientRect(), r = i.getBoundingClientRect();
+            return r.left < gr.right && r.right > gr.left;
+          })
           .filter((i) => !i.complete || i.naturalWidth === 0)
           .map((i) => i.currentSrc || i.src),
       );
@@ -68,17 +75,18 @@ test.describe('routes', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('unpublished products have no page and appear nowhere', async ({ page }) => {
-    for (const slug of ['lumen-capture', 'pdfstudio', 'example-product', '_example-product']) {
+  test('the template product has no page; all three approved products do (Taren 2.5)', async ({ page }) => {
+    for (const slug of ['example-product', '_example-product']) {
       const res = await page.goto(`/products/${slug}/`);
       expect(res?.status(), slug).toBe(404);
     }
-    for (const path of ['/', '/products/', '/studio/']) {
-      await page.goto(path);
-      const text = await page.locator('body').innerText();
-      expect(text, path).not.toContain('Lumen Capture');
-      expect(text, path).not.toContain('PDF Studio');
-      expect(await page.locator('a[href*="lumen-capture"], a[href*="pdfstudio"]').count(), path).toBe(0);
+    for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) {
+      const res = await page.goto(`/products/${slug}/`);
+      expect(res?.status(), slug).toBe(200);
+      // Public information page: indexable, own canonical, no draft banner.
+      await expect(page.locator('[data-draft-banner]')).toHaveCount(0);
+      expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('index, follow');
+      expect(await page.locator('link[rel=canonical]').getAttribute('href')).toBe(`https://taren.se/products/${slug}/`);
     }
   });
 
@@ -94,13 +102,13 @@ test.describe('routes', () => {
     expect(res.headers()['content-type']).toContain('xml');
     const xml = await res.text();
     const locs = [...xml.matchAll(/<loc>(.+?)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual(
-      expect.arrayContaining(PAGES.map((p) => `https://taren.se${p.path}`)),
-    );
-    expect(locs).toHaveLength(PAGES.length);
+    // Every page in both languages (Taren 2.6), each with hreflang alternates.
+    expect(locs).toEqual(expect.arrayContaining(ALL_PAGES.map((p) => `https://taren.se${p.path}`)));
+    expect(locs).toHaveLength(ALL_PAGES.length);
+    expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');
+    expect(xml.match(/hreflang="x-default"/g)).toHaveLength(ALL_PAGES.length);
     expect(xml).not.toContain('example-product');
-    expect(xml).not.toContain('lumen-capture');
-    expect(xml).not.toContain('pdfstudio');
+    for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) expect(xml).toContain(`https://taren.se/products/${slug}/`);
     expect(xml).not.toMatch(/404|410|games/);
   });
 

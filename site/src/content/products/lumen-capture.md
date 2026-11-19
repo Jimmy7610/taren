@@ -15,9 +15,9 @@ status: in-development
 statusNote: >-
   Version 2.8 builds automatically for Windows on every change. It has not been released yet: no
   installer or download is published.
-published: false
-featured: false
-order: 2
+published: true
+featured: true
+order: 1
 device: desktop
 icon: ../../assets/products/lumen-capture/icon.png
 iconAlt: Lumen Capture app icon — a white ring with a red recording dot on a blue-violet rounded square.
@@ -36,9 +36,9 @@ facts:
   - label: Runs on
     value: Windows 10 (2004+) and 11, x64
   - label: Accounts
-    value: None — runs on your PC
+    value: No account needed
   - label: Languages
-    value: Six built in
+    value: Six interface languages
   - label: On-device AI
     value: Captions and noise removal
   - label: Built with

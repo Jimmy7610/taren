@@ -12,8 +12,8 @@ statusNote: >-
   Playable as a desktop prototype. Designed for iPhone first — not yet tested on iPhone and
   not available on the App Store or TestFlight.
 published: true
-featured: true
-order: 1
+featured: false
+order: 3
 icon: ../../assets/products/pulse-garden/icon.png
 iconAlt: Pulse Garden app icon — a cyan star, a pink flower and an amber hex stone inside a teal hexagon.
 heroImage: ../../assets/products/pulse-garden/chain.webp

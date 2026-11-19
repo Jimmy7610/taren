@@ -1,0 +1,31 @@
+---
+/**
+ * Renders a text page (studio, support, privacy, terms) in the language of the URL. The prose for each language lives
+ * in src/views/copy/<locale>/<Page>.astro. The registry is typed so that every locale must provide every page — a
+ * missing translation is a TypeScript error, never a silent English fallback.
+ */
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import EnStudio from './copy/en/Studio.astro';
+import EnSupport from './copy/en/Support.astro';
+import EnPrivacy from './copy/en/Privacy.astro';
+import EnTerms from './copy/en/Terms.astro';
+import SvStudio from './copy/sv/Studio.astro';
+import SvSupport from './copy/sv/Support.astro';
+import SvPrivacy from './copy/sv/Privacy.astro';
+import SvTerms from './copy/sv/Terms.astro';
+import { i18n, type Locale } from '@/i18n';
+
+export type TextPageId = 'studio' | 'support' | 'privacy' | 'terms';
+const COPY: Record<Locale, Record<TextPageId, AstroComponentFactory>> = {
+  en: { studio: EnStudio, support: EnSupport, privacy: EnPrivacy, terms: EnTerms },
+  sv: { studio: SvStudio, support: SvSupport, privacy: SvPrivacy, terms: SvTerms },
+};
+
+interface Props {
+  page: TextPageId;
+}
+const { locale } = i18n(Astro);
+const Copy = COPY[locale][Astro.props.page];
+---
+
+<Copy />

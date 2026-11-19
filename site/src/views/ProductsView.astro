@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import ProductShowcase from '@/components/ProductShowcase.astro';
+import { getPublicProducts } from '@/lib/catalog';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import { i18n } from '@/i18n';
+
+// Shared catalogue view for every locale (src/pages/products/index.astro and src/pages/sv/products/index.astro).
+const { t, path: lp, locale } = i18n(Astro);
+const products = await getPublicProducts(locale);
+---
+
+<BaseLayout
+  title={t('products.title')}
+  description={t('products.description')}
+  jsonLd={[breadcrumbJsonLd([{ name: t('nav.home'), path: lp('/') }, { name: t('nav.products'), path: lp('/products/') }])]}
+>
+  <section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="products-title">
+    <div class="grid-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+    <div class="container-x section-y">
+      <SectionHeading eyebrow={t('products.eyebrow')} title={t('products.heading')} id="products-title" level="h1">
+        <p>{t('products.intro')}</p>
+      </SectionHeading>
+    </div>
+  </section>
+
+  <section class="container-x pt-12 section-b md:pt-16" aria-label={t('products.listLabel')}>
+    {
+      products[0] ? (
+        <>
+          {/* The first product in catalogue order gets the full-width stage; the rest follow in a two-column grid. */}
+          <ProductShowcase product={products[0]} headingLevel="h2" eager />
+          {products.length > 1 ? (
+            <ul class="mt-6 grid gap-6 md:grid-cols-2" role="list" aria-label={t('products.more')}>
+              {products.slice(1).map((p, i) => (
+                <li class="flex *:w-full">
+                  <ProductCard product={p} headingLevel="h2" eager={i < 2} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="mt-8 text-sm text-subtle">
+              {t('products.workshop')}
+            </p>
+          )}
+        </>
+      ) : (
+        <p class="text-lead text-muted">{t('products.empty')}</p>
+      )
+    }
+  </section>
+</BaseLayout>

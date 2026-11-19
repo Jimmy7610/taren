@@ -41,29 +41,32 @@ describe('product content files', () => {
     expect(files).not.toContain('_example-product.md');
   });
 
-  it('keeps products the owner has not approved unpublished (Taren 2.2)', () => {
-    const lumen = read('lumen-capture.md');
-    expect(lumen.published).toBe(false);
-    expect(lumen.featured).toBe(false);
-    expect(lumen.downloadUrl).toBeUndefined();
-  });
-
-  it('both drafts are ready to be published as information pages only (gate 1), with no release (gate 2)', () => {
+  it('Taren 2.5: all three products are public information pages (gate 1) and none is a release (gate 2)', () => {
     const schema = productSchema(z.string());
-    for (const file of ['lumen-capture.md', 'pdfstudio.md']) {
+    for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md']) {
       const data = read(file);
-      expect(data.published, file).toBe(false); // Not published in Taren 2.3 — the owner decides.
-      expect(data.releaseApproval, file).toBeUndefined();
+      expect(data.published, file).toBe(true);
+      expect(data.status, file).toBe('in-development');
+      // Publishing a page never approves distribution: no download, no release approval, no website link.
       expect(data.downloadUrl, file).toBeUndefined();
-      // Simulate the owner's single change for gate 1: the page must then pass every public-page rule.
-      const result = schema.safeParse({ ...data, published: true });
+      expect(data.releaseApproval, file).toBeUndefined();
+      expect(data.websiteUrl, file).toBeUndefined();
+      const result = schema.safeParse(data);
       expect(result.success ? [] : result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`), file).toEqual([]);
     }
   });
 
-  it('PDF Studio stays an honest, unpublished draft with its own icon and no download', () => {
+  it('Taren 2.5 ordering: Lumen Capture first and featured, PDF Studio second, Pulse Garden third', () => {
+    const lumen = read('lumen-capture.md'), pdf = read('pdfstudio.md'), pulse = read('pulse-garden.md');
+    expect([lumen.order, pdf.order, pulse.order]).toEqual([1, 2, 3]);
+    expect([lumen.featured, pdf.featured, pulse.featured]).toEqual([true, false, false]);
+    expect(String(lumen.statusNote)).toMatch(/not been released/);
+    expect(String(pulse.statusNote)).toMatch(/not available on the App Store or TestFlight/);
+  });
+
+  it('PDF Studio is an honest, public information page with its own icon and no download', () => {
     const pdf = read('pdfstudio.md');
-    expect(pdf.published).toBe(false);
+    expect(pdf.published).toBe(true);
     expect(pdf.featured).toBe(false);
     expect(pdf.status).toBe('in-development');
     expect(pdf.device).toBe('desktop');

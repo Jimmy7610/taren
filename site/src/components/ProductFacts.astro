@@ -4,7 +4,9 @@ interface Props {
   facts: ReadonlyArray<{ label: string; value: string }>;
   name: string;
 }
+import { i18n } from '@/i18n';
 const { facts, name } = Astro.props;
+const { t } = i18n(Astro);
 ---
 
 {
@@ -12,13 +14,13 @@ const { facts, name } = Astro.props;
     <section class="facts border-y border-line bg-ink-deep" aria-labelledby="facts-title">
       <div class="container-x py-10 md:py-12">
         <h2 id="facts-title" class="eyebrow mb-6">
-          {name} at a glance
+          {t('showcase.glance', { name })}
         </h2>
         <dl class="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
           {facts.map((f) => (
             <div class="fact">
               <dt class="text-xs tracking-[0.04em] text-subtle uppercase">{f.label}</dt>
-              <dd class="mt-1.5 font-display text-[1.0625rem] leading-snug font-medium tracking-[-0.01em] text-text">{f.value}</dd>
+              <dd class="fact-value mt-1.5 font-display text-[1.0625rem] leading-snug font-medium tracking-[-0.01em] text-text">{f.value}</dd>
             </div>
           ))}
         </dl>

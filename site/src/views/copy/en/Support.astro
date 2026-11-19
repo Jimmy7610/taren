@@ -1,0 +1,66 @@
+---
+import TextPage from '@/layouts/TextPage.astro';
+import Button from '@/components/Button.astro';
+import ExternalLink from '@/components/ExternalLink.astro';
+import { KOFI_URL } from '@/config/site';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import ContactEmail from '@/components/ContactEmail.astro';
+// English copy of /support/. Swedish: ../sv/Support.astro. Ko-fi link and wording unchanged since Taren 2.3.
+---
+
+<TextPage
+  title="Support Taren"
+  description="Taren is independent. If you enjoy the work, you can support future development with a small, optional contribution on Ko-fi."
+  eyebrow="Support"
+  heading="Enjoying what we’re building?"
+  intro="Taren projects are created independently. If you enjoy the work, you can support future development with a small, optional contribution."
+  jsonLd={[breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Support', path: '/support/' }])]}
+>
+  <div slot="before" class="container-x pt-14 md:pt-20">
+    <div class="flex max-w-3xl flex-col gap-5 rounded-(--radius-card) border border-line bg-surface p-7 sm:flex-row sm:items-center sm:justify-between sm:p-9">
+      <div>
+        <p class="font-display text-xl tracking-[-0.02em] text-text">Support on Ko-fi</p>
+        <p class="mt-1 text-sm text-muted">Opens ko-fi.com/taren in a new tab.</p>
+      </div>
+      <Button href={KOFI_URL} external size="lg" data-kofi-link>Support on Ko-fi</Button>
+    </div>
+  </div>
+
+  <h2>Completely optional</h2>
+  <p>
+    Support is never required. Nothing on this site, and nothing in a free Taren project, is locked behind a
+    contribution. If you cannot or would rather not contribute, you are just as welcome.
+  </p>
+
+  <h2>What your support does</h2>
+  <p>
+    Contributions help Taren spend more time on its projects. A contribution is a voluntary tip: it does not buy a
+    product, a service, a licence or priority, and it does not change what you get from a free project.
+  </p>
+
+  <h2>How payments work</h2>
+  <ul>
+    <li>
+      Payments are handled entirely by <ExternalLink href={KOFI_URL}>Ko-fi</ExternalLink> and its payment providers.
+      Taren never sees or stores your card or bank details.
+    </li>
+    <li>You choose whether to contribute and how much.</li>
+    <li>
+      Ko-fi may pass details you give it, such as your name, message and email address, on to Taren so the
+      contribution can be acknowledged. See the <a href="/privacy/">privacy page</a>.
+    </li>
+    <li>
+      Ko-fi’s own terms and privacy policy apply to anything you do on Ko-fi. This website does not embed Ko-fi or load
+      any of its scripts; the link above is an ordinary link.
+    </li>
+  </ul>
+
+  <h2>Questions</h2>
+  <p>Questions about supporting Taren are welcome by email: <ContactEmail />.</p>
+
+  <h2>Other ways to help</h2>
+  <p>
+    Trying a project, sharing it with someone who might enjoy it, or reporting a problem you found are all genuinely
+    useful — and free.
+  </p>
+</TextPage>

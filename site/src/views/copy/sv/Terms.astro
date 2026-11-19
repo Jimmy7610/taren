@@ -1,0 +1,61 @@
+---
+/*
+ * Svensk text för /sv/terms/. En översättning av ../en/Terms.astro med samma innebörd och juridiska avsikt — inga nya
+ * åtaganden. Ändras den ena ska den andra ändras på samma sätt. Ägarens godkännande krävs (docs/LEGAL_REVIEW.md).
+ */
+import TextPage from '@/layouts/TextPage.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
+import { SITE } from '@/config/site';
+---
+
+<TextPage
+  title="Villkor"
+  description="Villkoren för att använda taren.se: innehåll, produktinformation, frivilligt stöd, externa länkar och ansvarsbegränsning."
+  eyebrow="Villkor"
+  heading="Användarvillkor"
+  intro="De här villkoren gäller webbplatsen taren.se. Enskilda produkter kan ha egna villkor."
+  updated="2026-11-18"
+>
+  <h2>Om webbplatsen</h2>
+  <p>
+    taren.se presenterar arbetet från Taren, en oberoende mjukvarustudio som drivs av {SITE.founder} i Sverige. Genom att
+    använda webbplatsen godkänner du de här villkoren.
+  </p>
+
+  <h2>Innehåll och varumärken</h2>
+  <p>
+    Om inget annat anges är texterna, bilderna, skärmbilderna och designen på den här webbplatsen skapade av
+    {SITE.founder} och publicerade under namnet Taren. Typsnitten Inter och Sora används enligt SIL Open Font License.
+    Namnet Taren och de produktnamn som visas här identifierar Tarens projekt. Du får gärna länka till valfri sida och
+    dela skärmbilder för kommentarer eller recensioner; utge däremot inte Tarens arbete för att vara ditt eget.
+  </p>
+
+  <h2>Produktinformation</h2>
+  <p>
+    Produktsidorna beskriver projekten som de ser ut när texten skrivs. Produkter som är märkta som under utveckling är
+    inte färdiga: funktioner, plattformar och tidsplan kan ändras, och en produkt kanske aldrig släpps. Ingenting på den
+    här webbplatsen är ett erbjudande om försäljning.
+  </p>
+
+  <h2>Frivilligt stöd</h2>
+  <p>
+    Bidrag via Ko-fi är frivilliga och hanteras av Ko-fi enligt deras egna villkor. Ett bidrag köper ingen produkt eller
+    tjänst. Mer information finns på sidan <a href="/sv/support/">Stöd</a>.
+  </p>
+
+  <h2>Externa länkar</h2>
+  <p>Länkar till andra webbplatser finns där för din bekvämlighet. Taren ansvarar inte för deras innehåll eller rutiner.</p>
+
+  <h2>Ingen garanti</h2>
+  <p>
+    Webbplatsen tillhandahålls i befintligt skick. Rimlig omsorg läggs på att hålla den korrekt och tillgänglig, men den
+    kan innehålla fel eller vara otillgänglig ibland. I den utsträckning lagen tillåter ansvarar {SITE.founder} (Taren)
+    inte för förluster som uppstår genom användning av webbplatsen. Ingenting i de här villkoren begränsar rättigheter
+    som du har enligt konsumentlagstiftning och som inte kan begränsas.
+  </p>
+
+  <h2>Kontakt och ändringar</h2>
+  <p>
+    Frågor är välkomna via e-post: <ContactEmail />. Om villkoren ändras uppdateras datumet högst upp.
+  </p>
+</TextPage>

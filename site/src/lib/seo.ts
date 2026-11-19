@@ -1,4 +1,7 @@
 import { SITE } from '@/config/site';
+import { UI } from '@/i18n/ui';
+import { DEFAULT_LOCALE, LOCALES, LOCALE_META, type Locale } from '@/i18n/locales';
+import { alternatePaths } from '@/i18n/paths';
 
 export interface SeoInput {
   /** Page title without the brand suffix. Omit on the home page. */
@@ -9,6 +12,13 @@ export interface SeoInput {
   ogImageAlt?: string | undefined;
   ogType?: 'website' | 'article' | undefined;
   noindex?: boolean | undefined;
+  /** Page language; defaults to English. */
+  locale?: Locale | undefined;
+}
+
+export interface SeoAlternate {
+  hreflang: string;
+  href: string;
 }
 
 export interface SeoMeta {
@@ -20,6 +30,10 @@ export interface SeoMeta {
   ogImageAlt: string;
   ogType: 'website' | 'article';
   robots: string;
+  /** hreflang links to every language version plus x-default (English). Empty on noindex pages. */
+  alternates: SeoAlternate[];
+  ogLocale: string;
+  ogLocaleAlternates: string[];
 }
 
 /** Normalises any path to the site's canonical form: leading and trailing slash, no query/hash. */
@@ -35,40 +49,53 @@ export function absoluteUrl(path: string, origin: string = SITE.origin): string 
 }
 
 export function buildSeo(input: SeoInput): SeoMeta {
-  const title = input.title ? `${input.title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline.replace(/\.$/, '')}`;
+  const locale = input.locale ?? DEFAULT_LOCALE;
+  const ui = UI[locale];
+  const title = input.title ? `${input.title} — ${SITE.name}` : `${SITE.name} — ${ui['site.tagline'].replace(/\.$/, '')}`;
+  const twins = alternatePaths(canonicalPath(input.path));
+  const alternates: SeoAlternate[] = input.noindex
+    ? []
+    : [
+        ...LOCALES.map((l) => ({ hreflang: LOCALE_META[l].htmlLang, href: absoluteUrl(twins[l]) })),
+        { hreflang: 'x-default', href: absoluteUrl(twins[DEFAULT_LOCALE]) },
+      ];
   return {
     title,
     description: input.description,
     canonical: input.noindex ? undefined : absoluteUrl(canonicalPath(input.path)),
     ogImage: absoluteUrl(input.ogImage ?? SITE.defaultOgImage),
-    ogImageAlt: input.ogImageAlt ?? SITE.defaultOgImageAlt,
+    ogImageAlt: input.ogImageAlt ?? ui['site.ogImageAlt'],
     ogType: input.ogType ?? 'website',
     robots: input.noindex ? 'noindex, follow' : 'index, follow',
+    alternates,
+    ogLocale: LOCALE_META[locale].ogLocale,
+    ogLocaleAlternates: LOCALES.filter((l) => l !== locale).map((l) => LOCALE_META[l].ogLocale),
   };
 }
 
-export function organizationJsonLd() {
+export function organizationJsonLd(locale: Locale = DEFAULT_LOCALE) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': `${SITE.origin}/#organization`,
     name: 'Taren',
     url: `${SITE.origin}/`,
-    slogan: SITE.tagline,
-    description: SITE.description,
+    slogan: UI[locale]['site.tagline'],
+    description: UI[locale]['site.description'],
     founder: { '@type': 'Person', name: SITE.founder },
     location: { '@type': 'Place', address: { '@type': 'PostalAddress', addressCountry: 'SE' } },
   };
 }
 
-export function websiteJsonLd() {
+export function websiteJsonLd(locale: Locale = DEFAULT_LOCALE) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${SITE.origin}/#website`,
     name: 'Taren',
     url: `${SITE.origin}/`,
-    inLanguage: SITE.locale,
+    description: UI[locale]['site.description'],
+    inLanguage: LOCALES.map((l) => LOCALE_META[l].htmlLang),
     publisher: { '@id': `${SITE.origin}/#organization` },
   };
 }

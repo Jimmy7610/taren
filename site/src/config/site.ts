@@ -1,3 +1,5 @@
+import type { UiKey } from '@/i18n/ui';
+
 /**
  * Central site configuration. Change values here, not in components.
  */
@@ -34,20 +36,22 @@ export const SITE = {
 export const KOFI_URL = 'https://ko-fi.com/taren' as const;
 
 export interface NavItem {
-  label: string;
+  /** UI dictionary key of the label (src/i18n/ui.ts). */
+  key: UiKey;
+  /** Locale-neutral path; render with `localizePath(href, locale)`. */
   href: string;
 }
 
 export const PRIMARY_NAV: readonly NavItem[] = [
-  { label: 'Products', href: '/products/' },
-  { label: 'Studio', href: '/studio/' },
-  { label: 'Support', href: '/support/' },
+  { key: 'nav.products', href: '/products/' },
+  { key: 'nav.studio', href: '/studio/' },
+  { key: 'nav.support', href: '/support/' },
 ];
 
 export const LEGAL_NAV: readonly NavItem[] = [
-  { label: 'Privacy', href: '/privacy/' },
-  { label: 'Terms', href: '/terms/' },
+  { key: 'nav.privacy', href: '/privacy/' },
+  { key: 'nav.terms', href: '/terms/' },
 ];
 
-/** Static, indexable routes (products are added from the collection). */
+/** Static, indexable routes, locale-neutral (each exists in every locale; products are added from the collection). */
 export const STATIC_ROUTES = ['/', '/products/', '/studio/', '/support/', '/privacy/', '/terms/'] as const;

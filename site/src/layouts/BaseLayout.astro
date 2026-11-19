@@ -5,26 +5,33 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import PageTransition from '@/components/PageTransition.astro';
 import type { SeoInput } from '@/lib/seo';
+import { i18n } from '@/i18n';
 
-interface Props extends Omit<SeoInput, 'path'> {
+interface Props extends Omit<SeoInput, 'path' | 'locale'> {
   jsonLd?: unknown[];
+  /** Error pages: the switcher leads to each language's home page and no automatic language redirect happens. */
+  errorPage?: boolean;
 }
-const props = Astro.props;
+const { errorPage = false, ...props } = Astro.props;
+const { meta } = i18n(Astro);
 ---
 
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang={meta.htmlLang} dir="ltr" data-lang-redirect={errorPage ? 'off' : undefined}>
   <head>
     <SEOHead {...props} />
     <slot name="head" />
   </head>
   <body class="flex min-h-dvh flex-col">
-    <Header />
+    <Header errorPage={errorPage} />
     <main id="main" tabindex="-1" class="flex-1 focus:outline-none">
       <PageTransition>
         <slot />
       </PageTransition>
     </main>
     <Footer />
+    <script>
+      import '@/scripts/language-preference';
+    </script>
   </body>
 </html>

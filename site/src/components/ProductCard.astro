@@ -2,6 +2,7 @@
 import ProductMedia from './ProductMedia.astro';
 import ProductStatus from './ProductStatus.astro';
 import type { ProductData } from '@/lib/catalog';
+import { i18n } from '@/i18n';
 
 interface Props {
   product: ProductData;
@@ -9,7 +10,8 @@ interface Props {
   eager?: boolean;
 }
 const { product, headingLevel: H = 'h3', eager = false } = Astro.props;
-const href = `/products/${product.slug}/`;
+const { t, path: lp } = i18n(Astro);
+const href = lp(`/products/${product.slug}/`);
 ---
 
 <article class="product-card ring-brand group relative flex flex-col overflow-hidden rounded-(--radius-card) border border-line bg-surface" data-product-card={product.slug} data-accent={product.slug}>
@@ -25,12 +27,12 @@ const href = `/products/${product.slug}/`;
   <div class="flex flex-1 flex-col gap-4 p-6 sm:p-7">
     <div class="flex flex-wrap items-center justify-between gap-3">
       <p class="text-sm text-subtle">
-        <span class="sr-only">Category: </span>{product.category}
+        <span class="sr-only">{t('card.category')}</span>{t(`category.${product.category}`)}
         <span aria-hidden="true" class="mx-1.5">·</span>
-        <span class="sr-only">Platforms: </span>{product.platforms.join(', ')}
+        <span class="sr-only">{t('card.platforms')}</span>{product.platforms.join(', ')}
       </p>
       <span class="flex items-center gap-2">
-        {!product.published && <span class="draft-pill">Draft</span>}
+        {!product.published && <span class="draft-pill">{t('card.draft')}</span>}
         <ProductStatus status={product.status} />
       </span>
     </div>
@@ -39,7 +41,7 @@ const href = `/products/${product.slug}/`;
     </H>
     <p class="text-muted">{product.tagline}</p>
     <span class="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-medium text-cyan-soft" aria-hidden="true">
-      View product
+      {t('card.view')}
       <svg viewBox="0 0 16 16" class="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
         ><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg
       >

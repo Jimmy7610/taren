@@ -6,10 +6,21 @@
         "http://localhost/index.html",
         "http://localhost/products/index.html",
         "http://localhost/products/pulse-garden/index.html",
+        "http://localhost/products/pdfstudio/index.html",
+        "http://localhost/products/lumen-capture/index.html",
         "http://localhost/studio/index.html",
         "http://localhost/support/index.html",
         "http://localhost/privacy/index.html",
-        "http://localhost/terms/index.html"
+        "http://localhost/terms/index.html",
+        "http://localhost/sv/index.html",
+        "http://localhost/sv/products/index.html",
+        "http://localhost/sv/products/pulse-garden/index.html",
+        "http://localhost/sv/products/pdfstudio/index.html",
+        "http://localhost/sv/products/lumen-capture/index.html",
+        "http://localhost/sv/studio/index.html",
+        "http://localhost/sv/support/index.html",
+        "http://localhost/sv/privacy/index.html",
+        "http://localhost/sv/terms/index.html"
       ],
       "numberOfRuns": 3,
       "settings": {

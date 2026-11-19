@@ -18,6 +18,8 @@ interface Props {
   device?: 'phone' | 'desktop';
 }
 const { name, heroImage, heroImageAlt, icon, iconAlt, variant = 'card', eager = false, device = 'phone' } = Astro.props;
+import { i18n } from '@/i18n';
+const { t } = i18n(Astro);
 const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
 ---
 
@@ -74,7 +76,7 @@ const mode = heroImage ? 'screen' : icon ? 'icon' : 'fallback';
   }
   {
     mode === 'fallback' && (
-      <div class="placeholder" role="img" aria-label={`${name} — artwork coming later`}>
+      <div class="placeholder" role="img" aria-label={t('media.placeholder', { name })}>
         <span class="font-display" aria-hidden="true">
           {name.charAt(0)}
         </span>

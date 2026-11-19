@@ -7,7 +7,9 @@ interface Props {
   source?: string | undefined;
 }
 const { milestones, source } = Astro.props;
-const LABEL: Record<MilestoneState, string> = { done: 'Done', 'in-progress': 'In progress', next: 'Next', planned: 'Planned' };
+import { i18n } from '@/i18n';
+const { t } = i18n(Astro);
+const label = (s: MilestoneState) => t(`timeline.${s}`);
 ---
 
 <div>
@@ -19,7 +21,7 @@ const LABEL: Record<MilestoneState, string> = { done: 'Done', 'in-progress': 'In
           <div class="tl-body">
             <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <h3 class="text-base leading-snug font-semibold tracking-[-0.01em] text-text sm:text-lg">{m.title}</h3>
-              <span class="tl-state text-xs font-medium tracking-[0.06em] uppercase">{LABEL[m.state]}</span>
+              <span class="tl-state text-xs font-medium tracking-[0.06em] uppercase">{label(m.state)}</span>
             </div>
             {m.note && <p class="mt-1.5 max-w-xl text-[0.9375rem] leading-relaxed text-muted">{m.note}</p>}
           </div>
@@ -27,7 +29,7 @@ const LABEL: Record<MilestoneState, string> = { done: 'Done', 'in-progress': 'In
       ))
     }
   </ol>
-  {source && <p class="mt-8 text-sm text-subtle">Source: {source}.</p>}
+  {source && <p class="mt-8 text-sm text-subtle">{t('timeline.source', { source })}</p>}
 </div>
 
 <style>

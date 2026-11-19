@@ -8,14 +8,18 @@
 import BrandMark from './BrandMark.astro';
 import { KOFI_URL, LEGAL_NAV, PRIMARY_NAV } from '@/config/site';
 import ProductTeaser from './ProductTeaser.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 import { getFeaturedProducts } from '@/lib/catalog';
+import { i18n } from '@/i18n';
 
 interface Props {
   currentPath: string;
+  errorPage?: boolean;
 }
-const { currentPath } = Astro.props;
-const isCurrent = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
-const featured = (await getFeaturedProducts())[0];
+const { currentPath, errorPage = false } = Astro.props;
+const { t, path: lp, locale } = i18n(Astro);
+const isCurrent = (href: string) => currentPath === lp(href) || (href !== '/' && currentPath.startsWith(lp(href)));
+const featured = (await getFeaturedProducts(locale))[0];
 ---
 
 <button
@@ -28,16 +32,16 @@ const featured = (await getFeaturedProducts())[0];
   command="show-modal"
   data-menu-open
 >
-  <span class="sr-only">Open menu</span>
+  <span class="sr-only">{t('nav.openMenu')}</span>
   <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6"
     ><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg
   >
 </button>
 
-<dialog id="mobile-nav" class="mobile-nav" aria-label="Menu">
+<dialog id="mobile-nav" class="mobile-nav" aria-label={t('nav.menu')}>
   <div class="flex h-full flex-col">
     <div class="container-x flex h-(--header-h) shrink-0 items-center justify-between border-b border-line">
-      <a href="/" class="-m-2 flex min-h-11 items-center p-2" aria-label="Taren — home"><BrandMark height={36} class="h-8 w-auto" /></a>
+      <a href={lp('/')} class="-m-2 flex min-h-11 items-center p-2" aria-label={t('nav.homeLabel')}><BrandMark height={36} class="h-8 w-auto" /></a>
       <button
         type="button"
         class="-mr-2 inline-flex size-11 items-center justify-center rounded-full text-text hover:bg-white/[0.06]"
@@ -45,23 +49,23 @@ const featured = (await getFeaturedProducts())[0];
         command="close"
         data-menu-close
       >
-        <span class="sr-only">Close menu</span>
+        <span class="sr-only">{t('nav.closeMenu')}</span>
         <svg aria-hidden="true" viewBox="0 0 24 24" class="size-6"
           ><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg
         >
       </button>
     </div>
 
-    <nav aria-label="Mobile" class="container-x flex flex-1 flex-col pt-8 pb-10">
+    <nav aria-label={t('nav.mobile')} class="container-x flex flex-1 flex-col pt-8 pb-10">
       <ul class="flex flex-col">
         <li class="mobile-item">
-          <a href="/" aria-current={currentPath === '/' ? 'page' : undefined} class="mobile-link">Home</a>
+          <a href={lp('/')} aria-current={currentPath === lp('/') ? 'page' : undefined} class="mobile-link">{t('nav.home')}</a>
         </li>
         {
           PRIMARY_NAV.map((item) => (
             <li class="mobile-item">
-              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined} class="mobile-link">
-                {item.label}
+              <a href={lp(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined} class="mobile-link">
+                {t(item.key)}
               </a>
             </li>
           ))
@@ -70,7 +74,7 @@ const featured = (await getFeaturedProducts())[0];
       {
         featured && (
           <div class="menu-featured mt-8">
-            <p class="eyebrow mb-3 text-subtle!">Featured</p>
+            <p class="eyebrow mb-3 text-subtle!">{t('nav.featured')}</p>
             <ProductTeaser product={featured} />
           </div>
         )
@@ -83,14 +87,15 @@ const featured = (await getFeaturedProducts())[0];
           data-kofi-link
           class="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-line-strong px-6 text-[0.9375rem] font-medium text-text"
         >
-          Support on Ko-fi <span aria-hidden="true">↗</span><span class="sr-only">(opens in a new tab)</span>
+          {t('kofi.cta')} <span aria-hidden="true">↗</span><span class="sr-only">{t('common.newTab')}</span>
         </a>
+        <LanguageSwitcher homeOnly={errorPage} placement="menu" class="-ml-2" />
         <ul class="flex gap-6 text-sm text-subtle">
           {
             LEGAL_NAV.map((item) => (
               <li>
-                <a href={item.href} class="inline-flex min-h-11 items-center hover:text-text">
-                  {item.label}
+                <a href={lp(item.href)} class="inline-flex min-h-11 items-center hover:text-text">
+                  {t(item.key)}
                 </a>
               </li>
             ))

@@ -1,26 +1,28 @@
 ---
 import BrandMark from './BrandMark.astro';
 import { KOFI_URL, LEGAL_NAV, PRIMARY_NAV, SITE } from '@/config/site';
+import { i18n } from '@/i18n';
+const { t, path: lp } = i18n(Astro);
 ---
 
 <footer class="relative mt-auto border-t border-line bg-ink-deep" id="site-footer">
   <!-- Phones: brand on top, the two link lists side by side from 352 px (one column below that). -->
   <div class="container-x grid grid-cols-1 gap-x-6 gap-y-10 py-12 min-[22rem]:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr] md:gap-12 md:py-20">
     <div class="col-span-full max-w-sm md:col-span-1">
-      <a href="/" class="-m-2 inline-flex min-h-11 items-center p-2" aria-label="Taren — home"><BrandMark height={44} eager={false} /></a>
-      <p class="mt-5 text-muted">{SITE.tagline}</p>
-      <p class="mt-2 text-sm text-subtle">An independent software studio in {SITE.country}.</p>
+      <a href={lp('/')} class="-m-2 inline-flex min-h-11 items-center p-2" aria-label={t('nav.homeLabel')}><BrandMark height={44} eager={false} /></a>
+      <p class="mt-5 text-muted">{t('site.tagline')}</p>
+      <p class="mt-2 text-sm text-subtle">{t('site.studioIn')}</p>
     </div>
 
-    <nav aria-label="Footer">
-      <h2 class="eyebrow mb-4 text-subtle!">Explore</h2>
+    <nav aria-label={t('nav.footer')}>
+      <h2 class="eyebrow mb-4 text-subtle!">{t('footer.explore')}</h2>
       <ul class="space-y-1">
-        <li><a href="/" class="footer-link">Home</a></li>
+        <li><a href={lp('/')} class="footer-link">{t('nav.home')}</a></li>
         {
           PRIMARY_NAV.map((item) => (
             <li>
-              <a href={item.href} class="footer-link">
-                {item.label}
+              <a href={lp(item.href)} class="footer-link">
+                {t(item.key)}
               </a>
             </li>
           ))
@@ -29,20 +31,20 @@ import { KOFI_URL, LEGAL_NAV, PRIMARY_NAV, SITE } from '@/config/site';
     </nav>
 
     <div>
-      <h2 class="eyebrow mb-4 text-subtle!">Legal &amp; support</h2>
+      <h2 class="eyebrow mb-4 text-subtle!">{t('footer.legal')}</h2>
       <ul class="space-y-1">
         {
           LEGAL_NAV.map((item) => (
             <li>
-              <a href={item.href} class="footer-link">
-                {item.label}
+              <a href={lp(item.href)} class="footer-link">
+                {t(item.key)}
               </a>
             </li>
           ))
         }
         <li>
           <a href={KOFI_URL} target="_blank" rel="noopener noreferrer" class="footer-link" data-kofi-link>
-            Ko-fi<span aria-hidden="true">&nbsp;↗</span><span class="sr-only"> (opens in a new tab)</span>
+            Ko-fi<span aria-hidden="true">&nbsp;↗</span><span class="sr-only"> {t('common.newTab')}</span>
           </a>
         </li>
       </ul>
@@ -50,7 +52,7 @@ import { KOFI_URL, LEGAL_NAV, PRIMARY_NAV, SITE } from '@/config/site';
   </div>
   <div class="container-x flex flex-col gap-2 border-t border-line py-6 text-sm text-subtle sm:flex-row sm:justify-between">
     <p data-copyright>{SITE.copyright}</p>
-    <p>Made in {SITE.country}.</p>
+    <p>{t('site.madeIn')}</p>
   </div>
 </footer>
 

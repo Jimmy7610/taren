@@ -1,14 +1,16 @@
 ---
 import { buildSeo, serializeJsonLd, type SeoInput } from '@/lib/seo';
 import { SITE } from '@/config/site';
+import { i18n } from '@/i18n';
 import soraLatin from '@/assets/fonts/sora-subset.woff2?url';
 import interLatin from '@/assets/fonts/inter-subset.woff2?url';
 
-interface Props extends Omit<SeoInput, 'path'> {
+interface Props extends Omit<SeoInput, 'path' | 'locale'> {
   jsonLd?: unknown[];
 }
 const { jsonLd = [], ...input } = Astro.props;
-const meta = buildSeo({ ...input, path: Astro.url.pathname });
+const { locale } = i18n(Astro);
+const meta = buildSeo({ ...input, path: Astro.url.pathname, locale });
 ---
 
 <meta charset="utf-8" />
@@ -16,6 +18,7 @@ const meta = buildSeo({ ...input, path: Astro.url.pathname });
 <title>{meta.title}</title>
 <meta name="description" content={meta.description} />
 {meta.canonical && <link rel="canonical" href={meta.canonical} />}
+{meta.alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
 <meta name="robots" content={meta.robots} />
 <meta name="theme-color" content="#0a1020" />
 <meta name="color-scheme" content="dark" />
@@ -31,7 +34,8 @@ const meta = buildSeo({ ...input, path: Astro.url.pathname });
 <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
 
 <meta property="og:site_name" content={SITE.name} />
-<meta property="og:locale" content={SITE.ogLocale} />
+<meta property="og:locale" content={meta.ogLocale} />
+{meta.ogLocaleAlternates.map((l) => <meta property="og:locale:alternate" content={l} />)}
 <meta property="og:type" content={meta.ogType} />
 <meta property="og:title" content={meta.title} />
 <meta property="og:description" content={meta.description} />

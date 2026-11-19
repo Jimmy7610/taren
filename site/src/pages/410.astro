@@ -1,13 +1,19 @@
 ---
-/** Served with HTTP 410 by functions/ for permanently retired legacy routes (old browser games). */
+/**
+ * Served with HTTP 410 by functions/ for permanently retired legacy routes (old browser games, Parakollen, Ninefold).
+ * Those URLs were never language-specific, so the page says it in English and, below, in Swedish (lang="sv").
+ */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ErrorState from '@/components/ErrorState.astro';
+import { UI } from '@/i18n/ui';
+const sv = UI.sv;
 ---
 
-<BaseLayout title="Page retired" description="This page has been permanently removed from taren.se." noindex>
-  <ErrorState
-    code="410"
-    title="This page has been retired."
-    message="The small browser games and experiments that used to live here have been permanently removed as Taren became a product studio. Thanks for playing."
-  />
+<BaseLayout title={UI.en['error.410.title']} description={UI.en['error.410.description']} noindex errorPage>
+  <ErrorState code="410" title={UI.en['error.410.heading']} message={UI.en['error.410.message']} />
+  <section lang="sv" class="container-x -mt-16 pb-24" aria-labelledby="gone-sv">
+    <h2 id="gone-sv" class="text-title text-text">{sv['error.410.heading']}</h2>
+    <p class="mt-3 max-w-xl text-muted">{sv['error.410.message']}</p>
+    <p class="mt-4"><a href="/sv/" class="text-cyan-soft underline underline-offset-4 hover:text-text">{sv['error.home']}</a></p>
+  </section>
 </BaseLayout>

@@ -4,9 +4,11 @@ interface Props {
   href: string;
   class?: string;
 }
+import { i18n } from '@/i18n';
 const { href, class: className = '' } = Astro.props;
+const { t } = i18n(Astro);
 ---
 
 <a href={href} target="_blank" rel="noopener noreferrer" class={className}>
-  <slot /><span aria-hidden="true">&nbsp;↗</span><span class="sr-only"> (opens in a new tab)</span>
+  <slot /><span aria-hidden="true">&nbsp;↗</span><span class="sr-only"> {t('common.newTab')}</span>
 </a>

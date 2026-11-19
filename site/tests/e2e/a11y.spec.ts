@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
-import { PAGES, scrollThrough } from './helpers';
+import { ALL_PAGES, scrollThrough } from './helpers';
 
 // @axe-core/playwright is typed against a newer playwright-core than the pinned @playwright/test
 // (pinned to the pre-installed browser build). The runtime API is identical.
@@ -9,7 +9,7 @@ type AxePage = ConstructorParameters<typeof AxeBuilder>[0]['page'];
 for (const width of [375, 1440]) {
   test.describe(`axe at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
-    for (const { path } of [...PAGES, { path: '/404.html' }, { path: '/410/' }]) {
+    for (const { path } of [...ALL_PAGES, { path: '/404.html' }, { path: '/sv/404.html' }, { path: '/410/' }]) {
       test(`${path} has no WCAG 2.2 AA violations`, async ({ page }) => {
         await page.goto(path);
         await scrollThrough(page);
@@ -30,7 +30,7 @@ test('mobile menu passes axe while open', async ({ page }) => {
 });
 
 test('heading levels never skip', async ({ page }) => {
-  for (const { path } of PAGES) {
+  for (const { path } of ALL_PAGES) {
     await page.goto(path);
     const levels = await page.locator('h1, h2, h3, h4, h5, h6').evaluateAll((hs) =>
       hs.filter((h) => !h.closest('dialog')).map((h) => Number(h.tagName[1])),

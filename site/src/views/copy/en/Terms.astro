@@ -1,0 +1,62 @@
+---
+/*
+ * OWNER REVIEW REQUIRED before public launch (docs/RELEASE_CHECKLIST.md):
+ * - governing law / jurisdiction is intentionally not stated; decide whether to add it
+ * - confirm wording of the liability section with appropriate advice if needed
+ */
+import TextPage from '@/layouts/TextPage.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
+import { SITE } from '@/config/site';
+// English copy of /terms/. Swedish: ../sv/Terms.astro — keep both in step.
+---
+
+<TextPage
+  title="Terms"
+  description="The terms for using taren.se: content, product information, optional support, external links and limits of liability."
+  eyebrow="Terms"
+  heading="Terms of use"
+  intro="These terms cover the taren.se website. Individual products may come with their own terms."
+  updated="2026-11-18"
+>
+  <h2>About this website</h2>
+  <p>
+    taren.se presents the work of Taren, an independent software studio run by {SITE.founder} in {SITE.country}. By
+    using the site, you agree to these terms.
+  </p>
+
+  <h2>Content and trademarks</h2>
+  <p>
+    Unless stated otherwise, the text, images, screenshots and design of this website are the work of {SITE.founder},
+    published under the name Taren. The fonts Inter and Sora are used under the SIL Open Font License. The names
+    Taren and the product names shown here identify Taren’s projects. You are welcome to link to any page and to share
+    screenshots for commentary or review; please do not present Taren’s work as your own.
+  </p>
+
+  <h2>Product information</h2>
+  <p>
+    Product pages describe projects as they are at the time of writing. Products marked as in development are
+    unfinished: features, platforms and timing can change, and a product may never be released. Nothing on this site
+    is an offer to sell.
+  </p>
+
+  <h2>Optional support</h2>
+  <p>
+    Contributions through Ko-fi are voluntary and are handled by Ko-fi under its own terms. A contribution does not
+    purchase a product or service. See <a href="/support/">Support</a> for details.
+  </p>
+
+  <h2>External links</h2>
+  <p>Links to other websites are provided for convenience. Taren is not responsible for their content or practices.</p>
+
+  <h2>No warranty</h2>
+  <p>
+    The website is provided as it is. Reasonable care goes into keeping it accurate and available, but it may contain
+    mistakes or be unavailable at times. To the extent the law allows, {SITE.founder} (Taren) is not liable for losses arising
+    from use of the website. Nothing in these terms limits rights you have under consumer law that cannot be limited.
+  </p>
+
+  <h2>Contact and changes</h2>
+  <p>
+    Questions are welcome by email: <ContactEmail />. If these terms change, the date at the top will be updated.
+  </p>
+</TextPage>
