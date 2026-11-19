@@ -15,7 +15,7 @@ const { eyebrow, heading, intro, updated, ...seo } = Astro.props;
 <BaseLayout {...seo}>
   <section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="page-title">
     <div class="grid-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
-    <div class="container-x py-16 md:py-24">
+    <div class="container-x py-14 md:py-20">
       <p class="eyebrow mb-4">{eyebrow}</p>
       <h1 id="page-title" class="max-w-4xl text-headline text-text">{heading}</h1>
       {intro && <p class="mt-6 max-w-2xl text-lead text-muted">{intro}</p>}
@@ -23,7 +23,7 @@ const { eyebrow, heading, intro, updated, ...seo } = Astro.props;
     </div>
   </section>
   <slot name="before" />
-  <div class="container-x pt-12 pb-20 md:pt-16 md:pb-28">
+  <div class="container-x pt-12 section-b md:pt-16">
     <div class="prose-taren max-w-3xl">
       <slot />
     </div>

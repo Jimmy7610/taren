@@ -103,7 +103,21 @@
     --measure-prose: 68ch;
     --gutter: clamp(1rem, 0.6rem + 2.2vw, 2.5rem);
     --header-h: 4.5rem;
+    /* Vertical rhythm between major sections (Taren 2.4 "B+", docs/TAREN_SPACING_UX_AUDIT.md):
+       56 px on phones, 80 px on tablets, 88 px from 1024 px. */
+    --section-y: 3.5rem;
     --focus: 0 0 0 2px var(--color-ink), 0 0 0 4px var(--color-cyan);
+  }
+
+  @media (min-width: 48rem) {
+    :root {
+      --section-y: 5rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    :root {
+      --section-y: 5.5rem;
+    }
   }
 
   html {
@@ -364,4 +378,15 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Section rhythm utilities (one token, used by every page). */
+@utility section-y {
+  padding-block: var(--section-y);
+}
+@utility section-t {
+  padding-top: var(--section-y);
+}
+@utility section-b {
+  padding-bottom: var(--section-y);
 }

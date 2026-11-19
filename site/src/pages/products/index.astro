@@ -16,7 +16,7 @@ const products = await getPublicProducts();
 >
   <section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="products-title">
     <div class="grid-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
-    <div class="container-x py-20 md:py-28">
+    <div class="container-x section-y">
       <SectionHeading eyebrow="Products" title="Selected work" id="products-title" level="h1">
         <p>
           Every product has its own page with an honest status. Released means you can get it today; in development
@@ -26,7 +26,7 @@ const products = await getPublicProducts();
     </div>
   </section>
 
-  <section class="container-x py-16 md:py-24" aria-label="Product list">
+  <section class="container-x pt-12 section-b md:pt-16" aria-label="Product list">
     {
       products.length === 1 && products[0] ? (
         <>

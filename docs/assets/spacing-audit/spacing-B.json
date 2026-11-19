@@ -1,0 +1,1185 @@
+[
+  {
+    "variant": "B",
+    "path": "/",
+    "viewport": "375x812",
+    "pageHeight": 5417,
+    "screens": 6.67,
+    "footerScreens": 5.67,
+    "heroH": 639,
+    "heroPctVh": 79,
+    "heroOccupancy": 86,
+    "firstBelowHero": 0.95,
+    "gaps": [
+      101,
+      112,
+      86,
+      56
+    ],
+    "maxGap": 112,
+    "medianGap": 101,
+    "unusedPct": 17,
+    "landmarks": {
+      "featured": 1.94,
+      "firstProduct": 2.11,
+      "support": 5.04,
+      "kofi": 5.37
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/",
+    "viewport": "375x812",
+    "pageHeight": 2738,
+    "screens": 3.37,
+    "footerScreens": 2.37,
+    "heroH": 312,
+    "heroPctVh": 38,
+    "heroOccupancy": 64,
+    "firstBelowHero": 0.54,
+    "gaps": [
+      109
+    ],
+    "maxGap": 109,
+    "medianGap": 109,
+    "unusedPct": 15,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": 0.54,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/pulse-garden/",
+    "viewport": "375x812",
+    "pageHeight": 9716,
+    "screens": 11.97,
+    "footerScreens": 10.96,
+    "heroH": 1447,
+    "heroPctVh": 178,
+    "heroOccupancy": 92,
+    "firstBelowHero": 1.92,
+    "gaps": [
+      118,
+      93,
+      87,
+      87,
+      112,
+      112,
+      57
+    ],
+    "maxGap": 118,
+    "medianGap": 93,
+    "unusedPct": 19,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": 10.36,
+      "kofi": 10.69
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/studio/",
+    "viewport": "375x812",
+    "pageHeight": 3130,
+    "screens": 3.85,
+    "footerScreens": 2.85,
+    "heroH": 374,
+    "heroPctVh": 46,
+    "heroOccupancy": 72,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 28,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/support/",
+    "viewport": "375x812",
+    "pageHeight": 3066,
+    "screens": 3.78,
+    "footerScreens": 2.77,
+    "heroH": 340,
+    "heroPctVh": 42,
+    "heroOccupancy": 70,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 30,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": 0.69
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/privacy/",
+    "viewport": "375x812",
+    "pageHeight": 3898,
+    "screens": 4.8,
+    "footerScreens": 3.79,
+    "heroH": 350,
+    "heroPctVh": 43,
+    "heroOccupancy": 71,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 27,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/terms/",
+    "viewport": "375x812",
+    "pageHeight": 3297,
+    "screens": 4.06,
+    "footerScreens": 3.05,
+    "heroH": 323,
+    "heroPctVh": 40,
+    "heroOccupancy": 68,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 31,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/",
+    "viewport": "390x844",
+    "pageHeight": 5365,
+    "screens": 6.36,
+    "footerScreens": 5.39,
+    "heroH": 641,
+    "heroPctVh": 76,
+    "heroOccupancy": 86,
+    "firstBelowHero": 0.91,
+    "gaps": [
+      101,
+      112,
+      86,
+      56
+    ],
+    "maxGap": 112,
+    "medianGap": 101,
+    "unusedPct": 17,
+    "landmarks": {
+      "featured": 1.87,
+      "firstProduct": 2.03,
+      "support": 4.82,
+      "kofi": 5.1
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/",
+    "viewport": "390x844",
+    "pageHeight": 2734,
+    "screens": 3.24,
+    "footerScreens": 2.27,
+    "heroH": 313,
+    "heroPctVh": 37,
+    "heroOccupancy": 64,
+    "firstBelowHero": 0.52,
+    "gaps": [
+      109
+    ],
+    "maxGap": 109,
+    "medianGap": 109,
+    "unusedPct": 15,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": 0.52,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/pulse-garden/",
+    "viewport": "390x844",
+    "pageHeight": 9629,
+    "screens": 11.41,
+    "footerScreens": 10.44,
+    "heroH": 1447,
+    "heroPctVh": 171,
+    "heroOccupancy": 92,
+    "firstBelowHero": 1.85,
+    "gaps": [
+      118,
+      93,
+      87,
+      87,
+      112,
+      112,
+      57
+    ],
+    "maxGap": 118,
+    "medianGap": 93,
+    "unusedPct": 20,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": 9.9,
+      "kofi": 10.18
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/studio/",
+    "viewport": "390x844",
+    "pageHeight": 3072,
+    "screens": 3.64,
+    "footerScreens": 2.67,
+    "heroH": 376,
+    "heroPctVh": 45,
+    "heroOccupancy": 73,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 28,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/support/",
+    "viewport": "390x844",
+    "pageHeight": 3008,
+    "screens": 3.56,
+    "footerScreens": 2.6,
+    "heroH": 342,
+    "heroPctVh": 40,
+    "heroOccupancy": 70,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 30,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": 0.66
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/privacy/",
+    "viewport": "390x844",
+    "pageHeight": 3841,
+    "screens": 4.55,
+    "footerScreens": 3.58,
+    "heroH": 323,
+    "heroPctVh": 38,
+    "heroOccupancy": 68,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 28,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/terms/",
+    "viewport": "390x844",
+    "pageHeight": 3208,
+    "screens": 3.8,
+    "footerScreens": 2.83,
+    "heroH": 323,
+    "heroPctVh": 38,
+    "heroOccupancy": 68,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 32,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/",
+    "viewport": "768x1024",
+    "pageHeight": 4477,
+    "screens": 4.37,
+    "footerScreens": 3.98,
+    "heroH": 649,
+    "heroPctVh": 63,
+    "heroOccupancy": 79,
+    "firstBelowHero": 0.78,
+    "gaps": [
+      146,
+      169,
+      89,
+      90
+    ],
+    "maxGap": 169,
+    "medianGap": 146,
+    "unusedPct": 25,
+    "landmarks": {
+      "featured": 1.34,
+      "firstProduct": 1.42,
+      "support": 3.57,
+      "kofi": 3.68
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/",
+    "viewport": "768x1024",
+    "pageHeight": 2256,
+    "screens": 2.2,
+    "footerScreens": 1.81,
+    "heroH": 318,
+    "heroPctVh": 31,
+    "heroOccupancy": 50,
+    "firstBelowHero": 0.45,
+    "gaps": [
+      147
+    ],
+    "maxGap": 147,
+    "medianGap": 147,
+    "unusedPct": 19,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": 0.45,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/pulse-garden/",
+    "viewport": "768x1024",
+    "pageHeight": 7039,
+    "screens": 6.87,
+    "footerScreens": 6.48,
+    "heroH": 1566,
+    "heroPctVh": 153,
+    "heroOccupancy": 91,
+    "firstBelowHero": 1.64,
+    "gaps": [
+      128,
+      112,
+      79,
+      79,
+      158,
+      158,
+      79
+    ],
+    "maxGap": 158,
+    "medianGap": 112,
+    "unusedPct": 27,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": 6.12,
+      "kofi": 6.23
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/studio/",
+    "viewport": "768x1024",
+    "pageHeight": 2099,
+    "screens": 2.05,
+    "footerScreens": 1.65,
+    "heroH": 375,
+    "heroPctVh": 37,
+    "heroOccupancy": 64,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 42,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/support/",
+    "viewport": "768x1024",
+    "pageHeight": 2098,
+    "screens": 2.05,
+    "footerScreens": 1.65,
+    "heroH": 300,
+    "heroPctVh": 29,
+    "heroOccupancy": 55,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 44,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": 0.45
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/privacy/",
+    "viewport": "768x1024",
+    "pageHeight": 2592,
+    "screens": 2.53,
+    "footerScreens": 2.14,
+    "heroH": 344,
+    "heroPctVh": 34,
+    "heroOccupancy": 60,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 42,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/terms/",
+    "viewport": "768x1024",
+    "pageHeight": 2257,
+    "screens": 2.2,
+    "footerScreens": 1.81,
+    "heroH": 344,
+    "heroPctVh": 34,
+    "heroOccupancy": 60,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 45,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/",
+    "viewport": "1024x768",
+    "pageHeight": 3780,
+    "screens": 4.92,
+    "footerScreens": 4.39,
+    "heroH": 646,
+    "heroPctVh": 84,
+    "heroOccupancy": 65,
+    "firstBelowHero": 1.04,
+    "gaps": [
+      194,
+      169,
+      89,
+      90
+    ],
+    "maxGap": 194,
+    "medianGap": 169,
+    "unusedPct": 28,
+    "landmarks": {
+      "featured": 1.76,
+      "firstProduct": 1.88,
+      "support": 3.87,
+      "kofi": 4
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/",
+    "viewport": "1024x768",
+    "pageHeight": 1830,
+    "screens": 2.38,
+    "footerScreens": 1.86,
+    "heroH": 328,
+    "heroPctVh": 43,
+    "heroOccupancy": 52,
+    "firstBelowHero": 0.61,
+    "gaps": [
+      147
+    ],
+    "maxGap": 147,
+    "medianGap": 147,
+    "unusedPct": 25,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": 0.61,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/pulse-garden/",
+    "viewport": "1024x768",
+    "pageHeight": 5923,
+    "screens": 7.71,
+    "footerScreens": 7.18,
+    "heroH": 822,
+    "heroPctVh": 107,
+    "heroOccupancy": 86,
+    "firstBelowHero": 1.22,
+    "gaps": [
+      96,
+      112,
+      79,
+      79,
+      158,
+      157,
+      79
+    ],
+    "maxGap": 158,
+    "medianGap": 96,
+    "unusedPct": 25,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": 6.72,
+      "kofi": 6.86
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/studio/",
+    "viewport": "1024x768",
+    "pageHeight": 2118,
+    "screens": 2.76,
+    "footerScreens": 2.23,
+    "heroH": 394,
+    "heroPctVh": 51,
+    "heroOccupancy": 65,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 41,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/support/",
+    "viewport": "1024x768",
+    "pageHeight": 2079,
+    "screens": 2.71,
+    "footerScreens": 2.18,
+    "heroH": 310,
+    "heroPctVh": 40,
+    "heroOccupancy": 56,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 45,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": 0.62
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/privacy/",
+    "viewport": "1024x768",
+    "pageHeight": 2602,
+    "screens": 3.39,
+    "footerScreens": 2.86,
+    "heroH": 354,
+    "heroPctVh": 46,
+    "heroOccupancy": 62,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 42,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/terms/",
+    "viewport": "1024x768",
+    "pageHeight": 2267,
+    "screens": 2.95,
+    "footerScreens": 2.42,
+    "heroH": 354,
+    "heroPctVh": 46,
+    "heroOccupancy": 62,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 45,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/",
+    "viewport": "1440x900",
+    "pageHeight": 3808,
+    "screens": 4.23,
+    "footerScreens": 3.78,
+    "heroH": 758,
+    "heroPctVh": 84,
+    "heroOccupancy": 62,
+    "firstBelowHero": 1.01,
+    "gaps": [
+      224,
+      169,
+      89,
+      90
+    ],
+    "maxGap": 224,
+    "medianGap": 169,
+    "unusedPct": 30,
+    "landmarks": {
+      "featured": 1.61,
+      "firstProduct": 1.72,
+      "support": 3.31,
+      "kofi": 3.45
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/",
+    "viewport": "1440x900",
+    "pageHeight": 1778,
+    "screens": 1.98,
+    "footerScreens": 1.53,
+    "heroH": 375,
+    "heroPctVh": 42,
+    "heroOccupancy": 58,
+    "firstBelowHero": 0.57,
+    "gaps": [
+      147
+    ],
+    "maxGap": 147,
+    "medianGap": 147,
+    "unusedPct": 26,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": 0.57,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/pulse-garden/",
+    "viewport": "1440x900",
+    "pageHeight": 5939,
+    "screens": 6.6,
+    "footerScreens": 6.15,
+    "heroH": 855,
+    "heroPctVh": 95,
+    "heroOccupancy": 86,
+    "firstBelowHero": 1.07,
+    "gaps": [
+      101,
+      111,
+      79,
+      79,
+      158,
+      157,
+      79
+    ],
+    "maxGap": 158,
+    "medianGap": 101,
+    "unusedPct": 25,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": 5.73,
+      "kofi": 5.87
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/studio/",
+    "viewport": "1440x900",
+    "pageHeight": 2142,
+    "screens": 2.38,
+    "footerScreens": 1.93,
+    "heroH": 417,
+    "heroPctVh": 46,
+    "heroOccupancy": 67,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 41,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/support/",
+    "viewport": "1440x900",
+    "pageHeight": 2126,
+    "screens": 2.36,
+    "footerScreens": 1.91,
+    "heroH": 357,
+    "heroPctVh": 40,
+    "heroOccupancy": 62,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 43,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": 0.58
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/privacy/",
+    "viewport": "1440x900",
+    "pageHeight": 2615,
+    "screens": 2.91,
+    "footerScreens": 2.46,
+    "heroH": 367,
+    "heroPctVh": 41,
+    "heroOccupancy": 63,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 42,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/terms/",
+    "viewport": "1440x900",
+    "pageHeight": 2280,
+    "screens": 2.53,
+    "footerScreens": 2.08,
+    "heroH": 367,
+    "heroPctVh": 41,
+    "heroOccupancy": 63,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 44,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/",
+    "viewport": "1920x1080",
+    "pageHeight": 3808,
+    "screens": 3.53,
+    "footerScreens": 3.15,
+    "heroH": 758,
+    "heroPctVh": 70,
+    "heroOccupancy": 62,
+    "firstBelowHero": 0.84,
+    "gaps": [
+      223,
+      169,
+      89,
+      90
+    ],
+    "maxGap": 223,
+    "medianGap": 169,
+    "unusedPct": 30,
+    "landmarks": {
+      "featured": 1.34,
+      "firstProduct": 1.43,
+      "support": 2.75,
+      "kofi": 2.87
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/",
+    "viewport": "1920x1080",
+    "pageHeight": 1778,
+    "screens": 1.65,
+    "footerScreens": 1.27,
+    "heroH": 375,
+    "heroPctVh": 35,
+    "heroOccupancy": 58,
+    "firstBelowHero": 0.48,
+    "gaps": [
+      147
+    ],
+    "maxGap": 147,
+    "medianGap": 147,
+    "unusedPct": 26,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": 0.48,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/pulse-garden/",
+    "viewport": "1920x1080",
+    "pageHeight": 5939,
+    "screens": 5.5,
+    "footerScreens": 5.12,
+    "heroH": 855,
+    "heroPctVh": 79,
+    "heroOccupancy": 86,
+    "firstBelowHero": 0.9,
+    "gaps": [
+      101,
+      111,
+      79,
+      79,
+      158,
+      157,
+      79
+    ],
+    "maxGap": 158,
+    "medianGap": 101,
+    "unusedPct": 25,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": 4.77,
+      "kofi": 4.89
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/studio/",
+    "viewport": "1920x1080",
+    "pageHeight": 2142,
+    "screens": 1.98,
+    "footerScreens": 1.61,
+    "heroH": 417,
+    "heroPctVh": 39,
+    "heroOccupancy": 67,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 41,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/support/",
+    "viewport": "1920x1080",
+    "pageHeight": 2126,
+    "screens": 1.97,
+    "footerScreens": 1.59,
+    "heroH": 357,
+    "heroPctVh": 33,
+    "heroOccupancy": 62,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 43,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": 0.48
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/privacy/",
+    "viewport": "1920x1080",
+    "pageHeight": 2615,
+    "screens": 2.42,
+    "footerScreens": 2.05,
+    "heroH": 367,
+    "heroPctVh": 34,
+    "heroOccupancy": 63,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 42,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/terms/",
+    "viewport": "1920x1080",
+    "pageHeight": 2280,
+    "screens": 2.11,
+    "footerScreens": 1.74,
+    "heroH": 367,
+    "heroPctVh": 34,
+    "heroOccupancy": 63,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 44,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/",
+    "viewport": "2560x1440",
+    "pageHeight": 3808,
+    "screens": 2.64,
+    "footerScreens": 2.36,
+    "heroH": 758,
+    "heroPctVh": 53,
+    "heroOccupancy": 62,
+    "firstBelowHero": 0.63,
+    "gaps": [
+      223,
+      169,
+      89,
+      90
+    ],
+    "maxGap": 223,
+    "medianGap": 169,
+    "unusedPct": 30,
+    "landmarks": {
+      "featured": 1.01,
+      "firstProduct": 1.08,
+      "support": 2.07,
+      "kofi": 2.15
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/",
+    "viewport": "2560x1440",
+    "pageHeight": 1778,
+    "screens": 1.23,
+    "footerScreens": 0.95,
+    "heroH": 375,
+    "heroPctVh": 26,
+    "heroOccupancy": 58,
+    "firstBelowHero": 0.36,
+    "gaps": [
+      147
+    ],
+    "maxGap": 147,
+    "medianGap": 147,
+    "unusedPct": 26,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": 0.36,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/products/pulse-garden/",
+    "viewport": "2560x1440",
+    "pageHeight": 5939,
+    "screens": 4.12,
+    "footerScreens": 3.84,
+    "heroH": 855,
+    "heroPctVh": 59,
+    "heroOccupancy": 86,
+    "firstBelowHero": 0.67,
+    "gaps": [
+      101,
+      111,
+      79,
+      79,
+      158,
+      157,
+      79
+    ],
+    "maxGap": 158,
+    "medianGap": 101,
+    "unusedPct": 25,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": 3.58,
+      "kofi": 3.67
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/studio/",
+    "viewport": "2560x1440",
+    "pageHeight": 2142,
+    "screens": 1.49,
+    "footerScreens": 1.21,
+    "heroH": 417,
+    "heroPctVh": 29,
+    "heroOccupancy": 67,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 41,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/support/",
+    "viewport": "2560x1440",
+    "pageHeight": 2126,
+    "screens": 1.48,
+    "footerScreens": 1.19,
+    "heroH": 357,
+    "heroPctVh": 25,
+    "heroOccupancy": 62,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 43,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": 0.36
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/privacy/",
+    "viewport": "2560x1440",
+    "pageHeight": 2615,
+    "screens": 1.82,
+    "footerScreens": 1.53,
+    "heroH": 367,
+    "heroPctVh": 25,
+    "heroOccupancy": 63,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 42,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  },
+  {
+    "variant": "B",
+    "path": "/terms/",
+    "viewport": "2560x1440",
+    "pageHeight": 2280,
+    "screens": 1.58,
+    "footerScreens": 1.3,
+    "heroH": 367,
+    "heroPctVh": 25,
+    "heroOccupancy": 63,
+    "firstBelowHero": null,
+    "gaps": [],
+    "maxGap": 0,
+    "medianGap": 0,
+    "unusedPct": 44,
+    "landmarks": {
+      "featured": null,
+      "firstProduct": null,
+      "support": null,
+      "kofi": null
+    }
+  }
+]

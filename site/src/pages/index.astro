@@ -31,7 +31,7 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
       </svg>
     </div>
 
-    <div class="hero-grid container-x relative grid items-center gap-x-10 py-14 sm:py-20 md:py-24">
+    <div class="hero-grid container-x relative grid items-center gap-x-10 py-12 sm:py-16 md:py-20">
       <div class="hero-copy relative z-10 min-w-0">
         <p class="eyebrow hero-in whitespace-nowrap"><span class="max-[359px]:hidden">Independent </span>software studio&nbsp;·&nbsp;{SITE.country}</p>
         <h1 id="hero-title" class="hero-title hero-in mt-6 text-display text-text">
@@ -47,7 +47,7 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
         </div>
         {
           spotlight && (
-            <div class="hero-in hero-in-3 mt-10 max-w-md lg:hidden">
+            <div class="hero-in hero-in-3 mt-10 max-w-md lg:mt-9">
               <ProductTeaser product={spotlight} />
             </div>
           )
@@ -83,9 +83,9 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
   </section>
 
   <!-- POSITIONING -->
-  <section class="border-y border-line bg-ink-deep py-20 md:py-28" aria-labelledby="what-title">
+  <section class="section-y border-y border-line bg-ink-deep" aria-labelledby="what-title">
     <div class="container-x">
-      <div class="grid gap-12 md:gap-16">
+      <div class="grid gap-10 md:gap-12">
         <SectionHeading eyebrow="What Taren makes" title="Few things, made carefully." id="what-title" />
         <ul class="grid gap-px overflow-hidden rounded-(--radius-card) border border-line bg-line md:grid-cols-3">
           <li class="bg-ink-deep p-7 md:p-9" data-reveal>
@@ -111,7 +111,7 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
   <!-- SELECTED WORK -->
   {
     spotlight && (
-      <section class="py-20 md:py-32" aria-labelledby="work-title">
+      <section class="section-y" aria-labelledby="work-title">
         <div class="container-x">
           <div class="flex flex-wrap items-end justify-between gap-6">
             <SectionHeading eyebrow="Selected work" title="In the studio now" id="work-title" />
@@ -120,7 +120,7 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
             </Button>
           </div>
 
-          <div class="mt-12" data-reveal>
+          <div class="mt-10" data-reveal>
             <ProductShowcase product={spotlight} />
           </div>
 
@@ -137,8 +137,8 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
   }
 
   <!-- STUDIO -->
-  <section class:list={['pb-20 md:pb-32', !spotlight && 'pt-20 md:pt-32']} aria-labelledby="studio-title">
-    <div class="container-x grid gap-12 lg:grid-cols-2 lg:gap-20">
+  <section class:list={['section-b', !spotlight && 'section-t']} aria-labelledby="studio-title">
+    <div class="container-x grid gap-10 lg:grid-cols-2 lg:gap-20">
       <div data-reveal>
         <SectionHeading eyebrow="The studio" title="Independent, on purpose." id="studio-title">
           <p>
@@ -168,7 +168,7 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
   </section>
 
   <SupportCTA />
-  <div class="h-20 md:h-32" aria-hidden="true"></div>
+  <div class="section-b" aria-hidden="true"></div>
 </BaseLayout>
 
 <style>
@@ -191,16 +191,23 @@ const others = (await getPublicProducts()).filter((p) => p.slug !== spotlight?.s
       grid-template-columns: minmax(0, 1fr) 13rem;
     }
   }
-  /* Desktop: generous stage; the hero fills most of the first screen. */
+  /* Desktop: generous stage. The hero is a calm ~70 % of the first screen (never clips: min-height only), so the
+     featured-product card below the actions stays in view (Taren 2.4 B+). */
   @media (min-width: 64rem) {
     .hero-grid {
       grid-template-columns: minmax(0, 1fr) 22rem;
-      min-height: min(86dvh, 56rem);
+      min-height: min(70dvh, 46rem);
     }
   }
   @media (min-width: 80rem) {
     .hero-grid {
       grid-template-columns: minmax(0, 1fr) 27rem;
+    }
+  }
+  /* Short laptop screens (e.g. 1280×720): less top padding so the featured-product card stays in the first screen. */
+  @media (min-width: 64rem) and (max-height: 47.5rem) {
+    .hero-grid {
+      padding-top: 2.5rem;
     }
   }
   /* Short landscape screens: never force height. */
