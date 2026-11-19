@@ -18,7 +18,7 @@ import { KOFI_URL, SITE } from '@/config/site';
   eyebrow="Privacy"
   heading="Privacy on taren.se"
   intro="Short version: this website does not ask for personal data, sets no cookies, runs no analytics and loads no third-party scripts."
-  updated="2026-11-19"
+  updated="2026-11-20"
 >
   <h2>Who is responsible</h2>
   <p>
@@ -60,11 +60,28 @@ import { KOFI_URL, SITE } from '@/config/site';
     Taren. Taren uses them only to acknowledge and keep a record of the contribution and does not sell or share them.
   </p>
 
+  <h2>Downloads and app updates</h2>
+  <p>
+    Program files and update information for Taren's Windows apps are served from downloads.taren.se, which also runs
+    on Cloudflare. When you download a file, or an app checks for updates, Cloudflare processes the same kind of
+    technical information as for this website (for example your IP address and the program version in the request).
+    Taren does not use this information to identify or profile you.
+  </p>
+
   <h2>Products</h2>
   <p>
-    Individual products may handle data differently from this website. Where a product processes personal data, it
-    will have its own privacy information before it is released.
+    Each Windows app ships with its own privacy information (<code>PRIVACY.txt</code> next to the program). In short:
   </p>
+  <ul>
+    <li>
+      <strong>Lumen Capture</strong> has no accounts or telemetry and keeps recordings on your computer. It connects to
+      the internet only for its update check (on by default, at most once a day, can be turned off), to download a
+      caption model when you ask for one (from huggingface.co), and to stream to the service you set up yourself.
+    </li>
+    <li>
+      <strong>PDF Studio</strong> works entirely on your computer and opens no network connections of its own.
+    </li>
+  </ul>
 
   <h2>Your rights</h2>
   <p>

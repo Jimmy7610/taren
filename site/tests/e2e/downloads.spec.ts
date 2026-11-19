@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
 // same change (docs/WINDOWS_DOWNLOADS.md, step 6).
 
 const APPS = [
-  { slug: 'lumen-capture', name: 'Lumen Capture', version: '2.9.0-beta.1' },
+  { slug: 'lumen-capture', name: 'Lumen Capture', version: '2.9.0-beta.2' },
   { slug: 'pdfstudio', name: 'PDF Studio', version: '0.9.0-beta.1' },
 ] as const;
 
