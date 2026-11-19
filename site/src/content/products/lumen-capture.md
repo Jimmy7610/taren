@@ -36,9 +36,9 @@ facts:
   - label: Runs on
     value: Windows 10 (2004+) and 11, x64
   - label: Accounts
-    value: None — runs on your PC
+    value: No account needed
   - label: Languages
-    value: Six built in
+    value: Six interface languages
   - label: On-device AI
     value: Captions and noise removal
   - label: Built with

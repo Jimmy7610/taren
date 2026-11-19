@@ -1,0 +1,187 @@
+---
+/** Shared product page for every locale (src/pages/products/[slug].astro and src/pages/sv/products/[slug].astro). */
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProductHero from '@/components/ProductHero.astro';
+import FeatureGrid from '@/components/FeatureGrid.astro';
+import ProductGallery from '@/components/ProductGallery.astro';
+import ProductFacts from '@/components/ProductFacts.astro';
+import ProductSteps from '@/components/ProductSteps.astro';
+import ProductTimeline from '@/components/ProductTimeline.astro';
+import ProductRequirements from '@/components/ProductRequirements.astro';
+import ProductAttribution from '@/components/ProductAttribution.astro';
+import ProductCard from '@/components/ProductCard.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import SupportCTA from '@/components/SupportCTA.astro';
+import { getTranslationEntry, localize, type Product } from '@/lib/catalog';
+import { isAvailable, relatedProducts } from '@/lib/products';
+import { absoluteUrl, breadcrumbJsonLd } from '@/lib/seo';
+import { SITE } from '@/config/site';
+import { DEFAULT_LOCALE, i18n } from '@/i18n';
+
+
+interface Props {
+  entry: Product;
+  all: Product[];
+}
+const { entry, all } = Astro.props;
+const { t, path: lp, locale } = i18n(Astro);
+const product = await localize(entry.data, locale);
+// The body text comes from the product file (English) or its translation (other locales).
+const { Content } = await render(locale === DEFAULT_LOCALE ? entry : await getTranslationEntry(entry.data.slug, locale));
+const related = relatedProducts(product, await Promise.all(all.map((e) => localize(e.data, locale))));
+const path = lp(`/products/${product.slug}/`);
+
+const jsonLd: unknown[] = [
+  breadcrumbJsonLd([
+    { name: t('nav.home'), path: lp('/') },
+    { name: t('nav.products'), path: lp('/products/') },
+    { name: product.name, path },
+  ]),
+];
+// Software structured data only for things people can actually get (see docs/PRODUCT_MANAGEMENT.md).
+if (isAvailable(product)) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': product.category === 'Game' ? 'VideoGame' : 'SoftwareApplication',
+    name: product.name,
+    description: product.description,
+    url: absoluteUrl(path),
+    applicationCategory: product.category === 'Game' ? 'GameApplication' : 'Application',
+    operatingSystem: product.platforms.join(', '),
+    author: { '@id': `${SITE.origin}/#organization` },
+    ...(product.downloadUrl ? { downloadUrl: product.downloadUrl } : {}),
+  });
+}
+---
+
+<BaseLayout
+  title={`${product.name} — ${product.tagline.replace(/\.$/, '')}`}
+  description={product.description}
+  ogImage={product.ogImage}
+  ogImageAlt={product.ogImageAlt}
+  jsonLd={product.published ? jsonLd : []}
+  noindex={!product.published}
+>
+  {
+    !product.published && (
+      <div class="draft-banner" role="note" data-draft-banner>
+        <div class="container-x py-2.5 text-sm">
+          <strong class="font-semibold">{t('product.draftStrong')}</strong> {t('product.draftText')}
+        </div>
+      </div>
+    )
+  }
+  <div data-accent={product.slug}>
+    <ProductHero product={product} />
+
+    <ProductFacts facts={product.facts} name={product.name} />
+
+    <section class="container-x grid gap-10 section-y lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="about-title">
+      <h2 id="about-title" class="text-headline text-text">{t('product.about', { name: product.name })}</h2>
+      <div class="prose-taren" data-reveal>
+        <Content />
+      </div>
+    </section>
+
+    {
+      product.steps.length > 0 && (
+        <section class="container-x section-b" aria-labelledby="steps-title">
+          <SectionHeading eyebrow={product.stepsEyebrow} title={product.stepsTitle ?? t('product.stepsDefault', { name: product.name, count: product.steps.length })} id="steps-title" class="mb-10" />
+          <ProductSteps steps={product.steps} device={product.device} />
+        </section>
+      )
+    }
+
+    {
+      product.features.length > 0 && (
+        <section class="container-x section-b" aria-labelledby="features-title">
+          <SectionHeading eyebrow={t('product.highlightsEyebrow')} title={t('product.highlightsTitle')} id="features-title" class="mb-10" />
+          <FeatureGrid features={product.features} />
+        </section>
+      )
+    }
+
+    {
+      product.gallery.length > 0 && (
+        <section id="screenshots" class="border-y border-line bg-ink-deep section-y" aria-labelledby="screens-title">
+          <div class="container-x mb-10">
+            <SectionHeading eyebrow={t('product.screenshotsEyebrow')} title={t('product.screenshotsTitle')} id="screens-title">
+              <p>
+                {product.screenshotsNote ?? t('product.screenshotsDefault', { name: product.name })} {t('product.screenshotsSuffix')}
+              </p>
+            </SectionHeading>
+          </div>
+          <ProductGallery items={product.gallery} label={t('gallery.label', { name: product.name })} device={product.device} />
+        </section>
+      )
+    }
+
+    {
+      product.milestones.length > 0 && (
+        <section class="container-x grid gap-10 section-y lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="progress-title">
+          <SectionHeading eyebrow={t('product.progressEyebrow')} title={t('product.progressTitle')} id="progress-title">
+            <p>{t('product.progressIntro')}</p>
+          </SectionHeading>
+          <div>
+            <ProductTimeline milestones={product.milestones} source={product.milestonesSource} />
+            {product.beforeRelease.length > 0 && (
+              <div class="before-release mt-12 rounded-(--radius-card) border border-line p-6 sm:p-8" data-before-release>
+                <h3 class="text-lg tracking-[-0.015em] text-text">{t('product.beforeRelease')}</h3>
+                <ul class="prose-taren mt-4">
+                  {product.beforeRelease.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      product.requirements.length > 0 && (
+        <section class="container-x grid gap-10 section-b lg:grid-cols-[1fr_1.6fr] lg:gap-20" aria-labelledby="requirements-title">
+          <SectionHeading eyebrow={t('product.requirementsEyebrow')} title={t('product.requirementsTitle', { name: product.name })} id="requirements-title">
+            <p>{t('product.requirementsIntro')}</p>
+          </SectionHeading>
+          <ProductRequirements items={product.requirements} />
+        </section>
+      )
+    }
+
+    {product.aboutImage && <ProductAttribution name={product.name} device={product.device} about={product.aboutImage} />}
+
+    {
+      related.length > 0 && (
+        <section class="container-x section-y" aria-labelledby="related-title">
+          <SectionHeading title={t('product.related')} id="related-title" class="mb-10" />
+          <div class="grid gap-6 md:grid-cols-2">
+            {related.map((p) => (
+              <ProductCard product={p} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <div class="section-b">
+      <SupportCTA />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .before-release {
+    background:
+      radial-gradient(ellipse 70% 100% at 100% 0%, color-mix(in srgb, var(--accent-alt) 8%, transparent), transparent 70%),
+      var(--color-surface);
+  }
+  .draft-banner {
+    position: relative;
+    z-index: 40;
+    color: #1a1204;
+    background: var(--color-amber);
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ProductView from '@/views/ProductView.astro';
+import { getPublicEntries } from '@/lib/catalog';
+
+export const getStaticPaths = (async () => {
+  // Only published products get a page (plus drafts in draft preview mode). Unpublished entries never reach the output.
+  const entries = await getPublicEntries();
+  return entries.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry, all: entries } }));
+}) satisfies GetStaticPaths;
+
+const { entry, all } = Astro.props;
+---
+
+<ProductView entry={entry} all={all} />

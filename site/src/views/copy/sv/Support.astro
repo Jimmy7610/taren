@@ -1,0 +1,66 @@
+---
+import TextPage from '@/layouts/TextPage.astro';
+import Button from '@/components/Button.astro';
+import ExternalLink from '@/components/ExternalLink.astro';
+import { KOFI_URL } from '@/config/site';
+import { breadcrumbJsonLd } from '@/lib/seo';
+import ContactEmail from '@/components/ContactEmail.astro';
+// Svensk text för /sv/support/. Samma Ko-fi-länk och samma innebörd som den engelska sidan (../en/Support.astro).
+---
+
+<TextPage
+  title="Stöd Taren"
+  description="Taren är oberoende. Om du uppskattar arbetet kan du stödja den fortsatta utvecklingen med ett litet, frivilligt bidrag på Ko-fi."
+  eyebrow="Stöd"
+  heading="Gillar du det vi bygger?"
+  intro="Tarens projekt skapas helt självständigt. Om du uppskattar arbetet kan du stödja den fortsatta utvecklingen med ett litet, frivilligt bidrag."
+  jsonLd={[breadcrumbJsonLd([{ name: 'Hem', path: '/sv/' }, { name: 'Stöd', path: '/sv/support/' }])]}
+>
+  <div slot="before" class="container-x pt-14 md:pt-20">
+    <div class="flex max-w-3xl flex-col gap-5 rounded-(--radius-card) border border-line bg-surface p-7 sm:flex-row sm:items-center sm:justify-between sm:p-9">
+      <div>
+        <p class="font-display text-xl tracking-[-0.02em] text-text">Stöd på Ko-fi</p>
+        <p class="mt-1 text-sm text-muted">Öppnar ko-fi.com/taren i en ny flik.</p>
+      </div>
+      <Button href={KOFI_URL} external size="lg" data-kofi-link>Stöd på Ko-fi</Button>
+    </div>
+  </div>
+
+  <h2>Helt frivilligt</h2>
+  <p>
+    Stöd krävs aldrig. Ingenting på den här webbplatsen, och ingenting i ett kostnadsfritt Taren-projekt, är låst bakom
+    ett bidrag. Om du inte kan eller hellre avstår är du lika välkommen.
+  </p>
+
+  <h2>Vad ditt stöd gör</h2>
+  <p>
+    Bidrag hjälper Taren att lägga mer tid på sina projekt. Ett bidrag är en frivillig gåva: det köper ingen produkt,
+    tjänst, licens eller förtur, och det ändrar inte vad du får från ett kostnadsfritt projekt.
+  </p>
+
+  <h2>Så fungerar betalningen</h2>
+  <ul>
+    <li>
+      Betalningar hanteras helt av <ExternalLink href={KOFI_URL}>Ko-fi</ExternalLink> och dess betalleverantörer. Taren
+      ser eller sparar aldrig dina kort- eller bankuppgifter.
+    </li>
+    <li>Du väljer själv om du vill bidra och med hur mycket.</li>
+    <li>
+      Ko-fi kan vidarebefordra uppgifter som du lämnar där, till exempel ditt namn, ditt meddelande och din e-postadress,
+      till Taren så att bidraget kan bekräftas. Läs mer på <a href="/sv/privacy/">integritetssidan</a>.
+    </li>
+    <li>
+      Ko-fis egna villkor och integritetspolicy gäller för allt du gör på Ko-fi. Den här webbplatsen bäddar inte in Ko-fi
+      och laddar inga av dess skript; länken ovan är en vanlig länk.
+    </li>
+  </ul>
+
+  <h2>Frågor</h2>
+  <p>Frågor om att stödja Taren är välkomna via e-post: <ContactEmail />.</p>
+
+  <h2>Andra sätt att hjälpa till</h2>
+  <p>
+    Att prova ett projekt, tipsa någon som kan tycka om det eller rapportera ett problem du har hittat är allt till
+    verklig hjälp — och kostar ingenting.
+  </p>
+</TextPage>

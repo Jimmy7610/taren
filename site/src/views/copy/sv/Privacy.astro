@@ -1,0 +1,77 @@
+---
+/*
+ * Svensk text för /sv/privacy/. En översättning av ../en/Privacy.astro med samma innebörd — inga nya juridiska
+ * påståenden. Ändras den ena ska den andra ändras på samma sätt. Ägarens godkännande krävs (docs/LEGAL_REVIEW.md).
+ */
+import TextPage from '@/layouts/TextPage.astro';
+import ExternalLink from '@/components/ExternalLink.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
+import { KOFI_URL, SITE } from '@/config/site';
+---
+
+<TextPage
+  title="Integritet"
+  description="Så hanterar taren.se dina uppgifter: inga konton, inga formulär, ingen analys, inga cookies och inga skript från tredje part."
+  eyebrow="Integritet"
+  heading="Integritet på taren.se"
+  intro="Kort sagt: den här webbplatsen ber inte om personuppgifter, sätter inga cookies, kör ingen analys och laddar inga skript från tredje part."
+  updated="2026-11-19"
+>
+  <h2>Vem som ansvarar</h2>
+  <p>
+    taren.se drivs av {SITE.founder}, en oberoende utvecklare i Sverige, under namnet Taren. Frågor om integritet eller
+    om webbplatsen skickar du till <ContactEmail />.
+  </p>
+
+  <h2>Det här gör webbplatsen inte</h2>
+  <ul>
+    <li>Den har inga användarkonton, registreringsformulär, nyhetsbrev eller kommentarsfält.</li>
+    <li>Den sätter inga cookies och använder inte lokal lagring för spårning.</li>
+    <li>
+      Om du väljer språk med EN | SV-växeln kommer din webbläsare ihåg valet i sin lokala lagring. Det stannar på din
+      enhet och skickas aldrig till Taren.
+    </li>
+    <li>Den kör inga skript för analys, reklam eller spårning.</li>
+    <li>Den laddar inga skript, typsnitt eller inbäddningar från tredje part. Typsnitt och bilder levereras från taren.se.</li>
+  </ul>
+
+  <h2>Om du mejlar Taren</h2>
+  <p>
+    Om du skickar ett mejl används din adress och ditt meddelande för att läsa och besvara det. De sparas i den
+    brevlådan, som tillhandahålls av Microsofts tjänst Outlook.com.
+  </p>
+
+  <h2>Drift</h2>
+  <p>
+    Webbplatsen drivs på Cloudflare. För att kunna leverera sidorna och skydda webbplatsen mot missbruk behandlar
+    Cloudflare nödvändigtvis teknisk information om varje förfrågan, till exempel din IP-adress, din webbläsares
+    användaragent och vilken sida du bad om. Taren använder inte den informationen för att identifiera eller kartlägga
+    besökare. Hur Cloudflare hanterar uppgifterna beskrivs i
+    <ExternalLink href="https://www.cloudflare.com/privacypolicy/">Cloudflares integritetspolicy</ExternalLink>.
+  </p>
+
+  <h2>Länkar till andra webbplatser</h2>
+  <p>
+    Vissa länkar leder till andra tjänster, till exempel <ExternalLink href={KOFI_URL}>Ko-fi</ExternalLink> för frivilligt
+    stöd. De tjänsterna har egna integritetspolicyer, som gäller när du är på deras webbplatser. Om du bidrar via Ko-fi
+    kan Ko-fi dela uppgifter som du lämnar där, till exempel ditt namn, ditt meddelande och din e-postadress, med Taren.
+    Taren använder dem bara för att bekräfta och bokföra bidraget och varken säljer eller delar dem.
+  </p>
+
+  <h2>Produkter</h2>
+  <p>
+    Enskilda produkter kan hantera uppgifter på ett annat sätt än den här webbplatsen. När en produkt behandlar
+    personuppgifter får den en egen integritetsinformation innan den släpps.
+  </p>
+
+  <h2>Dina rättigheter</h2>
+  <p>
+    Om du befinner dig i EU eller EES ger dataskyddsförordningen (GDPR) dig rättigheter när det gäller personuppgifter,
+    bland annat rätt till tillgång, rättelse och radering. Eftersom webbplatsen inte själv samlar in personuppgifter finns
+    det oftast inget sparat om dig, såvida du inte har mejlat Taren eller bidragit via Ko-fi. Vill du fråga mejlar du
+    <ContactEmail />. Du kan också kontakta Integritetsskyddsmyndigheten (IMY).
+  </p>
+
+  <h2>Ändringar</h2>
+  <p>Om den här sidan ändras uppdateras datumet högst upp.</p>
+</TextPage>

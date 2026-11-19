@@ -1,0 +1,60 @@
+---
+import TextPage from '@/layouts/TextPage.astro';
+import ExternalLink from '@/components/ExternalLink.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
+import { SITE } from '@/config/site';
+import { breadcrumbJsonLd, organizationJsonLd } from '@/lib/seo';
+// English copy of /studio/. Swedish: ../sv/Studio.astro. Rendered by src/views/TextPageView.astro.
+---
+
+<TextPage
+  title="Studio"
+  description="Taren is a one-person independent software studio in Sweden. How it started, how it works and what it values."
+  eyebrow="The studio"
+  heading="An independent software studio in Sweden."
+  intro="Taren is run by one developer who likes to build things that feel considered — applications, games and experiments that are small in scope and big on care."
+  jsonLd={[organizationJsonLd(), breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Studio', path: '/studio/' }])]}
+>
+  <h2>Who is behind Taren</h2>
+  <p>
+    Taren is created by <strong>{SITE.founder}</strong>, an independent developer in {SITE.country}. There is no
+    team behind the name and no company pretending to be bigger than it is — just one person designing, building,
+    testing and shipping.
+  </p>
+
+  <h2>How it started</h2>
+  <p>
+    Taren began as a personal creative lab on taren.se: a calm place for small, strange browser games and sketches,
+    vibe-coded and refined step by step. That lab taught a lot about what makes something feel right to use. Taren 2.0
+    turns those lessons into a home for finished, separately branded products.
+  </p>
+
+  <h2>What guides the work</h2>
+  <ul>
+    <li><strong>Curiosity first.</strong> Projects start from a question worth exploring rather than a feature list.</li>
+    <li>
+      <strong>Respect for the person using it.</strong> Fast, accessible and calm. No dark patterns, punitive streaks or
+      manipulative monetisation.
+    </li>
+    <li>
+      <strong>Honest status.</strong> Every product is labelled for exactly what it is. Something in development is
+      called in development until it is genuinely available.
+    </li>
+    <li><strong>Small, then better.</strong> Ship a small thing that works, learn from it, and only then expand.</li>
+  </ul>
+
+  <h2>How things are built</h2>
+  <p>
+    The tools follow the product. Games such as Pulse Garden are built with Godot; this website is static HTML generated
+    with Astro, with no tracking and almost no JavaScript. Automated tests are written wherever they are practical, and
+    each product page says how its current build has been verified.
+  </p>
+
+  <h2>Get in touch</h2>
+  <p>
+    Email <ContactEmail /> for anything about Taren or its products.
+  </p>
+  <p>
+    Public code is on <ExternalLink href={SITE.githubUrl}>{SITE.githubLabel}</ExternalLink>.
+  </p>
+</TextPage>

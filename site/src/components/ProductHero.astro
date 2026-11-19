@@ -5,6 +5,7 @@ import Button from './Button.astro';
 import { Picture } from 'astro:assets';
 import Swoosh from './Swoosh.astro';
 import type { ProductData } from '@/lib/catalog';
+import { i18n } from '@/i18n';
 
 interface Props {
   product: ProductData;
@@ -13,6 +14,7 @@ const { product } = Astro.props;
 // Desktop apps show a wide window capture: it follows the title in reading order (so it is seen early
 // on phones) and gets the wider column on large screens. Phone products keep the original layout.
 const wide = product.device === 'desktop';
+const { t, path: lp } = i18n(Astro);
 ---
 
 <section class="relative isolate overflow-hidden border-b border-line" aria-labelledby="product-title" data-accent={product.slug}>
@@ -21,9 +23,9 @@ const wide = product.device === 'desktop';
   <Swoosh id="product-hero-arc" class="hero-arc pointer-events-none absolute -z-10" />
   <div class:list={['container-x hero-grid py-12 md:py-16', wide ? 'is-wide' : 'is-tall']}>
     <div class="hero-head">
-      <nav aria-label="Breadcrumb" class="mb-8 text-sm text-subtle">
+      <nav aria-label={t('nav.breadcrumb')} class="mb-8 text-sm text-subtle">
         <ol class="flex items-center gap-2">
-          <li><a href="/products/" class="inline-flex min-h-11 items-center hover:text-text">Products</a></li>
+          <li><a href={lp('/products/')} class="inline-flex min-h-11 items-center hover:text-text">{t('nav.products')}</a></li>
           <li aria-hidden="true">/</li>
           <li aria-current="page" class="text-muted">{product.name}</li>
         </ol>
@@ -45,7 +47,7 @@ const wide = product.device === 'desktop';
           )
         }
         <div>
-          <p class="text-sm text-subtle">{product.category}</p>
+          <p class="text-sm text-subtle">{t(`category.${product.category}`)}</p>
           <h1 id="product-title" class="mt-1 text-[clamp(2.25rem,1.4rem+3.6vw,4.25rem)] leading-[1] tracking-[-0.04em] text-text">
             {product.name}
           </h1>
@@ -75,12 +77,12 @@ const wide = product.device === 'desktop';
       <p class="max-w-xl text-lead text-muted">{product.description}</p>
 
       <dl class="mt-8 grid max-w-xl gap-4 rounded-(--radius-card) border border-line bg-surface/60 p-5 sm:grid-cols-[auto_1fr] sm:gap-x-8">
-        <dt class="text-sm text-subtle">Status</dt>
+        <dt class="text-sm text-subtle">{t('product.status')}</dt>
         <dd class="flex flex-col items-start gap-2">
           <ProductStatus status={product.status} />
           {product.statusNote && <span class="text-sm leading-relaxed text-muted">{product.statusNote}</span>}
         </dd>
-        <dt class="text-sm text-subtle">Platforms</dt>
+        <dt class="text-sm text-subtle">{t('product.platforms')}</dt>
         <dd class="text-sm text-text">{product.platforms.join(', ')}</dd>
       </dl>
 
@@ -88,28 +90,28 @@ const wide = product.device === 'desktop';
         {
           product.downloadUrl && (
             <Button href={product.downloadUrl} external size="lg">
-              {product.downloadLabel ?? 'Download'}
+              {product.downloadLabel ?? t('product.download')}
             </Button>
           )
         }
         {
           product.websiteUrl && (
             <Button href={product.websiteUrl} external variant={product.downloadUrl ? 'secondary' : 'primary'} size="lg">
-              Visit website
+                            {t('product.website')}
             </Button>
           )
         }
         {
           !product.downloadUrl && product.gallery.length > 0 && (
             <Button href="#screenshots" variant={product.websiteUrl ? 'secondary' : 'primary'} size="lg">
-              See screenshots
+              {t('product.seeScreenshots')}
             </Button>
           )
         }
         {
           product.repositoryUrl && (
             <Button href={product.repositoryUrl} external variant="secondary" size="lg">
-              Source on GitHub
+                            {t('product.source')}
             </Button>
           )
         }

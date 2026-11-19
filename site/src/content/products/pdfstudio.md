@@ -50,7 +50,7 @@ facts:
   - label: Install
     value: Per user, no admin rights
   - label: Languages
-    value: Swedish · English main UI
+    value: Swedish and English (main interface)
   - label: Version
     value: 0.9.0 preview · not released
 stepsEyebrow: How it works

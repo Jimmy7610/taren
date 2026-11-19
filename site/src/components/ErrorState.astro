@@ -6,7 +6,9 @@ interface Props {
   title: string;
   message: string;
 }
+import { i18n } from '@/i18n';
 const { code, title, message } = Astro.props;
+const { t, path: lp } = i18n(Astro);
 ---
 
 <section class="relative isolate overflow-hidden" aria-labelledby="error-title">
@@ -16,8 +18,8 @@ const { code, title, message } = Astro.props;
     <h1 id="error-title" class="mt-2 text-headline text-text">{title}</h1>
     <p class="mt-5 max-w-xl text-lead text-muted">{message}</p>
     <div class="mt-10 flex flex-wrap gap-3">
-      <Button href="/">Back to home</Button>
-      <Button href="/products/" variant="secondary">See products</Button>
+      <Button href={lp('/')}>{t('error.home')}</Button>
+      <Button href={lp('/products/')} variant="secondary">{t('error.products')}</Button>
     </div>
   </div>
 </section>

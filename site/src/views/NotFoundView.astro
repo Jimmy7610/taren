@@ -1,0 +1,12 @@
+---
+/** 404 page in the language of its folder: /404.html (English) and /sv/404.html (Swedish, served by Cloudflare Pages for
+ *  unknown paths under /sv/). */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ErrorState from '@/components/ErrorState.astro';
+import { i18n } from '@/i18n';
+const { t } = i18n(Astro);
+---
+
+<BaseLayout title={t('error.404.title')} description={t('error.404.description')} noindex errorPage>
+  <ErrorState code="404" title={t('error.404.heading')} message={t('error.404.message')} />
+</BaseLayout>

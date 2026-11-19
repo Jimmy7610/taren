@@ -1,6 +1,29 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import { existsSync, renameSync, rmSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+/**
+ * Cloudflare Pages serves the nearest 404.html for unknown paths (e.g. /sv/404.html for /sv/*). Astro writes
+ * src/pages/sv/404.astro to sv/404/index.html, so move every non-root localized 404 page into place.
+ */
+/** @type {import('astro').AstroIntegration} */
+const localized404 = {
+  name: 'taren-localized-404',
+  hooks: {
+    'astro:build:done': ({ dir }) => {
+      const out = fileURLToPath(dir);
+      for (const locale of ['sv']) {
+        const from = `${out}/${locale}/404/index.html`;
+        if (existsSync(from)) {
+          renameSync(from, `${out}/${locale}/404.html`);
+          rmSync(`${out}/${locale}/404`, { recursive: true, force: true });
+        }
+      }
+    },
+  },
+};
 
 // Canonical origin. All canonical URLs, Open Graph URLs and the sitemap use it.
 export const SITE_ORIGIN = 'https://taren.se';
@@ -18,6 +41,7 @@ export default defineConfig({
   compressHTML: true,
   prefetch: false,
   devToolbar: { enabled: false },
+  integrations: [localized404],
   image: {
     // Only local images are optimised; no remote image domains are allowed.
     domains: [],

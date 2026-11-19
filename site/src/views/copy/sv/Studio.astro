@@ -1,0 +1,59 @@
+---
+import TextPage from '@/layouts/TextPage.astro';
+import ExternalLink from '@/components/ExternalLink.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
+import { SITE } from '@/config/site';
+import { breadcrumbJsonLd, organizationJsonLd } from '@/lib/seo';
+// Svensk text för /sv/studio/. Engelska: ../en/Studio.astro — håll innehållet i takt.
+---
+
+<TextPage
+  title="Studion"
+  description="Taren är en oberoende mjukvarustudio i Sverige med en enda utvecklare. Hur den började, hur den arbetar och vad den värdesätter."
+  eyebrow="Studion"
+  heading="En oberoende mjukvarustudio i Sverige."
+  intro="Taren drivs av en utvecklare som gillar att bygga saker som känns genomtänkta — applikationer, spel och experiment som är små till omfånget men stora i omsorg."
+  jsonLd={[organizationJsonLd('sv'), breadcrumbJsonLd([{ name: 'Hem', path: '/sv/' }, { name: 'Studion', path: '/sv/studio/' }])]}
+>
+  <h2>Vem som står bakom Taren</h2>
+  <p>
+    Taren skapas av <strong>{SITE.founder}</strong>, en oberoende utvecklare i Sverige. Det finns inget team bakom
+    namnet och inget företag som låtsas vara större än det är — bara en person som formger, bygger, testar och släpper.
+  </p>
+
+  <h2>Hur det började</h2>
+  <p>
+    Taren började som ett personligt kreativt labb på taren.se: en lugn plats för små, udda webbläsarspel och skisser,
+    vibe-kodade och förfinade steg för steg. Labbet lärde ut mycket om vad som får något att kännas rätt att använda.
+    Taren 2.0 gör de lärdomarna till ett hem för färdiga produkter med egna varumärken.
+  </p>
+
+  <h2>Det som styr arbetet</h2>
+  <ul>
+    <li><strong>Nyfikenhet först.</strong> Projekten börjar med en fråga som är värd att utforska, inte med en funktionslista.</li>
+    <li>
+      <strong>Respekt för den som använder det.</strong> Snabbt, tillgängligt och lugnt. Inga mörka mönster, inga
+      bestraffande streaks och ingen manipulativ intäktsmodell.
+    </li>
+    <li>
+      <strong>Ärlig status.</strong> Varje produkt märks för exakt vad den är. Det som är under utveckling kallas under
+      utveckling tills det verkligen går att skaffa.
+    </li>
+    <li><strong>Litet först, sedan bättre.</strong> Släpp något litet som fungerar, lär av det och bygg ut först därefter.</li>
+  </ul>
+
+  <h2>Hur det byggs</h2>
+  <p>
+    Verktygen följer produkten. Spel som Pulse Garden byggs med Godot; den här webbplatsen är statisk HTML som genereras
+    med Astro, utan spårning och med nästan inget JavaScript. Automatiska tester skrivs där det är praktiskt möjligt, och
+    varje produktsida berättar hur den aktuella versionen har kontrollerats.
+  </p>
+
+  <h2>Kontakt</h2>
+  <p>
+    Mejla <ContactEmail /> om allt som rör Taren eller produkterna.
+  </p>
+  <p>
+    Öppen källkod finns på <ExternalLink href={SITE.githubUrl}>{SITE.githubLabel}</ExternalLink>.
+  </p>
+</TextPage>

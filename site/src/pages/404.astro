@@ -1,12 +1,5 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import ErrorState from '@/components/ErrorState.astro';
+import NotFoundView from '@/views/NotFoundView.astro';
 ---
 
-<BaseLayout title="Page not found" description="The page you were looking for does not exist on taren.se." noindex>
-  <ErrorState
-    code="404"
-    title="This page doesn’t exist."
-    message="The link may be mistyped, or the page may have moved. Everything Taren is working on can be found from the home page."
-  />
-</BaseLayout>
+<NotFoundView />

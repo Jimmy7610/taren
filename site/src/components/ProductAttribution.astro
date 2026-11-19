@@ -13,22 +13,23 @@ interface Props {
   device: 'phone' | 'desktop';
   about: { image: ImageMetadata; alt: string; caption?: string | undefined };
 }
+import { i18n } from '@/i18n';
 const { name, device, about } = Astro.props;
+const { t, path: lp } = i18n(Astro);
 ---
 
 <section class="attribution container-x grid items-center gap-10 py-20 md:py-28 lg:grid-cols-[1fr_1.25fr] lg:gap-16" aria-labelledby="attribution-title">
   <div>
     <div class="flex items-center gap-3">
       <BrandMark variant="symbol" height={28} eager={false} />
-      <p class="eyebrow">A Taren App</p>
+      <p class="eyebrow">{t('attribution.eyebrow')}</p>
     </div>
-    <h2 id="attribution-title" class="mt-5 text-headline text-text">Made by Taren</h2>
+    <h2 id="attribution-title" class="mt-5 text-headline text-text">{t('attribution.title')}</h2>
     <p class="measure-lead mt-5 text-lead text-muted">
-      {name} keeps its own name and icon. Its About screen credits the studio behind it — the official Taren symbol,
-      “A Taren App” and a link to taren.se.
+      {t('attribution.text', { name })}
     </p>
     <p class="mt-6 text-sm text-subtle">
-      More about the studio: <a href="/studio/" class="text-cyan-soft underline underline-offset-4 hover:text-text">Studio</a> ·
+      {t('attribution.more')} <a href={lp('/studio/')} class="text-cyan-soft underline underline-offset-4 hover:text-text">{t('nav.studio')}</a> ·
       <ExternalLink href="https://taren.se/" class="text-cyan-soft underline underline-offset-4 hover:text-text">taren.se</ExternalLink>
     </p>
   </div>

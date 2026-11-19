@@ -1,0 +1,77 @@
+---
+/**
+ * EN | SV switcher. Plain links to the same page in each language, so it works without JavaScript, by keyboard and
+ * by touch. The current language is marked with aria-current; each link carries its language's own name for screen
+ * readers (lang + hreflang). On error pages the links lead to each language's home page.
+ * `src/scripts/language-preference.ts` remembers an explicit choice (see docs/LOCALIZATION.md).
+ */
+import { LOCALES, LOCALE_META, alternatePaths, i18n } from '@/i18n';
+
+interface Props {
+  class?: string;
+  /** Use on pages without a translated twin at the same path (404, 410). */
+  homeOnly?: boolean;
+  /** Where it is rendered; exposed as data-lang-switcher for styling and tests. */
+  placement?: 'header' | 'menu';
+}
+const { class: className = '', homeOnly = false, placement = 'header' } = Astro.props;
+const { t, locale } = i18n(Astro);
+const targets = homeOnly ? alternatePaths('/') : alternatePaths(Astro.url.pathname);
+---
+
+<nav class:list={['lang-switch', className]} aria-label={t('lang.label')} data-lang-switcher={placement}>
+  <ul class="flex items-center">
+    {
+      LOCALES.map((l, i) => (
+        <li class="flex items-center">
+          {i > 0 && (
+            <span class="sep" aria-hidden="true">
+              |
+            </span>
+          )}
+          <a
+            href={targets[l]}
+            hreflang={LOCALE_META[l].htmlLang}
+            lang={LOCALE_META[l].htmlLang}
+            aria-current={l === locale ? 'true' : undefined}
+            class="lang-link"
+            data-lang-switch={l}
+          >
+            <span aria-hidden="true">{LOCALE_META[l].short}</span>
+            <span class="sr-only">{LOCALE_META[l].name}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .lang-link {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--color-subtle);
+    transition: color 0.2s;
+  }
+  .lang-link:hover {
+    color: var(--color-text);
+  }
+  .lang-link[aria-current='true'] {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-cyan);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.4em;
+  }
+  .sep {
+    color: var(--color-line-strong);
+    font-size: 0.8125rem;
+  }
+</style>

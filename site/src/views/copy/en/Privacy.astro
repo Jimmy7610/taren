@@ -1,0 +1,79 @@
+---
+/*
+ * OWNER REVIEW REQUIRED before public launch (docs/RELEASE_CHECKLIST.md):
+ * - confirm Cloudflare Web Analytics / other zone features stay disabled for taren.se
+ * - contact e-mail approved by the owner (2026-11-18); wording of this page still needs owner approval
+ * - confirm no product page adds third-party embeds
+ */
+import TextPage from '@/layouts/TextPage.astro';
+import ExternalLink from '@/components/ExternalLink.astro';
+import ContactEmail from '@/components/ContactEmail.astro';
+import { KOFI_URL, SITE } from '@/config/site';
+// English copy of /privacy/. Swedish: ../sv/Privacy.astro — keep both in step.
+---
+
+<TextPage
+  title="Privacy"
+  description="How taren.se handles your data: no accounts, no forms, no analytics, no cookies and no third-party scripts."
+  eyebrow="Privacy"
+  heading="Privacy on taren.se"
+  intro="Short version: this website does not ask for personal data, sets no cookies, runs no analytics and loads no third-party scripts."
+  updated="2026-11-19"
+>
+  <h2>Who is responsible</h2>
+  <p>
+    taren.se is run by {SITE.founder}, an independent developer in {SITE.country}, under the name Taren. For
+    questions about privacy or this website, email <ContactEmail />.
+  </p>
+
+  <h2>What this website does not do</h2>
+  <ul>
+    <li>It has no user accounts, sign-up forms, newsletters or comment fields.</li>
+    <li>It sets no cookies and does not use local storage for tracking.</li>
+    <li>
+      If you choose a language with the EN | SV switch, your browser remembers that choice in its local storage. It
+      stays on your device and is never sent to Taren.
+    </li>
+    <li>It runs no analytics, advertising or tracking scripts.</li>
+    <li>It loads no third-party scripts, fonts or embeds. Fonts and images are served from taren.se itself.</li>
+  </ul>
+
+  <h2>If you email Taren</h2>
+  <p>
+    If you send an email, your address and message are used to read and answer it. They are kept in that mailbox,
+    which is provided by Microsoft’s Outlook.com service.
+  </p>
+
+  <h2>Hosting</h2>
+  <p>
+    The site is hosted on Cloudflare. To deliver pages and protect the site against abuse, Cloudflare necessarily
+    processes technical information about each request, such as your IP address, browser user agent and the page you
+    asked for. Taren does not use this information to identify or profile visitors. Cloudflare’s handling of this data
+    is described in the <ExternalLink href="https://www.cloudflare.com/privacypolicy/">Cloudflare privacy policy</ExternalLink>.
+  </p>
+
+  <h2>Links to other sites</h2>
+  <p>
+    Some links lead to other services, such as <ExternalLink href={KOFI_URL}>Ko-fi</ExternalLink> for optional
+    support. Those services have their own privacy policies, which apply once you are on their sites. If you
+    contribute through Ko-fi, Ko-fi may share details you give it, such as your name, message and email address, with
+    Taren. Taren uses them only to acknowledge and keep a record of the contribution and does not sell or share them.
+  </p>
+
+  <h2>Products</h2>
+  <p>
+    Individual products may handle data differently from this website. Where a product processes personal data, it
+    will have its own privacy information before it is released.
+  </p>
+
+  <h2>Your rights</h2>
+  <p>
+    If you are in the EU or EEA, the GDPR gives you rights regarding personal data, including access, correction and
+    deletion. Because this website does not collect personal data itself, there is usually nothing held about you
+    unless you have emailed Taren or contributed through Ko-fi. To ask, email <ContactEmail />. You can also contact
+    the Swedish Authority for Privacy Protection (IMY).
+  </p>
+
+  <h2>Changes</h2>
+  <p>If this page changes, the date at the top will be updated.</p>
+</TextPage>

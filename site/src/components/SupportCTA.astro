@@ -8,7 +8,9 @@ interface Props {
   headingLevel?: 'h2' | 'h3';
   showLearnMore?: boolean;
 }
+import { i18n } from '@/i18n';
 const { headingLevel: H = 'h2', showLearnMore = true } = Astro.props;
+const { t, path: lp } = i18n(Astro);
 ---
 
 <section aria-labelledby="support-cta-title" class="container-x" data-reveal>
@@ -16,19 +18,18 @@ const { headingLevel: H = 'h2', showLearnMore = true } = Astro.props;
     <Swoosh id="support-arc" class="support-arc pointer-events-none absolute" />
     <div class="relative grid items-end gap-10 md:grid-cols-[1.5fr_1fr]">
       <div>
-        <p class="eyebrow mb-4">Optional support</p>
-        <H id="support-cta-title" class="text-headline text-text">Enjoying what we’re building?</H>
+        <p class="eyebrow mb-4">{t('supportCta.eyebrow')}</p>
+        <H id="support-cta-title" class="text-headline text-text">{t('supportCta.title')}</H>
         <p class="mt-5 max-w-xl text-lead text-muted">
-          Taren projects are created independently. If you enjoy the work, you can support future development with a
-          small, optional contribution.
+          {t('supportCta.text')}
         </p>
       </div>
       <div class="flex flex-col gap-3 sm:flex-row md:flex-col md:items-end">
-        <Button href={KOFI_URL} external size="lg" data-kofi-link>Support on Ko-fi</Button>
+        <Button href={KOFI_URL} external size="lg" data-kofi-link>{t('kofi.cta')}</Button>
         {
           showLearnMore && (
-            <Button href="/support/" variant="ghost" size="lg">
-              How support works
+            <Button href={lp('/support/')} variant="ghost" size="lg">
+              {t('supportCta.learnMore')}
             </Button>
           )
         }
