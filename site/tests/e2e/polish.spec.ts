@@ -66,7 +66,7 @@ test.describe('product showcase', () => {
       const showcase = page.locator('article.showcase[data-accent="lumen-capture"]');
       await expect(showcase).toBeVisible();
       const chips = (await showcase.locator('ul[aria-label$="at a glance"] li').allInnerTexts()).map((t) => t.split('\n').pop()!.trim());
-      expect(chips).toEqual(['Screen recorder and editor', 'Windows 10 (2004+) and 11, x64', 'None — runs on your PC', 'Six built in']);
+      expect(chips).toEqual(['Screen recorder and editor', 'Windows 10 (2004+) and 11, x64', 'No account needed', 'Six interface languages']);
       await expect(showcase.locator('.xphone img')).toHaveCount(3);
     }
   });

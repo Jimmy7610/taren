@@ -50,7 +50,10 @@ describe('sitemap', () => {
   it('lists absolute, unique, canonical URLs', () => {
     const xml = buildSitemap(['/', '/products', '/products/', '/a&b/'], 'https://taren.se');
     expect(xml).toContain('<loc>https://taren.se/</loc>');
-    expect(xml.match(/products\/<\/loc>/g)).toHaveLength(1);
+    expect(xml).toContain('<loc>https://taren.se/sv/</loc>');
+    // Deduplicated per locale: one English and one Swedish entry for /products/.
+    expect(xml.match(/<loc>https:\/\/taren\.se\/products\/<\/loc>/g)).toHaveLength(1);
+    expect(xml.match(/<loc>https:\/\/taren\.se\/sv\/products\/<\/loc>/g)).toHaveLength(1);
     expect(xml).toContain('a&amp;b');
     expect(xml.startsWith('<?xml')).toBe(true);
   });

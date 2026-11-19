@@ -67,6 +67,10 @@ try {
     // Taren 2.5: public information pages (no downloads).
     '/products/lumen-capture/': 200, '/products/pdfstudio/': 200,
     '/api/admin/overview': 404, '/api/event': 404,
+    // Taren 2.6: the Swedish twin of every public page.
+    '/sv/': 200, '/sv/products/': 200, '/sv/products/lumen-capture/': 200, '/sv/products/pdfstudio/': 200,
+    '/sv/products/pulse-garden/': 200, '/sv/studio/': 200, '/sv/support/': 200, '/sv/privacy/': 200, '/sv/terms/': 200,
+    '/sv/does-not-exist/': 404, '/sv/products/example-product/': 404,
     // Internal files the legacy site serves from the repository root (audit F1) must not exist here.
     '/README.md': 404, '/CLAUDE.md': 404, '/docs/current-status.md': 404, '/.agent/ARCHITECTURE.md': 404,
     '/workers/taren-analytics/wrangler.toml': 404, '/.gitignore': 404, '/package.json': 404, '/brand/masters/taren-icon.png': 404,
@@ -75,11 +79,17 @@ try {
     const res = await get(path);
     check(res.status === status, `${path} → ${res.status} (expected ${status})`);
   }
+  // Unknown pages get the 404 page in their own language (Cloudflare serves the nearest 404.html).
+  const html = async (path) => (await get(path)).text();
+  check(/<html lang="sv"/.test(await html('/sv/does-not-exist/')), '/sv/does-not-exist/ serves the Swedish 404 page');
+  check(/<html lang="en"/.test(await html('/does-not-exist/')), '/does-not-exist/ serves the English 404 page');
+  const svHome = await html('/sv/');
+  check(/<html lang="sv"/.test(svHome) && /hreflang="en"/.test(svHome) && /hreflang="x-default"/.test(svHome), '/sv/ is Swedish with hreflang alternates');
   const about = await get('/about');
   check(new URL(about.headers.get('location') ?? '', BASE).pathname === '/studio/', '/about redirects to /studio/');
 
   console.log('Security headers (static page and Function-generated 410)');
-  for (const path of ['/', '/games/']) {
+  for (const path of ['/', '/sv/', '/games/']) {
     const res = await get(path);
     for (const h of ['content-security-policy', 'x-frame-options', 'x-content-type-options', 'strict-transport-security', 'referrer-policy', 'permissions-policy'])
       check(!!res.headers.get(h), `${path} sends ${h}`);
@@ -90,9 +100,11 @@ try {
 
   console.log('Indexing by hostname');
   for (const host of ['taren.se', 'www.taren.se'])
-    check(!(await headersFor('/', host))['x-robots-tag'], `${host}: no X-Robots-Tag (indexable)`);
-  for (const host of ['taren.pages.dev', 'taren-2-preview.pages.dev', 'preview-drafts.taren-2-preview.pages.dev', 'f1ce1b9.taren-2-preview.pages.dev'])
-    check(/noindex/.test(String((await headersFor('/', host))['x-robots-tag'] ?? '')), `${host}: X-Robots-Tag noindex`);
+    for (const path of ['/', '/sv/'])
+      check(!(await headersFor(path, host))['x-robots-tag'], `${host}${path}: no X-Robots-Tag (indexable)`);
+  for (const host of ['taren.pages.dev', 'taren-2-preview.pages.dev', 'preview-drafts.taren-2-preview.pages.dev', 'f1ce1b9.taren-2-preview.pages.dev', 'feature-taren-2-6-bilingual.taren-2-preview.pages.dev'])
+    for (const path of ['/', '/sv/'])
+      check(/noindex/.test(String((await headersFor(path, host))['x-robots-tag'] ?? '')), `${host}${path}: X-Robots-Tag noindex`);
 } finally {
   stopServer();
 }

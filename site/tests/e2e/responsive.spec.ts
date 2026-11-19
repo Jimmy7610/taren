@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { EXTRA_SIZES, PAGES, RELEASE_SIZES, VIEWPORTS, scrollThrough } from './helpers';
+import { ALL_PAGES, EXTRA_SIZES, RELEASE_SIZES, VIEWPORTS, scrollThrough } from './helpers';
 
 // The exact release matrix plus the earlier width sweep (deduplicated).
 const SIZES: ReadonlyArray<readonly [number, number]> = [
   ...new Map(
-    [...RELEASE_SIZES, ...VIEWPORTS.map((w) => [w, w < 768 ? 800 : 900] as const), ...EXTRA_SIZES].map((s) => [`${s[0]}x${s[1]}`, s] as const),
+    [...RELEASE_SIZES, ...VIEWPORTS.map((w) => [w, w < 768 ? 800 : 900] as const), ...EXTRA_SIZES, [360, 800] as const, [430, 932] as const, [1280, 800] as const].map((s) => [`${s[0]}x${s[1]}`, s] as const),
   ).values(),
 ];
 
@@ -12,7 +12,7 @@ for (const [width, height] of SIZES) {
   test.describe(`${width}×${height}`, () => {
     test.use({ viewport: { width, height } });
 
-    for (const { path } of [...PAGES, { path: '/404.html' }]) {
+    for (const { path } of [...ALL_PAGES, { path: '/404.html' }, { path: '/sv/404.html' }]) {
       test(`${path} has no overflow, overlap or tiny targets`, async ({ page }) => {
         await page.goto(path);
         await scrollThrough(page);

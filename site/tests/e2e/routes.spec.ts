@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { PAGES, scrollThrough, watchErrors } from './helpers';
+import { ALL_PAGES, PAGES, scrollThrough, watchErrors } from './helpers';
 
 test.describe('routes', () => {
-  for (const { path, h1 } of PAGES) {
+  for (const { path, h1 } of ALL_PAGES) {
     test(`${path} renders with correct metadata and no errors`, async ({ page }) => {
       const errors = watchErrors(page);
       const res = await page.goto(path);
@@ -19,7 +19,7 @@ test.describe('routes', () => {
       expect(desc!.length).toBeLessThanOrEqual(200);
       expect(await page.locator('meta[property="og:image"]').getAttribute('content')).toMatch(/^https:\/\/taren\.se\/og\//);
       expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('index, follow');
-      await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+      await expect(page.locator('html')).toHaveAttribute('lang', path.startsWith('/sv/') ? 'sv' : 'en');
 
       for (const json of await page.locator('script[type="application/ld+json"]').allTextContents()) {
         expect(() => JSON.parse(json)).not.toThrow();
@@ -102,10 +102,11 @@ test.describe('routes', () => {
     expect(res.headers()['content-type']).toContain('xml');
     const xml = await res.text();
     const locs = [...xml.matchAll(/<loc>(.+?)<\/loc>/g)].map((m) => m[1]);
-    expect(locs).toEqual(
-      expect.arrayContaining(PAGES.map((p) => `https://taren.se${p.path}`)),
-    );
-    expect(locs).toHaveLength(PAGES.length);
+    // Every page in both languages (Taren 2.6), each with hreflang alternates.
+    expect(locs).toEqual(expect.arrayContaining(ALL_PAGES.map((p) => `https://taren.se${p.path}`)));
+    expect(locs).toHaveLength(ALL_PAGES.length);
+    expect(xml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');
+    expect(xml.match(/hreflang="x-default"/g)).toHaveLength(ALL_PAGES.length);
     expect(xml).not.toContain('example-product');
     for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) expect(xml).toContain(`https://taren.se/products/${slug}/`);
     expect(xml).not.toMatch(/404|410|games/);

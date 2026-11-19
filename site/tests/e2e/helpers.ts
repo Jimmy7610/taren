@@ -12,6 +12,22 @@ export const PAGES = [
   { path: '/terms/', h1: /Terms/ },
 ] as const;
 
+/** The same pages in Swedish (Taren 2.6). Every English page has exactly one Swedish twin under /sv/. */
+export const PAGES_SV = [
+  { path: '/sv/', h1: /Mjukvara byggd med nyfikenhet/ },
+  { path: '/sv/products/', h1: /Utvalda projekt/ },
+  { path: '/sv/products/lumen-capture/', h1: /Lumen Capture/ },
+  { path: '/sv/products/pdfstudio/', h1: /PDF Studio/ },
+  { path: '/sv/products/pulse-garden/', h1: /Pulse Garden/ },
+  { path: '/sv/studio/', h1: /oberoende mjukvarustudio/i },
+  { path: '/sv/support/', h1: /Gillar du det vi bygger/ },
+  { path: '/sv/privacy/', h1: /Integritet/ },
+  { path: '/sv/terms/', h1: /Användarvillkor/ },
+] as const;
+
+/** Every public page in every language. */
+export const ALL_PAGES = [...PAGES, ...PAGES_SV] as const;
+
 export const VIEWPORTS = [320, 375, 390, 768, 1024, 1440, 1920] as const;
 
 /** Extra sizes beyond the required widths: ultrawide and landscape phones. */

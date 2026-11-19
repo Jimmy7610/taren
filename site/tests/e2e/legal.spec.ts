@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { PAGES } from './helpers';
+import { ALL_PAGES } from './helpers';
 
 // Taren 2.3 launch copy: owner-approved contact address and copyright line.
 const EMAIL = 'Jbl_76@hotmail.com';
 const COPYRIGHT = '© 2026 Jimmy Eliasson · Taren';
 
 test.describe('contact and copyright', () => {
-  for (const path of ['/privacy/', '/terms/', '/studio/', '/support/']) {
+  for (const path of ['/privacy/', '/terms/', '/studio/', '/support/', '/sv/privacy/', '/sv/terms/', '/sv/studio/', '/sv/support/']) {
     test(`${path} offers the approved address as an accessible mailto link`, async ({ page }) => {
       await page.goto(path);
       const link = page.locator('main a[href^="mailto:"]').first();
@@ -20,13 +20,13 @@ test.describe('contact and copyright', () => {
   }
 
   test('privacy and terms no longer route enquiries to GitHub', async ({ page }) => {
-    for (const path of ['/privacy/', '/terms/']) {
+    for (const path of ['/privacy/', '/terms/', '/sv/privacy/', '/sv/terms/']) {
       await page.goto(path);
       await expect(page.locator('main a[href*="github.com"]')).toHaveCount(0);
     }
   });
 
-  for (const { path } of [...PAGES, { path: '/404.html' }]) {
+  for (const { path } of [...ALL_PAGES, { path: '/404.html' }, { path: '/sv/404.html' }]) {
     test(`${path} footer carries the approved copyright line`, async ({ page }) => {
       await page.goto(path);
       await expect(page.locator('footer [data-copyright]')).toHaveText(COPYRIGHT);
