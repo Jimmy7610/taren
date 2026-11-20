@@ -3,6 +3,10 @@
   --accent: #6e8bff;
   --accent-alt: #ff4d5e;
 }
+[data-accent='mineclone'] {
+  --accent: #a4d66c;
+  --accent-alt: #75c6f3;
+}
 [data-accent='pdfstudio'] {
   --accent: #a48bff;
   --accent-alt: #f07ab4;
