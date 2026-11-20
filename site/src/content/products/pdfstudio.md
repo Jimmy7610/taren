@@ -27,10 +27,9 @@ icon: ../../assets/products/pdfstudio/icon.png
 iconAlt: >-
   PDF Studio app icon — a white page with a folded corner and four violet text lines on a rounded
   square with a violet-to-pink gradient.
-heroImage: ../../assets/products/pdfstudio/03-document-dark.web.webp
+heroImage: ../../assets/products/pdfstudio/01-start-dark.web.webp
 heroImageAlt: >-
-  PDF Studio's document workspace in the dark theme: tabs, the ribbon, page thumbnails, a page on the
-  canvas, the properties pane and the page navigator.
+  PDF Studio's start page in the dark theme, with quick actions, recent files and a drag-and-drop area.
 accent: '#A48BFF'
 accentAlt: '#F07AB4'
 screenshotsNote: >-
