@@ -156,7 +156,7 @@ describe('release manifests in src/content/releases', () => {
     });
   }
 
-  it('only owner-approved releases are live: Lumen Capture 2.9.0-beta.2, PDF Studio still in preparation', () => {
+  it('only owner-approved releases are live: Lumen Capture and PDF Studio', () => {
     // Update in the same change that publishes or withdraws a release (docs/WINDOWS_DOWNLOADS.md, step 6).
     const lumen = read('lumen-capture.json');
     expect(lumen.state).toBe('published');
@@ -170,8 +170,16 @@ describe('release manifests in src/content/releases', () => {
       ['portable', `${base}/LumenCapture-2.9.0-beta.2-portable.zip`],
     ]);
     const pdf = read('pdfstudio.json');
-    expect(pdf.state).toBe('preparing');
-    expect(pdf.downloads).toEqual([]);
+    expect(pdf.state).toBe('published');
+    expect(pdf.version).toBe('0.9.0-beta.2');
+    expect(pdf.approval).toEqual({ approvedBy: 'Jimmy Eliasson', approvedOn: '2026-11-20' });
+    expect(pdf.releaseDate).toBe('2026-11-20');
+    expect(pdf.signed).toBe(false);
+    const pdfBase = 'https://downloads.taren.se/pdf-studio/beta/0.9.0-beta.2';
+    expect((pdf.downloads as { type: string; url: string }[]).map((d) => [d.type, d.url]).sort()).toEqual([
+      ['installer', `${pdfBase}/PDFStudio-Setup-0.9.0-beta.2-x64.exe`],
+      ['portable', `${pdfBase}/PDFStudio-0.9.0-beta.2-win-x64-portable.zip`],
+    ]);
   });
 });
 
