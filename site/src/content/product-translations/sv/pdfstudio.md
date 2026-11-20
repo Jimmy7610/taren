@@ -14,8 +14,7 @@ iconAlt: >-
   PDF Studios appikon — ett vitt dokument med ett vikt hörn och fyra violetta textrader på en kvadrat med rundade
   hörn i en övergång från violett till rosa.
 heroImageAlt: >-
-  PDF Studios dokumentvy i mörkt tema: flikar, menyfliksområdet, sidminiatyrer, en sida i arbetsytan,
-  egenskapspanelen och sidnavigeringen.
+  PDF Studios startsida i mörkt tema, med snabbåtgärder, listan över senaste filer och en yta för att släppa PDF-filer.
 screenshotsNote: >-
   Riktiga skärmbilder av PDF Studio 0.9.0 från de automatiska gränssnittstesterna i Windows 11 med 100 % skalning.
   Gränssnittet är på svenska, som är standardspråket, och alla dokument är syntetiska testfiler.
