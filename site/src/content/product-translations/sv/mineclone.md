@@ -9,6 +9,7 @@ statusNote: >-
   Spelbar öppen beta via GitHub Pages. Inget behöver installeras och inget konto krävs för solospel;
   flerspelarläget behöver en kompatibel spelserver.
 heroImageAlt: MineClones egen omslagsillustration med en blockbaserad överlevnadsvärld.
+stepsEyebrow: Så fungerar spelet
 facts:
   - label: Genre
     value: Överlevnad och byggande
