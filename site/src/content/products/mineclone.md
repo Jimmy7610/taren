@@ -15,7 +15,7 @@ published: true
 featured: false
 order: 4
 device: desktop
-heroImageUrl: https://jimmy7610.github.io/MineClone/assets/mineclone-cover.jpg
+heroImageUrl: /images/mineclone-cover.svg
 heroImageAlt: MineClone's own cover illustration showing a blocky survival world.
 websiteUrl: https://jimmy7610.github.io/MineClone/
 repositoryUrl: https://github.com/Jimmy7610/MineClone
