@@ -1,7 +1,7 @@
 {
   "product": "lumen-capture",
   "channel": "beta",
-  "state": "preparing",
+  "state": "published",
   "version": "2.9.0-beta.2",
   "platform": "windows",
   "architecture": "x64",
@@ -10,7 +10,22 @@
     "sv": "Windows 10 version 2004 eller senare, eller Windows 11 (64-bitars, x64)"
   },
   "signed": false,
-  "downloads": [],
+  "downloads": [
+    {
+      "type": "portable",
+      "fileName": "LumenCapture-2.9.0-beta.2-portable.zip",
+      "url": "https://downloads.taren.se/lumen-capture/beta/2.9.0-beta.2/LumenCapture-2.9.0-beta.2-portable.zip",
+      "sizeBytes": 3437793,
+      "sha256": "f754174df1ee14a2b40262a66b27e5e95fd0bda9fb569b5a6e336a469f7c2712"
+    },
+    {
+      "type": "installer",
+      "fileName": "LumenCapture-2.9.0-beta.2-Setup.exe",
+      "url": "https://downloads.taren.se/lumen-capture/beta/2.9.0-beta.2/LumenCapture-2.9.0-beta.2-Setup.exe",
+      "sizeBytes": 4781542,
+      "sha256": "40b568302ebdc28ee2b15761df0fa79ef9f522818727816506da30075c8bdc1e"
+    }
+  ],
   "notes": {
     "en": [
       "First public beta of Lumen Capture: screen, window and region recording with system audio, microphone and camera, a built-in editor, export to MP4, GIF and sound, and live streaming.",
@@ -32,5 +47,10 @@
       "Installationsprogrammet är inte kodsignerat, så Windows SmartScreen kan visa en varning innan det startar.",
       "Betaprogramvara: funktioner kan ändras och du kan stöta på buggar. Spara kopior av inspelningar som är viktiga."
     ]
+  },
+  "releaseDate": "2026-11-20",
+  "approval": {
+    "approvedBy": "Jimmy Eliasson",
+    "approvedOn": "2026-11-20"
   }
 }

@@ -41,12 +41,13 @@ describe('product content files', () => {
     expect(files).not.toContain('_example-product.md');
   });
 
-  it('Taren 2.5: all three products are public information pages (gate 1) and none is a release (gate 2)', () => {
+  it('Taren 2.5: all three products are public information pages (gate 1); only Lumen Capture is a beta release', () => {
     const schema = productSchema(z.string());
     for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md']) {
       const data = read(file);
       expect(data.published, file).toBe(true);
-      expect(data.status, file).toBe('in-development');
+      // Lumen Capture's download comes from its release manifest (src/content/releases/), never from downloadUrl.
+      expect(data.status, file).toBe(file === 'lumen-capture.md' ? 'beta' : 'in-development');
       // Publishing a page never approves distribution: no download, no release approval, no website link.
       expect(data.downloadUrl, file).toBeUndefined();
       expect(data.releaseApproval, file).toBeUndefined();
@@ -60,7 +61,7 @@ describe('product content files', () => {
     const lumen = read('lumen-capture.md'), pdf = read('pdfstudio.md'), pulse = read('pulse-garden.md');
     expect([lumen.order, pdf.order, pulse.order]).toEqual([1, 2, 3]);
     expect([lumen.featured, pdf.featured, pulse.featured]).toEqual([true, false, false]);
-    expect(String(lumen.statusNote)).toMatch(/not been released/);
+    expect(String(lumen.statusNote)).toMatch(/Public beta 2\.9\.0-beta\.2/);
     expect(String(pulse.statusNote)).toMatch(/not available on the App Store or TestFlight/);
   });
 

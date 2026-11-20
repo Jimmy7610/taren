@@ -156,13 +156,22 @@ describe('release manifests in src/content/releases', () => {
     });
   }
 
-  it('no download is live until the owner approves the first public beta (approval gate)', () => {
-    // Remove this test in the same change that publishes the first beta (docs/WINDOWS_DOWNLOADS.md, step 6).
-    for (const file of files) {
-      const data = read(file);
-      expect(data.state, file).toBe('preparing');
-      expect(data.downloads, file).toEqual([]);
-    }
+  it('only owner-approved releases are live: Lumen Capture 2.9.0-beta.2, PDF Studio still in preparation', () => {
+    // Update in the same change that publishes or withdraws a release (docs/WINDOWS_DOWNLOADS.md, step 6).
+    const lumen = read('lumen-capture.json');
+    expect(lumen.state).toBe('published');
+    expect(lumen.version).toBe('2.9.0-beta.2');
+    expect(lumen.approval).toEqual({ approvedBy: 'Jimmy Eliasson', approvedOn: '2026-11-20' });
+    expect(lumen.releaseDate).toBe('2026-11-20');
+    expect(lumen.signed).toBe(false);
+    const base = 'https://downloads.taren.se/lumen-capture/beta/2.9.0-beta.2';
+    expect(lumen.downloads.map((d: { type: string; url: string }) => [d.type, d.url]).sort()).toEqual([
+      ['installer', `${base}/LumenCapture-2.9.0-beta.2-Setup.exe`],
+      ['portable', `${base}/LumenCapture-2.9.0-beta.2-portable.zip`],
+    ]);
+    const pdf = read('pdfstudio.json');
+    expect(pdf.state).toBe('preparing');
+    expect(pdf.downloads).toEqual([]);
   });
 });
 
