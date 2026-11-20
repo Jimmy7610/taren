@@ -34,6 +34,7 @@ facts:
     value: Optional server
   - label: Engine
     value: JavaScript and WebGL
+stepsEyebrow: How it plays
 features:
   - title: Shape your own world
     description: Explore procedural terrain, mine resources and build shelters, farms and landmarks.
