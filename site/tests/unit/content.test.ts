@@ -41,17 +41,18 @@ describe('product content files', () => {
     expect(files).not.toContain('_example-product.md');
   });
 
-  it('Taren 2.5: all three products are public information pages (gate 1); Lumen Capture and PDF Studio are beta releases', () => {
+  it('Taren catalog: owner-approved Windows betas, a browser-game beta, and an iPhone prototype', () => {
     const schema = productSchema(z.string());
     for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md', 'mineclone.md']) {
       const data = read(file);
       expect(data.published, file).toBe(true);
       // Lumen Capture's download comes from its release manifest (src/content/releases/), never from downloadUrl.
       expect(data.status, file).toBe(file === 'pulse-garden.md' ? 'in-development' : 'beta');
-      // Publishing a page never approves distribution: no download, no release approval, no website link.
+      // Windows downloads need a separate approval. MineClone links to an already public browser game.
       expect(data.downloadUrl, file).toBeUndefined();
       expect(data.releaseApproval, file).toBeUndefined();
-      expect(data.websiteUrl, file).toBeUndefined();
+      if (file === 'mineclone.md') expect(data.websiteUrl).toBe('https://jimmy7610.github.io/MineClone/');
+      else expect(data.websiteUrl, file).toBeUndefined();
       const result = schema.safeParse(data);
       expect(result.success ? [] : result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`), file).toEqual([]);
     }
