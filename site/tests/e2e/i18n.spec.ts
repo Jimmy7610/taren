@@ -3,7 +3,7 @@ import { KOFI, PAGES, PAGES_SV } from './helpers';
 
 // Taren 2.6: complete English/Swedish site. English at the root, Swedish under /sv/.
 const twin = (p: string) => (p.startsWith('/sv/') ? p.slice(3) || '/' : `/sv${p}`);
-const PRODUCTS = ['Lumen Capture', 'PDF Studio', 'Pulse Garden'];
+const PRODUCTS = ['Lumen Capture', 'PDF Studio', 'Pulse Garden', 'MineClone'];
 
 test.describe('bilingual pages', () => {
   for (const { path } of [...PAGES, ...PAGES_SV]) {
