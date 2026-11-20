@@ -31,8 +31,13 @@ const { t } = i18n(Astro);
 
 <style>
   .fact {
+    min-width: 0;
     padding-left: 0.9rem;
     border-left: 2px solid transparent;
     border-image: linear-gradient(to bottom, var(--accent), var(--accent-alt)) 1;
+  }
+  /* Long localized values must wrap inside the two-column mobile facts grid. */
+  .fact-value {
+    overflow-wrap: anywhere;
   }
 </style>

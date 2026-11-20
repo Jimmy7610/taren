@@ -63,6 +63,7 @@ const { t, path: lp } = i18n(Astro);
         <ProductMedia
           name={product.name}
           heroImage={product.heroImage}
+          heroImageUrl={product.heroImageUrl}
           heroImageAlt={product.heroImageAlt}
           icon={product.icon}
           iconAlt={product.iconAlt}
@@ -97,7 +98,7 @@ const { t, path: lp } = i18n(Astro);
         {
           product.websiteUrl && (
             <Button href={product.websiteUrl} external variant={product.downloadUrl ? 'secondary' : 'primary'} size="lg">
-                            {t('product.website')}
+                            {product.category === 'Game' ? t('product.playNow') : t('product.website')}
             </Button>
           )
         }
@@ -123,6 +124,7 @@ const { t, path: lp } = i18n(Astro);
         <ProductMedia
           name={product.name}
           heroImage={product.heroImage}
+          heroImageUrl={product.heroImageUrl}
           heroImageAlt={product.heroImageAlt}
           icon={product.icon}
           iconAlt={product.iconAlt}
@@ -150,6 +152,7 @@ const { t, path: lp } = i18n(Astro);
     aspect-ratio: 600 / 160;
     opacity: 0.22;
   }
+  .hero-media { min-width: 0; max-width: 100%; }
   .hero-media :global(.product-media) {
     background: transparent;
   }

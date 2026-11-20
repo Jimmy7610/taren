@@ -41,26 +41,27 @@ describe('product content files', () => {
     expect(files).not.toContain('_example-product.md');
   });
 
-  it('Taren 2.5: all three products are public information pages (gate 1); Lumen Capture and PDF Studio are beta releases', () => {
+  it('Taren catalog: owner-approved Windows betas, a browser-game beta, and an iPhone prototype', () => {
     const schema = productSchema(z.string());
-    for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md']) {
+    for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md', 'mineclone.md']) {
       const data = read(file);
       expect(data.published, file).toBe(true);
       // Lumen Capture's download comes from its release manifest (src/content/releases/), never from downloadUrl.
       expect(data.status, file).toBe(file === 'pulse-garden.md' ? 'in-development' : 'beta');
-      // Publishing a page never approves distribution: no download, no release approval, no website link.
+      // Windows downloads need a separate approval. MineClone links to an already public browser game.
       expect(data.downloadUrl, file).toBeUndefined();
       expect(data.releaseApproval, file).toBeUndefined();
-      expect(data.websiteUrl, file).toBeUndefined();
+      if (file === 'mineclone.md') expect(data.websiteUrl).toBe('https://jimmy7610.github.io/MineClone/');
+      else expect(data.websiteUrl, file).toBeUndefined();
       const result = schema.safeParse(data);
       expect(result.success ? [] : result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`), file).toEqual([]);
     }
   });
 
-  it('Taren 2.5 ordering: Lumen Capture first and featured, PDF Studio second, Pulse Garden third', () => {
-    const lumen = read('lumen-capture.md'), pdf = read('pdfstudio.md'), pulse = read('pulse-garden.md');
-    expect([lumen.order, pdf.order, pulse.order]).toEqual([1, 2, 3]);
-    expect([lumen.featured, pdf.featured, pulse.featured]).toEqual([true, false, false]);
+  it('Taren catalog ordering: Lumen Capture, PDF Studio, Pulse Garden, MineClone', () => {
+    const lumen = read('lumen-capture.md'), pdf = read('pdfstudio.md'), pulse = read('pulse-garden.md'), mine = read('mineclone.md');
+    expect([lumen.order, pdf.order, pulse.order, mine.order]).toEqual([1, 2, 3, 4]);
+    expect([lumen.featured, pdf.featured, pulse.featured, mine.featured]).toEqual([true, false, false, false]);
     expect(String(lumen.statusNote)).toMatch(/Public beta 2\.9\.0-beta\.2/);
     expect(String(pulse.statusNote)).toMatch(/not available on the App Store or TestFlight/);
   });
