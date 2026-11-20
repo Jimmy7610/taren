@@ -98,7 +98,7 @@ const { t, path: lp } = i18n(Astro);
         {
           product.websiteUrl && (
             <Button href={product.websiteUrl} external variant={product.downloadUrl ? 'secondary' : 'primary'} size="lg">
-                            {t('product.website')}
+                            {product.category === 'Game' ? t('product.playNow') : t('product.website')}
             </Button>
           )
         }
