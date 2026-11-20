@@ -15,7 +15,7 @@ import { KOFI_URL, SITE } from '@/config/site';
   eyebrow="Integritet"
   heading="Integritet på taren.se"
   intro="Kort sagt: den här webbplatsen ber inte om personuppgifter, sätter inga cookies, kör ingen analys och laddar inga skript från tredje part."
-  updated="2026-11-19"
+  updated="2026-11-20"
 >
   <h2>Vem som ansvarar</h2>
   <p>
@@ -58,11 +58,29 @@ import { KOFI_URL, SITE } from '@/config/site';
     Taren använder dem bara för att bekräfta och bokföra bidraget och varken säljer eller delar dem.
   </p>
 
+  <h2>Nedladdningar och uppdateringar</h2>
+  <p>
+    Programfiler och uppdateringsinformation för Tarens Windows-appar levereras från downloads.taren.se, som också
+    drivs på Cloudflare. När du laddar ned en fil, eller när en app söker efter uppdateringar, behandlar Cloudflare
+    samma slags tekniska information som för den här webbplatsen (till exempel din IP-adress och programversionen i
+    förfrågan). Taren använder inte den informationen för att identifiera eller kartlägga dig.
+  </p>
+
   <h2>Produkter</h2>
   <p>
-    Enskilda produkter kan hantera uppgifter på ett annat sätt än den här webbplatsen. När en produkt behandlar
-    personuppgifter får den en egen integritetsinformation innan den släpps.
+    Varje Windows-app levereras med en egen integritetsinformation (<code>PRIVACY.txt</code> bredvid programmet). Kort:
   </p>
+  <ul>
+    <li>
+      <strong>Lumen Capture</strong> har inga konton eller telemetri och sparar inspelningar på din dator. Appen
+      ansluter till internet bara för uppdateringskontrollen (på som standard, högst en gång per dag, kan stängas av),
+      för att ladda ned en undertextmodell när du ber om det (från huggingface.co) och för att streama till den tjänst
+      som du själv har ställt in.
+    </li>
+    <li>
+      <strong>PDF Studio</strong> arbetar helt på din dator och öppnar inga egna nätverksanslutningar.
+    </li>
+  </ul>
 
   <h2>Dina rättigheter</h2>
   <p>

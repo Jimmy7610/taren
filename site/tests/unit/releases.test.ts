@@ -181,7 +181,7 @@ describe('scripts/import-release.mjs (published feed → manifest)', async () =>
   const { manifestFromFeed } = await import('../../scripts/import-release.mjs');
   const lumen = read('lumen-capture.json');
   const pdf = read('pdfstudio.json');
-  const v = '2.9.0-beta.1';
+  const v = '2.9.0-beta.2';
   const lumenBase = `${DOWNLOAD_ORIGIN}/lumen-capture/beta/${v}`;
   // Shape written by lumen-capture/.github/workflows/release.yml (also read by the in-app updater).
   const lumenFeed = {
@@ -190,7 +190,7 @@ describe('scripts/import-release.mjs (published feed → manifest)', async () =>
     published_at: '2026-12-01T10:00:00Z',
     assets: [
       { name: `LumenCapture-${v}-Setup.exe`, browser_download_url: `${lumenBase}/LumenCapture-${v}-Setup.exe`, sha256: sha, size: 5_000_000 },
-      { name: `LumenCapture-${v}-portable.exe`, browser_download_url: `${lumenBase}/LumenCapture-${v}-portable.exe`, sha256: 'b'.repeat(64), size: 6_000_000 },
+      { name: `LumenCapture-${v}-portable.zip`, browser_download_url: `${lumenBase}/LumenCapture-${v}-portable.zip`, sha256: 'b'.repeat(64), size: 6_000_000 },
     ],
   };
   const opts = { approvedOn: '2026-12-01' };
@@ -213,7 +213,7 @@ describe('scripts/import-release.mjs (published feed → manifest)', async () =>
 
   it('refuses feeds from other hosts, mismatched versions, other products and missing approval', () => {
     expect(() => manifestFromFeed(`https://example.com/lumen-capture/beta/${v}/feed.json`, lumenFeed, lumen, opts)).toThrow(/feed URL/);
-    expect(() => manifestFromFeed(`${DOWNLOAD_ORIGIN}/lumen-capture/beta/2.9.0-beta.2/feed.json`, lumenFeed, lumen, opts)).toThrow(/does not match/);
+    expect(() => manifestFromFeed(`${DOWNLOAD_ORIGIN}/lumen-capture/beta/2.9.0-beta.3/feed.json`, lumenFeed, lumen, opts)).toThrow(/does not match/);
     expect(() => manifestFromFeed(`${lumenBase}/feed.json`, lumenFeed, pdf, opts)).toThrow(/not "lumen-capture"/);
     expect(() => manifestFromFeed(`${lumenBase}/feed.json`, lumenFeed, lumen, {})).toThrow(/approved-on/);
   });

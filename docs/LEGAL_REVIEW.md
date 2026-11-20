@@ -154,3 +154,21 @@ No change was made to the site texts in this step: every open point needs a deci
 | `/terms/` | ☐ | |
 | `/support/` | ☐ | |
 | `/studio/` | ☐ | |
+
+## 7. Windows apps before the public beta (2026-11-20)
+
+Branch `docs/privacy-downloads-beta2`, with lumen-capture `fix/license-bundle-beta2` and PDFStudio
+`fix/license-texts-beta2`. Engineering review, not legal advice; every text below needs the owner's approval.
+
+| # | Topic | Status | Where |
+|---|---|---|---|
+| L8 | App licences / EULAs | **Proposal written**: bilingual beta licence `LICENSE.txt` in both apps (free use to try the beta, no resale or redistribution, as-is, consumer-law saving clause). Full third-party licence texts now ship in the installer **and** the portable package of both apps; the builds fail if one is missing. | `docs/legal/` in each app repo |
+| L15 | Product privacy information | **Proposal written**: `PRIVACY.txt` in each app, every statement traced to the code (`docs/legal/README.md`). PDF Studio: signature validation no longer downloads certificates (it could before, via Windows AIA retrieval). | `docs/legal/` in each app repo |
+| L16 | Downloads and in-app updates on `/privacy/` | **Proposal written** (this branch): new section *Downloads and app updates* and a product summary replacing "products will have their own privacy information". It deliberately makes no claim about download statistics: **OWNER**, confirm whether R2/Cloudflare analytics or logs are enabled for downloads.taren.se. | `site/src/views/copy/{en,sv}/Privacy.astro` |
+| L11 | Product names | **PDF Studio: medium–high risk** (Qoppa/Apryse *PDF Studio*, sold since the 2000s; US filing 85114421 abandoned, no EU/SE registration, but long prior use). **Lumen Capture: low–medium** (no *Lumen Capture* marks; many *LUMEN* class 9 marks). | PDFStudio `docs/NAME_TRADEMARK_RISK.md` |
+
+| Text | Approved by owner | Date |
+|---|---|---|
+| Lumen Capture `LICENSE.txt` / `PRIVACY.txt` | ☐ | |
+| PDF Studio `LICENSE.txt` / `PRIVACY.txt` | ☐ | |
+| `/privacy/` section *Downloads and app updates* + *Products* | ☐ | |

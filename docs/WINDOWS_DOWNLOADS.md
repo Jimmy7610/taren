@@ -28,8 +28,8 @@ has no egress cost, separates a private staging bucket from the public one, and 
 ```
 taren-downloads-staging   (private, no public access — CI uploads here first)
 taren-downloads           (public, only through https://downloads.taren.se)
-  lumen-capture/beta/2.9.0-beta.1/LumenCapture-2.9.0-beta.1-Setup.exe
-                                  LumenCapture-2.9.0-beta.1-portable.exe
+  lumen-capture/beta/2.9.0-beta.2/LumenCapture-2.9.0-beta.2-Setup.exe
+                                  LumenCapture-2.9.0-beta.2-portable.zip   (app + LICENSE.txt, PRIVACY.txt, licenses/)
                                   SHA256SUMS.txt   feed.json
   lumen-capture/beta/latest.json          ← read by Lumen's in-app updater (5 min cache)
   pdf-studio/beta/0.9.0-beta.1/PDFStudio-Setup-0.9.0-beta.1-x64.exe
