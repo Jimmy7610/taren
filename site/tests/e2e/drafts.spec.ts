@@ -7,9 +7,9 @@ test('draft mode adds nothing while every product is published', async ({ page, 
   await page.goto('/products/');
   await expect(page.locator('main article.showcase')).toHaveAttribute('data-accent', 'lumen-capture');
   const cards = await page.locator('main [data-product-card]').evaluateAll((els) => els.map((e) => e.getAttribute('data-product-card')));
-  expect(cards).toEqual(['pdfstudio', 'pulse-garden']);
+  expect(cards).toEqual(['pdfstudio', 'pulse-garden', 'mineclone']);
   await expect(page.locator('.draft-pill')).toHaveCount(0);
-  for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) {
+  for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden', 'mineclone']) {
     const res = await page.goto(`/products/${slug}/`);
     expect(res?.status(), slug).toBe(200);
     await expect(page.locator('[data-draft-banner]'), slug).toHaveCount(0);
