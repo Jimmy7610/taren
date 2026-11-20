@@ -43,7 +43,7 @@ describe('product content files', () => {
 
   it('Taren 2.5: all three products are public information pages (gate 1); Lumen Capture and PDF Studio are beta releases', () => {
     const schema = productSchema(z.string());
-    for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md']) {
+    for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md', 'mineclone.md']) {
       const data = read(file);
       expect(data.published, file).toBe(true);
       // Lumen Capture's download comes from its release manifest (src/content/releases/), never from downloadUrl.
@@ -57,10 +57,10 @@ describe('product content files', () => {
     }
   });
 
-  it('Taren 2.5 ordering: Lumen Capture first and featured, PDF Studio second, Pulse Garden third', () => {
-    const lumen = read('lumen-capture.md'), pdf = read('pdfstudio.md'), pulse = read('pulse-garden.md');
-    expect([lumen.order, pdf.order, pulse.order]).toEqual([1, 2, 3]);
-    expect([lumen.featured, pdf.featured, pulse.featured]).toEqual([true, false, false]);
+  it('Taren catalog ordering: Lumen Capture, PDF Studio, Pulse Garden, MineClone', () => {
+    const lumen = read('lumen-capture.md'), pdf = read('pdfstudio.md'), pulse = read('pulse-garden.md'), mine = read('mineclone.md');
+    expect([lumen.order, pdf.order, pulse.order, mine.order]).toEqual([1, 2, 3, 4]);
+    expect([lumen.featured, pdf.featured, pulse.featured, mine.featured]).toEqual([true, false, false, false]);
     expect(String(lumen.statusNote)).toMatch(/Public beta 2\.9\.0-beta\.2/);
     expect(String(pulse.statusNote)).toMatch(/not available on the App Store or TestFlight/);
   });
