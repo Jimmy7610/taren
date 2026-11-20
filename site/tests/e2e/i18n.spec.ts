@@ -131,7 +131,7 @@ test.describe('Swedish content', () => {
   test('product order, featured product and unchanged product names', async ({ page }) => {
     await page.goto('/sv/');
     await expect(page.locator('.hero [data-teaser]')).toHaveAttribute('data-teaser', 'lumen-capture');
-    await expect(page.locator('.hero [data-teaser]')).toContainText('Under utveckling');
+    await expect(page.locator('.hero [data-teaser]')).toContainText('Beta');
     await expect(page.locator('.hero [data-teaser]')).toHaveAttribute('href', '/sv/products/lumen-capture/');
     await expect(page.locator('main article.showcase')).toHaveAttribute('data-accent', 'lumen-capture');
     await page.goto('/sv/products/');
@@ -141,15 +141,24 @@ test.describe('Swedish content', () => {
       expect(href).toMatch(/^\/sv\/products\//);
   });
 
-  test('each product page: Swedish text, prerelease status, no download', async ({ page }) => {
+  test('each product page: Swedish text and honest status; only Lumen Capture is downloadable', async ({ page }) => {
     for (const [slug, name] of [['lumen-capture', 'Lumen Capture'], ['pdfstudio', 'PDF Studio'], ['pulse-garden', 'Pulse Garden']] as const) {
       await page.goto(`/sv/products/${slug}/`);
       await expect(page.locator('h1')).toHaveText(name);
-      await expect(page.locator('.product-status').first()).toHaveText(/Under utveckling/);
       await expect(page.getByRole('heading', { name: `Om ${name}` })).toBeVisible();
       await expect(page.getByRole('heading', { name: `${name} i korthet` })).toBeVisible();
+      const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
+      if (slug === 'lumen-capture') {
+        // Published public beta: Swedish download button and status (details in downloads.spec.ts).
+        await expect(page.locator('.product-status').first()).toHaveText(/Beta/);
+        await expect(page.getByText(/Öppen beta 2\.9\.0-beta\.2 för Windows/).first()).toBeVisible();
+        await expect(page.locator('[data-download-installer]')).toContainText('Ladda ner för Windows');
+        expect(ld).toContain('SoftwareApplication');
+        continue;
+      }
+      await expect(page.locator('.product-status').first()).toHaveText(/Under utveckling/);
       expect(await page.getByRole('link', { name: /ladda ned|download|installation|app store|testflight/i }).count(), slug).toBe(0);
-      for (const json of await page.locator('script[type="application/ld+json"]').allTextContents()) expect(json).not.toContain('SoftwareApplication');
+      expect(ld).not.toContain('SoftwareApplication');
     }
     await page.goto('/sv/products/pulse-garden/');
     await expect(page.getByText(/inte tillgängligt på App Store eller TestFlight/)).toBeVisible();

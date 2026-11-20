@@ -81,8 +81,9 @@ test('homepage features Lumen Capture (hero card, stage and mobile menu) and lis
   for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) expect(xml).toContain(`/products/${slug}/`);
 });
 
-test('no download or installer link anywhere on the site', async ({ page }) => {
-  for (const path of ['/', '/products/', '/products/lumen-capture/', '/products/pdfstudio/', '/products/pulse-garden/', '/support/']) {
+test('no download or installer link anywhere except the published Lumen Capture beta', async ({ page }) => {
+  // Lumen Capture's own page links exactly its two published files (downloads.spec.ts, apps.spec.ts above).
+  for (const path of ['/', '/products/', '/products/pdfstudio/', '/products/pulse-garden/', '/support/']) {
     await page.goto(path);
     expect(await page.getByRole('link', { name: /download|installer|get it on|app store|testflight/i }).count(), path).toBe(0);
     const hrefs = await page.locator('a[href]').evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? ''));

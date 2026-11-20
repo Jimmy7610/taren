@@ -92,7 +92,7 @@ const statusKey = release.state === 'withdrawn' ? 'download.withdrawnStatus' : a
             {
               portable && (
                 <p class="mt-3 text-[0.9375rem]">
-                  <a href={portable.url} download={portable.fileName} class="link" data-download-portable>
+                  <a href={portable.url} download={portable.fileName} class="link inline-flex min-h-11 items-center" data-download-portable>
                     {t('download.portable', { size: formatSize(portable.sizeBytes, lang) })}
                   </a>
                 </p>
