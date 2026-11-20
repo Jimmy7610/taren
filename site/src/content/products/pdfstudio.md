@@ -151,7 +151,7 @@ milestones:
   - title: Testing beyond one PC
     state: next
     note: Physical printers, 125–250 % display scaling, multiple monitors, high contrast, Narrator and touch.
-  - title: Public beta release
+  - title: Public beta
     state: done
     note: Version 0.9.0-beta.2 published 20 November 2026 as an unsigned beta.
 milestonesSource: PDF Studio feature matrix, status and release checklist (version 0.9.0, November 2026)
