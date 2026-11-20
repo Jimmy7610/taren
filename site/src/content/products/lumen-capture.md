@@ -11,10 +11,10 @@ description: >-
   own PC. One small app, no accounts.
 category: App
 platforms: [Windows 10, Windows 11]
-status: in-development
+status: beta
 statusNote: >-
-  Version 2.8 builds automatically for Windows on every change. It has not been released yet: no
-  installer or download is published.
+  Public beta 2.9.0-beta.2 for Windows, released 20 November 2026. The installer is not
+  code-signed yet, so Windows SmartScreen may show a warning.
 published: true
 featured: true
 order: 1
@@ -46,7 +46,7 @@ facts:
   - label: Graphics
     value: DirectX 11 GPU
   - label: Version
-    value: 2.8 · not yet released
+    value: 2.9.0-beta.2 · public beta
 stepsEyebrow: How it works
 stepsTitle: Record, edit, share — in one app
 steps:
@@ -139,7 +139,7 @@ milestones:
     note: Accessibility, overlays, fast export, six languages, resizing, and About & help with a printable manual.
   - title: Public release
     state: planned
-    note: Needs the owner's approval. The installer is not code-signed and no download is published yet.
+    note: The public beta 2.9.0-beta.2 is out (November 2026). A final release still needs a code-signed installer.
 milestonesSource: Lumen Capture README roadmap and changelog (version 2.8.0, November 2026)
 ---
 
@@ -154,5 +154,5 @@ Recording uses DXGI Desktop Duplication on the GPU and Media Foundation's hardwa
 stays light while you work. The built-in editor is non-destructive: the original recording is never
 touched.
 
-Lumen Capture is in development and has not been released. Details on this page reflect version
-2.8 and may change.
+Lumen Capture is in public beta (version 2.9.0-beta.2). Screenshots show version 2.8 and 2.5; details may
+change before the final release.

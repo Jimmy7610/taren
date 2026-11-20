@@ -8,8 +8,8 @@ description: >-
   En skärminspelare för Windows med inbyggd redigerare, livesändning och AI som körs på din egen dator. En liten app,
   inga konton.
 statusNote: >-
-  Version 2.8 byggs automatiskt för Windows vid varje ändring. Den har inte släppts ännu: inget installationsprogram
-  och ingen nedladdning har publicerats.
+  Öppen beta 2.9.0-beta.2 för Windows, släppt 20 november 2026. Installationsprogrammet är ännu inte kodsignerat,
+  så Windows SmartScreen kan visa en varning.
 iconAlt: Lumen Captures appikon — en vit ring med en röd inspelningsprick på en blåviolett kvadrat med rundade hörn.
 heroImageAlt: >-
   Lumen Captures inspelningssida i mörkt tema: källorna Full screen, Window och Region, en liveförhandsvisning,
@@ -34,7 +34,7 @@ facts:
   - label: Grafik
     value: Grafikkort med DirectX 11
   - label: Version
-    value: 2.8 · inte släppt än
+    value: 2.9.0-beta.2 · öppen beta
 stepsEyebrow: Så fungerar det
 stepsTitle: Spela in, redigera, dela — i en och samma app
 steps:
@@ -108,7 +108,7 @@ milestones:
   - title: Version 1.1 till 2.8
     note: Tillgänglighet, överlägg, snabb export, sex språk, storleksändring samt Om och hjälp med en utskrivbar manual.
   - title: Offentlig lansering
-    note: Kräver ägarens godkännande. Installationsprogrammet är inte kodsignerat och ingen nedladdning har publicerats än.
+    note: Den öppna betan 2.9.0-beta.2 är släppt (november 2026). En slutlig version kräver fortfarande ett kodsignerat installationsprogram.
 milestonesSource: Lumen Captures README, färdplan och ändringslogg (version 2.8.0, november 2026)
 ---
 
@@ -122,5 +122,5 @@ AI-funktionerna — textning och brusreducering för mikrofonen — körs lokalt
 Inspelningen använder DXGI Desktop Duplication på grafikkortet och Media Foundations hårdvarukodare, så den belastar
 datorn lite medan du arbetar. Den inbyggda redigeraren ändrar aldrig originalinspelningen.
 
-Lumen Capture är under utveckling och har inte släppts. Uppgifterna på den här sidan gäller version 2.8 och kan
-ändras.
+Lumen Capture finns som öppen beta (version 2.9.0-beta.2). Skärmbilderna visar version 2.8 och 2.5; uppgifterna kan
+ändras före den slutliga versionen.

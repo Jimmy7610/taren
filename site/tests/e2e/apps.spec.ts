@@ -4,18 +4,22 @@ import { RELEASE_SIZES, scrollThrough, watchErrors } from './helpers';
 // Lumen Capture and PDF Studio: public information pages since Taren 2.5 (owner-approved, docs/PUBLICATION_WORKFLOW.md
 // gate 1). Runs against the production build. Neither is released: no download anywhere (gate 2 not passed).
 
-test('Lumen Capture is a public, indexable information page with an honest prerelease status and no download', async ({ page }) => {
+test('Lumen Capture is a public, indexable page with an honest public-beta status and the published download', async ({ page }) => {
   const res = await page.goto('/products/lumen-capture/');
   expect(res?.status()).toBe(200);
   await expect(page.locator('h1')).toHaveText('Lumen Capture');
   await expect(page.locator('[data-draft-banner]')).toHaveCount(0);
   expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('index, follow');
   expect(await page.locator('link[rel=canonical]').getAttribute('href')).toBe('https://taren.se/products/lumen-capture/');
-  await expect(page.locator('.product-status').first()).toHaveText(/In development/);
-  await expect(page.getByText(/has not been released yet: no installer or download is published/)).toBeVisible();
-  expect(await page.getByRole('link', { name: /download|installer/i }).count()).toBe(0);
-  // Structured data: breadcrumbs only — no SoftwareApplication for something people cannot get.
-  for (const json of await page.locator('script[type="application/ld+json"]').allTextContents()) expect(json).not.toContain('SoftwareApplication');
+  await expect(page.locator('.product-status').first()).toHaveText(/Beta/);
+  await expect(page.getByText(/Public beta 2\.9\.0-beta\.2 for Windows/).first()).toBeVisible();
+  // Every download link points at the published files on downloads.taren.se (details: downloads.spec.ts).
+  for (const href of await page.locator('a[href*="downloads.taren.se"]').evaluateAll((els) => els.map((e) => e.getAttribute('href'))))
+    expect(href).toMatch(/^https:\/\/downloads\.taren\.se\/lumen-capture\/beta\/2\.9\.0-beta\.2\/LumenCapture-2\.9\.0-beta\.2-(Setup\.exe|portable\.zip)$/);
+  // Structured data: SoftwareApplication now that people can get it, with the installer as downloadUrl.
+  const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
+  expect(ld).toContain('SoftwareApplication');
+  expect(ld).toContain('LumenCapture-2.9.0-beta.2-Setup.exe');
 });
 
 test('desktop products use desktop frames everywhere', async ({ page }) => {
@@ -65,7 +69,7 @@ test('homepage features Lumen Capture (hero card, stage and mobile menu) and lis
   await page.goto('/');
   const teaser = page.locator('.hero [data-teaser]');
   await expect(teaser).toHaveAttribute('data-teaser', 'lumen-capture');
-  await expect(teaser).toContainText('In development');
+  await expect(teaser).toContainText('Beta');
   await expect(teaser).toHaveAttribute('href', '/products/lumen-capture/');
   await expect(page.locator('main article.showcase')).toHaveAttribute('data-accent', 'lumen-capture');
   const cards = await page.locator('main [data-product-card]').evaluateAll((els) => els.map((e) => e.getAttribute('data-product-card')));
@@ -77,8 +81,9 @@ test('homepage features Lumen Capture (hero card, stage and mobile menu) and lis
   for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) expect(xml).toContain(`/products/${slug}/`);
 });
 
-test('no download or installer link anywhere on the site', async ({ page }) => {
-  for (const path of ['/', '/products/', '/products/lumen-capture/', '/products/pdfstudio/', '/products/pulse-garden/', '/support/']) {
+test('no download or installer link anywhere except the published Lumen Capture beta', async ({ page }) => {
+  // Lumen Capture's own page links exactly its two published files (downloads.spec.ts, apps.spec.ts above).
+  for (const path of ['/', '/products/', '/products/pdfstudio/', '/products/pulse-garden/', '/support/']) {
     await page.goto(path);
     expect(await page.getByRole('link', { name: /download|installer|get it on|app store|testflight/i }).count(), path).toBe(0);
     const hrefs = await page.locator('a[href]').evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? ''));
