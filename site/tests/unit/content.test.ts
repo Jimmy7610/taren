@@ -41,13 +41,13 @@ describe('product content files', () => {
     expect(files).not.toContain('_example-product.md');
   });
 
-  it('Taren 2.5: all three products are public information pages (gate 1); only Lumen Capture is a beta release', () => {
+  it('Taren 2.5: all three products are public information pages (gate 1); Lumen Capture and PDF Studio are beta releases', () => {
     const schema = productSchema(z.string());
     for (const file of ['lumen-capture.md', 'pdfstudio.md', 'pulse-garden.md']) {
       const data = read(file);
       expect(data.published, file).toBe(true);
       // Lumen Capture's download comes from its release manifest (src/content/releases/), never from downloadUrl.
-      expect(data.status, file).toBe(file === 'lumen-capture.md' ? 'beta' : 'in-development');
+      expect(data.status, file).toBe(file === 'pulse-garden.md' ? 'in-development' : 'beta');
       // Publishing a page never approves distribution: no download, no release approval, no website link.
       expect(data.downloadUrl, file).toBeUndefined();
       expect(data.releaseApproval, file).toBeUndefined();
@@ -65,17 +65,17 @@ describe('product content files', () => {
     expect(String(pulse.statusNote)).toMatch(/not available on the App Store or TestFlight/);
   });
 
-  it('PDF Studio is an honest, public information page with its own icon and no download', () => {
+  it('PDF Studio is an honest public beta page with its own icon', () => {
     const pdf = read('pdfstudio.md');
     expect(pdf.published).toBe(true);
     expect(pdf.featured).toBe(false);
-    expect(pdf.status).toBe('in-development');
+    expect(pdf.status).toBe('beta');
     expect(pdf.device).toBe('desktop');
     expect(pdf.downloadUrl).toBeUndefined();
     expect(pdf.websiteUrl).toBeUndefined();
     expect(pdf.icon).toBe('../../assets/products/pdfstudio/icon.png'); // PDF Studio's own icon, never the Taren symbol
     expect(String(pdf.iconAlt)).toMatch(/^PDF Studio app icon/);
-    expect(String(pdf.statusNote)).toMatch(/0\.9\.0.*unsigned.*not been released/s);
+    expect(String(pdf.statusNote)).toMatch(/Public beta 0\.9\.0-beta\.2/);
     const all = JSON.stringify(pdf);
     expect(all).not.toMatch(/taren-symbol|brand\/masters/);
     expect(all).not.toMatch(/PDF\/A compli|Acrobat|available now/i);

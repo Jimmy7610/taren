@@ -141,7 +141,7 @@ test.describe('Swedish content', () => {
       expect(href).toMatch(/^\/sv\/products\//);
   });
 
-  test('each product page: Swedish text and honest status; only Lumen Capture is downloadable', async ({ page }) => {
+  test('each product page: Swedish text and honest status; both desktop betas are downloadable', async ({ page }) => {
     for (const [slug, name] of [['lumen-capture', 'Lumen Capture'], ['pdfstudio', 'PDF Studio'], ['pulse-garden', 'Pulse Garden']] as const) {
       await page.goto(`/sv/products/${slug}/`);
       await expect(page.locator('h1')).toHaveText(name);
@@ -156,6 +156,13 @@ test.describe('Swedish content', () => {
         expect(ld).toContain('SoftwareApplication');
         continue;
       }
+      if (slug === 'pdfstudio') {
+        await expect(page.locator('.product-status').first()).toHaveText(/Beta/);
+        await expect(page.getByText(/Öppen beta 0\.9\.0-beta\.2 för Windows/).first()).toBeVisible();
+        await expect(page.locator('[data-download-installer]')).toContainText('Ladda ner för Windows');
+        expect(ld).toContain('SoftwareApplication');
+        continue;
+      }
       await expect(page.locator('.product-status').first()).toHaveText(/Under utveckling/);
       expect(await page.getByRole('link', { name: /ladda ned|download|installation|app store|testflight/i }).count(), slug).toBe(0);
       expect(ld).not.toContain('SoftwareApplication');
@@ -163,7 +170,7 @@ test.describe('Swedish content', () => {
     await page.goto('/sv/products/pulse-garden/');
     await expect(page.getByText(/inte tillgängligt på App Store eller TestFlight/)).toBeVisible();
     await page.goto('/sv/products/pdfstudio/');
-    await expect(page.getByText(/0\.9\.0 är en osignerad förhandsversion/)).toBeVisible();
+    await expect(page.getByText(/Öppen beta 0\.9\.0-beta\.2 för Windows/).first()).toBeVisible();
   });
 
   test('gallery script speaks Swedish', async ({ page }) => {

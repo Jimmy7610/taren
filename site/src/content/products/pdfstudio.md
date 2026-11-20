@@ -15,10 +15,10 @@ description: >-
   It works fully offline, without an account, and your documents never leave your computer.
 category: App
 platforms: [Windows 10, Windows 11]
-status: in-development
+status: beta
 statusNote: >-
-  Version 0.9.0 is an unsigned development preview, tested on the developer's PC. It has not been
-  released: there is no public download, beta, price or release date.
+  Public beta 0.9.0-beta.2 for Windows, released 20 November 2026. The installer is not
+  code-signed, so Windows SmartScreen may show a warning.
 published: true
 featured: false
 order: 2
@@ -27,10 +27,9 @@ icon: ../../assets/products/pdfstudio/icon.png
 iconAlt: >-
   PDF Studio app icon — a white page with a folded corner and four violet text lines on a rounded
   square with a violet-to-pink gradient.
-heroImage: ../../assets/products/pdfstudio/03-document-dark.web.webp
+heroImage: ../../assets/products/pdfstudio/01-start-dark.web.webp
 heroImageAlt: >-
-  PDF Studio's document workspace in the dark theme: tabs, the ribbon, page thumbnails, a page on the
-  canvas, the properties pane and the page navigator.
+  PDF Studio's start page in the dark theme, with quick actions, recent files and a drag-and-drop area.
 accent: '#A48BFF'
 accentAlt: '#F07AB4'
 screenshotsNote: >-
@@ -52,7 +51,7 @@ facts:
   - label: Languages
     value: Swedish and English (main interface)
   - label: Version
-    value: 0.9.0 preview · not released
+    value: 0.9.0-beta.2 · public beta
 stepsEyebrow: How it works
 stepsTitle: Find it, change it, save it safely
 steps:
@@ -152,16 +151,16 @@ milestones:
   - title: Testing beyond one PC
     state: next
     note: Physical printers, 125–250 % display scaling, multiple monitors, high contrast, Narrator and touch.
-  - title: Public release
-    state: planned
-    note: Only after the items below are resolved and with the owner's approval. No date set.
+  - title: Public beta
+    state: done
+    note: Version 0.9.0-beta.2 published 20 November 2026 as an unsigned beta.
 milestonesSource: PDF Studio feature matrix, status and release checklist (version 0.9.0, November 2026)
 beforeRelease:
   - Code signing, so Windows does not show a SmartScreen warning.
-  - A final product name and a project licence.
+  - Review potential naming conflicts before wider distribution.
   - Manual testing on more hardware, display scaling levels and assistive technology.
   - English translations for the remaining Swedish-only dialogs.
-  - A chosen distribution channel.
+  - Broader release and distribution beyond this public beta.
 requirements:
   - label: Operating system
     value: Windows 10 version 2004 (build 19041) or later. Windows 11 recommended.
@@ -197,5 +196,5 @@ content instead of covering it. PDF Studio can also apply and validate digital s
 Everything runs locally. PDF Studio makes no network calls and collects no telemetry, and its logs never
 contain document content or file names.
 
-PDF Studio is in development. Version 0.9.0 is a preview and has not been released; details on this page
-may change.
+PDF Studio 0.9.0-beta.2 is available as a public beta for Windows. The installer is unsigned and
+some features may change; keep copies of important PDFs before editing them.

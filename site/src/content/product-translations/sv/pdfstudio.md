@@ -8,14 +8,13 @@ description: >-
   Ett Windows-program för att läsa, redigera, organisera, signera, skydda och skriva ut PDF-filer. Det fungerar helt
   offline, utan konto, och dina dokument lämnar aldrig datorn.
 statusNote: >-
-  Version 0.9.0 är en osignerad förhandsversion för utveckling, testad på utvecklarens dator. Den har inte släppts:
-  det finns ingen offentlig nedladdning, beta, prissättning eller lanseringsdag.
+  Öppen beta 0.9.0-beta.2 för Windows, släppt 20 november 2026. Installationsprogrammet är inte
+  kodsignerat, så Windows SmartScreen kan visa en varning.
 iconAlt: >-
   PDF Studios appikon — ett vitt dokument med ett vikt hörn och fyra violetta textrader på en kvadrat med rundade
   hörn i en övergång från violett till rosa.
 heroImageAlt: >-
-  PDF Studios dokumentvy i mörkt tema: flikar, menyfliksområdet, sidminiatyrer, en sida i arbetsytan,
-  egenskapspanelen och sidnavigeringen.
+  PDF Studios startsida i mörkt tema, med snabbåtgärder, listan över senaste filer och en yta för att släppa PDF-filer.
 screenshotsNote: >-
   Riktiga skärmbilder av PDF Studio 0.9.0 från de automatiska gränssnittstesterna i Windows 11 med 100 % skalning.
   Gränssnittet är på svenska, som är standardspråket, och alla dokument är syntetiska testfiler.
@@ -35,7 +34,7 @@ facts:
   - label: Språk
     value: Svenska och engelska (huvudgränssnittet)
   - label: Version
-    value: "0.9.0 · förhands\u00ADversion, inte släppt"
+    value: "0.9.0-beta.2 · öppen beta"
 stepsEyebrow: Så fungerar det
 stepsTitle: Hitta, ändra, spara säkert
 steps:
@@ -115,15 +114,15 @@ milestones:
     note: 107 automatiska tester går igenom och kontrollerar sparade filer med en oberoende PDF-tolkare.
   - title: Tester utöver en enda dator
     note: Fysiska skrivare, skalning på 125–250 %, flera skärmar, högkontrast, Skärmläsaren och pekskärm.
-  - title: Offentlig lansering
-    note: Först när punkterna nedan är lösta och med ägarens godkännande. Inget datum är satt.
+  - title: Öppen betaversion
+    note: Version 0.9.0-beta.2 publicerad 20 november 2026 som osignerad beta.
 milestonesSource: PDF Studios funktionsöversikt, status och lanseringschecklista (version 0.9.0, november 2026)
 beforeRelease:
   - Kodsignering, så att Windows inte visar en varning från SmartScreen.
-  - Ett slutgiltigt produktnamn och en licens för projektet.
+  - Se över möjliga namnkonflikter inför bredare distribution.
   - Manuella tester på mer hårdvara, fler skalningsnivåer och med hjälpmedelsteknik.
   - Engelska översättningar av de dialogrutor som fortfarande bara finns på svenska.
-  - En vald distributionskanal.
+  - Bredare lansering och distribution efter denna öppna beta.
 requirements:
   - label: Operativsystem
     value: Windows 10 version 2004 (build 19041) eller senare. Windows 11 rekommenderas.
@@ -158,5 +157,5 @@ stället för att täcka över det. PDF Studio kan också lägga till och kontro
 Allt körs lokalt. PDF Studio gör inga nätverksanrop och samlar inte in någon telemetri, och loggarna innehåller aldrig
 dokumentinnehåll eller filnamn.
 
-PDF Studio är under utveckling. Version 0.9.0 är en förhandsversion som inte har släppts, och uppgifterna på den här
-sidan kan ändras.
+PDF Studio 0.9.0-beta.2 finns nu som öppen beta för Windows. Installationsprogrammet är osignerat och
+funktioner kan ändras. Spara alltid kopior av viktiga PDF-filer innan du redigerar dem.
