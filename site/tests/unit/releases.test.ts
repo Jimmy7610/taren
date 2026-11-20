@@ -165,7 +165,7 @@ describe('release manifests in src/content/releases', () => {
     expect(lumen.releaseDate).toBe('2026-11-20');
     expect(lumen.signed).toBe(false);
     const base = 'https://downloads.taren.se/lumen-capture/beta/2.9.0-beta.2';
-    expect(lumen.downloads.map((d: { type: string; url: string }) => [d.type, d.url]).sort()).toEqual([
+    expect((lumen.downloads as { type: string; url: string }[]).map((d) => [d.type, d.url]).sort()).toEqual([
       ['installer', `${base}/LumenCapture-2.9.0-beta.2-Setup.exe`],
       ['portable', `${base}/LumenCapture-2.9.0-beta.2-portable.zip`],
     ]);
