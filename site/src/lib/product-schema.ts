@@ -50,6 +50,8 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
       icon: imageSchema.optional(),
       iconAlt: z.string().optional(),
       heroImage: imageSchema.optional(),
+      /** An already-hosted, verified image for externally hosted browser games. */
+      heroImageUrl: httpsUrl.optional(),
       heroImageAlt: z.string().optional(),
       gallery: z
         .array(
