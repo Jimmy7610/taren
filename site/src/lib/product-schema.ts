@@ -51,7 +51,7 @@ export function productSchema<I extends z.ZodType>(imageSchema: I) {
       iconAlt: z.string().optional(),
       heroImage: imageSchema.optional(),
       /** An already-hosted, verified image for externally hosted browser games. */
-      heroImageUrl: httpsUrl.optional(),
+      heroImageUrl: z.union([httpsUrl, z.string().regex(/^\/[a-zA-Z0-9/_\-.]+$/, 'Use a safe site-relative asset path')]).optional(),
       heroImageAlt: z.string().optional(),
       gallery: z
         .array(
