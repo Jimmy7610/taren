@@ -44,7 +44,7 @@ test('the lightbox works for desktop screenshots', async ({ page }) => {
   await expect(dialog).toBeHidden();
 });
 
-test('catalogue order: Lumen Capture first (full-width stage), then PDF Studio, then Pulse Garden', async ({ page }) => {
+test('catalogue order: Lumen Capture first (full-width stage), followed by PDF Studio, Pulse Garden and MineClone', async ({ page }) => {
   for (const [w, h] of [[1440, 900], [390, 844]] as const) {
     await page.setViewportSize({ width: w, height: h });
     await page.goto('/products/');
@@ -52,10 +52,10 @@ test('catalogue order: Lumen Capture first (full-width stage), then PDF Studio, 
     await expect(stage).toHaveCount(1);
     await expect(stage).toHaveAttribute('data-accent', 'lumen-capture');
     const cards = await page.locator('main [data-product-card]').evaluateAll((els) => els.map((e) => e.getAttribute('data-product-card')));
-    expect(cards).toEqual(['pdfstudio', 'pulse-garden']);
+    expect(cards).toEqual(['pdfstudio', 'pulse-garden', 'mineclone']);
     // Visual order matches: the stage is above both cards, and it is the widest (most prominent) item.
     const s = (await stage.boundingBox())!;
-    for (const slug of ['pdfstudio', 'pulse-garden']) {
+    for (const slug of ['pdfstudio', 'pulse-garden', 'mineclone']) {
       const c = (await page.locator(`[data-product-card="${slug}"]`).boundingBox())!;
       expect(c.y).toBeGreaterThan(s.y);
       expect(s.width).toBeGreaterThanOrEqual(c.width);
@@ -64,7 +64,7 @@ test('catalogue order: Lumen Capture first (full-width stage), then PDF Studio, 
   }
 });
 
-test('homepage features Lumen Capture (hero card, stage and mobile menu) and lists the other two', async ({ page, request }) => {
+test('homepage features Lumen Capture (hero card, stage and mobile menu) and lists the other products', async ({ page, request }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
   const teaser = page.locator('.hero [data-teaser]');
@@ -73,12 +73,12 @@ test('homepage features Lumen Capture (hero card, stage and mobile menu) and lis
   await expect(teaser).toHaveAttribute('href', '/products/lumen-capture/');
   await expect(page.locator('main article.showcase')).toHaveAttribute('data-accent', 'lumen-capture');
   const cards = await page.locator('main [data-product-card]').evaluateAll((els) => els.map((e) => e.getAttribute('data-product-card')));
-  expect(cards).toEqual(['pdfstudio', 'pulse-garden']);
+  expect(cards).toEqual(['pdfstudio', 'pulse-garden', 'mineclone']);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole('button', { name: 'Open menu' }).click();
   await expect(page.locator('dialog#mobile-nav [data-teaser]')).toHaveAttribute('data-teaser', 'lumen-capture');
   const xml = await (await request.get('/sitemap.xml')).text();
-  for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) expect(xml).toContain(`/products/${slug}/`);
+  for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden', 'mineclone']) expect(xml).toContain(`/products/${slug}/`);
 });
 
 test('no download or installer links outside the two published desktop beta pages', async ({ page }) => {
