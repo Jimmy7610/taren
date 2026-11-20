@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { RELEASE_SIZES, scrollThrough, watchErrors } from './helpers';
 
 // Lumen Capture and PDF Studio: public information pages since Taren 2.5 (owner-approved, docs/PUBLICATION_WORKFLOW.md
-// gate 1). Runs against the production build. Neither is released: no download anywhere (gate 2 not passed).
+// gate 1). Both desktop apps now have owner-approved public beta downloads.
 
 test('Lumen Capture is a public, indexable page with an honest public-beta status and the published download', async ({ page }) => {
   const res = await page.goto('/products/lumen-capture/');
@@ -81,9 +81,9 @@ test('homepage features Lumen Capture (hero card, stage and mobile menu) and lis
   for (const slug of ['lumen-capture', 'pdfstudio', 'pulse-garden']) expect(xml).toContain(`/products/${slug}/`);
 });
 
-test('no download or installer link anywhere except the published Lumen Capture beta', async ({ page }) => {
-  // Lumen Capture's own page links exactly its two published files (downloads.spec.ts, apps.spec.ts above).
-  for (const path of ['/', '/products/', '/products/pdfstudio/', '/products/pulse-garden/', '/support/']) {
+test('no download or installer links outside the two published desktop beta pages', async ({ page }) => {
+  // Both desktop beta pages link their own published installers and portable archives (downloads.spec.ts).
+  for (const path of ['/', '/products/', '/products/pulse-garden/', '/support/']) {
     await page.goto(path);
     expect(await page.getByRole('link', { name: /download|installer|get it on|app store|testflight/i }).count(), path).toBe(0);
     const hrefs = await page.locator('a[href]').evaluateAll((as) => as.map((a) => a.getAttribute('href') ?? ''));
@@ -92,33 +92,31 @@ test('no download or installer link anywhere except the published Lumen Capture 
 });
 
 test.describe('PDF Studio', () => {
-  test('page is a public, indexable information page with an honest 0.9.0 preview status and no download', async ({ page }) => {
+  test('page is a public, indexable information page with an honest 0.9.0-beta.2 download', async ({ page }) => {
     const res = await page.goto('/products/pdfstudio/');
     expect(res?.status()).toBe(200);
     await expect(page.locator('h1')).toHaveText('PDF Studio');
     await expect(page.locator('[data-draft-banner]')).toHaveCount(0);
     expect(await page.locator('meta[name=robots]').getAttribute('content')).toBe('index, follow');
     expect(await page.locator('link[rel=canonical]').getAttribute('href')).toBe('https://taren.se/products/pdfstudio/');
-    for (const json of await page.locator('script[type="application/ld+json"]').allTextContents()) expect(json).not.toContain('SoftwareApplication');
-    // Honest status, no download or release language.
-    await expect(page.getByText(/0\.9\.0 is an unsigned development preview/)).toBeVisible();
-    expect(await page.getByRole('link', { name: /download/i }).count()).toBe(0);
-    expect(await page.getByRole('button', { name: /download/i }).count()).toBe(0);
+    const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
+    expect(ld).toContain('SoftwareApplication');
+    await expect(page.getByText(/Public beta 0\.9\.0-beta\.2 for Windows/).first()).toBeVisible();
+    await expect(page.locator('[data-download-installer]')).toContainText('Download for Windows');
     const text = await page.locator('main').innerText();
-    // Positive release claims only — honest negations such as "has not been released" are fine.
-    for (const banned of [/available now/i, /out now/i, /\bis (now )?released\b/i, /PDF\/A compliant/i, /Acrobat/i, /\bAI\b/]) expect(text).not.toMatch(banned);
+    for (const banned of [/PDF\/A compliant/i, /Acrobat/i, /\bAI\b/]) expect(text).not.toMatch(banned);
     expect(text).not.toMatch(/command-line|pdfstudio CLI/i); // developer-only tool is not advertised
   });
 
   test('all sections render from verified data', async ({ page }) => {
     await page.goto('/products/pdfstudio/');
-    await expect(page.locator('.facts dt')).toHaveCount(8);
+    await expect(page.locator('.facts dt')).toHaveCount(14);
     await expect(page.locator('.steps > li')).toHaveCount(3);
     await expect(page.locator('.feature')).toHaveCount(6);
     await expect(page.locator('#screenshots .shot-link')).toHaveCount(10);
     const states = await page.locator('.timeline > li').evaluateAll((li) => li.map((l) => (l as HTMLElement).dataset.state));
-    expect(states.slice(-2)).toEqual(['next', 'planned']);
-    expect(states.filter((s) => s === 'done')).toHaveLength(6);
+    expect(states.slice(-2)).toEqual(['next', 'done']);
+    expect(states.filter((s) => s === 'done')).toHaveLength(7);
     await expect(page.locator('[data-before-release] li')).toHaveCount(5);
     await expect(page.getByRole('heading', { name: 'What PDF Studio needs' })).toBeVisible();
     await expect(page.locator('.reqs dt')).toHaveCount(6);
